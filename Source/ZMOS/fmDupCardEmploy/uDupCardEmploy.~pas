@@ -125,6 +125,8 @@ type
     chk_Master: TCheckBox;
     cmb_WorkGubun: TComboBox;
     Label3: TLabel;
+    ed_SelectCompanyCode: TEdit;
+    ed_SelectEmCode: TEdit;
     procedure btn_CloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -247,9 +249,9 @@ type
     Function UpdateTB_CARD(aCardNo,aCardGubun,aCardType,aEmpID,aCompanyCode,aEmpNM,aHandphone,aFdmsID,aCompanyName,aJijumName,aDepartName,aPosiName:string) : Boolean;
     Function CheckTB_EMPLOYEE(aCompanyCode,aEmpID:string):Boolean;
     Procedure RcvCardDataByReader(aData:String);
-    Function UpdateTB_ACCESSEVENTCARDNO(OldCardNo,aCardNo:string):Boolean;
-    Function UpdateTB_ATEVENTCARDNO(OldCardNo,aCardNo:string):Boolean;
-    Function UpdateTB_FoodEventCARDNO(OldCardNo,aCardNo:string):Boolean;
+    Function UpdateTB_ACCESSEVENTCARDNO(aOldCardNo,aCardNo:string):Boolean;
+    Function UpdateTB_ATEVENTCARDNO(aOldCardNo,aCardNo:string):Boolean;
+    Function UpdateTB_FoodEventCARDNO(aOldCardNo,aCardNo:string):Boolean;
     Function GetFdmsID:string;
     Function GetEmployeeFdmsID(aCompanyCode,aEmpID:string):string;
     procedure FormNameSet;
@@ -500,9 +502,11 @@ begin
     if cells[1,Row] = '' then exit;    //ป็น๘
 
     ed_sEmpNo.Text := cells[1,Row];
+    ed_SelectEmCode.Text := cells[1,Row];
     ed_sEmpNM.Text := cells[2,Row];
     nIndex := sCompanyCodeList.IndexOf(cells[6,Row]);
     if nIndex > -1 then  cmb_sCompany.ItemIndex := nIndex;
+    ed_SelectCompanyCode.Text := sCompanyCodeList.IndexOf(cells[6,Row]);
 
     if cmb_sCompany.ItemIndex > 0 then
     begin
@@ -609,6 +613,7 @@ begin
           end else
           begin
             stImage := FindField('EM_IMAGE').AsString;
+            stImage := stringReplace(stImage,'\\','\',[rfReplaceAll]);
             if FileExists(stImage) then
               Image1.Picture.LoadFromFile(stImage);
           end;
@@ -2137,37 +2142,37 @@ begin
   end;
 end;
 
-function TfmDupCardEmploy.UpdateTB_ACCESSEVENTCARDNO(OldCardNo,
+function TfmDupCardEmploy.UpdateTB_ACCESSEVENTCARDNO(aOldCardNo,
   aCardNo: string): Boolean;
 var
   stSql :string;
 begin
   stSql := 'Update TB_ACCESSEVENT set CA_CARDNO = ''' + aCardNo + ''' ';
-  stSql := stSql + ' Where CA_CARDNO = ''' + aCardNo + ''' ';
+  stSql := stSql + ' Where CA_CARDNO = ''' + aOldCardNo + ''' ';
 
   result := DataModule1.ProcessEventExecSQL(stSql);
 
 end;
 
-function TfmDupCardEmploy.UpdateTB_ATEVENTCARDNO(OldCardNo,
+function TfmDupCardEmploy.UpdateTB_ATEVENTCARDNO(aOldCardNo,
   aCardNo: string): Boolean;
 var
   stSql :string;
 begin
   stSql := 'Update TB_ATEVENT set CA_CARDNO = ''' + aCardNo + ''' ';
-  stSql := stSql + ' Where CA_CARDNO = ''' + aCardNo + ''' ';
+  stSql := stSql + ' Where CA_CARDNO = ''' + aOldCardNo + ''' ';
 
   result := DataModule1.ProcessEventExecSQL(stSql);
 
 end;
 
-function TfmDupCardEmploy.UpdateTB_FoodEventCARDNO(OldCardNo,
+function TfmDupCardEmploy.UpdateTB_FoodEventCARDNO(aOldCardNo,
   aCardNo: string): Boolean;
 var
   stSql :string;
 begin
   stSql := 'Update TB_FoodEvent set CA_CARDNO = ''' + aCardNo + ''' ';
-  stSql := stSql + ' Where CA_CARDNO = ''' + OldCardNo + ''' ';
+  stSql := stSql + ' Where CA_CARDNO = ''' + aOldCardNo + ''' ';
 
   result := DataModule1.ProcessEventExecSQL(stSql);
 
@@ -2344,10 +2349,10 @@ begin
   end else if upperCase(aState) = 'UPDATE' then
   begin
     sg_Employ.Enabled := False;
-    ed_sEmpNo.Enabled := False;
+    ed_sEmpNo.Enabled := True;
     chk_AutoSabun.Enabled := True;
     ed_sEmpNM.Enabled := True;
-    cmb_sCompany.Enabled := False;
+    cmb_sCompany.Enabled := True;
     if (Not IsMaster) and ( strtoint(CompanyGrade) > 2) then cmb_sJijum.Enabled := False
     else cmb_sJijum.Enabled := True;
     cmb_sDepart.Enabled := True;

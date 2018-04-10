@@ -1247,6 +1247,22 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
           ItemHeight = 12
           TabOrder = 21
         end
+        object ed_SelectCompanyCode: TEdit
+          Left = 264
+          Top = 0
+          Width = 73
+          Height = 20
+          ImeName = 'Microsoft IME 2003'
+          TabOrder = 22
+        end
+        object ed_SelectEmCode: TEdit
+          Left = 264
+          Top = 24
+          Width = 73
+          Height = 20
+          ImeName = 'Microsoft IME 2003'
+          TabOrder = 23
+        end
       end
     end
   end
