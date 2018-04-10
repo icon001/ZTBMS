@@ -1,0 +1,2 @@
+CREATE TABLE TB_LOCATION (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , lo_dongcode VARCHAR(3) NOT NULL  DEFAULT  '000' , lo_floorcode VARCHAR(3) NOT NULL  DEFAULT  '000' , lo_areacode VARCHAR(3) NOT NULL  DEFAULT  '000' , lo_name VARCHAR(30), lo_gubun CHAR(1), lo_cadimage VARCHAR(100), lo_imageuse CHAR(1) ); 
+ ALTER TABLE TB_LOCATION   ADD CONSTRAINT TB_LOCATION_pkey PRIMARY KEY (group_code, lo_dongcode, lo_floorcode, lo_areacode);

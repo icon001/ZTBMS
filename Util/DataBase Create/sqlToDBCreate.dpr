@@ -1,0 +1,15 @@
+program sqlToDBCreate;
+
+uses
+  Forms,
+  uMdbToMssql in 'uMdbToMssql.pas' {fmMain},
+  uLomosUtil in '..\..\Lib\uLomosUtil.pas',
+  DIMime in '..\..\Lib\DIMime.pas';
+
+{$R *.res}
+{$R manifest.RES}
+begin
+  Application.Initialize;
+  Application.CreateForm(TfmMain, fmMain);
+  Application.Run;
+end.

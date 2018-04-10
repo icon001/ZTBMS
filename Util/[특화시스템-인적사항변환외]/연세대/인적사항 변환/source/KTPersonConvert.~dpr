@@ -1,0 +1,17 @@
+program KTPersonConvert;
+
+uses
+  Forms,
+  uMain in 'fmMain\uMain.pas' {fmMain},
+  uLomosUtil in '..\..\..\Lib\uLomosUtil.pas',
+  DIMime in '..\..\..\Lib\DIMime.pas',
+  uCommonSql in '..\..\..\Lib\Query\uCommonSql.pas' {CommonSql: TDataModule};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.CreateForm(TfmMain, fmMain);
+  Application.CreateForm(TCommonSql, CommonSql);
+  Application.Run;
+end.

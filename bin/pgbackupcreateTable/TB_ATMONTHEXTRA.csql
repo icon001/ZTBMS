@@ -1,0 +1,2 @@
+CREATE TABLE TB_ATMONTHEXTRA (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , at_month VARCHAR(6) NOT NULL , co_companycode VARCHAR(3) NOT NULL , em_code VARCHAR(20) NOT NULL , at_extraname VARCHAR(50) NOT NULL , at_extraamt INTEGER ); 
+ ALTER TABLE TB_ATMONTHEXTRA   ADD CONSTRAINT TB_ATMONTHEXTRA_pkey PRIMARY KEY (group_code, at_month, co_companycode, em_code, at_extraname);

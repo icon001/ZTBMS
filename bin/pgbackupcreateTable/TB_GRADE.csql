@@ -1,0 +1,2 @@
+CREATE TABLE TB_GRADE (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , gr_gradecode VARCHAR(3) NOT NULL , gr_gardename VARCHAR(30), gr_updatetime VARCHAR(14), gr_updateoperator VARCHAR(10) ); 
+ ALTER TABLE TB_GRADE   ADD CONSTRAINT TB_GRADE_pkey PRIMARY KEY (group_code, gr_gradecode);

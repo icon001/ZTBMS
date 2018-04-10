@@ -1,0 +1,38 @@
+program dbLogUpload;
+
+uses
+  Forms,
+  uMain in 'uMain.pas' {Form1},
+  uLomosUtil in '..\..\Lib\uLomosUtil.pas',
+  DIMime in '..\..\Lib\DIMime.pas',
+  udmAdoQuery in '..\..\Lib\udmAdoQuery.pas' {dmAdoQuery: TDataModule},
+  uDataBase in '..\..\Lib\DataBase\uDataBase.pas',
+  uDataModule1 in '..\..\..\[LIB]\uDataModule1.pas' {DataModule1: TDataModule},
+  uDataBaseConfig in '..\..\..\[LIB]\DBConnect\uDataBaseConfig.pas' {fmDataBaseConfig},
+  uCommonSql in '..\..\..\[LIB]\Query\uCommonSql.pas' {CommonSql: TDataModule},
+  uPostGreSql in '..\..\..\[LIB]\Query\uPostGreSql.pas' {PostGreSql: TDataModule},
+  uFireBird in '..\..\..\[LIB]\Query\uFireBird.pas' {FireBird: TDataModule},
+  uMDBSql in '..\..\..\[LIB]\Query\uMDBSql.pas' {MDBSql: TDataModule},
+  uMssql in '..\..\..\[LIB]\Query\uMssql.pas' {Mssql: TDataModule},
+  uMSDEsql in '..\..\Lib\uMSDEsql.pas',
+  UCommonModule in '..\..\Lib\UCommonModule.pas' {CommonModule: TDataModule},
+  uRelayDB in '..\..\Lib\DataBase\uRelayDB.pas' {dmRelayDB: TDataModule},
+  uDBCreate in '..\..\Lib\DataBase\uDBCreate.pas' {dmDBCreate: TDataModule};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TDataModule1, DataModule1);
+  Application.CreateForm(TfmDataBaseConfig, fmDataBaseConfig);
+  Application.CreateForm(TCommonSql, CommonSql);
+  Application.CreateForm(TPostGreSql, PostGreSql);
+  Application.CreateForm(TFireBird, FireBird);
+  Application.CreateForm(TMDBSql, MDBSql);
+  Application.CreateForm(TMssql, Mssql);
+  Application.CreateForm(TCommonModule, CommonModule);
+  Application.CreateForm(TdmRelayDB, dmRelayDB);
+  Application.CreateForm(TdmDBCreate, dmDBCreate);
+  Application.Run;
+end.

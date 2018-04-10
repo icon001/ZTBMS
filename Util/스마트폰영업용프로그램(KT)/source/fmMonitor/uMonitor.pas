@@ -1,0 +1,136 @@
+unit uMonitor;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, BaseGrid, AdvGrid, Buttons, ExtCtrls, uSubForm,
+  CommandArray,ActiveX,ADODB;
+
+type
+  TfmMonitor = class(TfmASubForm)
+    sg_Employ: TAdvStringGrid;
+    Panel1: TPanel;
+    btn_Clear: TSpeedButton;
+    btn_Close: TSpeedButton;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormShow(Sender: TObject);
+    procedure btn_CloseClick(Sender: TObject);
+    procedure btn_ClearClick(Sender: TObject);
+  private
+    { Private declarations }
+    procedure InsertList(aDate,aTime,aCardNo,aName:string;List:TAdvStringGrid);
+    function GetName(aCardNo:string):string;
+  public
+    { Public declarations }
+    procedure CardReadProcess(aCardNo:string);
+  end;
+
+var
+  fmMonitor: TfmMonitor;
+
+implementation
+
+uses
+  uMain, uDBModule;
+{$R *.dfm}
+
+procedure TfmMonitor.CardReadProcess(aCardNo: string);
+var
+  stDate,stTime:string;
+  stName : string;
+begin
+  stDate := FormatDateTime('yyyy-mm-dd',Now);
+  stTime := FormatDateTime('hh:nn:ss',now);
+  stName := GetName(aCardNo);
+  InsertList(stDate,stTime,aCardNo,stName,sg_Employ);
+end;
+
+procedure TfmMonitor.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  fmMain.L_bMonitorShow := False;
+  Action := caFree;
+
+end;
+
+procedure TfmMonitor.FormShow(Sender: TObject);
+begin
+  fmMain.L_bMonitorShow := True;
+
+end;
+
+procedure TfmMonitor.btn_CloseClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmMonitor.btn_ClearClick(Sender: TObject);
+begin
+  GridInitialize(sg_Employ); //스트링그리드 초기화
+  sg_Employ.RowColor[1] := clWhite;
+end;
+
+procedure TfmMonitor.InsertList(aDate, aTime, aCardNo, aName: string;
+  List: TAdvStringGrid);
+var
+  nCol: integer;
+
+begin
+  with List do
+  begin
+    if Cells[0,1] <> '' then   InsertRows(1,1);
+    if Trim(aName) = '' then
+    begin
+      RowColor[1] := clFuchsia;
+      aName := '미등록카드';
+    end;
+    Cells[0,1] := aDate;
+    Cells[1,1] := aTime;
+    Cells[2,1] := aCardNo;
+    Cells[3,1] := aName;
+  end;
+
+end;
+
+function TfmMonitor.GetName(aCardNo: string): string;
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+begin
+  result := '';
+  stSql := 'select * from TB_CARD where CA_CARDNO = ''' + aCardNo + ''' ';
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmDBModule.ADOConnection;
+    TempAdoQuery.DisableControls;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if RecordCount < 1 then Exit;
+
+      First;
+      result := FindField('EM_NAME').AsString;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+initialization
+  RegisterClass(TfmMonitor);
+Finalization
+  UnRegisterClass(TfmMonitor);
+
+end.

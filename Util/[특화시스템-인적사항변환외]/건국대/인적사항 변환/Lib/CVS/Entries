@@ -1,0 +1,32 @@
+D/DBConnect////
+D/Login////
+D/Query////
+/DI.inc/1.1.1.1/Wed Jul  8 07:11:38 2009//
+/DIMime.pas/1.1.1.1/Wed Jul  8 07:11:38 2009//
+/DIMimeStreams.pas/1.1.1.1/Wed Jul  8 07:11:38 2009//
+/MyCalendar.pas/1.1.1.1/Wed Jul  8 07:11:38 2009//
+/cDateTime.pas/1.1.1.1/Wed Jul  8 07:11:38 2009//
+/printf.pas/1.1.1.1/Wed Jul  8 07:11:38 2009//
+/systeminfos.pas/1.1.1.1/Wed Jul  8 07:11:38 2009//
+/uCommon.pas/1.1.1.1/Wed Jul  8 07:11:38 2009//
+/uDataBaseUtil.dfm/1.1.1.1/Wed Jul  8 07:11:38 2009//
+/uDataBaseUtil.pas/1.1.1.1/Wed Jul  8 07:11:38 2009//
+/uDevicemodule.dfm/1.1.1.1/Wed Jul  8 07:11:38 2009//
+/uExcelUtil.pas/1.1.1.1/Wed Jul  8 07:11:38 2009//
+/uLomosUtil.pas/1.2/Wed Oct 21 04:18:45 2009//
+/uMSDEsql.pas/1.1.1.1/Wed Jul  8 07:11:38 2009//
+/uMsg.pas/1.2/Wed Jul  8 07:56:46 2009//
+/uSubForm.dfm/1.1.1.1/Wed Jul  8 07:11:38 2009//
+/udmAdoQuery.dfm/1.1.1.1/Wed Jul  8 07:11:38 2009//
+/udmAdoRelay.dfm/1.2/Fri Dec  4 07:22:19 2009//
+/udmAdoRelay.pas/1.2/Fri Dec  4 07:22:19 2009//
+D/Socket////
+/uCompanyCodeLoad.pas/1.2/Sun Jan 31 08:28:40 2010//
+/uDataModule1.dfm/1.2/Mon Feb  8 04:52:04 2010//
+/uDataModule1.pas/1.12/Wed Feb 10 03:51:18 2010//
+/uDevicemodule.pas/1.13/Tue Feb  9 08:06:42 2010//
+/uSubForm.pas/1.2/Thu Feb  4 06:59:20 2010//
+/udmAdoQuery.pas/1.5/Wed Feb 10 06:00:26 2010//
+D/GroupMonitor////
+D/DeviceServer////
+D/DataBase////

@@ -1,0 +1,2 @@
+CREATE TABLE TB_FTPLIST (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , ac_nodeno INTEGER NOT NULL , ac_ecuid VARCHAR(2) NOT NULL , fl_filename VARCHAR(50) NOT NULL , fl_sendprograss VARCHAR(3), fl_sendstate VARCHAR(1), fl_retrycount INTEGER DEFAULT 0 ); 
+ ALTER TABLE TB_FTPLIST   ADD CONSTRAINT TB_FTPLIST_pkey PRIMARY KEY (group_code, ac_nodeno, ac_ecuid);

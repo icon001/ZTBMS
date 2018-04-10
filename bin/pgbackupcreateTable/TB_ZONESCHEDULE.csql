@@ -1,0 +1,2 @@
+CREATE TABLE TB_ZONESCHEDULE (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , ac_nodeno INTEGER NOT NULL , ac_ecuid VARCHAR(2) NOT NULL , al_zonenum CHAR(1) NOT NULL , zo_schnum INTEGER NOT NULL , zo_starttime VARCHAR(4), zo_endtime VARCHAR(4) ); 
+ ALTER TABLE TB_ZONESCHEDULE   ADD CONSTRAINT TB_ZONESCHEDULE_pkey PRIMARY KEY (group_code, ac_nodeno, ac_ecuid, al_zonenum, zo_schnum);

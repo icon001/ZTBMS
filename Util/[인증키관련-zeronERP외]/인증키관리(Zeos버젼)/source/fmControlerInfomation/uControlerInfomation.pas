@@ -1,0 +1,708 @@
+unit uControlerInfomation;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons, ComCtrls, DB, ADODB, Grids, BaseGrid, AdvGrid,
+  Gauges, ExtCtrls,iniFiles,ComObj, ZAbstractRODataset, ZAbstractDataset,
+  ZDataset,ActiveX, AdvObj, uSubForm, CommandArray;
+
+type
+  TfmControlerInfomation = class(TfmASubForm)
+    GroupBox1: TGroupBox;
+    btn_Search: TBitBtn;
+    btn_Close: TSpeedButton;
+    sg_List: TAdvStringGrid;
+    btn_Excel: TSpeedButton;
+    pan_gauge: TPanel;
+    Label23: TLabel;
+    Gauge1: TGauge;
+    SaveDialog1: TSaveDialog;
+    TempQuery: TZQuery;
+    cmb_Group: TComboBox;
+    Label6: TLabel;
+    cmb_ControlerType: TComboBox;
+    Label7: TLabel;
+    Label1: TLabel;
+    cmb_RomType: TComboBox;
+    btn_Update: TBitBtn;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btn_CloseClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure btn_SearchClick(Sender: TObject);
+    procedure btn_ExcelClick(Sender: TObject);
+    procedure sg_ListDblClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure cmb_ControlerTypeChange(Sender: TObject);
+    procedure cmb_GroupChange(Sender: TObject);
+    procedure cmb_GoodsListChange(Sender: TObject);
+    procedure cmb_inOutChange(Sender: TObject);
+    procedure cmb_OutTypeChange(Sender: TObject);
+    procedure cmb_ProcessStateChange(Sender: TObject);
+    procedure btn_UpdateClick(Sender: TObject);
+    procedure sg_ListKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+  private
+    ControlerTypeList : TStringList;
+    CellCodeList :TStringList;
+    GroupCodeList : TStringList;
+    RomTypeList : TStringList;
+    RowCodeList :TStringList;
+    { Private declarations }
+    procedure LoadGroupCode;
+    procedure LoadControlType;
+    procedure LoadRomType;
+    procedure sg_ListSetting(aDeviceType,aRomType,aCellCode,aValue:string);
+    procedure ShowList(aSeq:string;aTopRow:integer=0);
+    procedure ShowDeviceMappingCode;
+    procedure sg_ListInitialize;
+    Function CheckTB_DEVICEFUNCTIONLIST(aDeviceType,aRomType,aGroup,aCode:string):Boolean;
+    Function InsertIntoTB_DEVICEFUNCTIONLIST(aDeviceType,aRomType,aGroup,aCode,aValue:string):Boolean;
+    Function UpdateTB_DEVICEFUNCTIONLIST(aDeviceType,aRomType,aGroup,aCode,aValue:string):Boolean;
+    Function ExcelPrintOut(StringGrid:TAdvStringGrid;refFileName,SaveFileName:String;FileOut:Boolean;ExcelRowStart:integer;stTitle:string;bRowHeader,bColHeader:Boolean):Boolean;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmControlerInfomation: TfmControlerInfomation;
+
+implementation
+uses
+  uDataModule,
+  uLomosUtil, uControlerInformationAdmin;
+
+{$R *.dfm}
+
+procedure TfmControlerInfomation.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  ControlerTypeList.free;
+  CellCodeList.free;
+  GroupCodeList.free;
+  RomTypeList.free;
+  RowCodeList.Free;
+
+  Action := caFree;
+end;
+
+procedure TfmControlerInfomation.btn_CloseClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmControlerInfomation.FormShow(Sender: TObject);
+begin
+  LoadGroupCode;
+  LoadControlType;
+  LoadRomType;
+  ShowList('');
+end;
+
+
+procedure TfmControlerInfomation.btn_SearchClick(Sender: TObject);
+begin
+  ShowList('');
+end;
+
+procedure TfmControlerInfomation.ShowList(aSeq:string;aTopRow: integer = 0);
+var
+  stSql : string;
+  nRow : integer;
+  stTemp : string;
+begin
+  sg_ListInitialize;
+  ShowDeviceMappingCode;
+
+  stSql := ' Select a.* from TB_DEVICEFUNCTIONLIST a ';
+  stSql := stSql + ' Where a.DE_DEVICETYPE <> '''' ';
+  if cmb_ControlerType.ItemIndex > 0 then stSql := stSql + ' AND a.DE_DEVICETYPE = ''' + ControlerTypeList.Strings[cmb_ControlerType.itemIndex] + ''' ';
+  if cmb_RomType.ItemIndex > 0 then stSql := stSql + ' AND a.DE_ROMTYPE = ''' + RomTypeList.Strings[cmb_RomType.itemIndex] + ''' ';
+
+  with sg_List do
+  begin
+    with TempQuery do
+    begin
+      Close;
+      Sql.Text := stSql;
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if recordCount = 0 then Exit;
+      While Not Eof do
+      begin
+        sg_ListSetting(FindField('DE_DEVICETYPE').AsString,FindField('DE_ROMTYPE').AsString,
+                       FillZeroNumber(FindField('DG_GROUPCODE').AsInteger,3) + FillZeroNumber(FindField('DF_CODE').AsInteger,3),
+                       FindField('DF_VALUE').AsString);
+        Next;
+      end;
+    end;
+
+  end;
+
+end;
+
+procedure TfmControlerInfomation.sg_ListInitialize;
+var
+  TempAdoQuery : TZQuery;
+  stSql : string;
+  nCol : integer;
+begin
+  CellCodeList.Clear;
+
+  stSql := 'select * from TB_DEVICEFUNCTIONCODE ';
+  if cmb_Group.ItemIndex > 0 then
+  begin
+    stSql := stSql + ' where DG_GROUPCODE = ' + groupcodeList.Strings[cmb_Group.ItemIndex] + ' ';
+  end;
+  stSql := stSql + ' order by DG_GROUPCODE,DF_CODE ';
+  with sg_List do
+  begin
+    Clear;
+    Rowcount := 2;
+    cells[0,0] := '컨트롤러타입';
+    cells[1,0] := '롬타입';
+    Try
+      CoInitialize(nil);
+      TempAdoQuery := TZQuery.Create(nil);
+      TempAdoQuery.Connection := dmDB.ZConnection1;
+
+      with TempAdoQuery do
+      begin
+        Close;
+        Sql.Clear;
+        Sql.Text := stSql;
+
+        Try
+          Open;
+        Except
+          Exit;
+        End;
+        if RecordCount < 1 then exit;
+        Colcount := RecordCount + 2;
+        nCol := 2;
+        while Not Eof do
+        begin
+          cells[nCol,0] := FindField('DF_NAME').AsString;
+          CellCodeList.Add(FillZeroNumber(FindField('dg_groupcode').AsInteger,3) + FillZeroNumber(FindField('df_code').AsInteger,3));
+          inc(nCol);
+          Next;
+        end;
+      end;
+    Finally
+      TempAdoQuery.Free;
+      CoUninitialize;
+    End;
+  end;
+end;
+
+procedure TfmControlerInfomation.btn_ExcelClick(Sender: TObject);
+var
+  stRefFileName,stSaveFileName:String;
+  stPrintRefPath : string;
+  nExcelRowStart:integer;
+  ini_fun : TiniFile;
+  aFileName : string;
+  stTitle : string;
+begin
+  btn_Excel.Enabled := False;
+  Screen.Cursor:= crHourGlass;
+  stTitle := '';
+  ini_fun := TiniFile.Create(ExeFolder + '\print.ini');
+  stPrintRefPath := ExeFolder + '\' ;
+  stPrintRefPath := ini_fun.ReadString('환경설정','PrintRefPath',stPrintRefPath);
+  stRefFileName  := ini_fun.ReadString('상품정보','참조파일','GoodsReport.xls');
+  stRefFileName := stPrintRefPath + stRefFileName;
+  nExcelRowStart := ini_fun.ReadInteger('상품정보','시작위치',6);
+  ini_fun.Free;
+
+  aFileName:='상품정보';
+  SaveDialog1.FileName := aFileName;
+  if SaveDialog1.Execute then
+  begin
+    stSaveFileName := SaveDialog1.FileName;
+    if SaveDialog1.FileName <> '' then
+      if Not ExcelPrintOut(sg_List,stRefFileName,stSaveFileName,True,nExcelRowStart,stTitle,False,False) then
+      begin
+        Screen.Cursor:= crDefault;
+        btn_Excel.Enabled := True;
+        Exit;
+      end;
+      //showmessage('파일생성 완료');
+  end;
+  Screen.Cursor:= crDefault;
+  btn_Excel.Enabled := True;
+end;
+
+function TfmControlerInfomation.ExcelPrintOut(StringGrid: TAdvStringGrid;
+  refFileName, SaveFileName: String; FileOut: Boolean;
+  ExcelRowStart: integer; stTitle: string; bRowHeader,
+  bColHeader: Boolean): Boolean;
+var
+  oXL, oWB, oSheet, oRng, VArray : Variant;
+  nCol1,nCol2 : Integer;
+  Loop : Integer;
+  sCurDay,sPreDay : String;
+  curDate : TDateTime;
+  mergeStart :char;
+  i,j,k : Integer;
+  st : String;
+  nColChar : integer;
+  nFixCol,nFixRow : integer;
+
+begin
+  pan_gauge.Visible := True;
+  Result := False;
+
+  Try
+    oXL := CreateOleObject('Excel.Application');
+  Except
+    showmessage('출력은 엑셀이 설치된 컴퓨터에서만 가능합니다.');
+    exit;
+  End;
+
+  if FileExists(refFileName) = False then
+  begin
+    Showmessage(refFileName + ' 파일이 없습니다.');
+    exit;
+  end;
+
+
+  oXL.Workbooks.Open(refFileName);
+  oXL.DisplayAlerts := False;
+//  oXL.Visible := True;
+  oSheet := oXL.ActiveSheet;
+
+
+  with StringGrid do
+  begin
+
+    //타이틀을 적자
+    nCol1 := ColCount div 26;
+    nCol2 := ColCount mod 26;
+    if bRowHeader then
+    begin
+      oSheet.Range['A' + inttostr(ExcelRowStart - 1)].Value := stTitle;
+      if bColHeader then nFixCol := 0
+      else nFixCol := FixedCols ;
+      for i:= 0 to FixedRows - 1 do
+      begin
+        for j:= nFixCol to ColCount - 1 do
+        begin
+          nColChar := j div 26;
+          if j < 26 then
+            oXL.Range[Chr(Ord('A') + j ) + inttostr(i+ ExcelRowStart)].Value := Cells[j,i]
+          else
+            oXL.Range[Chr(Ord('A') + nColChar - 1 ) + Chr(Ord('A') + j - (26 * nColChar) ) + inttostr(i+ ExcelRowStart)].Value := Cells[j,i];
+        end;
+      end;
+      ExcelRowStart := ExcelRowStart + FixedRows ;
+    end
+    else    oSheet.Range['A' + inttostr(ExcelRowStart - FixedRows - 1)].Value := stTitle;
+
+    Gauge1.MaxValue := ( RowCount - FixedRows );
+    Gauge1.Progress := 0;
+    for i := FixedRows to RowCount - 1 do
+    begin
+
+      if i <  RowCount - 2 then    //한칸씩 삽입
+      begin
+        oSheet.Range['A' + inttostr(i+ ExcelRowStart - FixedRows + 1) + ':' + Chr(Ord('A') + nCol1 ) + Chr(Ord('A') + nCol2 - 1 ) +  inttostr(i+ ExcelRowStart - FixedRows + 1)].Insert;
+      end;
+      Gauge1.Progress := Gauge1.Progress + 1;
+      Application.ProcessMessages;
+     {
+      for j := 0 to ColCount - 1 do
+      begin
+        nColChar := j div 26;
+        if j < 26 then
+          oXL.Range[Chr(Ord('A') + j ) + inttostr(i+ ExcelRowStart - FixedRows)].Value := Cells[j,i]
+        else
+          oXL.Range[Chr(Ord('A') + nColChar - 1 ) + Chr(Ord('A') + j - (26 * nColChar) ) + inttostr(i+ ExcelRowStart - FixedRows)].Value := Cells[j,i];
+        Gauge1.Progress := Gauge1.Progress + 1;
+        Application.ProcessMessages;
+      end;
+      }
+    end;
+    StringGrid.CopyToClipBoard;
+    oSheet.Range['A' + inttostr(ExcelRowStart - 1), 'A' + inttostr(ExcelRowStart - 1)].Select;
+    oSheet.Paste;
+  end;//With
+
+  //oXL.Visible := False;
+  if FileOut then  oSheet.SaveAs(SaveFileName)
+  else  oSheet.PrintOut;
+  //oSheet.SaveAs(ExtractFileDir(Application.ExeName) + '\WorkSch2.xls');
+  oXL.ActiveWorkbook.Close(False);
+  oXL.Quit;
+  pan_gauge.Visible := False;
+  Result := True;
+end;
+
+procedure TfmControlerInfomation.sg_ListDblClick(Sender: TObject);
+begin
+  with sg_List do
+  begin
+
+  end;
+end;
+
+procedure TfmControlerInfomation.FormCreate(Sender: TObject);
+begin
+  ControlerTypeList := TStringList.Create;
+  CellCodeList := TStringList.Create;
+  GroupCodeList := TStringList.Create;
+  RomTypeList := TStringList.Create;
+  RowCodeList := TStringList.Create;
+end;
+
+procedure TfmControlerInfomation.LoadGroupCode;
+var
+  stSql : string;
+  i : integer;
+  TempAdoQuery : TZQuery;
+begin
+
+  GroupCodeList.Clear;
+  cmb_Group.Clear;
+  GroupCodeList.Add('');
+  cmb_Group.Items.Add('전체');
+  cmb_Group.ItemIndex := 0;
+
+  stSql := 'select * from TB_DEVICEFUNCTIONGROUP ';
+  stSql := stSql + ' order by DG_GROUPCODE ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TZQuery.Create(nil);
+    TempAdoQuery.Connection := dmDB.ZConnection1;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if RecordCount < 1 then exit;
+
+      while Not Eof do
+      begin
+        cmb_Group.Items.Add(FindField('DG_NAME').AsString);
+        GroupCodeList.Add(FindField('DG_GROUPCODE').AsString);
+        Next;
+      end;
+    end;
+  Finally
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+
+procedure TfmControlerInfomation.cmb_ControlerTypeChange(Sender: TObject);
+begin
+  btn_SearchClick(self);
+end;
+
+procedure TfmControlerInfomation.cmb_GroupChange(Sender: TObject);
+begin
+  btn_SearchClick(self);
+end;
+
+procedure TfmControlerInfomation.cmb_GoodsListChange(Sender: TObject);
+begin
+  btn_SearchClick(self);
+end;
+
+procedure TfmControlerInfomation.cmb_inOutChange(Sender: TObject);
+begin
+  btn_SearchClick(self);
+end;
+
+procedure TfmControlerInfomation.cmb_OutTypeChange(Sender: TObject);
+begin
+  btn_SearchClick(self);
+end;
+
+procedure TfmControlerInfomation.cmb_ProcessStateChange(Sender: TObject);
+begin
+  btn_SearchClick(self);
+end;
+
+procedure TfmControlerInfomation.LoadControlType;
+var
+  stSql : string;
+  i : integer;
+  TempAdoQuery : TZQuery;
+begin
+
+  ControlerTypeList.Clear;
+  cmb_ControlerType.Clear;
+  ControlerTypeList.Add('');
+  cmb_ControlerType.Items.Add('전체');
+  cmb_ControlerType.ItemIndex := 0;
+
+  stSql := 'select * from TB_DEVICETYPE ';
+  stSql := stSql + ' order by DE_DEVICETYPE ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TZQuery.Create(nil);
+    TempAdoQuery.Connection := dmDB.ZConnection1;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if RecordCount < 1 then exit;
+
+      while Not Eof do
+      begin
+        cmb_ControlerType.Items.Add(FindField('DE_NAME').AsString);
+        ControlerTypeList.Add(FindField('DE_DEVICETYPE').AsString);
+        Next;
+      end;
+    end;
+  Finally
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+procedure TfmControlerInfomation.LoadRomType;
+var
+  stSql : string;
+  i : integer;
+  TempAdoQuery : TZQuery;
+begin
+
+  RomTypeList.Clear;
+  cmb_RomType.Clear;
+  RomTypeList.Add('');
+  cmb_RomType.Items.Add('전체');
+  cmb_RomType.ItemIndex := 0;
+
+  stSql := 'select * from TB_DEVICEROM ';
+  stSql := stSql + ' order by DE_ROMTYPE ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TZQuery.Create(nil);
+    TempAdoQuery.Connection := dmDB.ZConnection1;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if RecordCount < 1 then exit;
+
+      while Not Eof do
+      begin
+        cmb_RomType.Items.Add(FindField('DE_ROMNAME').AsString);
+        RomTypeList.Add(FindField('DE_ROMTYPE').AsString);
+        Next;
+      end;
+    end;
+  Finally
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+procedure TfmControlerInfomation.btn_UpdateClick(Sender: TObject);
+begin
+  fmControlerInformationAdmin := TfmControlerInformationAdmin.Create(self);
+  fmControlerInformationAdmin.ShowModal;
+  fmControlerInformationAdmin.free;
+  btn_SearchClick(btn_Search);
+end;
+
+procedure TfmControlerInfomation.ShowDeviceMappingCode;
+var
+  stSql : string;
+  nRow : integer;
+  stTemp : string;
+begin
+  RowGridInitialize(sg_List);
+  RowCodeList.Clear;
+  stSql := 'select a.*,b.DE_NAME,c.DE_ROMNAME from TB_DEVICEFUNCTIONMAPPING a ';
+  stSql := stSql + ' Left Join TB_DEVICETYPE b ';
+  stSql := stSql + ' ON(a.DE_DEVICETYPE = b.DE_DEVICETYPE) ';
+  stSql := stSql + ' Left Join TB_DEVICEROM c ';
+  stSql := stSql + ' ON(a.DE_ROMTYPE = c.DE_ROMTYPE) ';
+  stSql := stSql + ' Where a.DE_DEVICETYPE <> '''' ';
+  if cmb_ControlerType.ItemIndex > 0 then stSql := stSql + ' AND a.DE_DEVICETYPE = ''' + ControlerTypeList.Strings[cmb_ControlerType.itemIndex] + ''' ';
+  if cmb_RomType.ItemIndex > 0 then stSql := stSql + ' AND a.DE_ROMTYPE = ''' + RomTypeList.Strings[cmb_RomType.itemIndex] + ''' ';
+  stSql := stSql + ' order by a.DE_DEVICETYPE,a.DE_ROMTYPE';
+
+  with sg_List do
+  begin
+    with TempQuery do
+    begin
+      Close;
+      Sql.Text := stSql;
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if recordCount = 0 then Exit;
+      nRow :=1 ;
+
+      rowCount := recordCount + 1;
+      While Not Eof do
+      begin
+        Cells[0,nRow] := FindField('DE_NAME').AsString;
+        Cells[1,nRow] := FindField('DE_ROMNAME').AsString;
+        RowCodeList.Add(FindField('DE_DEVICETYPE').AsString + FindField('DE_ROMTYPE').AsString);
+
+        inc(nRow);
+        Next;
+      end;
+    end;
+
+  end;
+
+
+end;
+
+procedure TfmControlerInfomation.sg_ListSetting(aDeviceType, aRomType,
+  aCellCode, aValue: string);
+var
+  RowIndex : integer;
+  ColIndex : integer;
+begin
+  RowIndex := RowCodeList.IndexOf(aDeviceType + aRomType);
+  ColIndex := CellCodeList.IndexOf(aCellCode);
+
+  if (RowIndex < 0) or (ColIndex <0) then Exit;
+  sg_List.Cells[ColIndex + 2,RowIndex + 1] := aValue;
+end;
+
+procedure TfmControlerInfomation.sg_ListKeyUp(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+var
+  stDeviceType,stRomType:string;
+  stGroup,stCode:string;
+  stTemp : string;
+begin
+  inherited;
+  if sg_List.Row < 1 then Exit;
+  if sg_List.Col < 2 then Exit;
+
+  stTemp := RowCodeList.Strings[sg_List.Row - 1];
+  stDeviceType := copy(stTemp,1,3);
+  stRomType := copy(stTemp,4,3);
+  stTemp := CellCodeList.Strings[sg_List.Col - 2];
+  stGroup := copy(stTemp,1,3);
+  stCode := copy(stTemp,4,3);
+  if CheckTB_DEVICEFUNCTIONLIST(stDeviceType,stRomType,stGroup,stCode) then
+  begin
+    UpdateTB_DEVICEFUNCTIONLIST(stDeviceType,stRomType,stGroup,stCode,sg_List.Cells[sg_List.col,sg_List.Row]);
+  end else
+  begin
+    InsertIntoTB_DEVICEFUNCTIONLIST(stDeviceType,stRomType,stGroup,stCode,sg_List.Cells[sg_List.col,sg_List.Row]);
+  end;
+end;
+
+function TfmControlerInfomation.CheckTB_DEVICEFUNCTIONLIST(aDeviceType,
+  aRomType, aGroup, aCode: string): Boolean;
+var
+  stSql : string;
+  TempAdoQuery : TZQuery;
+begin
+  result := False;
+
+  stSql := 'select * from TB_DEVICEFUNCTIONLIST ';
+  stSql := stSql + ' where DE_DEVICETYPE = ''' + aDeviceType + ''' ';
+  stSql := stSql + ' and DE_ROMTYPE = ''' + aRomType + ''' ';
+  stSql := stSql + ' and 	DG_GROUPCODE = ' + aGroup + ' ';
+  stSql := stSql + ' and 	DF_CODE = ' + aCode + ' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TZQuery.Create(nil);
+    TempAdoQuery.Connection := dmDB.ZConnection1;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if RecordCount < 1 then exit;
+      result := True;
+    end;
+  Finally
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+
+end;
+
+function TfmControlerInfomation.UpdateTB_DEVICEFUNCTIONLIST(aDeviceType,
+  aRomType, aGroup, aCode, aValue: string): Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+
+  stSql := 'Update TB_DEVICEFUNCTIONLIST set DF_VALUE = ''' + aValue + ''' ';
+  stSql := stSql + ' where DE_DEVICETYPE = ''' + aDeviceType + ''' ';
+  stSql := stSql + ' and DE_ROMTYPE = ''' + aRomType + ''' ';
+  stSql := stSql + ' and 	DG_GROUPCODE = ' + aGroup + ' ';
+  stSql := stSql + ' and 	DF_CODE = ' + aCode + ' ';
+
+  result := dmDB.ProcessExecSQL(stSql);
+
+end;
+
+function TfmControlerInfomation.InsertIntoTB_DEVICEFUNCTIONLIST(
+  aDeviceType, aRomType, aGroup, aCode, aValue: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Insert Into TB_DEVICEFUNCTIONLIST ';
+  stSql := stSql + '(DE_DEVICETYPE,DE_ROMTYPE,DG_GROUPCODE,DF_CODE,DF_VALUE) ';
+  stSql := stSql + ' Values(''' + aDeviceType + ''',';
+  stSql := stSql + '''' + aRomType + ''',';
+  stSql := stSql + '' + aGroup + ',';
+  stSql := stSql + '' + aCode + ',';
+  stSql := stSql + '''' + aValue + ''')';
+
+  result := dmDB.ProcessExecSQL(stSql);
+end;
+
+initialization
+  RegisterClass(TfmControlerInfomation);
+Finalization
+  UnRegisterClass(TfmControlerInfomation);
+
+end.

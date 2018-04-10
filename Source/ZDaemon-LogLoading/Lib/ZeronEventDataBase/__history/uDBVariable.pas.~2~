@@ -1,0 +1,10 @@
+unit uDBVariable;
+
+interface
+
+type
+  TAdoConnectedEvent = procedure(Sender: TObject;  Connected:Boolean) of object;
+
+implementation
+
+end.

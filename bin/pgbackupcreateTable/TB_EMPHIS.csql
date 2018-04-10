@@ -1,0 +1,2 @@
+CREATE TABLE TB_EMPHIS (  seq INTEGER NOT NULL  DEFAULT nextval('tb_emphis_seq_seq'::regclass), group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , co_companycode VARCHAR(3) NOT NULL , em_code VARCHAR(20), fdms_id INTEGER, mode CHAR(1), send_status CHAR(1), ca_cardno VARCHAR(20), ca_cardtype VARCHAR(1), send_status2 VARCHAR(1), eh_inserttime VARCHAR(14), em_name VARCHAR(20), em_handphone VARCHAR(14), company_name VARCHAR(50), jijum_name VARCHAR(50), depart_name VARCHAR(50), po_name VARCHAR(30) ); 
+ ALTER TABLE TB_EMPHIS   ADD CONSTRAINT TB_EMPHIS_pkey PRIMARY KEY (seq);

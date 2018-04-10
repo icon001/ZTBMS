@@ -1,0 +1,860 @@
+unit uCard4ByteTo16ByteChange;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, StdCtrls, Buttons, Gauges, DB, ADODB;
+
+type
+  TForm1 = class(TForm)
+    GroupBox4: TGroupBox;
+    btn_targetAdoConnect: TSpeedButton;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    ed_Host: TEdit;
+    rg_dbtype: TRadioGroup;
+    ed_Port: TEdit;
+    ed_Userid: TEdit;
+    ed_Passwd: TEdit;
+    ed_DBName: TEdit;
+    btn_Work: TSpeedButton;
+    Gauge1: TGauge;
+    st_TableName: TStaticText;
+    TargetADOConnection: TADOConnection;
+    targetTempADOQuery: TADOQuery;
+    targetADOExecQuery: TADOQuery;
+    chk_Event: TCheckBox;
+    st_Progress: TStaticText;
+    chk_Music: TCheckBox;
+    procedure btn_targetAdoConnectClick(Sender: TObject);
+    procedure btn_WorkClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+  private
+    L_stExeFolder : string;
+    { Private declarations }
+    Function targetAdoConnect:Boolean;
+    Function Change4To16TB_Config:Boolean;
+    Function Change4To16TB_AccessEvent:Boolean;
+    Function Change4To16TB_ALARMEVENT:Boolean;
+    Function Change4To16TB_ATEVENT:Boolean;
+    Function Change4To16TB_ATLISTEVENT:Boolean;
+    Function Change4To16TB_EMPHIS:Boolean;
+    Function Change4To16TB_SYSTEMLOG:Boolean;
+    Function Change4To16TB_ATCARD:Boolean;
+    Function Change4To16TB_CARD:Boolean;
+    Function Change4To16TB_DEVICECARDNO:Boolean;
+    Function Change4To16TB_DEVICECARDNO_HIS:Boolean;
+    Function Change4To16TB_YSReserveDOOR:Boolean;
+    Function Change4To16TB_YSReserveHis:Boolean;
+    function Dec2Hex64(N: int64; A: Byte): string;
+    Function GetCard16No(aCardNo:string):string;
+    function FillCharString(aNo:String;aChar:char; aLength:Integer;bFront:Boolean = False): string;
+    function Isdigit(st: string):Boolean;
+    procedure SQLErrorLog(aSQL:string);
+    Function UpdateTB_CONFIG(aCONFIGGROUP,aCONFIGCODE,aCONFIGVALUE:string;aConfigDetail:string=''):Boolean;
+    Function ProcessExecSql(aSql:string):Boolean;
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.btn_targetAdoConnectClick(Sender: TObject);
+begin
+  if targetAdoConnect then
+  begin
+    btn_Work.Enabled := True;
+  end else
+  begin
+    showmessage('데이터베이스 접속실패');
+  end;
+
+end;
+
+function TForm1.targetAdoConnect: Boolean;
+var
+  conStr : wideString;
+begin
+  result := False;
+  if rg_dbtype.ItemIndex = 0 then  //Mssql
+  begin
+    conStr := constr + 'Provider=SQLOLEDB.1;';
+    conStr := constr + 'Password=' + ed_Passwd.Text + ';';
+    conStr := constr + 'Persist Security Info=True;';
+    conStr := constr + 'User ID=' + ed_Userid.Text + ';';
+    conStr := constr + 'Initial Catalog=' + ed_DBName.Text + ';';
+    conStr := constr + 'Data Source=' + ed_Host.Text  + ',' + ed_Port.Text;
+  end else if rg_dbtype.ItemIndex = 1 then   //PostGresql
+  begin
+    conStr := 'Provider=PostgreSQL OLE DB Provider;';
+    conStr := constr + 'Data Source=' + ed_Host.Text + ';'   ;
+    conStr := constr + 'location=' + ed_DBName.Text + ';';
+    conStr := constr + 'User Id='+ ed_Userid.Text + ';';
+    conStr := constr + 'password=' + ed_Passwd.Text;
+  end  else
+  begin
+    showmessage('데이터베이스 타입을 선택 하세요.');
+    Exit;
+  end;
+  with TargetADOConnection do
+  begin
+    Connected := False;
+    Try
+      ConnectionString := conStr;
+      LoginPrompt:= false ;
+      Connected := True;
+    Except
+      on E : EDatabaseError do
+        begin
+          // ERROR MESSAGE-BOX DISPLAY
+          ShowMessage(E.Message );
+          Exit;
+        end;
+      else
+        begin
+          ShowMessage('데이터베이스 접속 에러' );
+          Exit;
+        end;
+    End;
+    CursorLocation := clUseServer;
+  end;
+
+  result := True;
+end;
+
+procedure TForm1.btn_WorkClick(Sender: TObject);
+begin
+  Change4To16TB_Config;
+  if chk_Event.Checked then
+  begin
+    Change4To16TB_AccessEvent;
+    Change4To16TB_ALARMEVENT;
+    Change4To16TB_ATEVENT;
+    Change4To16TB_ATLISTEVENT;
+    Change4To16TB_EMPHIS;
+    Change4To16TB_SYSTEMLOG;
+  end;
+  Change4To16TB_ATCARD;
+  Change4To16TB_CARD;
+  Change4To16TB_DEVICECARDNO;
+  Change4To16TB_DEVICECARDNO_HIS;
+  if chk_Music.Checked then
+  begin
+    Change4To16TB_YSReserveDOOR;
+    Change4To16TB_YSReserveHis;
+  end;
+end;
+
+function TForm1.Change4To16TB_AccessEvent: Boolean;
+var
+  stSql : string;
+  stOldCardNo : string;
+  stNewCardNo : string;
+  stTempSql : string;
+begin
+  st_TableName.Caption := 'TB_AccessEvent Change';
+  st_Progress.Caption := '';
+
+  if rg_dbtype.ItemIndex = 0 then
+    stSql := ' Select CA_CARDNO from TB_AccessEvent Where Len(CA_CARDNO) < 11 GROUP BY CA_CARDNO'
+  else stSql := ' Select CA_CARDNO from TB_AccessEvent Where Length(CA_CARDNO) < 11 GROUP BY CA_CARDNO';
+
+  with targetTempADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    
+    if RecordCount < 1 then Exit;
+
+    Gauge1.MaxValue := RecordCount;
+    Gauge1.Progress := 0;
+    While Not Eof do
+    begin
+      stOldCardNo := FindField('CA_CARDNO').AsString;
+      stNewCardNo := GetCard16No(stOldCardNo);
+
+      stTempSql := ' Update TB_AccessEvent set CA_CARDNO = ''' + stNewCardNo + ''' ';
+      stTempSql := stTempSql + ' Where CA_CARDNO = ''' + stOldCardNo + ''' ';
+      ProcessExecSql(stTempSql);
+
+      Gauge1.Progress := Gauge1.Progress + 1;
+      st_Progress.Caption := inttostr(Gauge1.Progress) + '/' + inttostr(Gauge1.MaxValue);
+      Application.ProcessMessages;
+      Next;
+    end;
+  end;
+
+end;
+
+function TForm1.Change4To16TB_ALARMEVENT: Boolean;
+var
+  stSql : string;
+  stOldCardNo : string;
+  stNewCardNo : string;
+  stTempSql : string;
+begin
+  st_TableName.Caption := 'TB_ALARMEVENT Change';
+  st_Progress.Caption := '';
+  
+  if rg_dbtype.ItemIndex = 0 then
+    stSql := ' Select CA_CARDNO from TB_ALARMEVENT Where Len(CA_CARDNO) < 11 GROUP BY CA_CARDNO'
+  else stSql := ' Select CA_CARDNO from TB_ALARMEVENT Where Length(CA_CARDNO) < 11 GROUP BY CA_CARDNO';
+
+  with targetTempADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    
+    if RecordCount < 1 then Exit;
+
+    Gauge1.MaxValue := RecordCount;
+    Gauge1.Progress := 0;
+    While Not Eof do
+    begin
+      stOldCardNo := FindField('CA_CARDNO').AsString;
+      stNewCardNo := GetCard16No(stOldCardNo);
+
+      stTempSql := ' Update TB_ALARMEVENT set CA_CARDNO = ''' + stNewCardNo + ''' ';
+      stTempSql := stTempSql + ' Where CA_CARDNO = ''' + stOldCardNo + ''' ';
+      ProcessExecSql(stTempSql);
+
+      Gauge1.Progress := Gauge1.Progress + 1;
+      st_Progress.Caption := inttostr(Gauge1.Progress) + '/' + inttostr(Gauge1.MaxValue);
+      Application.ProcessMessages;
+      Next;
+    end;
+  end;
+
+end;
+
+function TForm1.Change4To16TB_ATCARD: Boolean;
+var
+  stSql : string;
+  stOldCardNo : string;
+  stNewCardNo : string;
+  stTempSql : string;
+begin
+  st_TableName.Caption := 'TB_ATCARD Change';
+  st_Progress.Caption := '';
+  
+  if rg_dbtype.ItemIndex = 0 then
+    stSql := ' Select CA_CARDNO from TB_ATCARD Where Len(CA_CARDNO) < 11 GROUP BY CA_CARDNO'
+  else stSql := ' Select CA_CARDNO from TB_ATCARD Where Length(CA_CARDNO) < 11 GROUP BY CA_CARDNO';
+
+  with targetTempADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    
+    if RecordCount < 1 then Exit;
+
+    Gauge1.MaxValue := RecordCount;
+    Gauge1.Progress := 0;
+    While Not Eof do
+    begin
+      stOldCardNo := FindField('CA_CARDNO').AsString;
+      stNewCardNo := GetCard16No(stOldCardNo);
+
+      stTempSql := ' Update TB_ATCARD set CA_CARDNO = ''' + stNewCardNo + ''' ';
+      stTempSql := stTempSql + ' Where CA_CARDNO = ''' + stOldCardNo + ''' ';
+      ProcessExecSql(stTempSql);
+
+      Gauge1.Progress := Gauge1.Progress + 1;
+      st_Progress.Caption := inttostr(Gauge1.Progress) + '/' + inttostr(Gauge1.MaxValue);
+      Application.ProcessMessages;
+      Next;
+    end;
+  end;
+
+end;
+
+function TForm1.Change4To16TB_ATEVENT: Boolean;
+var
+  stSql : string;
+  stOldCardNo : string;
+  stNewCardNo : string;
+  stTempSql : string;
+begin
+  st_TableName.Caption := 'TB_ATEVENT Change';
+  st_Progress.Caption := '';
+  
+  if rg_dbtype.ItemIndex = 0 then
+    stSql := ' Select CA_CARDNO from TB_ATEVENT Where Len(CA_CARDNO) < 11 GROUP BY CA_CARDNO'
+  else stSql := ' Select CA_CARDNO from TB_ATEVENT Where Length(CA_CARDNO) < 11 GROUP BY CA_CARDNO';
+
+  with targetTempADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    
+    if RecordCount < 1 then Exit;
+
+    Gauge1.MaxValue := RecordCount;
+    Gauge1.Progress := 0;
+    While Not Eof do
+    begin
+      stOldCardNo := FindField('CA_CARDNO').AsString;
+      stNewCardNo := GetCard16No(stOldCardNo);
+
+      stTempSql := ' Update TB_ATEVENT set CA_CARDNO = ''' + stNewCardNo + ''' ';
+      stTempSql := stTempSql + ' Where CA_CARDNO = ''' + stOldCardNo + ''' ';
+      ProcessExecSql(stTempSql);
+
+      Gauge1.Progress := Gauge1.Progress + 1;
+      st_Progress.Caption := inttostr(Gauge1.Progress) + '/' + inttostr(Gauge1.MaxValue);
+      Application.ProcessMessages;
+      Next;
+    end;
+  end;
+
+end;
+
+function TForm1.Change4To16TB_ATLISTEVENT: Boolean;
+var
+  stSql : string;
+  stOldCardNo : string;
+  stNewCardNo : string;
+  stTempSql : string;
+begin
+  st_TableName.Caption := 'TB_ATLISTEVENT Change';
+  st_Progress.Caption := '';
+  
+  if rg_dbtype.ItemIndex = 0 then
+    stSql := ' Select CA_CARDNO from TB_ATLISTEVENT Where Len(CA_CARDNO) < 11 GROUP BY CA_CARDNO'
+  else stSql := ' Select CA_CARDNO from TB_ATLISTEVENT Where Length(CA_CARDNO) < 11 GROUP BY CA_CARDNO';
+
+  with targetTempADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    
+    if RecordCount < 1 then Exit;
+
+    Gauge1.MaxValue := RecordCount;
+    Gauge1.Progress := 0;
+    While Not Eof do
+    begin
+      stOldCardNo := FindField('CA_CARDNO').AsString;
+      stNewCardNo := GetCard16No(stOldCardNo);
+
+      stTempSql := ' Update TB_ATLISTEVENT set CA_CARDNO = ''' + stNewCardNo + ''' ';
+      stTempSql := stTempSql + ' Where CA_CARDNO = ''' + stOldCardNo + ''' ';
+      ProcessExecSql(stTempSql);
+
+      Gauge1.Progress := Gauge1.Progress + 1;
+      st_Progress.Caption := inttostr(Gauge1.Progress) + '/' + inttostr(Gauge1.MaxValue);
+      Application.ProcessMessages;
+      Next;
+    end;
+  end;
+
+end;
+
+function TForm1.Change4To16TB_CARD: Boolean;
+var
+  stSql : string;
+  stOldCardNo : string;
+  stNewCardNo : string;
+  stTempSql : string;
+begin
+  st_TableName.Caption := 'TB_CARD Change';
+  st_Progress.Caption := '';
+  
+  if rg_dbtype.ItemIndex = 0 then
+    stSql := ' Select CA_CARDNO from TB_CARD Where Len(CA_CARDNO) < 11 GROUP BY CA_CARDNO'
+  else stSql := ' Select CA_CARDNO from TB_CARD Where Length(CA_CARDNO) < 11 GROUP BY CA_CARDNO';
+
+  with targetTempADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    
+    if RecordCount < 1 then Exit;
+
+    Gauge1.MaxValue := RecordCount;
+    Gauge1.Progress := 0;
+    While Not Eof do
+    begin
+      stOldCardNo := FindField('CA_CARDNO').AsString;
+      stNewCardNo := GetCard16No(stOldCardNo);
+
+      stTempSql := ' Update TB_CARD set CA_CARDNO = ''' + stNewCardNo + ''' ';
+      stTempSql := stTempSql + ' Where CA_CARDNO = ''' + stOldCardNo + ''' ';
+      ProcessExecSql(stTempSql);
+
+      Gauge1.Progress := Gauge1.Progress + 1;
+      st_Progress.Caption := inttostr(Gauge1.Progress) + '/' + inttostr(Gauge1.MaxValue);
+      Application.ProcessMessages;
+      Next;
+    end;
+  end;
+
+end;
+
+function TForm1.Change4To16TB_Config: Boolean;
+var
+  stSql : string;
+  stOldCardNo : string;
+  stNewCardNo : string;
+  stTempSql : string;
+begin
+  st_TableName.Caption := 'TB_Config Change';
+  st_Progress.Caption := '';
+  UpdateTB_CONFIG('COMMON','CARDNOTYPE','1');
+  UpdateTB_CONFIG('COMMON','CARDNUM','1');
+  UpdateTB_CONFIG('CARD','CARDFIXED','TRUE');
+  UpdateTB_CONFIG('CARD','FIXEDLEN','16');
+  UpdateTB_CONFIG('CARD','FILLPOSI','1');
+  UpdateTB_CONFIG('CARD','FILLCHAR','*');
+  UpdateTB_CONFIG('DAEMON','USEARMLEN','TRUE' );
+  UpdateTB_CONFIG('DAEMON','ALARMLEN','16' );
+  UpdateTB_CONFIG('COMMON','SPECIALCD','0' );
+end;
+
+function TForm1.Change4To16TB_DEVICECARDNO: Boolean;
+var
+  stSql : string;
+  stOldCardNo : string;
+  stNewCardNo : string;
+  stTempSql : string;
+begin
+  st_TableName.Caption := 'TB_DEVICECARDNO Change';
+  st_Progress.Caption := '';
+  
+  if rg_dbtype.ItemIndex = 0 then
+    stSql := ' Select CA_CARDNO from TB_DEVICECARDNO Where Len(CA_CARDNO) < 11 GROUP BY CA_CARDNO'
+  else stSql := ' Select CA_CARDNO from TB_DEVICECARDNO Where Length(CA_CARDNO) < 11 GROUP BY CA_CARDNO';
+
+  with targetTempADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    
+    if RecordCount < 1 then Exit;
+
+    Gauge1.MaxValue := RecordCount;
+    Gauge1.Progress := 0;
+    While Not Eof do
+    begin
+      stOldCardNo := FindField('CA_CARDNO').AsString;
+      stNewCardNo := GetCard16No(stOldCardNo);
+
+      stTempSql := ' Update TB_DEVICECARDNO set CA_CARDNO = ''' + stNewCardNo + ''' ';
+      stTempSql := stTempSql + ' Where CA_CARDNO = ''' + stOldCardNo + ''' ';
+      ProcessExecSql(stTempSql);
+
+      Gauge1.Progress := Gauge1.Progress + 1;
+      st_Progress.Caption := inttostr(Gauge1.Progress) + '/' + inttostr(Gauge1.MaxValue);
+      Application.ProcessMessages;
+      Next;
+    end;
+  end;
+
+end;
+
+function TForm1.Change4To16TB_DEVICECARDNO_HIS: Boolean;
+var
+  stSql : string;
+  stOldCardNo : string;
+  stNewCardNo : string;
+  stTempSql : string;
+begin
+  st_TableName.Caption := 'TB_DEVICECARDNO_HIS Change';
+  st_Progress.Caption := '';
+  
+  if rg_dbtype.ItemIndex = 0 then
+    stSql := ' Select CA_CARDNO from TB_DEVICECARDNO_HIS Where Len(CA_CARDNO) < 11 GROUP BY CA_CARDNO'
+  else stSql := ' Select CA_CARDNO from TB_DEVICECARDNO_HIS Where Length(CA_CARDNO) < 11 GROUP BY CA_CARDNO';
+
+  with targetTempADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    
+    if RecordCount < 1 then Exit;
+
+    Gauge1.MaxValue := RecordCount;
+    Gauge1.Progress := 0;
+    While Not Eof do
+    begin
+      stOldCardNo := FindField('CA_CARDNO').AsString;
+      stNewCardNo := GetCard16No(stOldCardNo);
+
+      stTempSql := ' Update TB_DEVICECARDNO_HIS set CA_CARDNO = ''' + stNewCardNo + ''' ';
+      stTempSql := stTempSql + ' Where CA_CARDNO = ''' + stOldCardNo + ''' ';
+      ProcessExecSql(stTempSql);
+
+      Gauge1.Progress := Gauge1.Progress + 1;
+      st_Progress.Caption := inttostr(Gauge1.Progress) + '/' + inttostr(Gauge1.MaxValue);
+      Application.ProcessMessages;
+      Next;
+    end;
+  end;
+
+end;
+
+function TForm1.Change4To16TB_EMPHIS: Boolean;
+var
+  stSql : string;
+  stOldCardNo : string;
+  stNewCardNo : string;
+  stTempSql : string;
+begin
+  st_TableName.Caption := 'TB_EMPHIS Change';
+  st_Progress.Caption := '';
+  
+  if rg_dbtype.ItemIndex = 0 then
+    stSql := ' Select CA_CARDNO from TB_EMPHIS Where Len(CA_CARDNO) < 11 GROUP BY CA_CARDNO'
+  else stSql := ' Select CA_CARDNO from TB_EMPHIS Where Length(CA_CARDNO) < 11 GROUP BY CA_CARDNO';
+
+  with targetTempADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    
+    if RecordCount < 1 then Exit;
+
+    Gauge1.MaxValue := RecordCount;
+    Gauge1.Progress := 0;
+    While Not Eof do
+    begin
+      stOldCardNo := FindField('CA_CARDNO').AsString;
+      stNewCardNo := GetCard16No(stOldCardNo);
+
+      stTempSql := ' Update TB_EMPHIS set CA_CARDNO = ''' + stNewCardNo + ''' ';
+      stTempSql := stTempSql + ' Where CA_CARDNO = ''' + stOldCardNo + ''' ';
+      ProcessExecSql(stTempSql);
+
+      Gauge1.Progress := Gauge1.Progress + 1;
+      st_Progress.Caption := inttostr(Gauge1.Progress) + '/' + inttostr(Gauge1.MaxValue);
+      Application.ProcessMessages;
+      Next;
+    end;
+  end;
+
+end;
+
+function TForm1.Change4To16TB_SYSTEMLOG: Boolean;
+var
+  stSql : string;
+  stOldCardNo : string;
+  stNewCardNo : string;
+  stTempSql : string;
+begin
+  st_TableName.Caption := 'TB_SYSTEMLOG Change';
+  st_Progress.Caption := '';
+  
+  if rg_dbtype.ItemIndex = 0 then
+    stSql := ' Select CA_CARDNO from TB_SYSTEMLOG Where Len(CA_CARDNO) < 11 GROUP BY CA_CARDNO'
+  else stSql := ' Select CA_CARDNO from TB_SYSTEMLOG Where Length(CA_CARDNO) < 11 GROUP BY CA_CARDNO';
+
+  with targetTempADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    
+    if RecordCount < 1 then Exit;
+
+    Gauge1.MaxValue := RecordCount;
+    Gauge1.Progress := 0;
+    While Not Eof do
+    begin
+      stOldCardNo := FindField('CA_CARDNO').AsString;
+      stNewCardNo := GetCard16No(stOldCardNo);
+
+      stTempSql := ' Update TB_SYSTEMLOG set CA_CARDNO = ''' + stNewCardNo + ''' ';
+      stTempSql := stTempSql + ' Where CA_CARDNO = ''' + stOldCardNo + ''' ';
+      ProcessExecSql(stTempSql);
+
+      Gauge1.Progress := Gauge1.Progress + 1;
+      st_Progress.Caption := inttostr(Gauge1.Progress) + '/' + inttostr(Gauge1.MaxValue);
+      Application.ProcessMessages;
+      Next;
+    end;
+  end;
+
+end;
+
+function TForm1.ProcessExecSql(aSql: string): Boolean;
+var
+  nResult : integer;
+begin
+  Result:= False;
+  with targetADOExecQuery do
+  begin
+    Close;
+    SQL.Text:= aSql;
+    try
+      nResult := ExecSQL;
+    except
+    ON E: Exception do
+      begin
+        SQLErrorLog('DBError('+ E.Message + ')' + aSql);
+        Exit;
+      end;
+    end;
+  end;
+  result := True;
+end;
+
+procedure TForm1.SQLErrorLog(aSQL: string);
+Var
+  f: TextFile;
+  st: string;
+  aFileName: String;
+begin
+
+  if Application.Terminated then Exit;
+  {$I-}
+  aFileName:= L_stExeFolder + '\DBerr'+ FormatDateTIme('yyyymmdd',Now)+'.log';
+  AssignFile(f, aFileName);
+  Append(f);
+  if IOResult <> 0 then Rewrite(f);
+  st := FormatDateTIme('hh:nn:ss:zzz">"   ',Now) + #13#10 + aSQL;
+  WriteLn(f,st);
+  System.Close(f);
+  {$I+}
+end;
+
+function TForm1.GetCard16No(aCardNo:string): string;
+var
+  stCardNo : string;
+begin
+  result := '';
+  if length(aCardNo) = 8 then
+  begin
+    result := FillCharString(aCardNo,'*',16);
+  end else if length(aCardNo) = 10 then
+  begin
+    if isDigit(aCardNo) then
+    begin
+      stCardNo:= Dec2Hex64(StrtoInt64(aCardNo),8);
+      result := FillCharString(stCardNo,'*',16);
+    end;
+  end;
+end;
+
+function TForm1.FillCharString(aNo: String; aChar: char; aLength: Integer;
+  bFront: Boolean): string;
+var
+  I       : Integer;
+  st      : string;
+  strNo   : String;
+  StrCount: Integer;
+begin
+  Strno:= aNo;
+  StrCount:= Length(Strno);
+  St:= '';
+  StrCount:=  aLength - StrCount;
+  if StrCount > 0 then
+  begin
+    st:='';
+    for I:=1 to StrCount do St:=st+ aChar;
+    if bFront then  St:= St + StrNo
+    else St:= StrNo + St;
+    
+    FillCharString := st;
+  end else FillCharString := copy(Strno,1,aLength);
+end;
+
+function TForm1.Isdigit(st: string): Boolean;
+var
+  I: Integer;
+begin
+  result:=True;
+  if Length(st) < 1 then
+  begin
+    result:=False;
+    Exit;
+  end;
+
+  for I:=1 to Length(st) do
+  begin
+    if (st[I]< '0') or (st[I] > '9')  then
+    begin
+      result:=False;
+      Exit;
+    end;
+  end;
+  
+end;
+
+function TForm1.Dec2Hex64(N: int64; A: Byte): string;
+begin
+  Result := IntToHex(N, A);
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  L_stExeFolder := ExtractFileDir(Application.ExeName);
+end;
+
+function TForm1.UpdateTB_CONFIG(aCONFIGGROUP, aCONFIGCODE, aCONFIGVALUE,
+  aConfigDetail: string): Boolean;
+var
+  stSql : string;
+begin
+  Result := False;
+
+  stSql := 'Update TB_CONFIG ';
+  stSql := stSql + ' Set CO_CONFIGVALUE = ''' + aCONFIGVALUE + ''' ';
+  if aConfigDetail <> '' then
+  stSql := stSql + ', CO_CONFIGDETAIL = ''' + aConfigDetail + ''' ';
+  stSql := stSql + ' Where CO_CONFIGGROUP = ''' + aCONFIGGROUP + ''' ';
+  stSql := stSql + ' AND CO_CONFIGCODE = ''' + aCONFIGCODE + ''' ';
+
+  result :=  ProcessExecSql(stSql);
+end;
+
+function TForm1.Change4To16TB_YSReserveDOOR: Boolean;
+var
+  stSql : string;
+  stOldCardNo : string;
+  stNewCardNo : string;
+  stTempSql : string;
+begin
+  st_TableName.Caption := 'TB_YSReserveDOOR Change';
+  st_Progress.Caption := '';
+  
+  if rg_dbtype.ItemIndex = 0 then
+    stSql := ' Select CA_CARDNO from TB_YSReserveDOOR Where Len(CA_CARDNO) < 11 GROUP BY CA_CARDNO'
+  else stSql := ' Select CA_CARDNO from TB_YSReserveDOOR Where Length(CA_CARDNO) < 11 GROUP BY CA_CARDNO';
+
+  with targetTempADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    
+    if RecordCount < 1 then Exit;
+
+    Gauge1.MaxValue := RecordCount;
+    Gauge1.Progress := 0;
+    While Not Eof do
+    begin
+      stOldCardNo := FindField('CA_CARDNO').AsString;
+      stNewCardNo := GetCard16No(stOldCardNo);
+
+      stTempSql := ' Update TB_YSReserveDOOR set CA_CARDNO = ''' + stNewCardNo + ''' ';
+      stTempSql := stTempSql + ' Where CA_CARDNO = ''' + stOldCardNo + ''' ';
+      ProcessExecSql(stTempSql);
+
+      Gauge1.Progress := Gauge1.Progress + 1;
+      st_Progress.Caption := inttostr(Gauge1.Progress) + '/' + inttostr(Gauge1.MaxValue);
+      Application.ProcessMessages;
+      Next;
+    end;
+  end;
+
+end;
+
+function TForm1.Change4To16TB_YSReserveHis: Boolean;
+var
+  stSql : string;
+  stOldCardNo : string;
+  stNewCardNo : string;
+  stTempSql : string;
+begin
+  st_TableName.Caption := 'TB_YSReserveHis Change';
+  st_Progress.Caption := '';
+  
+  if rg_dbtype.ItemIndex = 0 then
+    stSql := ' Select CA_CARDNO from TB_YSReserveHis Where Len(CA_CARDNO) < 11 GROUP BY CA_CARDNO'
+  else stSql := ' Select CA_CARDNO from TB_YSReserveHis Where Length(CA_CARDNO) < 11 GROUP BY CA_CARDNO';
+
+  with targetTempADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    
+    if RecordCount < 1 then Exit;
+
+    Gauge1.MaxValue := RecordCount;
+    Gauge1.Progress := 0;
+    While Not Eof do
+    begin
+      stOldCardNo := FindField('CA_CARDNO').AsString;
+      stNewCardNo := GetCard16No(stOldCardNo);
+
+      stTempSql := ' Update TB_YSReserveHis set CA_CARDNO = ''' + stNewCardNo + ''' ';
+      stTempSql := stTempSql + ' Where CA_CARDNO = ''' + stOldCardNo + ''' ';
+      ProcessExecSql(stTempSql);
+
+      Gauge1.Progress := Gauge1.Progress + 1;
+      st_Progress.Caption := inttostr(Gauge1.Progress) + '/' + inttostr(Gauge1.MaxValue);
+      Application.ProcessMessages;
+      Next;
+    end;
+  end;
+
+end;
+
+end.

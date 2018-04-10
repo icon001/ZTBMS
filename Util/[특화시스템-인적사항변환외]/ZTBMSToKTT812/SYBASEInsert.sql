@@ -1,0 +1,8 @@
+Insert Into TB_TEST
+(TE_CHAR,TE_INT)
+VALUES([CHAR],[INT]);
+
+Insert Into TB_TEST
+(TE_CHAR,TE_INT)
+VALUES([CHAR],[INT]);
+

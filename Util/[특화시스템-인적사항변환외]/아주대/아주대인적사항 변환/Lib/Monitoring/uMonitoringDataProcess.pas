@@ -1,0 +1,626 @@
+unit uMonitoringDataProcess;
+
+interface
+  uses Forms,SysUtils,ActiveX,ADODB;
+
+  procedure DaemonReceiveDataProcess(aData:string;Sender:Tobject);
+  procedure DeviceAllFireRecovery;
+  procedure NODEDataProcess(aNodeNo,aEcuID,aDoorNo,aReaderNo,aDataType,aControlType,aDeviceData:string);
+  procedure ECUDataProcess(aNodeNo,aEcuID,aDoorNo,aReaderNo,aDataType,aControlType,aDeviceData:string);
+  procedure DoorDataProcess(aNodeNo,aEcuID,aDoorNo,aReaderNo,aDataType,aControlType,aDeviceData:string);
+  procedure AlarmDataProcess(aNodeNo,aEcuID,aDoorNo,aReaderNo,aDataType,aControlType,aDeviceData:string);
+  procedure DeviceAllStateCheckReceive(aNodeNo,aEcuID,aDoorNo,aReaderNo,aDataType,aControlType,aDeviceData:string);
+  procedure DeviceStateCheckIIIReceive(aNodeNo,aEcuID,aDoorNo,aReaderNo,aDataType,aControlType,aDeviceData:string;Sender:Tobject);
+  procedure MonitorAlarmRefresh;
+
+  procedure DaemonRestart;
+  procedure DaemonLive;
+implementation
+
+uses
+  uLomosUtil,
+  uMonitoringCommonVariable,
+  uDeviceState,
+  uDataModule1,
+  UCommonModule,
+  uMDBSql,
+  uPostGreSql,
+  uMssql,
+  uFireBird,
+  udmServerToMonitor;
+  
+procedure DaemonReceiveDataProcess(aData:string;Sender:Tobject);
+var
+  stReceiveType : string; //'N'(노드),'E'(기기),'D'(도어),'A'(알람),'S'(데몬제어-재시작등)
+  stNodeNo : string;
+  stEcuID : string;
+  stDoorNo : string;
+  stReaderNo : string;
+  stDataType : string;    // 'CR'(카드리더등록),'PT'(방범데이터),'AC'(출입데이터),'AT'(근태데이터),'SV'(데몬서버데이터),'DV'(기기데이터)
+  stControlType: string;  //'C'(카드데이터 또는 'DV' 인경우 CONNECT 상태),'R'(원격제어),'S'(상태-출입문,알람),'F'(FTP다운로드 상태)
+  stDataLength : string;
+  stDeviceData : string;
+begin
+  if aData[1] <> 'R' then Exit; //정상 수신 데이터가 아니다.
+  stReceiveType := aData[2];
+  stNodeNo := copy(aData,3,3);
+  stEcuID := copy(aData,6,2);
+  stDoorNo := copy(aData,8,2);
+  if Not IsDigit(stDoorNo) then stDoorNo := '0';
+  stDoorNo := inttostr(strtoint(stDoorNo));
+  stReaderNo := copy(aData,10,2);
+  if Not IsDigit(stReaderNo) then stReaderNo := '0';
+  stReaderNo := inttostr(strtoint(stReaderNo));
+  
+  stDataType := copy(aData,12,2);
+  stControlType := aData[14];
+  stDataLength := copy(aData,15,3);
+  if Not IsDigit(stDataLength) then Exit;
+  stDeviceData := copy(aData,18,strtoint(stDataLength));
+
+  if Pos('FIRERECOVERY',stDeviceData) > 0 then
+  begin
+    DeviceAllFireRecovery;
+    Exit;
+  end;
+
+  if stReceiveType = '' then Exit;
+  case stReceiveType[1] of
+    'S' : begin
+            if Pos('RESTART',UpperCase(stDeviceData)) > 0  then
+            begin
+              DaemonRestart;
+            end else if Pos('ALARMREFRESH',UpperCase(stDeviceData)) > 0  then
+            begin
+              MonitorAlarmRefresh;
+            end else if stControlType = 'S' then
+            begin
+              DeviceAllStateCheckReceive(stNodeNo,stEcuID,stDoorNo,stReaderNo,stDataType,stControlType,stDeviceData);
+            end else if stControlType = 'N' then
+            begin
+              DeviceStateCheckIIIReceive(stNodeNo,stEcuID,stDoorNo,stReaderNo,stDataType,stControlType,stDeviceData,Sender);
+            end else if stDataType = 'BR' then
+            begin
+              if stDeviceData = 'DAEMONLIVE' then DaemonLive;
+            end;
+          end;
+    'N' : begin
+            NODEDataProcess(stNodeNo,stEcuID,stDoorNo,stReaderNo,stDataType,stControlType,stDeviceData);
+          end;
+    'E' : begin
+            ECUDataProcess(stNodeNo,stEcuID,stDoorNo,stReaderNo,stDataType,stControlType,stDeviceData);
+          end;
+    'D' : begin
+            DoorDataProcess(stNodeNo,stEcuID,stDoorNo,stReaderNo,stDataType,stControlType,stDeviceData);
+          end;
+    'A' : begin
+            AlarmDataProcess(stNodeNo,stEcuID,stDoorNo,stReaderNo,stDataType,stControlType,stDeviceData);
+          end;
+    else begin
+          end;
+  end;
+
+end;
+
+procedure DeviceAllFireRecovery;
+var
+  i : integer;
+begin
+  if DaemonState <> nil then
+    DaemonState.FireRecovery;
+    
+  if DeviceStateList = nil then Exit;
+
+  for i:= 0 to DeviceStateList.Count - 1 do
+  begin
+    if Assigned(DeviceStateList.Objects[i]) then
+    begin
+      TDeviceState(DeviceStateList.Objects[i]).Door1Fire := False;
+      TDeviceState(DeviceStateList.Objects[i]).Door2Fire := False;
+    end;
+  end;
+end;
+
+procedure NODEDataProcess(aNodeNo,aEcuID,aDoorNo,aReaderNo,aDataType,aControlType,aDeviceData:string);
+var
+  stDeviceID : string;
+  stNodeNo : string;
+  nIndex : integer;
+  nNodeIndex : integer;
+  i : integer;
+  stEcuID : string; //해당 노드의 확장기 리스트
+begin
+  stNodeNo := FillZeroNumber(strtoint(aNodeNo),3);
+  stDeviceID := FillZeroNumber(strtoint(aNodeNo),3) + aEcuID;
+  nNodeIndex := NodeList.IndexOf(stNodeNo);
+  if nNodeIndex < 0 then Exit;
+  
+  if DeviceStateList = nil then Exit;
+
+  if aDataType = 'DV' then
+  begin
+    if Pos('DISCONNECTED',UpperCase(aDeviceData)) > 0 then
+    begin
+      TNodeState(NodeList.Objects[nNodeIndex]).NodeConnected := False;
+      for i := 0 to TNodeState(NodeList.Objects[nNodeIndex]).NodeDeviceList.Count - 1 do
+      begin
+        stEcuID := TNodeState(NodeList.Objects[nNodeIndex]).NodeDeviceList.Strings[i];
+        nIndex := DeviceStateList.IndexOf(stEcuID);
+        if nIndex > -1 then
+        begin
+          TDeviceState(DeviceStateList.Objects[nIndex]).Connected := False;
+        end;
+      end;
+    end else if Pos('CONNECTED',UpperCase(aDeviceData)) > 0 then
+    begin
+      TNodeState(NodeList.Objects[nNodeIndex]).NodeConnected := True;
+      nIndex := DeviceStateList.IndexOf(stDeviceID);
+      if nIndex > -1 then
+      begin
+        TDeviceState(DeviceStateList.Objects[nIndex]).Connected := True;
+      end;
+    end;
+  end;
+
+end;
+
+procedure ECUDataProcess(aNodeNo,aEcuID,aDoorNo,aReaderNo,aDataType,aControlType,aDeviceData:string);
+var
+  stDeviceID : string;
+  nIndex : integer;
+begin
+  stDeviceID := FillZeroNumber(strtoint(aNodeNo),3) + aEcuID;
+
+  if DeviceStateList = nil then Exit;
+
+  if aDataType = 'DV' then
+  begin
+    if Pos('DISCONNECTED',UpperCase(aDeviceData)) > 0 then
+    begin
+      nIndex := DeviceStateList.IndexOf(stDeviceID);
+      if nIndex > -1 then
+      begin
+        TDeviceState(DeviceStateList.Objects[nIndex]).Connected := False;
+      end;
+    end else if Pos('CONNECTED',UpperCase(aDeviceData)) > 0 then
+    begin
+      nIndex := DeviceStateList.IndexOf(stDeviceID);
+      if nIndex > -1 then
+      begin
+        TDeviceState(DeviceStateList.Objects[nIndex]).Connected := True;
+      end;
+    end;
+  end else if aDataType = 'AC' then //출입 데이터
+  begin
+    nIndex := DeviceStateList.IndexOf(stDeviceID);
+    if nIndex > -1 then
+    begin
+      TDeviceState(DeviceStateList.Objects[nIndex]).LastAccessData := aDeviceData;
+    end;
+  end else if aDataType = 'ST' then //SetupData
+  begin
+    nIndex := DeviceStateList.IndexOf(stDeviceID);
+    if nIndex > -1 then
+    begin
+      TDeviceState(DeviceStateList.Objects[nIndex]).DeviceSetupData := aDeviceData;
+    end;
+
+  end else if aDataType = 'AL' then //전체 데이터 --올라오지 않음
+  begin
+    //DEVICEDataProcess(aNodeNo,aECUID,aData);
+  end;
+end;
+
+procedure DoorDataProcess(aNodeNo,aEcuID,aDoorNo,aReaderNo,aDataType,aControlType,aDeviceData:string);
+var
+  nIndex : integer;
+  stDeviceID : string;
+  nDoorNo : integer;
+begin
+  if Not isDigit(aDoorNo) then Exit;
+  nDoorNo := strtoint(aDoorNo);
+
+  stDeviceID := FillZeroNumber(strtoint(aNodeNo),3) + aEcuID;
+
+  if DeviceStateList = nil then Exit;
+
+  nIndex := DeviceStateList.IndexOf(stDeviceID);
+  if nIndex < 0 then Exit;
+
+  if aDataType = 'DV' then
+  begin
+    if aControlType = 'S' then
+    begin
+      case aDeviceData[1] of  //운영개방
+        '0' : begin
+                if nDoorNo = 1 then TDeviceState(DeviceStateList.Objects[nIndex]).Door1ManageMode := dmManager  //운영
+                else if nDoorNo = 2 then TDeviceState(DeviceStateList.Objects[nIndex]).Door2ManageMode := dmManager;
+              end;
+        '1' : begin
+                if nDoorNo = 1 then TDeviceState(DeviceStateList.Objects[nIndex]).Door1ManageMode := dmOpen   //개방
+                else if nDoorNo = 2 then TDeviceState(DeviceStateList.Objects[nIndex]).Door2ManageMode := dmOpen;
+              end;
+        '2' : begin
+                if nDoorNo = 1 then TDeviceState(DeviceStateList.Objects[nIndex]).Door1ManageMode := dmLock   //폐쇄
+                else if nDoorNo = 2 then TDeviceState(DeviceStateList.Objects[nIndex]).Door2ManageMode := dmLock;
+              end;
+        else begin
+                if nDoorNo = 1 then TDeviceState(DeviceStateList.Objects[nIndex]).Door1ManageMode := dmNothing   //모름
+                else if nDoorNo = 2 then TDeviceState(DeviceStateList.Objects[nIndex]).Door2ManageMode := dmNothing;
+             end;
+      end;
+      case aDeviceData[2] of  //Posi Nega
+        '0' : begin
+                if nDoorNo = 1 then TDeviceState(DeviceStateList.Objects[nIndex]).Door1CardMode := pnPositive  //Posi
+                else if nDoorNo = 2 then TDeviceState(DeviceStateList.Objects[nIndex]).Door2CardMode := pnPositive;
+              end;
+        '1' : begin
+                if nDoorNo = 1 then TDeviceState(DeviceStateList.Objects[nIndex]).Door1CardMode := pnNegative  //Posi
+                else if nDoorNo = 2 then TDeviceState(DeviceStateList.Objects[nIndex]).Door2CardMode := pnNegative;
+              end;
+        else  begin
+                if nDoorNo = 1 then TDeviceState(DeviceStateList.Objects[nIndex]).Door1CardMode := pnNothing  //Posi
+                else if nDoorNo = 2 then TDeviceState(DeviceStateList.Objects[nIndex]).Door2CardMode := pnNothing;
+              end;
+      end;
+      case aDeviceData[3] of  //DoorState
+        'C': //닫힘
+          begin
+            if nDoorNo = 1 then TDeviceState(DeviceStateList.Objects[nIndex]).Door1State := dsClose
+            else if nDoorNo = 2 then TDeviceState(DeviceStateList.Objects[nIndex]).Door2State := dsClose;
+          end;
+        'O': //열림
+          begin
+            if nDoorNo = 1 then TDeviceState(DeviceStateList.Objects[nIndex]).Door1State := dsOpen
+            else if nDoorNo = 2 then TDeviceState(DeviceStateList.Objects[nIndex]).Door2State := dsOpen;
+          end;
+        'E': //에러
+          begin
+            if nDoorNo = 1 then TDeviceState(DeviceStateList.Objects[nIndex]).Door1State := dsNothing
+            else if nDoorNo = 2 then TDeviceState(DeviceStateList.Objects[nIndex]).Door2State := dsNothing;
+          end;
+        'T','D'://장시간 열림
+          begin
+            if nDoorNo = 1 then TDeviceState(DeviceStateList.Objects[nIndex]).Door1State := dsLongTime
+            else if nDoorNo = 2 then TDeviceState(DeviceStateList.Objects[nIndex]).Door2State := dsLongTime;
+          end;
+        'U':    //해정이상
+          begin
+            if nDoorNo = 1 then TDeviceState(DeviceStateList.Objects[nIndex]).Door1State := dsOpenErr
+            else if nDoorNo = 2 then TDeviceState(DeviceStateList.Objects[nIndex]).Door2State := dsOpenErr;
+          end;
+        'L':    //시정이상
+          begin
+            if nDoorNo = 1 then TDeviceState(DeviceStateList.Objects[nIndex]).Door1State := dsCloseErr
+            else if nDoorNo = 2 then TDeviceState(DeviceStateList.Objects[nIndex]).Door2State := dsCloseErr;
+          end;
+        else
+          begin
+            if nDoorNo = 1 then TDeviceState(DeviceStateList.Objects[nIndex]).Door1State := dsNothing
+            else if nDoorNo = 2 then TDeviceState(DeviceStateList.Objects[nIndex]).Door2State := dsNothing;
+          end;
+      end;
+
+    end else if aControlType = 'F' then
+    begin
+        if aDeviceData[1] = 'F' then
+        begin
+          if nDoorNo = 1 then TDeviceState(DeviceStateList.Objects[nIndex]).Door1Fire := True
+          else if nDoorNo = 2 then TDeviceState(DeviceStateList.Objects[nIndex]).Door2Fire := True;
+        end else
+        begin
+          if nDoorNo = 1 then TDeviceState(DeviceStateList.Objects[nIndex]).Door1Fire := False
+          else if nDoorNo = 2 then TDeviceState(DeviceStateList.Objects[nIndex]).Door2Fire := False;
+        end;
+    end;
+  end;
+end;
+
+procedure AlarmDataProcess(aNodeNo,aEcuID,aDoorNo,aReaderNo,aDataType,aControlType,aDeviceData:string);
+var
+  stDeviceID : string;
+  nIndex : integer;
+begin
+  stDeviceID := FillZeroNumber(strtoint(aNodeNo),3) + aEcuID;
+
+  if DeviceStateList = nil then Exit;
+  
+  nIndex := DeviceStateList.IndexOf(stDeviceID);
+  if nIndex < 0 then Exit;
+
+  if aDataType = 'DV' then //기기정보
+  begin
+    if aControlType = 'S' then //상태정보
+    begin
+      case UpperCase(aDeviceData)[1] of
+       'A': begin TDeviceState(DeviceStateList.Objects[nIndex]).AlarmMode := cmArm end;
+       'D': begin TDeviceState(DeviceStateList.Objects[nIndex]).AlarmMode := cmDisarm end;
+       'T': begin TDeviceState(DeviceStateList.Objects[nIndex]).AlarmMode := cmTest end;
+       'I': begin TDeviceState(DeviceStateList.Objects[nIndex]).AlarmMode := cmInit end;
+       'P': begin TDeviceState(DeviceStateList.Objects[nIndex]).AlarmMode := cmPatrol end;
+      else
+        begin TDeviceState(DeviceStateList.Objects[nIndex]).AlarmMode := cmNothing end;
+      end;
+    end;
+  end else if aDataType = 'PT' then  //Alarm 발생 전체전문
+  begin
+    TDeviceState(DeviceStateList.Objects[nIndex]).LastAlarmData := aDeviceData;
+  end else if aDataType = 'AL' then  //전체전문
+  begin
+    //- 사용안함
+    //DeviceRcvAlarmData(aNodeNo,aEcuID,aDoorNo,aReaderNo,aDataType,aControlType,aDeviceData);
+  end;
+end;
+
+procedure MonitorAlarmRefresh;
+var
+  stSql : string;
+  stAlarmID : string;
+  nAlarmIndex : integer;
+  stTime : string;
+  bAlarmView,bAlarmSound : Boolean;
+  nRecordCount : integer;
+  TempAdoQuery :TADOQuery;
+begin
+  G_bAlarmRefreshStart := True;
+  if DaemonState <> nil then
+    DaemonState.AlaramRefresh; //모니터 화면 AlarmList Clear;
+
+  if DeviceStateList = nil then Exit;
+
+  while G_bAlarmRefreshStart do
+  begin
+    delay(10);
+    Application.ProcessMessages;
+  end;
+
+  stSql := ' Select * from TB_ALARMEVENT ';
+  stSql := stSql + ' Where AL_CHECKOK = ''N'' ';
+  stSql := stSql + ' AND AL_ISALARM = ''1'' ';
+  stSql := stSql + ' AND AL_SOUND = ''1'' ';
+  stSql := stSql + ' Order by AL_ALARMGRADE,AL_DATE,AL_TIME ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.DisableControls;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if recordCount < 1 then Exit;
+      nRecordCount := recordCount;
+      First;
+      while Not Eof do
+      begin
+        stAlarmID := FillZeroNumber(FindField('AC_NODENO').AsInteger,3) + FindField('AC_ECUID').AsString ;
+        nAlarmIndex := DeviceStateList.IndexOf(stAlarmID);
+        if nAlarmIndex > -1 then
+        begin
+          stTime := FindField('AL_DATE').AsString + FindField('AL_TIME').AsString;
+          bAlarmView := False;
+          if Not FindField('AL_ISALARM').IsNull then
+          begin
+            if FindField('AL_ISALARM').AsString <> '0' then bAlarmView := True;
+          end;
+          bAlarmSound := False;
+          if Not FindField('AL_SOUND').IsNull then
+          begin
+            if FindField('AL_SOUND').AsString <> '0' then bAlarmSound := True;
+          end;
+          TDeviceState(DeviceStateList.Objects[nAlarmIndex]).DBAlarmStateChange(
+            FindField('AC_NODENO').AsInteger,
+            FindField('AC_ECUID').AsString,
+            'A',
+            FindField('AL_MSGNO').AsString,
+            stTime,
+            FindField('AL_ALARMDEVICETYPECODE').AsString,
+            FindField('AL_SUBADDR').AsString,
+            FindField('AL_ZONECODE').AsString,
+            FindField('AL_ALARMMODECODE').AsString,
+            FindField('AL_ALARMSTATUSCODE').AsString,
+            FindField('AL_ZONENO').AsString,
+            FindField('AL_ZONESTATE').AsString,
+            FindField('AL_OPERATOR').AsString,
+            FindField('AL_STATUSCODE2').AsString,
+            bAlarmView,
+            bAlarmSound
+            );
+        end;
+
+        next;
+      end;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+procedure DaemonRestart;
+begin
+  if DaemonState <> nil then
+      DaemonState.Restart;
+end;
+
+procedure DaemonLive;
+begin
+  if DaemonState <> nil then
+      DaemonState.Live;
+end;
+
+procedure DeviceAllStateCheckReceive(aNodeNo,aEcuID,aDoorNo,aReaderNo,aDataType,aControlType,aDeviceData:string);
+var
+  stDeviceID : string;
+  nIndex : integer;
+begin
+  stDeviceID := FillZeroNumber(strtoint(aNodeNo),3) + aEcuID;
+  if aControlType <> 'S' then Exit;
+
+  if DeviceStateList = nil then Exit;
+
+  nIndex := DeviceStateList.IndexOf(stDeviceID);
+  if nIndex < 0 then Exit;
+  case aDeviceData[1] of  //DeviceConnected State
+    'C' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Connected := True end;
+    'D' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Connected := False end;
+    else begin TDeviceState(DeviceStateList.Objects[nIndex]).Connected := False end;
+  end;
+  if TDeviceState(DeviceStateList.Objects[nIndex]).AlarmMode = cmNothing then
+  begin
+    case aDeviceData[2] of //Device Watch Mode
+      'N' : begin TDeviceState(DeviceStateList.Objects[nIndex]).AlarmMode := cmNothing end;
+      'A' : begin TDeviceState(DeviceStateList.Objects[nIndex]).AlarmMode := cmArm end;
+      'D' : begin TDeviceState(DeviceStateList.Objects[nIndex]).AlarmMode := cmDisarm end;
+      'P' : begin TDeviceState(DeviceStateList.Objects[nIndex]).AlarmMode := cmPatrol end;
+      'I' : begin TDeviceState(DeviceStateList.Objects[nIndex]).AlarmMode := cmInit end;
+      'T' : begin TDeviceState(DeviceStateList.Objects[nIndex]).AlarmMode := cmTest end;
+      else begin TDeviceState(DeviceStateList.Objects[nIndex]).AlarmMode := cmNothing end;
+    end;
+  end;
+  if TDeviceState(DeviceStateList.Objects[nIndex]).Door1ManageMode = dmNothing then
+  begin
+    case aDeviceData[3] of //Door1 Manage Mode
+      'N' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1ManageMode := dmNothing end;
+      'M' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1ManageMode := dmManager end;
+      'O' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1ManageMode := dmOpen end;
+      'L' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1ManageMode := dmLock end;
+      else begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1ManageMode := dmNothing end;
+    end;
+  end;
+  if TDeviceState(DeviceStateList.Objects[nIndex]).Door2ManageMode = dmNothing then
+  begin
+    case aDeviceData[4] of //Door2 Manage Mode
+      'N' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2ManageMode := dmNothing end;
+      'M' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2ManageMode := dmManager end;
+      'O' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2ManageMode := dmOpen end;
+      'L' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2ManageMode := dmLock end;
+      else begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2ManageMode := dmNothing end;
+    end;
+  end;
+  if TDeviceState(DeviceStateList.Objects[nIndex]).Door1CardMode = pnNothing then
+  begin
+    case aDeviceData[5] of //Door1 Card Mode
+      'N' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1CardMode := pnNothing end;
+      'P' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1CardMode := pnPositive end;
+      'O' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1CardMode := pnNegative end;
+      else begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1CardMode := pnNothing end;
+    end;
+  end;
+  if TDeviceState(DeviceStateList.Objects[nIndex]).Door2CardMode = pnNothing then
+  begin
+    case aDeviceData[6] of //Door2 Card Mode
+      'N' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2CardMode := pnNothing end;
+      'P' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2CardMode := pnPositive end;
+      'O' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2CardMode := pnNegative end;
+      else begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2CardMode := pnNothing end;
+    end;
+  end;
+  if TDeviceState(DeviceStateList.Objects[nIndex]).Door1State = dsNothing then
+  begin
+    case aDeviceData[7] of //Door1 Open State
+      'N' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1State := dsNothing end;
+      'C' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1State := dsClose end;
+      'O' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1State := dsOpen end;
+      'L' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1State := dsLongTime end;
+      'P' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1State := dsOpenErr end;
+      'S' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1State := dsCloseErr end;
+      else begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1State := dsNothing end;
+    end;
+  end;
+  if TDeviceState(DeviceStateList.Objects[nIndex]).Door2State = dsNothing then
+  begin
+    case aDeviceData[8] of //Door2 Open State
+      'N' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2State := dsNothing end;
+      'C' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2State := dsClose end;
+      'O' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2State := dsOpen end;
+      'L' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2State := dsLongTime end;
+      'P' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2State := dsOpenErr end;
+      'S' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2State := dsCloseErr end;
+      else begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2State := dsNothing end;
+    end;
+  end;
+  if TDeviceState(DeviceStateList.Objects[nIndex]).Door1LockState = lsNothing then
+  begin
+    case aDeviceData[9] of //Door1 Lock State
+      'N' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1LockState := lsNothing end;
+      'C' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1LockState := lsClose end;
+      'O' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1LockState := lsOpen end;
+      else begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1LockState := lsNothing end;
+    end;
+  end;
+  if TDeviceState(DeviceStateList.Objects[nIndex]).Door2LockState = lsNothing then
+  begin
+    case aDeviceData[10] of //Door2 Lock State
+      'N' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2LockState := lsNothing end;
+      'C' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2LockState := lsClose end;
+      'O' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2LockState := lsOpen end;
+      else begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2LockState := lsNothing end;
+    end;
+  end;
+  case aDeviceData[11] of //Door1 Fire State
+    'N' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1Fire := False end;
+    'F' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1Fire := True end;
+    else begin TDeviceState(DeviceStateList.Objects[nIndex]).Door1Fire := False end;
+  end;
+  case aDeviceData[12] of //Door2 Fire State
+    'N' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2Fire := False end;
+    'F' : begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2Fire := True end;
+    else begin TDeviceState(DeviceStateList.Objects[nIndex]).Door2Fire := False end;
+  end;
+
+end;
+
+procedure DeviceStateCheckIIIReceive(aNodeNo,aEcuID,aDoorNo,aReaderNo,aDataType,aControlType,aDeviceData:string;Sender:Tobject);
+var
+  stDeviceID : string;
+  nIndex : integer;
+  lsLockState : TNodeLockState;
+  i : integer;
+  nPacketSize : integer;
+  stEcuPacket : string;
+  msDeviceState : TDeviceMonitorState;
+begin
+  if aControlType <> 'N' then Exit;
+
+  if DeviceStateList = nil then Exit;
+
+  lsLockState := TNodeLockState.Create(nil);
+  nPacketSize := BINARYPACKETSIZE div 8; //8비트가 한패킷
+  for i := 0 to MAXECUCOUNT do
+  begin
+    stEcuPacket := copy(aDeviceData,(i * nPacketSize) + 1,nPacketSize);
+    stEcuPacket := Ascii2Hex(stEcuPacket);
+    stEcuPacket := HexToBinary(stEcuPacket);
+    lsLockState.EcuStateAdd(FillZeroNumber(i,2),stEcuPacket);
+    msDeviceState := lsLockState.GetEcuObject(i);
+    stDeviceID := FillZeroNumber(strtoint(aNodeNo),3) + FillZeroNumber(i,2);
+    nIndex := DeviceStateList.IndexOf(stDeviceID);
+    if nIndex < 0 then continue;
+    TDeviceState(DeviceStateList.Objects[nIndex]).Connected := msDeviceState.Connected;
+    if TDeviceState(DeviceStateList.Objects[nIndex]).AlarmMode = cmNothing then TDeviceState(DeviceStateList.Objects[nIndex]).AlarmMode := msDeviceState.WatchMode;
+    if TDeviceState(DeviceStateList.Objects[nIndex]).Door1ManageMode = dmNothing then TDeviceState(DeviceStateList.Objects[nIndex]).Door1ManageMode := msDeviceState.DoorManageMode1;
+    if TDeviceState(DeviceStateList.Objects[nIndex]).Door2ManageMode = dmNothing then TDeviceState(DeviceStateList.Objects[nIndex]).Door2ManageMode := msDeviceState.DoorManageMode2;
+    if TDeviceState(DeviceStateList.Objects[nIndex]).Door1CardMode = pnNothing then TDeviceState(DeviceStateList.Objects[nIndex]).Door1CardMode := msDeviceState.DoorPNMode1;
+    if TDeviceState(DeviceStateList.Objects[nIndex]).Door2CardMode = pnNothing then TDeviceState(DeviceStateList.Objects[nIndex]).Door2CardMode := msDeviceState.DoorPNMode2;
+    if TDeviceState(DeviceStateList.Objects[nIndex]).Door1State = dsNothing then TDeviceState(DeviceStateList.Objects[nIndex]).Door1State := msDeviceState.DoorState1;
+    if TDeviceState(DeviceStateList.Objects[nIndex]).Door2State = dsNothing then TDeviceState(DeviceStateList.Objects[nIndex]).Door2State := msDeviceState.DoorState2;
+    if TDeviceState(DeviceStateList.Objects[nIndex]).Door1LockState = lsNothing then TDeviceState(DeviceStateList.Objects[nIndex]).Door1LockState := msDeviceState.DoorLockMode1;
+    if TDeviceState(DeviceStateList.Objects[nIndex]).Door2LockState = lsNothing then TDeviceState(DeviceStateList.Objects[nIndex]).Door2LockState := msDeviceState.DoorLockMode2;
+    TDeviceState(DeviceStateList.Objects[nIndex]).Door1Fire := msDeviceState.Door1Fire;
+    TDeviceState(DeviceStateList.Objects[nIndex]).Door2Fire := msDeviceState.Door2Fire;
+
+  end;
+
+end;
+end.

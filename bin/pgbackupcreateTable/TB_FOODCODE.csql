@@ -1,0 +1,2 @@
+CREATE TABLE TB_FOODCODE (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , fo_foodcode VARCHAR(3) NOT NULL , fo_codename VARCHAR(30), fo_starttime VARCHAR(4), fo_endtime VARCHAR(4), fo_amt INTEGER DEFAULT 5000 ); 
+ ALTER TABLE TB_FOODCODE   ADD CONSTRAINT TB_FOODCODE_pkey PRIMARY KEY (group_code, fo_foodcode);

@@ -1,0 +1,336 @@
+object Form1: TForm1
+  Left = 369
+  Top = 306
+  Width = 499
+  Height = 400
+  Caption = #45936#51060#53552#48288#51060#49828'Conversion'
+  Color = clBtnFace
+  Font.Charset = HANGEUL_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = #44404#47548#52404
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  PixelsPerInch = 96
+  TextHeight = 12
+  object btn_Conversion: TSpeedButton
+    Left = 80
+    Top = 304
+    Width = 129
+    Height = 41
+    Caption = #52852#46300#47196#46377
+    Glyph.Data = {
+      76010000424D7601000000000000760000002800000020000000100000000100
+      04000000000000010000130B0000130B00001000000000000000000000000000
+      800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+      33333333FF33333333FF333993333333300033377F3333333777333993333333
+      300033F77FFF3333377739999993333333333777777F3333333F399999933333
+      33003777777333333377333993333333330033377F3333333377333993333333
+      3333333773333333333F333333333333330033333333F33333773333333C3333
+      330033333337FF3333773333333CC333333333FFFFF77FFF3FF33CCCCCCCCCC3
+      993337777777777F77F33CCCCCCCCCC3993337777777777377333333333CC333
+      333333333337733333FF3333333C333330003333333733333777333333333333
+      3000333333333333377733333333333333333333333333333333}
+    NumGlyphs = 2
+    OnClick = btn_ConversionClick
+  end
+  object btn_Close: TSpeedButton
+    Left = 288
+    Top = 304
+    Width = 129
+    Height = 41
+    Caption = #45803#44592
+    Glyph.Data = {
+      36060000424D3606000000000000360400002800000020000000100000000100
+      08000000000000020000730B0000730B00000001000000000000000000003300
+      00006600000099000000CC000000FF0000000033000033330000663300009933
+      0000CC330000FF33000000660000336600006666000099660000CC660000FF66
+      000000990000339900006699000099990000CC990000FF99000000CC000033CC
+      000066CC000099CC0000CCCC0000FFCC000000FF000033FF000066FF000099FF
+      0000CCFF0000FFFF000000003300330033006600330099003300CC003300FF00
+      330000333300333333006633330099333300CC333300FF333300006633003366
+      33006666330099663300CC663300FF6633000099330033993300669933009999
+      3300CC993300FF99330000CC330033CC330066CC330099CC3300CCCC3300FFCC
+      330000FF330033FF330066FF330099FF3300CCFF3300FFFF3300000066003300
+      66006600660099006600CC006600FF0066000033660033336600663366009933
+      6600CC336600FF33660000666600336666006666660099666600CC666600FF66
+      660000996600339966006699660099996600CC996600FF99660000CC660033CC
+      660066CC660099CC6600CCCC6600FFCC660000FF660033FF660066FF660099FF
+      6600CCFF6600FFFF660000009900330099006600990099009900CC009900FF00
+      990000339900333399006633990099339900CC339900FF339900006699003366
+      99006666990099669900CC669900FF6699000099990033999900669999009999
+      9900CC999900FF99990000CC990033CC990066CC990099CC9900CCCC9900FFCC
+      990000FF990033FF990066FF990099FF9900CCFF9900FFFF99000000CC003300
+      CC006600CC009900CC00CC00CC00FF00CC000033CC003333CC006633CC009933
+      CC00CC33CC00FF33CC000066CC003366CC006666CC009966CC00CC66CC00FF66
+      CC000099CC003399CC006699CC009999CC00CC99CC00FF99CC0000CCCC0033CC
+      CC0066CCCC0099CCCC00CCCCCC00FFCCCC0000FFCC0033FFCC0066FFCC0099FF
+      CC00CCFFCC00FFFFCC000000FF003300FF006600FF009900FF00CC00FF00FF00
+      FF000033FF003333FF006633FF009933FF00CC33FF00FF33FF000066FF003366
+      FF006666FF009966FF00CC66FF00FF66FF000099FF003399FF006699FF009999
+      FF00CC99FF00FF99FF0000CCFF0033CCFF0066CCFF0099CCFF00CCCCFF00FFCC
+      FF0000FFFF0033FFFF0066FFFF0099FFFF00CCFFFF00FFFFFF00000080000080
+      000000808000800000008000800080800000C0C0C00080808000191919004C4C
+      4C00B2B2B200E5E5E500C8AC2800E0CC6600F2EABF00B59B2400D8E9EC009933
+      6600D075A300ECC6D900646F710099A8AC00E2EFF10000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000E8E8E8E8E8E8
+      EEE8E8E8E8E8E8E8E8E8E8E8E8E8E8E8EEE8E8E8E8E8E8E8E8E8E8E8E8EEE3AC
+      E3EEE8E8E8E8E8E8E8E8E8E8E8EEE8ACE3EEE8E8E8E8E8E8E8E8E8EEE3E28257
+      57E2ACE3EEE8E8E8E8E8E8EEE8E2818181E2ACE8EEE8E8E8E8E8E382578282D7
+      578181E2E3E8E8E8E8E8E881818181D7818181E2E8E8E8E8E8E857828989ADD7
+      57797979EEE8E8E8E8E88181DEDEACD781818181EEE8E8E8E8E857898989ADD7
+      57AAAAA2D7ADE8E8E8E881DEDEDEACD781DEDE81D7ACE8E8E8E857898989ADD7
+      57AACEA3AD10E8E8E8E881DEDEDEACD781DEAC81AC81E8E8E8E85789825EADD7
+      57ABCFE21110E8E8E8E881DE8181ACD781ACACE28181E8E8E8E8578957D7ADD7
+      57ABDE101010101010E881DE56D7ACD781ACDE818181818181E857898257ADD7
+      57E810101010101010E881DE8156ACD781E381818181818181E857898989ADD7
+      57E882101010101010E881DEDEDEACD781E381818181818181E857898989ADD7
+      57ACEE821110E8E8E8E881DEDEDEACD781ACEE818181E8E8E8E857898989ADD7
+      57ABE8AB8910E8E8E8E881DEDEDEACD781ACE3ACDE81E8E8E8E857828989ADD7
+      57ACE8A3E889E8E8E8E88181DEDEACD781ACE381E8DEE8E8E8E8E8DE5E8288D7
+      57A2A2A2E8E8E8E8E8E8E8DE8181DED781818181E8E8E8E8E8E8E8E8E8AC8257
+      57E8E8E8E8E8E8E8E8E8E8E8E8AC818181E8E8E8E8E8E8E8E8E8}
+    NumGlyphs = 2
+    OnClick = btn_CloseClick
+  end
+  object GroupBox1: TGroupBox
+    Left = 0
+    Top = 0
+    Width = 491
+    Height = 113
+    Align = alTop
+    Caption = #52852#46300#45936#51060#53552
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 8
+      Top = 32
+      Width = 24
+      Height = 12
+      Caption = #54028#51068
+    end
+    object Label2: TLabel
+      Left = 8
+      Top = 56
+      Width = 24
+      Height = 12
+      Caption = #45432#46300
+    end
+    object Label3: TLabel
+      Left = 8
+      Top = 80
+      Width = 18
+      Height = 12
+      Caption = 'ECU'
+    end
+    object SpeedButton1: TSpeedButton
+      Left = 296
+      Top = 30
+      Width = 57
+      Height = 17
+      Caption = #54028#51068
+      OnClick = SpeedButton1Click
+    end
+    object ed_File: TEdit
+      Left = 40
+      Top = 28
+      Width = 249
+      Height = 20
+      ImeName = 'Microsoft Office IME 2007'
+      ReadOnly = True
+      TabOrder = 0
+    end
+    object ed_Node: TEdit
+      Left = 40
+      Top = 52
+      Width = 249
+      Height = 20
+      ImeName = 'Microsoft Office IME 2007'
+      TabOrder = 1
+      Text = '1'
+    end
+    object ed_Ecu: TEdit
+      Left = 40
+      Top = 76
+      Width = 249
+      Height = 20
+      ImeName = 'Microsoft Office IME 2007'
+      MaxLength = 2
+      TabOrder = 2
+      Text = '00'
+    end
+    object rg_Gubun: TRadioGroup
+      Left = 384
+      Top = 24
+      Width = 89
+      Height = 73
+      Caption = #44396#48516
+      ItemIndex = 0
+      Items.Strings = (
+        'KT'#49324#50725
+        #51068#48152)
+      TabOrder = 3
+    end
+  end
+  object GroupBox2: TGroupBox
+    Left = 0
+    Top = 113
+    Width = 491
+    Height = 136
+    Align = alTop
+    Caption = #53440#44191#45936#51060#53552#48288#51060#49828
+    TabOrder = 1
+    object rg_targetDBType: TRadioGroup
+      Left = 2
+      Top = 14
+      Width = 143
+      Height = 120
+      Align = alLeft
+      Caption = #45936#51060#53552#48288#51060#49828#49440#53469
+      ItemIndex = 0
+      Items.Strings = (
+        'MSSQL'
+        'PostGresql'
+        'MDB')
+      TabOrder = 0
+      OnClick = rg_targetDBTypeClick
+    end
+    object GroupBox4: TGroupBox
+      Left = 145
+      Top = 14
+      Width = 344
+      Height = 120
+      Align = alClient
+      Caption = #54872#44221
+      TabOrder = 1
+      object Label7: TLabel
+        Left = 8
+        Top = 24
+        Width = 66
+        Height = 12
+        Caption = 'DB ServerIP'
+      end
+      object Label8: TLabel
+        Left = 8
+        Top = 43
+        Width = 78
+        Height = 12
+        Caption = 'DB ServerPort'
+      end
+      object Label9: TLabel
+        Left = 8
+        Top = 63
+        Width = 42
+        Height = 12
+        Caption = 'DB Name'
+      end
+      object Label10: TLabel
+        Left = 8
+        Top = 82
+        Width = 66
+        Height = 12
+        Caption = 'DB UserName'
+      end
+      object Label11: TLabel
+        Left = 8
+        Top = 102
+        Width = 78
+        Height = 12
+        Caption = 'DB UserPasswd'
+      end
+      object ed_targetUserpw: TEdit
+        Left = 112
+        Top = 98
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft IME 2003'
+        TabOrder = 0
+        Text = 'sapasswd'
+      end
+      object ed_targetUserName: TEdit
+        Left = 112
+        Top = 78
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft IME 2003'
+        TabOrder = 1
+        Text = 'sa'
+      end
+      object ed_targetDBName: TEdit
+        Left = 112
+        Top = 59
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft IME 2003'
+        TabOrder = 2
+        Text = 'zmos'
+      end
+      object ed_targetDBPort: TEdit
+        Left = 112
+        Top = 39
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft IME 2003'
+        TabOrder = 3
+        Text = '1433'
+      end
+      object ed_targetDBIP: TEdit
+        Left = 112
+        Top = 20
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft IME 2003'
+        TabOrder = 4
+        Text = '127.0.0.1'
+      end
+    end
+  end
+  object gb_Progress: TGroupBox
+    Left = 0
+    Top = 249
+    Width = 491
+    Height = 48
+    Align = alTop
+    TabOrder = 2
+    object Gauge2: TGauge
+      Left = 16
+      Top = 16
+      Width = 449
+      Height = 17
+      ForeColor = clBlue
+      Progress = 0
+    end
+  end
+  object targetADOConnection: TADOConnection
+    ConnectionString = 
+      'Provider=SQLOLEDB.1;Persist Security Info=False;User ID=lomo;Ini' +
+      'tial Catalog=LOMO;Data Source=127.0.0.1'
+    Provider = 'SQLOLEDB.1'
+    Top = 176
+  end
+  object ADOExecQuery: TADOQuery
+    Connection = targetADOConnection
+    Parameters = <>
+    Left = 32
+    Top = 176
+  end
+  object OpenDialog1: TOpenDialog
+    DefaultExt = 'TXT'
+    Left = 108
+    Top = 92
+  end
+  object ADOSearchQuery: TADOQuery
+    Connection = targetADOConnection
+    Parameters = <>
+    Left = 40
+    Top = 224
+  end
+  object ADOTempQuery1: TADOQuery
+    Connection = targetADOConnection
+    Parameters = <>
+    Left = 40
+    Top = 272
+  end
+end

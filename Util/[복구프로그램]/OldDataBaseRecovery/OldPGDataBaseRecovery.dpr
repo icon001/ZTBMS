@@ -1,0 +1,23 @@
+program OldPGDataBaseRecovery;
+
+uses
+  Forms,
+  uDataBaseConvert in 'uDataBaseConvert.pas' {fmMain},
+  uLomosUtil in '..\..\..\Lib\uLomosUtil.pas',
+  DIMime in '..\..\..\Lib\DIMime.pas',
+  uCommonSql in '..\..\..\..\[LIB]\Query\uCommonSql.pas' {CommonSql: TDataModule},
+  uMDBSql in '..\..\..\..\[LIB]\Query\uMDBSql.pas' {MDBSql: TDataModule},
+  uMSDEsql in '..\..\..\Lib\uMSDEsql.pas',
+  uPostGreSql in '..\..\..\..\[LIB]\Query\uPostGreSql.pas' {PostGreSql: TDataModule},
+  uMssql in '..\..\..\..\[LIB]\Query\uMssql.pas' {Mssql: TDataModule},
+  uFireBird in '..\..\..\..\[LIB]\Query\uFireBird.pas' {FireBird: TDataModule},
+  uDataModule1 in 'uDataModule1.pas' {DataModule1: TDataModule};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.CreateForm(TfmMain, fmMain);
+  Application.CreateForm(TDataModule1, DataModule1);
+  Application.Run;
+end.

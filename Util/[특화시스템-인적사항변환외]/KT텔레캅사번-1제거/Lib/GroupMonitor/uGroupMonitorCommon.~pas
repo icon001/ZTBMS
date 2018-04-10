@@ -1,0 +1,17 @@
+unit uGroupMonitorCommon;
+
+Type
+IDllGroupForm = interface
+  function Get_PopupMenuEvent: TNotifyEvent;
+  procedure Set_PopupMenuEvent(Value: TNotifyEvent);
+
+  procedure Show;
+
+  property PopupMenuEvent: TNotifyEvent read Get_PopupMenuEvent write Set_PopupMenuEvent;
+end;
+
+interface
+
+implementation
+
+end.

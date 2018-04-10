@@ -1,0 +1,14 @@
+program CardReader;
+
+uses
+  Forms,
+  uCardReader in 'uCardReader.pas' {Form1},
+  uLomosUtil in '..\..\STX\LOMOS\source\uLomosUtil.pas';
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.CreateForm(TForm1, Form1);
+  Application.Run;
+end.

@@ -1,0 +1,1018 @@
+unit uEmployeeBranch;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, uSubForm, CommandArray, ExtCtrls, StdCtrls, Grids, BaseGrid,
+  AdvGrid, Buttons,ActiveX,ADODB, Gauges, AdvObj;
+
+type
+  TfmEmployeeBranch = class(TfmASubForm)
+    pan_Caption: TPanel;
+    rg_WorkGubun: TRadioGroup;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    sg_Employ: TAdvStringGrid;
+    btn_Search: TBitBtn;
+    lb_CompanyName: TLabel;
+    cmb_Company: TComboBox;
+    lb_JijumName: TLabel;
+    cmb_Jijum: TComboBox;
+    lb_DepartName: TLabel;
+    cmb_Depart: TComboBox;
+    lb_PosiName: TLabel;
+    cmb_Posi: TComboBox;
+    lb_sabun: TLabel;
+    ed_EmpNo: TEdit;
+    lb_Name: TLabel;
+    ed_EmpNM: TEdit;
+    lb_CompanyName1: TLabel;
+    cmb_sCompany: TComboBox;
+    lb_JijumName1: TLabel;
+    cmb_sJijum: TComboBox;
+    cmb_sPosi: TComboBox;
+    lb_PosiName1: TLabel;
+    cmb_sDepart: TComboBox;
+    lb_DepartName1: TLabel;
+    btn_WorkBranch: TBitBtn;
+    btn_Close: TSpeedButton;
+    btn_CSV: TBitBtn;
+    OpenDialog1: TOpenDialog;
+    cmb_emType: TComboBox;
+    lb_emType: TLabel;
+    Gauge1: TGauge;
+    procedure FormActivate(Sender: TObject);
+    procedure btn_CloseClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure rg_WorkGubunClick(Sender: TObject);
+    procedure cmb_CompanyChange(Sender: TObject);
+    procedure cmb_JijumChange(Sender: TObject);
+    procedure btn_SearchClick(Sender: TObject);
+    procedure sg_EmployCheckBoxClick(Sender: TObject; ACol, ARow: Integer;
+      State: Boolean);
+    procedure btn_CSVClick(Sender: TObject);
+    procedure cmb_sCompanyChange(Sender: TObject);
+    procedure cmb_sJijumChange(Sender: TObject);
+    procedure cmb_DepartChange(Sender: TObject);
+    procedure cmb_PosiChange(Sender: TObject);
+    procedure btn_WorkBranchClick(Sender: TObject);
+  private
+    CompanyCodeList : TStringList;
+    sCompanyCodeList : TStringList;
+    JijumCodeList : TStringList;
+    sJijumCodeList : TStringList;
+    PosiCodeList : TStringList;
+    sPosiCodeList : TStringList;
+    DepartCodeList : TStringList;
+    sDepartCodeList : TStringList;
+    EmpTypeCodeList : TStringList;
+    CheckCount : integer;
+    { Private declarations }
+    procedure FormNameSet;
+    procedure ShowEmployee(aCode : string;aTopRow:integer = 0);
+    procedure ShowNotBranch(aCode : string;aTopRow:integer = 0);
+    procedure AdvStrinGridSetAllCheck(Sender: TObject;bchkState:Boolean);
+    Function UpdateTB_EMPLOYEECode(aOrgCompanyCode,aOrgEmCode,aCompanycode,aJijumcode,aDepartcode,aPosicode,aEmpTypeCode,aFdmsID,aCardNo,aCardType,aEmName,
+                    aCompanyName,aJijumName,aDepartName,aPosiName:string):Boolean;
+    Function UpdateTB_CARDCompanyCode(aOrgCompanyCode,aOrgEmCode,aCompanycode:string):Boolean;
+    Function UpdateTB_ATEVENTCompanyCode(aOrgCompanyCode,aOrgEmCode,aCompanycode:string):Boolean;
+    Function UpdateTB_FOODEVENTCompanyCode(aOrgCompanyCode,aOrgEmCode,aCompanycode:string):Boolean;
+
+    Function GetEmployeeCompanyName(aCompanycode,aEmCode:string):string;
+    Function GetEmployeeJijumName(aCompanycode,aEmCode:string):string;
+    Function GetEmployeeDepartName(aCompanycode,aEmCode:string):string;
+    Function GetEmployeePosiName(aCompanycode,aEmCode:string):string;
+
+  public
+    { Public declarations }
+  end;
+
+var
+  fmEmployeeBranch: TfmEmployeeBranch;
+
+implementation
+uses
+  uCompanyCodeLoad,
+  uDataModule1,
+  uCommonSql,
+  uMssql,
+  uMDBSql,
+  uPostGreSql, uFireBird;
+{$R *.dfm}
+
+procedure TfmEmployeeBranch.FormActivate(Sender: TObject);
+begin
+  pan_Caption.Caption := fmEmployeeBranch.Caption;
+end;
+
+procedure TfmEmployeeBranch.btn_CloseClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmEmployeeBranch.FormShow(Sender: TObject);
+var
+  stCompanyCode : string;
+  stJijumCode : string;
+  nIndex : integer;
+begin
+  CompanyCodeList := TStringList.Create;
+  sCompanyCodeList := TStringList.Create;
+  JijumCodeList := TStringList.Create;
+  sJijumCodeList := TStringList.Create;
+  PosiCodeList := TStringList.Create;
+  sPosiCodeList := TStringList.Create;
+  DepartCodeList := TStringList.Create;
+  sDepartCodeList := TStringList.Create;
+  EmpTypeCodeList := TStringList.Create;
+
+  CheckCount := 0;
+
+  rg_WorkGubun.ItemIndex := 0;
+  rg_WorkGubunClick(self);
+  FormNameSet;
+
+
+  LoadsCompanyCode(sCompanyCodeList,cmb_sCompany);
+  stCompanyCode := '000';
+  stJijumCode := '000';
+  if cmb_sCompany.ItemIndex > 0 then stCompanyCode := sCompanyCodeList.Strings[cmb_sCompany.ItemIndex];
+  LoadsJijumCode(stCompanyCode,sJijumCodeList,cmb_sJijum);
+  if cmb_sJijum.ItemIndex > 0 then stJijumCode := copy(sJijumCodeList.Strings[cmb_sJijum.ItemIndex],4,3);
+  LoadsDepartCode(stCompanyCode,stJijumCode,sDepartCodeList,cmb_sDepart);
+  LoadsPosiCode(stCompanyCode,sPosiCodeList,cmb_sPosi);
+  if Not IsMaster then
+  begin
+    if strtoint(CompanyGrade) > 1 then
+    begin
+      nIndex := sCompanyCodeList.IndexOf(MasterCompany);
+      if nIndex > -1 then
+      begin
+        cmb_sCompany.ItemIndex := nIndex;
+        LoadsJijumCode(sCompanyCodeList.Strings[nIndex],sJijumCodeList,cmb_sJijum);
+      end;
+      cmb_sCompany.Enabled := False;
+      LoadsPosiCode(MasterCompany,sPosiCodeList,cmb_sPosi);
+    end;
+    if strtoint(CompanyGrade) > 2 then
+    begin
+      nIndex := sJijumCodeList.IndexOf(MasterCompany + MasterJijum);
+      if nIndex > -1 then cmb_sJijum.ItemIndex := nIndex;
+      cmb_sJijum.Enabled := False;
+    end;
+  end else
+  begin
+    if cmb_sCompany.ItemIndex > -1 then LoadsJijumCode(sCompanyCodeList.Strings[cmb_sCompany.ItemIndex],sJijumCodeList,cmb_sJijum);
+  end;
+  if cmb_sJijum.ItemIndex > -1 then LoadsDepartCode(copy(sJijumCodeList.Strings[cmb_sJijum.ItemIndex],1,3),copy(sJijumCodeList.Strings[cmb_sJijum.ItemIndex],4,3),sDepartCodeList,cmb_sDepart);
+  LoadsEmpType(EmpTypeCodeList,cmb_EmType);
+
+end;
+
+procedure TfmEmployeeBranch.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  CompanyCodeList.Free;
+  sCompanyCodeList.Free;
+  JijumCodeList.Free;
+  sJijumCodeList.Free;
+  PosiCodeList.Free;
+  sPosiCodeList.Free;
+  DepartCodeList.Free;
+  sDepartCodeList.Free;
+  EmpTypeCodeList.Free;
+
+end;
+
+procedure TfmEmployeeBranch.rg_WorkGubunClick(Sender: TObject);
+var
+  nIndex : integer;
+  stCompanyCode : string;
+  stJijumCode : string;
+begin
+
+  if rg_WorkGubun.ItemIndex = 0 then
+  begin
+    lb_DepartName.Visible := True;
+    cmb_Depart.Visible := True;
+    lb_sabun.Visible := True;
+    ed_EmpNo.Visible := True;
+    lb_JijumName.Visible := True;
+    cmb_Jijum.Visible := True;
+    lb_PosiName.Visible := True;
+    cmb_Posi.Visible := True;
+    lb_Name.Visible := True;
+    ed_EmpNM.Visible := True;
+    btn_CSV.Visible := False;
+
+    lb_CompanyName.Caption := FM002;
+    LoadCompanyCode(CompanyCodeList,cmb_Company);
+    stCompanyCode := '000';
+    stJijumCode := '000';
+    if cmb_Company.ItemIndex > 0 then stCompanyCode := CompanyCodeList.Strings[cmb_Company.ItemIndex];
+    LoadJijumCode(stCompanyCode,JijumCodeList,cmb_Jijum);
+    if cmb_Jijum.ItemIndex > 0 then stJijumCode := copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],4,3);
+    LoadDepartCode(stCompanyCode,stJijumCode,DepartCodeList,cmb_Depart);
+    LoadPosiCode(stCompanyCode,PosiCodeList,cmb_Posi);
+    if Not IsMaster then
+    begin
+      if strtoint(CompanyGrade) > 1 then
+      begin
+        nIndex := CompanyCodeList.IndexOf(MasterCompany);
+        if nIndex > -1 then
+        begin
+          cmb_Company.ItemIndex := nIndex;
+          LoadJijumCode(CompanyCodeList.Strings[nIndex],JijumCodeList,cmb_Jijum);
+        end;
+        cmb_Company.Enabled := False;
+        LoadPosiCode(MasterCompany,PosiCodeList,cmb_Posi);
+      end;
+      if strtoint(CompanyGrade) > 2 then
+      begin
+        nIndex := JijumCodeList.IndexOf(MasterCompany + MasterJijum);
+        if nIndex > -1 then cmb_Jijum.ItemIndex := nIndex;
+        cmb_Jijum.Enabled := False;
+      end;
+    end else
+    begin
+      if cmb_Company.ItemIndex > -1 then LoadJijumCode(CompanyCodeList.Strings[cmb_Company.ItemIndex],JijumCodeList,cmb_Jijum);
+    end;
+    if cmb_Jijum.ItemIndex > -1 then LoadDepartCode(copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],1,3),copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],4,3),DepartCodeList,cmb_Depart);
+  end else
+  begin
+    lb_DepartName.Visible := False;
+    cmb_Depart.Visible := False;
+    lb_sabun.Visible := False;
+    ed_EmpNo.Visible := False;
+    lb_JijumName.Visible := False;
+    cmb_Jijum.Visible := False;
+    lb_PosiName.Visible := False;
+    cmb_Posi.Visible := False;
+    lb_Name.Visible := False;
+    ed_EmpNM.Visible := False;
+    btn_CSV.Visible := True;
+
+    lb_CompanyName.Caption := '미분류구분';
+    cmb_Company.Clear;
+    cmb_Company.Items.Add('파일검색');
+    cmb_Company.Items.Add(FM001 + ' 미분류');
+    cmb_Company.Items.Add(FM011 + ' 미분류');
+    cmb_Company.Items.Add(FM021 + ' 미분류');
+    cmb_Company.Items.Add(FM031 + ' 미분류');
+    cmb_Company.ItemIndex := 0;
+  end;
+  if G_nSearchIndex = 0 then btn_SearchClick(self);
+end;
+
+procedure TfmEmployeeBranch.FormNameSet;
+begin
+
+  with sg_Employ do
+  begin
+    Cells[0,0] := FM001;
+    Cells[1,0] := FM101;
+    Cells[2,0] := FM102;
+    Cells[3,0] := FM002;
+    Cells[4,0] := FM012;
+    Cells[5,0] := FM022;
+    Cells[6,0] := FM032;
+  end;
+  lb_CompanyName.Caption := FM002;
+  lb_CompanyName1.Caption := FM002;
+
+  lb_JijumName.Caption := FM012;
+  lb_JijumName1.Caption := FM012;
+
+  lb_DepartName.Caption := FM022;
+  lb_DepartName1.Caption := FM022;
+
+  lb_PosiName.Caption := FM032;
+  lb_PosiName1.Caption := FM032;
+
+  lb_sabun.Caption := FM101;
+  lb_Name.Caption := FM102;
+  
+  lb_emType.Caption := FM042;
+end;
+
+procedure TfmEmployeeBranch.cmb_CompanyChange(Sender: TObject);
+begin
+  if rg_WorkGubun.ItemIndex = 0 then
+  begin
+    LoadJijumCode(CompanyCodeList.Strings[cmb_Company.ItemIndex],JijumCodeList,cmb_Jijum);
+    LoadDepartCode(copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],1,3),copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],4,3),DepartCodeList,cmb_Depart);
+    LoadPosiCode(CompanyCodeList.Strings[cmb_Company.ItemIndex],PosiCodeList,cmb_Posi);
+  end else
+  begin
+    if cmb_Company.ItemIndex = 0 then btn_CSV.Visible := True
+    else btn_CSV.Visible := False;
+  end;
+  if G_nSearchIndex = 0 then btn_SearchClick(self);
+end;
+
+procedure TfmEmployeeBranch.cmb_JijumChange(Sender: TObject);
+begin
+  LoadDepartCode(copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],1,3),copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],4,3),DepartCodeList,cmb_Depart);
+  if G_nSearchIndex = 0 then btn_SearchClick(self);
+end;
+
+procedure TfmEmployeeBranch.btn_SearchClick(Sender: TObject);
+begin
+  checkCount := 0;
+  if rg_WorkGubun.ItemIndex = 0 then
+  begin
+    ShowEmployee('');
+  end else
+  begin
+    ShowNotBranch('');
+  end;
+end;
+
+procedure TfmEmployeeBranch.ShowEmployee(aCode: string; aTopRow: integer);
+var
+  stSql : string;
+  nRow : integer;
+  i : integer;
+  TempAdoQuery : TADOQuery;
+begin
+  RowGridInitialize(sg_Employ,2,True); //스트링그리드 초기화
+
+  if DBTYPE = 'MSSQL' then stSql := MSSQL.SelectTB_EMPLOYEEJoinBase //SelectTB_EMPLOYEE
+  else if DBType = 'PG' then stSql := PostGreSql.SelectTB_EMPLOYEEJoinBase
+  else if DBType = 'MDB' then stSql := MDBSql.SelectTB_EMPLOYEEJoinBase
+  else if DBType = 'FB' then stSql := FireBird.SelectTB_EMPLOYEEJoinBase
+  else Exit;
+
+  if (Not IsMaster) and (CompanyGrade <> '0') then
+  begin
+    if CompanyGrade = '1' then
+    begin
+      if cmb_Company.ItemIndex < 1 then
+      begin
+        if CompanyCodeList.Count < 2 then
+        begin
+          showmessage('관리할수 있는 권한이 없습니다.');
+          Exit;
+        end;
+        for i:= 1 to CompanyCodeList.Count - 1 do
+        begin
+          if i = 1 then stSql := stSql + ' AND ( '
+          else stSql := stSql + ' OR ';
+          stSql := stSql + ' a.CO_COMPANYCODE = ''' + CompanyCodeList.Strings[i] + ''' ';
+        end;
+        stSql := stSql + ')'; 
+      end else stSql := stSql + ' AND a.CO_COMPANYCODE = ''' + CompanyCodeList.Strings[cmb_Company.ItemIndex] + ''' ';
+      if cmb_Jijum.ItemIndex > 0 then stSql := stSql + ' AND a.CO_JIJUMCODE = ''' + copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],4,3) + ''' ';
+      if cmb_Depart.ItemIndex > 0 then stSql := stSql + ' AND a.CO_DEPARTCODE = ''' + copy(DepartCodeList.Strings[cmb_Depart.ItemIndex],7,3) + ''' ';
+    end else if CompanyGrade = '2' then
+    begin
+      if cmb_Company.ItemIndex < 1 then
+      begin
+        showmessage('관리자 소속 코드가 이상합니다.');
+        Exit;
+      end;
+      stSql := stSql + ' AND a.CO_COMPANYCODE = ''' + CompanyCodeList.Strings[cmb_Company.ItemIndex] + ''' ';
+      if cmb_Jijum.ItemIndex < 1 then
+      begin
+        if JijumCodeList.Count < 2 then
+        begin
+          showmessage('관리할수 있는 권한이 없습니다.');
+          Exit;
+        end;
+        for i:= 1 to JijumCodeList.Count - 1 do
+        begin
+          if i = 1 then stSql := stSql + ' AND ( '
+          else stSql := stSql + ' OR ';
+          stSql := stSql + ' a.CO_JIJUMCODE = ''' + copy(JijumCodeList.Strings[i],4,3) + ''' ';
+        end;
+        stSql := stSql + ')';
+      end else stSql := stSql + ' AND a.CO_JIJUMCODE = ''' + copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],4,3) + ''' ';
+      if cmb_Depart.ItemIndex > 0 then stSql := stSql + ' AND a.CO_DEPARTCODE = ''' + copy(DepartCodeList.Strings[cmb_Depart.ItemIndex],7,3) + ''' ';
+    end else if CompanyGrade = '3' then
+    begin
+      if cmb_Company.ItemIndex < 1 then
+      begin
+        showmessage('관리자 소속 코드가 이상합니다.');
+        Exit;
+      end;
+      stSql := stSql + ' AND a.CO_COMPANYCODE = ''' + CompanyCodeList.Strings[cmb_Company.ItemIndex] + ''' ';
+      if cmb_Jijum.ItemIndex < 1 then
+      begin
+        showmessage('관리자 소속 코드가 이상합니다.');
+        Exit;
+      end;
+      stSql := stSql + ' AND a.CO_JIJUMCODE = ''' + copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],4,3) + ''' ';
+      if cmb_Depart.ItemIndex < 1 then
+      begin
+        if DepartCodeList.Count < 2 then
+        begin
+          showmessage('관리할수 있는 권한이 없습니다.');
+          Exit;
+        end;
+        for i:= 1 to DepartCodeList.Count - 1 do
+        begin
+          if i = 1 then stSql := stSql + ' AND ( '
+          else stSql := stSql + ' OR ';
+          stSql := stSql + ' a.CO_DEPARTCODE = ''' + copy(DepartCodeList.Strings[i],7,3) + ''' ';
+        end;
+        stSql := stSql + ')';
+      end else stSql := stSql + ' AND a.CO_DEPARTCODE = ''' + copy(DepartCodeList.Strings[cmb_Depart.ItemIndex],7,3) + ''' '; 
+    end;
+  end else
+  begin
+    if cmb_Depart.ItemIndex > 0 then
+    begin
+      stSql := stSql + ' AND a.CO_COMPANYCODE = ''' + copy(DepartCodeList.Strings[cmb_Depart.ItemIndex],1,3) + ''' ' ;
+      stSql := stSql + ' AND a.CO_JIJUMCODE = ''' + copy(DepartCodeList.Strings[cmb_Depart.ItemIndex],4,3) + ''' ' ;
+      stSql := stSql + ' AND a.CO_DEPARTCODE = ''' + copy(DepartCodeList.Strings[cmb_Depart.ItemIndex],7,3) + ''' ' ;
+    end else if cmb_Jijum.ItemIndex > 0 then
+    begin
+      stSql := stSql + ' AND a.CO_COMPANYCODE = ''' + copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],1,3) + ''' ' ;
+      stSql := stSql + ' AND a.CO_JIJUMCODE = ''' + copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],4,3) + ''' ' ;
+    end else if cmb_Company.ItemIndex > 0 then
+    begin
+      stSql := stSql + ' AND a.CO_COMPANYCODE = ''' + CompanyCodeList.Strings[cmb_Company.ItemIndex] + ''' ' ;
+    end;
+  end;
+
+  if cmb_Posi.ItemIndex > 0 then
+    stSql := stSql + ' AND a.PO_POSICODE = ''' + copy(PosiCodeList.Strings[cmb_Posi.ItemIndex],4,3) + ''' ';
+  if Trim(ed_EmpNo.Text) <> '' then
+    stSql := stSql + ' AND a.EM_CODE = ''' + Trim(ed_EmpNo.Text)  + ''' ';
+  if Trim(ed_EmpNM.Text) <> '' then
+    stSql := stSql + ' AND a.EM_NAME LIKE ''' + Trim(ed_EmpNM.Text)  + '%'' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+
+      if RecordCount < 1 then
+      begin
+        Exit;
+      end;
+
+      sg_Employ.RowCount := RecordCount + 1;
+      nRow := 1;
+      First;
+      while Not Eof do
+      begin
+        with sg_Employ do
+        begin
+          cells[0,nRow] := FindField('CO_COMPANYCODE').AsString;
+          cells[1,nRow] := FindField('EM_CODE').AsString;
+          cells[2,nRow] := FindField('EM_NAME').AsString;
+          cells[3,nRow] := FindField('COMPANYNAME').AsString;
+          cells[4,nRow] := FindField('JIJUMNAME').AsString;
+          cells[5,nRow] := FindField('DEPARTNAME').AsString;
+          cells[6,nRow] := FindField('PO_NAME').AsString;
+          cells[7,nRow] := FindField('FDMS_ID').AsString;
+          cells[8,nRow] := FindField('CA_CARDNO').AsString;
+          cells[9,nRow] := FindField('CA_CARDTYPE').AsString;
+
+          if (FindField('CO_COMPANYCODE').AsString + FindField('EM_CODE').AsString)  = aCode then
+          begin
+            SelectRows(nRow,1);
+          end;
+          AddCheckBox(0,nRow,False,False);
+        end;
+        nRow := nRow + 1;
+        Next;
+      end;
+    end;
+  Finally
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+
+end;
+
+procedure TfmEmployeeBranch.sg_EmployCheckBoxClick(Sender: TObject; ACol,
+  ARow: Integer; State: Boolean);
+begin
+  if ARow = 0 then //전체선택 또는 해제
+  begin
+    if State then CheckCount := (Sender as TAdvStringGrid).RowCount - 1
+    else CheckCount := 0;
+    AdvStrinGridSetAllCheck(Sender,State);
+  end else
+  begin
+    if State then CheckCount := CheckCount + 1
+    else CheckCount := CheckCount - 1 ;
+  end;
+
+end;
+
+procedure TfmEmployeeBranch.AdvStrinGridSetAllCheck(Sender: TObject;
+  bchkState: Boolean);
+var
+  i : integer;
+begin
+    for i:= 1 to (Sender as TAdvStringGrid).RowCount - 1  do
+    begin
+      (Sender as TAdvStringGrid).SetCheckBoxState(0,i,bchkState);
+    end;
+
+end;
+
+procedure TfmEmployeeBranch.ShowNotBranch(aCode: string; aTopRow: integer);
+var
+  stSql : string;
+  nRow : integer;
+  i : integer;
+  TempAdoQuery : TADOQuery;
+begin
+  RowGridInitialize(sg_Employ,2,True); //스트링그리드 초기화
+  if cmb_Company.ItemIndex < 1 then Exit;
+
+  if DBTYPE = 'MSSQL' then stSql := MSSQL.SelectTB_EMPLOYEEJoinBase   //SelectTB_EMPLOYEE
+  else if DBType = 'PG' then stSql := PostGreSql.SelectTB_EMPLOYEEJoinBase
+  else if DBType = 'MDB' then stSql := MDBSql.SelectTB_EMPLOYEEJoinBase
+  else if DBType = 'FB' then stSql := FireBird.SelectTB_EMPLOYEEJoinBase
+  else Exit;
+
+  if cmb_Company.ItemIndex = 1 then stSql := stSql + ' AND a.CO_COMPANYCODE = ''000'' '
+  else if cmb_Company.ItemIndex = 2 then stSql := stSql + ' AND a.CO_JIJUMCODE = ''000'' '
+  else if cmb_Company.ItemIndex = 3 then stSql := stSql + ' AND a.CO_DEPARTCODE = ''000'' '
+  else if cmb_Company.ItemIndex = 4 then stSql := stSql + ' AND a.PO_POSICODE = ''000'' ';
+
+  if Not IsMaster then
+  begin
+    if strtoint(CompanyGrade) > 1 then stSql := stSql + ' AND a.CO_COMPANYCODE = ''' + MasterCompany + ''' ';
+    if strtoint(CompanyGrade) > 2 then stSql := stSql + ' AND a.CO_JIJUMCODE = ''' + MasterJijum + ''' ';
+    if strtoint(CompanyGrade) > 3 then stSql := stSql + ' AND a.CO_DEPARTCODE = ''' + MasterDepart + ''' ';
+  end;
+  
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+
+      if RecordCount < 1 then
+      begin
+        Exit;
+      end;
+
+      sg_Employ.RowCount := RecordCount + 1;
+      nRow := 1;
+      First;
+      while Not Eof do
+      begin
+        with sg_Employ do
+        begin
+          cells[0,nRow] := FindField('CO_COMPANYCODE').AsString;
+          cells[1,nRow] := FindField('EM_CODE').AsString;
+          cells[2,nRow] := FindField('EM_NAME').AsString;
+          cells[3,nRow] := FindField('COMPANYNAME').AsString;
+          cells[4,nRow] := FindField('JIJUMNAME').AsString;
+          cells[5,nRow] := FindField('DEPARTNAME').AsString;
+          cells[6,nRow] := FindField('PO_NAME').AsString;
+          cells[7,nRow] := FindField('FDMS_ID').AsString;
+          cells[8,nRow] := FindField('CA_CARDNO').AsString;
+          cells[9,nRow] := FindField('CA_CARDTYPE').AsString;
+          if (FindField('CO_COMPANYCODE').AsString + FindField('EM_CODE').AsString)  = aCode then
+          begin
+            SelectRows(nRow,1);
+          end;
+          AddCheckBox(0,nRow,False,False);
+        end;
+        nRow := nRow + 1;
+        Next;
+      end;
+    end;
+  Finally
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+
+end;
+
+procedure TfmEmployeeBranch.btn_CSVClick(Sender: TObject);
+var
+  stFile : string;
+  i : integer;
+begin
+  RowGridInitialize(sg_Employ,2,True);
+  OpenDialog1.InitialDir:= ExtractFileDir(Application.ExeName);
+  OpenDialog1.DefaultExt:= 'CSV';
+  OpenDialog1.Filter := 'CSV files (*.CSV)|*.CSV';
+  if OpenDialog1.Execute then
+  begin
+    stFile:= OpenDialog1.FileName;
+    sg_Employ.LoadFromCSV(stFile);
+    checkCount := 0;
+  end;
+
+  for i := 1 to sg_Employ.RowCount - 1 do
+  begin
+    sg_Employ.AddCheckBox(0,i,False,False);
+  end;
+  
+end;
+
+procedure TfmEmployeeBranch.cmb_sCompanyChange(Sender: TObject);
+begin
+    LoadsJijumCode(sCompanyCodeList.Strings[cmb_sCompany.ItemIndex],sJijumCodeList,cmb_sJijum);
+    LoadsDepartCode(copy(sJijumCodeList.Strings[cmb_sJijum.ItemIndex],1,3),copy(sJijumCodeList.Strings[cmb_sJijum.ItemIndex],4,3),sDepartCodeList,cmb_sDepart);
+    LoadsPosiCode(sCompanyCodeList.Strings[cmb_sCompany.ItemIndex],sPosiCodeList,cmb_sPosi);
+end;
+
+procedure TfmEmployeeBranch.cmb_sJijumChange(Sender: TObject);
+begin
+  LoadsDepartCode(copy(sJijumCodeList.Strings[cmb_sJijum.ItemIndex],1,3),copy(sJijumCodeList.Strings[cmb_sJijum.ItemIndex],4,3),sDepartCodeList,cmb_sDepart);
+end;
+
+procedure TfmEmployeeBranch.cmb_DepartChange(Sender: TObject);
+begin
+  if G_nSearchIndex = 0 then btn_SearchClick(self);
+
+end;
+
+procedure TfmEmployeeBranch.cmb_PosiChange(Sender: TObject);
+begin
+  if G_nSearchIndex = 0 then btn_SearchClick(self);
+
+end;
+
+procedure TfmEmployeeBranch.btn_WorkBranchClick(Sender: TObject);
+var
+  stCompanyCode : string ;
+  stJijumCode : string;
+  stDepartCode : string;
+  stPosiCode : string;
+  stEmpTypeCode : string;
+  i : integer;
+  bchkState : Boolean;
+begin
+  if CheckCount < 1 then
+  begin
+    showmessage('작업 할 대상이 선택되지 않았습니다.');
+    Exit;
+  end;
+
+  stCompanyCode := '';
+  stJijumCode := '';
+  stDepartCode := '';
+  stPosiCode := '';
+  stEmpTypeCode := '';
+
+  if cmb_sCompany.ItemIndex > 0 then stCompanycode := sCompanyCodeList.Strings[cmb_sCompany.ItemIndex];
+  if cmb_sJijum.ItemIndex > 0 then stJijumcode := copy(sJijumCodeList.Strings[cmb_sJijum.ItemIndex],4,3);
+  if cmb_sDepart.ItemIndex > 0 then stDepartcode := copy(sDepartCodeList.Strings[cmb_sDepart.ItemIndex],7,3);
+  if cmb_sPosi.ItemIndex > 0 then stPosicode := copy(sPosiCodeList.Strings[cmb_sPosi.ItemIndex],4,3);
+  if cmb_emType.ItemIndex > 0 then stEmpTypeCode := EmpTypeCodeList.Strings[cmb_emType.ItemIndex];
+
+  if (Trim(stCompanycode) = '')
+    and (Trim(stJijumcode) = '')
+    and (Trim(stDepartcode) = '')
+    and (Trim(stPosicode) = '')
+    and (Trim(stEmpTypeCode) = '')
+  then
+  begin
+    showmessage('분류 대상이 선택되지 않았습니다.');
+    Exit;
+  end;
+  Gauge1.Visible := True;
+  Gauge1.Progress := 0;
+  Gauge1.MaxValue := CheckCount;
+  with sg_Employ do
+  begin
+    for i := 1 to RowCount - 1 do
+    begin
+      GetCheckBoxState(0,i, bchkState);
+      if bchkState then
+      begin
+        Gauge1.Progress := Gauge1.Progress + 1;
+        UpdateTB_EMPLOYEECode(Trim(sg_Employ.Cells[0,i]),Trim(sg_Employ.Cells[1,i]),stCompanycode,stJijumcode,stDepartcode,stPosicode,stEmpTypeCode,
+                              Trim(sg_Employ.Cells[7,i]),Trim(sg_Employ.Cells[8,i]),Trim(sg_Employ.Cells[9,i]),Trim(sg_Employ.Cells[2,i]),
+                              cmb_sCompany.Text,cmb_sJijum.Text,cmb_sDepart.Text,cmb_sPosi.Text);
+                              //aCompanyName,aJijumName,aDepartName,aPosiName
+        if Trim(sg_Employ.Cells[0,i]) <> stCompanycode then
+        begin
+           UpdateTB_CARDCompanyCode(Trim(sg_Employ.Cells[0,i]),sg_Employ.Cells[1,i],stCompanycode);
+           //UpdateTB_ATEVENTCompanyCode(Trim(sg_Employ.Cells[0,i]),sg_Employ.Cells[1,i],stCompanycode);   //이력은 바꾸면 안됨
+           //UpdateTB_FOODEVENTCompanyCode(Trim(sg_Employ.Cells[0,i]),sg_Employ.Cells[1,i],stCompanycode);
+        end;
+        {if rg_WorkGubun.ItemIndex = 1 then
+        begin
+          if cmb_Company.ItemIndex = 1 then  //회사코드 미분류 인 경우
+          begin
+            if Trim(stCompanycode) <> '' then
+              UpdateTB_CARDCompanyCode(Trim(sg_Employ.Cells[0,i]),sg_Employ.Cells[1,i],stCompanycode);
+          end;
+        end; }
+      end;
+    end;
+  end;
+  Gauge1.Visible := False;
+  showmessage('작업완료');
+  //btn_SearchClick(Self);
+end;
+
+function TfmEmployeeBranch.UpdateTB_EMPLOYEECode(aOrgCompanyCode,
+  aOrgEmCode, aCompanycode, aJijumcode, aDepartcode,
+  aPosicode,aEmpTypeCode,aFdmsID,aCardNo,aCardType,aEmName,
+  aCompanyName,aJijumName,aDepartName,aPosiName: string): Boolean;
+var
+  stSql : string;
+  stSet : string;
+  stCompanyName : string;
+  stJijumName : string;
+  stDepartName : string;
+  stPosiName : string;
+begin
+  stSet := '';
+  if Trim(aCompanycode) <> '' then
+    stSet := stSet + ' CO_COMPANYCODE = ''' + aCompanycode + ''' ';
+  if Trim(aJijumcode) <> '' then
+  begin
+    if stSet <> '' then stSet := stSet + ',';
+    stSet := stSet + ' CO_JIJUMCODE = ''' + aJijumcode + ''' ';
+  end;
+  if Trim(aDepartcode) <> '' then
+  begin
+    if stSet <> '' then stSet := stSet + ',';
+    stSet := stSet + ' CO_DEPARTCODE = ''' + aDepartcode + ''' ';
+  end;
+  if Trim(aPosicode) <> '' then
+  begin
+    if stSet <> '' then stSet := stSet + ',';
+    stSet := stSet + ' PO_POSICODE = ''' + aPosicode + ''' ';
+  end;
+  if Trim(aEmpTypeCode) <> '' then
+  begin
+    if stSet <> '' then stSet := stSet + ',';
+    stSet := stSet + ' rg_code = ''' + aEmpTypeCode + ''' ';
+  end;
+
+  stSql := 'Update TB_EMPLOYEE set ';
+  stSql := stSql + stSet;
+  stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = '''  + aOrgCompanyCode + ''' ';
+  stSql := stSql + ' AND EM_CODE = ''' + aOrgEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql,True);
+
+  stCompanyName := GetEmployeeCompanyName(aCompanycode,aOrgEmCode);
+  stJijumName := GetEmployeeJijumName(aCompanycode,aOrgEmCode);
+  stDepartName := GetEmployeeDepartName(aCompanycode,aOrgEmCode);
+  stPosiName := GetEmployeePosiName(aCompanycode,aOrgEmCode);
+
+  stSql := CommonSql.InsertIntoTB_EMPHIS(aOrgCompanyCode,aOrgEmCode,aFdmsID,'2',aCardNo,aCardType,
+           aEmName,'',stCompanyName,stJijumName,stDepartName,stPosiName);//수정
+  DataModule1.ProcessExecSQL(stSql);
+
+end;
+
+function TfmEmployeeBranch.UpdateTB_CARDCompanyCode(aOrgCompanyCode,
+  aOrgEmCode, aCompanycode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := ' Update TB_CARD Set CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = ''' + aOrgCompanyCode + ''' ';
+  stSql := stSql + ' AND EM_CODE = ''' + aOrgEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TfmEmployeeBranch.GetEmployeeCompanyName(aCompanycode,
+  aEmCode: string): string;
+var
+  stSql : string;
+  TempAdoQuery :TADOQuery;
+begin
+  result := '';
+  stSql := ' Select b.CO_NAME from ';
+  stSql := stSql + ' TB_EMPLOYEE a ';
+  stSql := stSql + ' Left Join TB_COMPANY b ';
+  stSql := stSql + ' ON(a.GROUP_CODE = b.GROUP_CODE ';
+  stSql := stSql + ' AND a.CO_COMPANYCODE = b.CO_COMPANYCODE ';
+  stSql := stSql + ' AND b.CO_GUBUN = ''1'') ';
+  stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND a.CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' AND a.EM_CODE = ''' + aEmCode + ''' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.DisableControls;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if recordCount < 1 then Exit;
+      First;
+      result := FindField('CO_NAME').AsString;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TfmEmployeeBranch.GetEmployeeDepartName(aCompanycode,
+  aEmCode: string): string;
+var
+  stSql : string;
+  TempAdoQuery :TADOQuery;
+begin
+  result := '';
+  stSql := ' Select b.CO_NAME from ';
+  stSql := stSql + ' TB_EMPLOYEE a ';
+  stSql := stSql + ' Left Join TB_COMPANY b ';
+  stSql := stSql + ' ON(a.GROUP_CODE = b.GROUP_CODE ';
+  stSql := stSql + ' AND a.CO_COMPANYCODE = b.CO_COMPANYCODE ';
+  stSql := stSql + ' AND a.CO_JIJUMCODE = b.CO_JIJUMCODE ';
+  stSql := stSql + ' AND a.CO_DEPARTCODE = b.CO_DEPARTCODE ';
+  stSql := stSql + ' AND b.CO_GUBUN = ''3'') ';
+  stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND a.CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' AND a.EM_CODE = ''' + aEmCode + ''' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.DisableControls;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if recordCount < 1 then Exit;
+      First;
+      result := FindField('CO_NAME').AsString;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TfmEmployeeBranch.GetEmployeeJijumName(aCompanycode,
+  aEmCode: string): string;
+var
+  stSql : string;
+  TempAdoQuery :TADOQuery;
+begin
+  result := '';
+  stSql := ' Select b.CO_NAME from ';
+  stSql := stSql + ' TB_EMPLOYEE a ';
+  stSql := stSql + ' Left Join TB_COMPANY b ';
+  stSql := stSql + ' ON(a.GROUP_CODE = b.GROUP_CODE ';
+  stSql := stSql + ' AND a.CO_COMPANYCODE = b.CO_COMPANYCODE ';
+  stSql := stSql + ' AND a.CO_JIJUMCODE = b.CO_JIJUMCODE ';
+  stSql := stSql + ' AND b.CO_GUBUN = ''2'') ';
+  stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND a.CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' AND a.EM_CODE = ''' + aEmCode + ''' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.DisableControls;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if recordCount < 1 then Exit;
+      First;
+      result := FindField('CO_NAME').AsString;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TfmEmployeeBranch.GetEmployeePosiName(aCompanycode,
+  aEmCode: string): string;
+var
+  stSql : string;
+  TempAdoQuery :TADOQuery;
+begin
+  result := '';
+  stSql := ' Select b.PO_NAME from ';
+  stSql := stSql + ' TB_EMPLOYEE a ';
+  stSql := stSql + ' Left Join TB_POSI b ';
+  stSql := stSql + ' ON(a.GROUP_CODE = b.GROUP_CODE ';
+  stSql := stSql + ' AND a.CO_COMPANYCODE = b.CO_COMPANYCODE ';
+  stSql := stSql + ' AND a.PO_POSICODE = b.PO_POSICODE) ';
+  stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND a.CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' AND a.EM_CODE = ''' + aEmCode + ''' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.DisableControls;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if recordCount < 1 then Exit;
+      First;
+      result := FindField('PO_NAME').AsString;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TfmEmployeeBranch.UpdateTB_ATEVENTCompanyCode(aOrgCompanyCode,
+  aOrgEmCode, aCompanycode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := ' Update TB_ATEVENT Set CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = ''' + aOrgCompanyCode + ''' ';
+  stSql := stSql + ' AND EM_CODE = ''' + aOrgEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+
+end;
+
+function TfmEmployeeBranch.UpdateTB_FOODEVENTCompanyCode(aOrgCompanyCode,
+  aOrgEmCode, aCompanycode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := ' Update TB_FOODEVENT Set CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = ''' + aOrgCompanyCode + ''' ';
+  stSql := stSql + ' AND EM_CODE = ''' + aOrgEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+
+end;
+
+end.

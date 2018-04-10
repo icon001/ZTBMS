@@ -1,0 +1,753 @@
+unit uDBCardPermit;
+
+interface
+
+uses
+  System.SysUtils, System.Classes,Winapi.ActiveX,Data.Win.ADODB,DB,Vcl.Forms;
+
+type
+  TdmDBCardPermit = class(TDataModule)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    Function CardGroupArmAreaPermitAdd(aCardGroup,aNodeNo,aEcuID,aArmAreaNo:string):Boolean;  //그룹별 방범구역 권한 부여
+    Function CardGroupArmAreaPermitDelete(aCardGroup,aNodeNo,aEcuID,aArmAreaNo:string):Boolean;  //그룹별 방범구역 권한 삭제
+    Function CardGroupDoorPermitAdd(aCardGroup,aNodeNo,aEcuID,aDoorNo:string):Boolean;  //그룹별 출입문 권한 부여
+    Function CardGroupDoorPermitDelete(aCardGroup,aNodeNo,aEcuID,aDoorNo:string):Boolean;  //그룹별 출입문 권한 삭제
+    Function CardGroupGradeToEmployeeGrade(aCompanyCode,aEmCode,aCardGroup:string) : Boolean; //사원별 카드그룹 재적용
+    Function CardGroupGradeToCardGrade(aCardGroup:string) : Boolean;                          //카드그룹 전체 변경 적용
+    Function CardGroupToDeviceCardNoCopyEqualAdd(aCardGroup,aCardNo:string) : Boolean;
+    Function CardGroupToDeviceCardNoCopyEqualUpdate(aCardGroup,aCardNo:string) : Boolean;
+    Function EmployeeArmAreaPermitAdd(aCompanyCode,aEmCode,aNodeNo,aEcuID,aArmAreano:string):Boolean;   //개인별 방범권한 부여
+    Function EmployeeArmAreaPermitDelete(aCompanyCode,aEmCode,aNodeNo,aEcuID,aArmAreano:string):Boolean;  //개인별 방범권한 삭제
+    Function EmployeeCardPermitApply(aCompanyCode,aEmCode:string):Boolean;                               //개인별 카드권한 재적용
+    Function EmployeeCardPermitResend(aCompanyCode,aEmCode:string):Boolean;                         //카드권한재전송
+    Function EmployeeDoorPermitAdd(aCompanyCode,aEmCode,aNodeNo,aEcuID,aDoorno:string):Boolean;      //개인별 출입권한 부여
+    Function EmployeeDoorPermitDelete(aCompanyCode,aEmCode,aNodeNo,aEcuID,aDoorno:string):Boolean;   //개인별 출입권한 삭제
+    Function EmployeePermitAllDelete(aCompanyCode,aEmCode:string):Boolean;
+    Function EmployeePermitToDeviceCardNoCopyEqualAdd(aCompanyCode, aEmCode,aCardNo:string) : Boolean;
+    Function EmployeePermitToDeviceCardNoCopyEqualUpdate(aCompanyCode, aEmCode,aCardNo:string) : Boolean;
+  end;
+
+var
+  dmDBCardPermit: TdmDBCardPermit;
+
+implementation
+
+uses
+  uCommonFunction,
+  uCommonVariable,
+  uDataBase,
+  uDBFunction;
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+
+{$R *.dfm}
+
+{ TdmDBCardPermit }
+
+function TdmDBCardPermit.CardGroupArmAreaPermitAdd(aCardGroup, aNodeNo, aEcuID,
+  aArmAreaNo: string): Boolean;
+var
+  stArmAreaNo : string;
+begin
+  if Not isDigit(aArmAreano) then stArmAreaNo := '0'
+  else stArmAreaNo := inttostr(strtoint(aArmAreano));
+
+  if dmDBFunction.CheckTB_DEVICECARDNOGROUP_Code(aCardGroup,aNodeNo, aEcuID) = 1 then
+  begin
+    dmDBFunction.UpdateTB_DEVICECARDNOGROUP_Field_StringValue(aCardGroup,aNodeNo, aEcuID,'DE_PERMIT','L');
+    dmDBFunction.UpdateTB_DEVICECARDNOGROUP_Field_StringValue(aCardGroup,aNodeNo, aEcuID,'DE_ALARM' + stArmAreaNo,'Y');
+    if stArmAreaNo = '0' then dmDBFunction.UpdateTB_DEVICECARDNOGROUP_Field_StringValue(aCardGroup,aNodeNo, aEcuID,'DE_USEALARM','Y');
+
+  end else
+  begin
+    dmDBFunction.InsertIntoTB_DEVICECARDNOGROUP_FieldName(aCardGroup,aNodeNo, aEcuID,'DE_ALARM' + stArmAreaNo,'Y');
+    dmDBFunction.UpdateTB_DEVICECARDNOGROUP_Field_StringValue(aCardGroup,aNodeNo, aEcuID,'DE_PERMIT','L');
+    if stArmAreaNo = '0' then dmDBFunction.UpdateTB_DEVICECARDNOGROUP_Field_StringValue(aCardGroup,aNodeNo, aEcuID,'DE_USEALARM','Y');
+  end;
+
+end;
+
+function TdmDBCardPermit.CardGroupArmAreaPermitDelete(aCardGroup, aNodeNo,
+  aEcuID, aArmAreaNo: string): Boolean;
+var
+  stArmAreaNo : string;
+begin
+  if Not isDigit(aArmAreano) then stArmAreaNo := '0'
+  else stArmAreaNo := inttostr(strtoint(aArmAreano));
+
+  if dmDBFunction.CheckTB_DEVICECARDNOGROUP_Code(aCardGroup,aNodeNo, aEcuID) = 1 then
+  begin
+    //dmDBFunction.UpdateTB_DEVICECARDNOGROUP_Field_StringValue(aCardGroup,aNodeNo, aEcuID,'DE_PERMIT','L');
+    dmDBFunction.UpdateTB_DEVICECARDNOGROUP_Field_StringValue(aCardGroup,aNodeNo, aEcuID,'DE_ALARM' + stArmAreaNo,'N');
+    if stArmAreaNo = '0' then dmDBFunction.UpdateTB_DEVICECARDNOGROUP_Field_StringValue(aCardGroup,aNodeNo, aEcuID,'DE_USEALARM','N');
+
+  end else
+  begin
+    dmDBFunction.InsertIntoTB_DEVICECARDNOGROUP_FieldName(aCardGroup,aNodeNo, aEcuID,'DE_ALARM' + stArmAreaNo,'N');
+    //dmDBFunction.UpdateTB_DEVICECARDNOGROUP_Field_StringValue(aCardGroup,aNodeNo, aEcuID,'DE_PERMIT','L');
+    if stArmAreaNo = '0' then dmDBFunction.UpdateTB_DEVICECARDNOGROUP_Field_StringValue(aCardGroup,aNodeNo, aEcuID,'DE_USEALARM','N');
+  end;
+
+end;
+
+function TdmDBCardPermit.CardGroupDoorPermitAdd(aCardGroup, aNodeNo, aEcuID,
+  aDoorNo: string): Boolean;
+var
+  stDoorNo : string;
+  stSql : string;
+  TempAdoQuery : TAdoQuery;
+  stCardNo : string;
+begin
+  if Not isDigit(aDoorno) then stDoorNo := '1'
+  else stDoorNo := inttostr(strtoint(aDoorNo));
+
+  if dmDBFunction.CheckTB_DEVICECARDNOGROUP_Code(aCardGroup,aNodeNo, aEcuID) = 1 then
+  begin
+    dmDBFunction.UpdateTB_DEVICECARDNOGROUP_Field_StringValue(aCardGroup,aNodeNo, aEcuID,'DE_USEACCESS','Y');
+    dmDBFunction.UpdateTB_DEVICECARDNOGROUP_Field_StringValue(aCardGroup,aNodeNo, aEcuID,'DE_PERMIT','L');
+    dmDBFunction.UpdateTB_DEVICECARDNOGROUP_Field_StringValue(aCardGroup,aNodeNo, aEcuID,'DE_DOOR' + stDoorNo,'Y');
+  end else
+  begin
+    dmDBFunction.InsertIntoTB_DEVICECARDNOGROUP_FieldName(aCardGroup,aNodeNo, aEcuID,'DE_USEACCESS','Y');
+    dmDBFunction.InsertIntoTB_DEVICECARDNOGROUP_FieldName(aCardGroup,aNodeNo, aEcuID,'DE_DOOR' + stDoorNo,'Y');
+    dmDBFunction.UpdateTB_DEVICECARDNOGROUP_Field_StringValue(aCardGroup,aNodeNo, aEcuID,'DE_PERMIT','L');
+  end;
+
+end;
+
+function TdmDBCardPermit.CardGroupDoorPermitDelete(aCardGroup, aNodeNo, aEcuID,
+  aDoorNo: string): Boolean;
+var
+  stDoorNo : string;
+  stSql : string;
+  TempAdoQuery : TAdoQuery;
+  stCardNo : string;
+begin
+  if Not isDigit(aDoorno) then stDoorNo := '1'
+  else stDoorNo := inttostr(strtoint(aDoorNo));
+
+  if dmDBFunction.CheckTB_DEVICECARDNOGROUP_Code(aCardGroup,aNodeNo, aEcuID) = 1 then
+  begin
+    //dmDBFunction.UpdateTB_DEVICECARDNOGROUP_Field_StringValue(aCardGroup,aNodeNo, aEcuID,'DE_PERMIT','L');
+    dmDBFunction.UpdateTB_DEVICECARDNOGROUP_Field_StringValue(aCardGroup,aNodeNo, aEcuID,'DE_DOOR' + stDoorNo,'N');
+  end else
+  begin
+    dmDBFunction.InsertIntoTB_DEVICECARDNOGROUP_FieldName(aCardGroup,aNodeNo, aEcuID,'DE_DOOR' + stDoorNo,'N');
+    //dmDBFunction.UpdateTB_DEVICECARDNOGROUP_Field_StringValue(aCardGroup,aNodeNo, aEcuID,'DE_PERMIT','L');
+  end;
+
+end;
+
+function TdmDBCardPermit.CardGroupGradeToCardGrade(aCardGroup:string): Boolean;
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+  stCardNo : string;
+begin
+  if aCardGroup = '' then Exit;
+
+  stSql := ' Select b.CA_CARDNO from TB_EMPLOYEE a ';
+  stSql := stSql + ' Inner Join (select * from TB_CARD where CA_CARDTYPE = ''1'' ) b ';
+  stSql := stSql + ' ON (a.CO_COMPANYCODE = b.CO_COMPANYCODE ';
+  stSql := stSql + ' AND a.EM_CODE = b.EM_CODE ) ';
+  stSql := stSql + ' Where a.EM_GRADETYPE = 1 ';
+  stSql := stSql + ' AND CA_GROUP = ''' + aCardGroup + ''' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmDataBase.ADOConnection;
+    TempAdoQuery.DisableControls;
+    with TempAdoQuery  do
+    begin
+      Close;
+      //SQL.Clear;
+      SQL.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if recordcount < 1 then Exit;
+      while Not Eof do
+      begin
+        stCardNo := FindField('CA_CARDNO').AsString;
+        CardGroupToDeviceCardNoCopyEqualUpdate(aCardGroup,stCardNo);
+        CardGroupToDeviceCardNoCopyEqualAdd(aCardGroup,stCardNo);
+
+        Application.ProcessMessages;
+        Next;
+      end;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TdmDBCardPermit.CardGroupGradeToEmployeeGrade(aCompanyCode, aEmCode,
+  aCardGroup: string): Boolean;
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+  stCardNo : string;
+begin
+  if aCardGroup = '' then Exit;
+
+  stSql := ' select * from TB_CARD ';
+  stSql := stSql + ' where CA_CARDTYPE = ''1'' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' AND EM_CODE = ''' + aEmCode + ''' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmDataBase.ADOConnection;
+    TempAdoQuery.DisableControls;
+    with TempAdoQuery  do
+    begin
+      Close;
+      //SQL.Clear;
+      SQL.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if recordcount < 1 then Exit;
+      while Not Eof do
+      begin
+        stCardNo := FindField('CA_CARDNO').AsString;
+        CardGroupToDeviceCardNoCopyEqualUpdate(aCardGroup,stCardNo);
+        CardGroupToDeviceCardNoCopyEqualAdd(aCardGroup,stCardNo);
+
+        Application.ProcessMessages;
+        Next;
+      end;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TdmDBCardPermit.CardGroupToDeviceCardNoCopyEqualAdd(aCardGroup,
+  aCardNo: string): Boolean;
+var
+  stSql : string;
+begin
+    stSql := ' Insert INTO TB_DEVICECARDNO (GROUP_CODE, ';
+    stSql := stSql + ' AC_NODENO, ';
+    stSql := stSql + ' AC_ECUID, ';
+    stSql := stSql + ' CA_CARDNO, ';
+    stSql := stSql + ' DE_DOOR1, ';
+    stSql := stSql + ' DE_DOOR2, ';
+    stSql := stSql + ' DE_DOOR3, ';
+    stSql := stSql + ' DE_DOOR4, ';
+    stSql := stSql + ' DE_DOOR5, ';
+    stSql := stSql + ' DE_DOOR6, ';
+    stSql := stSql + ' DE_DOOR7, ';
+    stSql := stSql + ' DE_DOOR8, ';
+    stSql := stSql + ' DE_ALARM0, ';
+    stSql := stSql + ' DE_ALARM1, ';
+    stSql := stSql + ' DE_ALARM2, ';
+    stSql := stSql + ' DE_ALARM3, ';
+    stSql := stSql + ' DE_ALARM4, ';
+    stSql := stSql + ' DE_ALARM5, ';
+    stSql := stSql + ' DE_ALARM6, ';
+    stSql := stSql + ' DE_ALARM7, ';
+    stSql := stSql + ' DE_ALARM8, ';
+    stSql := stSql + ' DE_USEACCESS, ';
+    stSql := stSql + ' DE_USEALARM, ';
+    stSql := stSql + ' DE_TIMECODE, ';
+    stSql := stSql + ' DE_PERMIT, ';
+    stSql := stSql + ' DE_RCVACK, ';
+    stSql := stSql + ' DE_UPDATETIME, ';
+    stSql := stSql + ' DE_UPDATEOPERATOR) ';
+    stSql := stSql + ' select ''' + G_stGroupCode + ''', ';
+    stSql := stSql + ' b.AC_NODENO, ';
+    stSql := stSql + ' b.AC_ECUID, ';
+    stSql := stSql + ' ''' + aCardNO + ''', ';
+    stSql := stSql + ' b.DE_DOOR1, ';
+    stSql := stSql + ' b.DE_DOOR2, ';
+    stSql := stSql + ' b.DE_DOOR3, ';
+    stSql := stSql + ' b.DE_DOOR4, ';
+    stSql := stSql + ' b.DE_DOOR5, ';
+    stSql := stSql + ' b.DE_DOOR6, ';
+    stSql := stSql + ' b.DE_DOOR7, ';
+    stSql := stSql + ' b.DE_DOOR8, ';
+    stSql := stSql + ' b.DE_ALARM0, ';
+    stSql := stSql + ' b.DE_ALARM1, ';
+    stSql := stSql + ' b.DE_ALARM2, ';
+    stSql := stSql + ' b.DE_ALARM3, ';
+    stSql := stSql + ' b.DE_ALARM4, ';
+    stSql := stSql + ' b.DE_ALARM5, ';
+    stSql := stSql + ' b.DE_ALARM6, ';
+    stSql := stSql + ' b.DE_ALARM7, ';
+    stSql := stSql + ' b.DE_ALARM8, ';
+    stSql := stSql + ' b.DE_USEACCESS, ';
+    stSql := stSql + ' b.DE_USEALARM, ';
+    stSql := stSql + ' b.DE_TIMECODE, ';
+    stSql := stSql + ' b.DE_PERMIT, ';
+    stSql := stSql + ' ''N'', ';
+    stSql := stSql + ' '''+ formatDateTime('yyyymmddHHMMSS',Now) + ''', ';
+    stSql := stSql + ' '''+ G_stAdminUserID + ''' ';
+    stSql := stSql + ' From TB_DEVICECARDNOGROUP B  ';
+    stSql := stSql + ' where B.GROUP_CODE = ''' + G_stGroupCode + ''' ';
+    stSql := stSql + ' AND B.CA_GROUP = ''' + aCardGroup + ''' ';
+    stSql := stSql + ' AND NOT EXISTS ';
+    stSql := stSql + ' (SELECT * FROM TB_DEVICECARDNO A ';
+    stSql := stSql + ' WHERE A.GROUP_CODE = b.GROUP_CODE ';
+    stSql := stSql + ' AND A.AC_NODENO = b.AC_NODENO ';
+    stSql := stSql + ' AND A.AC_ECUID = b.AC_ECUID  ';
+    stSql := stSql + ' AND A.CA_CARDNO = ''' + aCardNO + ''')  ';
+
+    dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCardPermit.CardGroupToDeviceCardNoCopyEqualUpdate(aCardGroup,
+  aCardNo: string): Boolean;
+var
+  stSql : string;
+begin
+    stSql := ' Update A ';
+    stSql := stSql + ' Set a.DE_DOOR1 = b.DE_DOOR1, ';
+    stSql := stSql + '     a.DE_DOOR2 = b.DE_DOOR2, ';
+    stSql := stSql + '     a.DE_DOOR3 = b.DE_DOOR3, ';
+    stSql := stSql + '     a.DE_DOOR4 = b.DE_DOOR4, ';
+    stSql := stSql + '     a.DE_DOOR5 = b.DE_DOOR5, ';
+    stSql := stSql + '     a.DE_DOOR6 = b.DE_DOOR6, ';
+    stSql := stSql + '     a.DE_DOOR7 = b.DE_DOOR7, ';
+    stSql := stSql + '     a.DE_DOOR8 = b.DE_DOOR8, ';
+    stSql := stSql + '     a.DE_ALARM0 = b.DE_ALARM0, ';
+    stSql := stSql + '     a.DE_ALARM1 = b.DE_ALARM1, ';
+    stSql := stSql + '     a.DE_ALARM2 = b.DE_ALARM2, ';
+    stSql := stSql + '     a.DE_ALARM3 = b.DE_ALARM3, ';
+    stSql := stSql + '     a.DE_ALARM4 = b.DE_ALARM4, ';
+    stSql := stSql + '     a.DE_ALARM5 = b.DE_ALARM5, ';
+    stSql := stSql + '     a.DE_ALARM6 = b.DE_ALARM6, ';
+    stSql := stSql + '     a.DE_ALARM7 = b.DE_ALARM7, ';
+    stSql := stSql + '     a.DE_ALARM8 = b.DE_ALARM8, ';
+    stSql := stSql + '     a.DE_USEACCESS = b.DE_USEACCESS, ';
+    stSql := stSql + '     a.DE_USEALARM = b.DE_USEALARM, ';
+    stSql := stSql + '     a.DE_TIMECODE = b.DE_TIMECODE, ';
+    stSql := stSql + '     a.DE_PERMIT = b.DE_PERMIT, ';
+    stSql := stSql + '     a.DE_RCVACK = ''N'', ';
+    stSql := stSql + '     a.DE_UPDATETIME = ''' + FormatDateTime('yyyymmddHHMMSS',Now) + ''', ';
+    stSql := stSql + '     a.DE_UPDATEOPERATOR = ''' + G_stAdminUserID + ''' ';
+    stSql := stSql + ' From TB_DEVICECARDNO A,TB_DEVICECARDNOGROUP B ';
+    stSql := stSql + ' WHERE A.GROUP_CODE = B.GROUP_CODE ';
+    stSql := stSql + ' AND A.AC_NODENO = B.AC_NODENO ';
+    stSql := stSql + ' AND a.AC_ECUID = B.AC_ECUID ';
+    stSql := stSql + ' AND B.CA_GROUP = ''' + aCardGroup + ''' ';
+    stSql := stSql + ' AND A.CA_CARDNO = ''' + aCardNO + ''' ';
+    stSql := stSql + ' AND A.GROUP_CODE = ''' + G_stGroupCode + ''' ';
+    stSql := stSql + ' AND (a.DE_DOOR1 <> b.DE_DOOR1 ';
+    stSql := stSql + ' OR a.DE_DOOR2 <> b.DE_DOOR2 ';
+    stSql := stSql + ' OR a.DE_DOOR3 <> b.DE_DOOR3 ';
+    stSql := stSql + ' OR a.DE_DOOR4 <> b.DE_DOOR4 ';
+    stSql := stSql + ' OR a.DE_DOOR5 <> b.DE_DOOR5 ';
+    stSql := stSql + ' OR a.DE_DOOR6 <> b.DE_DOOR6 ';
+    stSql := stSql + ' OR a.DE_DOOR7 <> b.DE_DOOR7 ';
+    stSql := stSql + ' OR a.DE_DOOR8 <> b.DE_DOOR8 ';
+    stSql := stSql + ' OR a.DE_ALARM0 <> b.DE_ALARM0 ';
+    stSql := stSql + ' OR a.DE_ALARM1 <> b.DE_ALARM1 ';
+    stSql := stSql + ' OR a.DE_ALARM2 <> b.DE_ALARM2 ';
+    stSql := stSql + ' OR a.DE_ALARM3 <> b.DE_ALARM3 ';
+    stSql := stSql + ' OR a.DE_ALARM4 <> b.DE_ALARM4 ';
+    stSql := stSql + ' OR a.DE_ALARM5 <> b.DE_ALARM5 ';
+    stSql := stSql + ' OR a.DE_ALARM6 <> b.DE_ALARM6 ';
+    stSql := stSql + ' OR a.DE_ALARM7 <> b.DE_ALARM7 ';
+    stSql := stSql + ' OR a.DE_ALARM8 <> b.DE_ALARM8 ';
+    stSql := stSql + ' OR a.DE_USEACCESS <> b.DE_USEACCESS ';
+    stSql := stSql + ' OR a.DE_USEALARM <> b.DE_USEALARM ';
+    stSql := stSql + ' OR a.DE_PERMIT <> b.DE_PERMIT ';
+    stSql := stSql + ' ) ';
+
+    dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCardPermit.EmployeeArmAreaPermitAdd(aCompanyCode, aEmCode,
+  aNodeNo, aEcuID, aArmAreano: string): Boolean;
+var
+  stArmAreaNo : string;
+begin
+  if Not isDigit(aArmAreano) then stArmAreaNo := '0'
+  else stArmAreaNo := inttostr(strtoint(aArmAreano));
+
+  if dmDBFunction.CheckTB_DEVICECARDNOEMPLOYEE_Key(aCompanyCode, aEmCode,aNodeNo, aEcuID) = 1 then
+  begin
+    dmDBFunction.UpdateTB_DEVICECARDNOEMPLOYEE_Field_StringValue(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_PERMIT','L');
+    dmDBFunction.UpdateTB_DEVICECARDNOEMPLOYEE_Field_StringValue(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_ALARM' + stArmAreaNo,'Y');
+    if stArmAreaNo = '0' then dmDBFunction.UpdateTB_DEVICECARDNOEMPLOYEE_Field_StringValue(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_USEALARM','Y');
+
+  end else
+  begin
+    dmDBFunction.InsertIntoTB_DEVICECARDNOEMPLOYEE_FieldName(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_ALARM' + stArmAreaNo,'Y');
+    dmDBFunction.UpdateTB_DEVICECARDNOEMPLOYEE_Field_StringValue(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_PERMIT','L');
+    if stArmAreaNo = '0' then dmDBFunction.UpdateTB_DEVICECARDNOEMPLOYEE_Field_StringValue(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_USEALARM','Y');
+  end;
+
+  EmployeeCardPermitApply(aCompanyCode,aEmCode);
+
+end;
+
+function TdmDBCardPermit.EmployeeArmAreaPermitDelete(aCompanyCode, aEmCode,
+  aNodeNo, aEcuID, aArmAreano: string): Boolean;
+var
+  stArmAreaNo : string;
+begin
+  if Not isDigit(aArmAreano) then stArmAreaNo := '0'
+  else stArmAreaNo := inttostr(strtoint(aArmAreano));
+
+  if dmDBFunction.CheckTB_DEVICECARDNOEMPLOYEE_Key(aCompanyCode, aEmCode,aNodeNo, aEcuID) = 1 then
+  begin
+//    dmDBFunction.UpdateTB_DEVICECARDNOEMPLOYEE_Field_StringValue(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_PERMIT','L');
+    dmDBFunction.UpdateTB_DEVICECARDNOEMPLOYEE_Field_StringValue(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_ALARM' + stArmAreaNo,'N');
+    if stArmAreaNo = '0' then dmDBFunction.UpdateTB_DEVICECARDNOEMPLOYEE_Field_StringValue(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_USEALARM','N');
+
+  end else
+  begin
+    //삭제건은 없으면 입력 하지 말자. -> 아니다 그룹관리에서 등록 된경우 삭제 해야 한다.
+    dmDBFunction.InsertIntoTB_DEVICECARDNOEMPLOYEE_FieldName(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_ALARM' + stArmAreaNo,'N');
+//    dmDBFunction.UpdateTB_DEVICECARDNOEMPLOYEE_Field_StringValue(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_PERMIT','L');
+    if stArmAreaNo = '0' then dmDBFunction.UpdateTB_DEVICECARDNOEMPLOYEE_Field_StringValue(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_USEALARM','N');
+  end;
+  EmployeeCardPermitApply(aCompanyCode,aEmCode);
+
+end;
+
+function TdmDBCardPermit.EmployeeCardPermitApply(aCompanyCode,
+  aEmCode: string): Boolean;
+var
+  stSql : string;
+  TempAdoQuery : TAdoQuery;
+  stCardNo : string;
+begin
+  result := False;
+  stSql := ' select * from TB_CARD ';
+  stSql := stSql + ' where CA_CARDTYPE = ''1'' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' AND EM_CODE = ''' + aEmCode + ''' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmDataBase.ADOConnection;
+    TempAdoQuery.DisableControls;
+    with TempAdoQuery  do
+    begin
+      Close;
+      //SQL.Clear;
+      SQL.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if recordcount < 1 then Exit;
+      while Not Eof do
+      begin
+        stCardNo := FindField('CA_CARDNO').AsString;
+        EmployeePermitToDeviceCardNoCopyEqualUpdate(aCompanyCode, aEmCode,stCardNo);
+        EmployeePermitToDeviceCardNoCopyEqualAdd(aCompanyCode, aEmCode,stCardNo);
+
+        Application.ProcessMessages;
+        Next;
+      end;
+      result := True;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TdmDBCardPermit.EmployeeCardPermitResend(aCompanyCode,
+  aEmCode: string): Boolean;
+var
+  stSql : string;
+  TempAdoQuery : TAdoQuery;
+  stCardNo : string;
+begin
+  result := False;
+  stSql := ' select * from TB_CARD ';
+  stSql := stSql + ' where CA_CARDTYPE = ''1'' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' AND EM_CODE = ''' + aEmCode + ''' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmDataBase.ADOConnection;
+    TempAdoQuery.DisableControls;
+    with TempAdoQuery  do
+    begin
+      Close;
+      //SQL.Clear;
+      SQL.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if recordcount < 1 then Exit;
+      while Not Eof do
+      begin
+        stCardNo := FindField('CA_CARDNO').AsString;
+        dmDBFunction.UpdateTB_DEVICECARDNO_CardRecv(stCardNo,'N');
+
+        Application.ProcessMessages;
+        Next;
+      end;
+      result := True;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TdmDBCardPermit.EmployeeDoorPermitAdd(aCompanyCode, aEmCode, aNodeNo,
+  aEcuID, aDoorno: string): Boolean;
+var
+  stDoorNo : string;
+  stSql : string;
+  TempAdoQuery : TAdoQuery;
+  stCardNo : string;
+begin
+  if Not isDigit(aDoorno) then stDoorNo := '1'
+  else stDoorNo := inttostr(strtoint(aDoorNo));
+
+  if dmDBFunction.CheckTB_DEVICECARDNOEMPLOYEE_Key(aCompanyCode, aEmCode,aNodeNo, aEcuID) = 1 then
+  begin
+    dmDBFunction.UpdateTB_DEVICECARDNOEMPLOYEE_Field_StringValue(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_PERMIT','L');
+    dmDBFunction.UpdateTB_DEVICECARDNOEMPLOYEE_Field_StringValue(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_DOOR' + stDoorNo,'Y');
+  end else
+  begin
+    dmDBFunction.InsertIntoTB_DEVICECARDNOEMPLOYEE_FieldName(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_DOOR' + stDoorNo,'Y');
+    dmDBFunction.UpdateTB_DEVICECARDNOEMPLOYEE_Field_StringValue(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_PERMIT','L');
+  end;
+  EmployeeCardPermitApply(aCompanyCode,aEmCode);
+
+end;
+
+function TdmDBCardPermit.EmployeeDoorPermitDelete(aCompanyCode, aEmCode,
+  aNodeNo, aEcuID, aDoorno: string): Boolean;
+var
+  stDoorNo : string;
+begin
+  if Not isDigit(aDoorno) then stDoorNo := '1'
+  else stDoorNo := inttostr(strtoint(aDoorNo));
+
+  if dmDBFunction.CheckTB_DEVICECARDNOEMPLOYEE_Key(aCompanyCode, aEmCode,aNodeNo, aEcuID) = 1 then
+  begin
+    //dmDBFunction.UpdateTB_DEVICECARDNOEMPLOYEE_Field_StringValue(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_PERMIT','L');
+    dmDBFunction.UpdateTB_DEVICECARDNOEMPLOYEE_Field_StringValue(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_DOOR' + stDoorNo,'N');
+  end else
+  begin
+    dmDBFunction.InsertIntoTB_DEVICECARDNOEMPLOYEE_FieldName(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_DOOR' + stDoorNo,'N');
+    //dmDBFunction.UpdateTB_DEVICECARDNOEMPLOYEE_Field_StringValue(aCompanyCode, aEmCode,aNodeNo, aEcuID,'DE_PERMIT','L');
+  end;
+
+  EmployeeCardPermitApply(aCompanyCode,aEmCode);
+
+end;
+
+function TdmDBCardPermit.EmployeePermitAllDelete(aCompanyCode,
+  aEmCode: string): Boolean;
+var
+  stSql : string;
+  TempAdoQuery : TAdoQuery;
+  stCardNo : string;
+begin
+  result := False;
+  stSql := ' select * from TB_CARD ';
+  stSql := stSql + ' where CA_CARDTYPE = ''1'' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' AND EM_CODE = ''' + aEmCode + ''' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmDataBase.ADOConnection;
+    TempAdoQuery.DisableControls;
+    with TempAdoQuery  do
+    begin
+      Close;
+      //SQL.Clear;
+      SQL.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if recordcount < 1 then Exit;
+      while Not Eof do
+      begin
+        stCardNo := FindField('CA_CARDNO').AsString;
+        dmDBFunction.UpdateTB_DEVICECARDNO_CardStop(stCardNo);
+        Application.ProcessMessages;
+        Next;
+      end;
+      result := True;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+
+end;
+
+function TdmDBCardPermit.EmployeePermitToDeviceCardNoCopyEqualAdd(aCompanyCode,
+  aEmCode, aCardNo: string): Boolean;
+var
+  stSql : string;
+begin
+    stSql := ' Insert INTO TB_DEVICECARDNO (GROUP_CODE, ';
+    stSql := stSql + ' AC_NODENO, ';
+    stSql := stSql + ' AC_ECUID, ';
+    stSql := stSql + ' CA_CARDNO, ';
+    stSql := stSql + ' DE_DOOR1, ';
+    stSql := stSql + ' DE_DOOR2, ';
+    stSql := stSql + ' DE_DOOR3, ';
+    stSql := stSql + ' DE_DOOR4, ';
+    stSql := stSql + ' DE_DOOR5, ';
+    stSql := stSql + ' DE_DOOR6, ';
+    stSql := stSql + ' DE_DOOR7, ';
+    stSql := stSql + ' DE_DOOR8, ';
+    stSql := stSql + ' DE_ALARM0, ';
+    stSql := stSql + ' DE_ALARM1, ';
+    stSql := stSql + ' DE_ALARM2, ';
+    stSql := stSql + ' DE_ALARM3, ';
+    stSql := stSql + ' DE_ALARM4, ';
+    stSql := stSql + ' DE_ALARM5, ';
+    stSql := stSql + ' DE_ALARM6, ';
+    stSql := stSql + ' DE_ALARM7, ';
+    stSql := stSql + ' DE_ALARM8, ';
+    stSql := stSql + ' DE_USEACCESS, ';
+    stSql := stSql + ' DE_USEALARM, ';
+    stSql := stSql + ' DE_TIMECODE, ';
+    stSql := stSql + ' DE_PERMIT, ';
+    stSql := stSql + ' DE_RCVACK, ';
+    stSql := stSql + ' DE_UPDATETIME, ';
+    stSql := stSql + ' DE_UPDATEOPERATOR) ';
+    stSql := stSql + ' select ''' + G_stGroupCode + ''', ';
+    stSql := stSql + ' b.AC_NODENO, ';
+    stSql := stSql + ' b.AC_ECUID, ';
+    stSql := stSql + ' ''' + aCardNO + ''', ';
+    stSql := stSql + ' b.DE_DOOR1, ';
+    stSql := stSql + ' b.DE_DOOR2, ';
+    stSql := stSql + ' b.DE_DOOR3, ';
+    stSql := stSql + ' b.DE_DOOR4, ';
+    stSql := stSql + ' b.DE_DOOR5, ';
+    stSql := stSql + ' b.DE_DOOR6, ';
+    stSql := stSql + ' b.DE_DOOR7, ';
+    stSql := stSql + ' b.DE_DOOR8, ';
+    stSql := stSql + ' b.DE_ALARM0, ';
+    stSql := stSql + ' b.DE_ALARM1, ';
+    stSql := stSql + ' b.DE_ALARM2, ';
+    stSql := stSql + ' b.DE_ALARM3, ';
+    stSql := stSql + ' b.DE_ALARM4, ';
+    stSql := stSql + ' b.DE_ALARM5, ';
+    stSql := stSql + ' b.DE_ALARM6, ';
+    stSql := stSql + ' b.DE_ALARM7, ';
+    stSql := stSql + ' b.DE_ALARM8, ';
+    stSql := stSql + ' b.DE_USEACCESS, ';
+    stSql := stSql + ' b.DE_USEALARM, ';
+    stSql := stSql + ' b.DE_TIMECODE, ';
+    stSql := stSql + ' b.DE_PERMIT, ';
+    stSql := stSql + ' ''N'', ';
+    stSql := stSql + ' '''+ formatDateTime('yyyymmddHHMMSS',Now) + ''', ';
+    stSql := stSql + ' '''+ G_stAdminUserID + ''' ';
+    stSql := stSql + ' From TB_DEVICECARDNOEMPLOYEE B  ';
+    stSql := stSql + ' where B.GROUP_CODE = ''' + G_stGroupCode + ''' ';
+    stSql := stSql + ' AND B.CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+    stSql := stSql + ' AND B.EM_CODE = ''' + aEmCode + ''' ';
+    stSql := stSql + ' AND NOT EXISTS ';
+    stSql := stSql + ' (SELECT * FROM TB_DEVICECARDNO A ';
+    stSql := stSql + ' WHERE A.GROUP_CODE = b.GROUP_CODE ';
+    stSql := stSql + ' AND A.AC_NODENO = b.AC_NODENO ';
+    stSql := stSql + ' AND A.AC_ECUID = b.AC_ECUID  ';
+    stSql := stSql + ' AND A.CA_CARDNO = ''' + aCardNO + ''')  ';
+
+    dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCardPermit.EmployeePermitToDeviceCardNoCopyEqualUpdate(
+  aCompanyCode, aEmCode, aCardNo: string): Boolean;
+var
+  stSql : string;
+begin
+    stSql := ' Update A ';
+    stSql := stSql + ' Set a.DE_DOOR1 = b.DE_DOOR1, ';
+    stSql := stSql + '     a.DE_DOOR2 = b.DE_DOOR2, ';
+    stSql := stSql + '     a.DE_DOOR3 = b.DE_DOOR3, ';
+    stSql := stSql + '     a.DE_DOOR4 = b.DE_DOOR4, ';
+    stSql := stSql + '     a.DE_DOOR5 = b.DE_DOOR5, ';
+    stSql := stSql + '     a.DE_DOOR6 = b.DE_DOOR6, ';
+    stSql := stSql + '     a.DE_DOOR7 = b.DE_DOOR7, ';
+    stSql := stSql + '     a.DE_DOOR8 = b.DE_DOOR8, ';
+    stSql := stSql + '     a.DE_ALARM0 = b.DE_ALARM0, ';
+    stSql := stSql + '     a.DE_ALARM1 = b.DE_ALARM1, ';
+    stSql := stSql + '     a.DE_ALARM2 = b.DE_ALARM2, ';
+    stSql := stSql + '     a.DE_ALARM3 = b.DE_ALARM3, ';
+    stSql := stSql + '     a.DE_ALARM4 = b.DE_ALARM4, ';
+    stSql := stSql + '     a.DE_ALARM5 = b.DE_ALARM5, ';
+    stSql := stSql + '     a.DE_ALARM6 = b.DE_ALARM6, ';
+    stSql := stSql + '     a.DE_ALARM7 = b.DE_ALARM7, ';
+    stSql := stSql + '     a.DE_ALARM8 = b.DE_ALARM8, ';
+    stSql := stSql + '     a.DE_USEACCESS = b.DE_USEACCESS, ';
+    stSql := stSql + '     a.DE_USEALARM = b.DE_USEALARM, ';
+    stSql := stSql + '     a.DE_TIMECODE = b.DE_TIMECODE, ';
+    stSql := stSql + '     a.DE_PERMIT = b.DE_PERMIT, ';
+    stSql := stSql + '     a.DE_RCVACK = ''N'', ';
+    stSql := stSql + '     a.DE_UPDATETIME = ''' + FormatDateTime('yyyymmddHHMMSS',Now) + ''', ';
+    stSql := stSql + '     a.DE_UPDATEOPERATOR = ''' + G_stAdminUserID + ''' ';
+    stSql := stSql + ' From TB_DEVICECARDNO A,TB_DEVICECARDNOEMPLOYEE B ';
+    stSql := stSql + ' WHERE A.GROUP_CODE = B.GROUP_CODE ';
+    stSql := stSql + ' AND A.AC_NODENO = B.AC_NODENO ';
+    stSql := stSql + ' AND a.AC_ECUID = B.AC_ECUID ';
+    stSql := stSql + ' AND B.CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+    stSql := stSql + ' AND B.EM_CODE = ''' + aEmCode + ''' ';
+    stSql := stSql + ' AND A.CA_CARDNO = ''' + aCardNO + ''' ';
+    stSql := stSql + ' AND A.GROUP_CODE = ''' + G_stGroupCode + ''' ';
+    stSql := stSql + ' AND (a.DE_DOOR1 <> b.DE_DOOR1 ';
+    stSql := stSql + ' OR a.DE_DOOR2 <> b.DE_DOOR2 ';
+    stSql := stSql + ' OR a.DE_DOOR3 <> b.DE_DOOR3 ';
+    stSql := stSql + ' OR a.DE_DOOR4 <> b.DE_DOOR4 ';
+    stSql := stSql + ' OR a.DE_DOOR5 <> b.DE_DOOR5 ';
+    stSql := stSql + ' OR a.DE_DOOR6 <> b.DE_DOOR6 ';
+    stSql := stSql + ' OR a.DE_DOOR7 <> b.DE_DOOR7 ';
+    stSql := stSql + ' OR a.DE_DOOR8 <> b.DE_DOOR8 ';
+    stSql := stSql + ' OR a.DE_ALARM0 <> b.DE_ALARM0 ';
+    stSql := stSql + ' OR a.DE_ALARM1 <> b.DE_ALARM1 ';
+    stSql := stSql + ' OR a.DE_ALARM2 <> b.DE_ALARM2 ';
+    stSql := stSql + ' OR a.DE_ALARM3 <> b.DE_ALARM3 ';
+    stSql := stSql + ' OR a.DE_ALARM4 <> b.DE_ALARM4 ';
+    stSql := stSql + ' OR a.DE_ALARM5 <> b.DE_ALARM5 ';
+    stSql := stSql + ' OR a.DE_ALARM6 <> b.DE_ALARM6 ';
+    stSql := stSql + ' OR a.DE_ALARM7 <> b.DE_ALARM7 ';
+    stSql := stSql + ' OR a.DE_ALARM8 <> b.DE_ALARM8 ';
+    stSql := stSql + ' OR a.DE_USEACCESS <> b.DE_USEACCESS ';
+    stSql := stSql + ' OR a.DE_USEALARM <> b.DE_USEALARM ';
+    stSql := stSql + ' OR a.DE_PERMIT <> b.DE_PERMIT ';
+    stSql := stSql + ' ) ';
+
+    dmDataBase.ProcessExecSQL(stSql);
+end;
+
+end.

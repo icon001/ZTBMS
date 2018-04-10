@@ -1,0 +1,2521 @@
+{***************************************************************}
+  {  TBMS 용 설정 프로그램                                        }
+  {  File Name: uMain.pas                                         }
+  {                                                               }
+  {  Copyright (c) 2007 this70@naver.com                          }
+  {                                                               }
+  {  All rights reserved.                                         }
+  {                                                               }
+  {***************************************************************}
+
+{
+
+ MCU(Main Control Unit)
+ ECU(Expension Control Unit)
+ ICU(Integration Cardreader Unit)
+ GCU(General Cardreader Unit)
+ SCU(State Control unit)
+ PCU(Power Control unit)
+
+ ★ Used components  ★
+    Async Professional
+    Raize
+  ============================================================
+  프로그램 조건
+  ============================================================
+  - 설정내용은 INI 파일에 저정및 불러 오기를 힐 수 있어야 한다.
+  - 하나의 버튼으로 전체 내용을 불러 올수 있어야 한다.
+  - 하나의 버튼으로 전체 내용을 저장 힐 수 있어야 한다.
+  - 카드등`과 스케쥴은 따로 저장 및 불러오기가 가능해야 한다.
+  - MCU와 ECU 등록 화면이 각가가 존재 해야 한다.
+  ============================================================
+}
+
+
+unit uMain;
+
+interface
+
+
+
+uses
+  TraceTool,
+  uLomosUtil,
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, RzButton, RzPanel, ExtCtrls, Menus, RzSplit, OoMisc, AdPort,
+  ImgList, AdWnPort, StdCtrls, RzSpnEdt, Grids, RzGrids, RzRadGrp,
+  RzCmboBx, RzLabel, RzTabs, RzLstBox, RzChkLst, Mask, RzEdit, DB, dbisamtb,
+  DBGrids, RzDBGrid, ActnList, ComCtrls, RzListVw, RzBHints, ToolWin, jpeg,
+  RzCommon, AdStatLt, RzStatus, DXString, DXServerCore, LMDStrList,
+  LMDCustomComponent, LMDBaseController, LMDCustomContainer, LMDStringList;
+
+
+
+type
+
+  TSendData = class
+  private
+    // The data fields of this new class
+    fMarker: string;
+    fTRansmitData: string;
+    fSendTime: TDatetime;
+
+  public
+    // Properties to read these data values
+    property Marker: string read fMarker;
+    property TRansmitData: string read fTRansmitData;
+    property SendTime: TDatetime read fSendTime;
+    // Constructor
+    constructor Create(const aMarker: string; const aTRansmitData: string);
+  end;
+
+  TForm_Main = class(TForm)
+    MainMenu1: TMainMenu;
+    N1: TMenuItem;
+    MCU1: TMenuItem;
+    N2: TMenuItem;
+    N3: TMenuItem;
+    N4: TMenuItem;
+    N5: TMenuItem;
+    N6: TMenuItem;
+    Menu_ImageList: TImageList;
+    MCU2: TMenuItem;
+    ECUtjfwjd1: TMenuItem;
+    RzStatusBar1: TRzStatusBar;
+    ActionList1: TActionList;
+    Action_RegMCU: TAction;
+    Action_RegECU: TAction;
+    RzBalloonHints1: TRzBalloonHints;
+    RzPanel3: TRzPanel;
+    RzGroupBox1: TRzGroupBox;
+    Label5: TLabel;
+    sgCardReader: TRzStringGrid;
+    cbCardReader: TRzComboBox;
+    RzGroupBox2: TRzGroupBox;
+    Label13: TLabel;
+    Label14: TLabel;
+    Label15: TLabel;
+    Label36: TLabel;
+    Label37: TLabel;
+    Label3: TLabel;
+    Label76: TLabel;
+    Label4: TLabel;
+    ComboBox_WatchPowerOff: TRzComboBox;
+    SpinEdit_OutDelay: TRzSpinEdit;
+    ComboBox_DoorType1: TRzComboBox;
+    ComboBox_DoorType2: TRzComboBox;
+    SpinEdit_InDelay: TRzSpinEdit;
+    Edit_Locate: TRzEdit;
+    RzGroupBox3: TRzGroupBox;
+    Label18: TLabel;
+    Label23: TLabel;
+    Label24: TLabel;
+    Label41: TLabel;
+    Label42: TLabel;
+    Label46: TLabel;
+    Label47: TLabel;
+    Label48: TLabel;
+    Label51: TLabel;
+    Label53: TLabel;
+    Label54: TLabel;
+    ComboBox_CardModeType1: TRzComboBox;
+    ComboBox_DoorModeType1: TRzComboBox;
+    SpinEdit_DoorOPen1: TRzSpinEdit;
+    SpinEdit_OpenMoni1: TRzSpinEdit;
+    ComboBox_UseSch1: TRzComboBox;
+    ComboBox_SendDoorStatus1: TRzComboBox;
+    ComboBox_AlarmLongOpen1: TRzComboBox;
+    ComboBox_LockType1: TRzComboBox;
+    ComboBox_ControlFire1: TRzComboBox;
+    RzGroupBox4: TRzGroupBox;
+    Label6: TLabel;
+    sgPort: TRzStringGrid;
+    cbPort: TRzComboBox;
+    CoolBar1: TCoolBar;
+    RzToolbar1: TRzToolbar;
+    Panel_MCU: TRzPanel;
+    RzGroupBox5: TRzGroupBox;
+    RzLabel9: TRzLabel;
+    RzLabel17: TRzLabel;
+    Label79: TLabel;
+    Edit_LinkusID: TRzEdit;
+    Edit_LinkusTel: TRzEdit;
+    Spinner_Ring: TRzSpinner;
+    RzGroupBox6: TRzGroupBox;
+    RzLabel1: TRzLabel;
+    Edit_DeviceID1: TRzEdit;
+    Edit_DeviceID2: TRzEdit;
+    Edit_DeviceID3: TRzEdit;
+    Edit_DeviceID4: TRzEdit;
+    Edit_DeviceID5: TRzEdit;
+    Edit_DeviceID6: TRzEdit;
+    RzPageControl1: TRzPageControl;
+    TabSheet1: TRzTabSheet;
+    lvECU: TRzListView;
+    TabSheet2: TRzTabSheet;
+    CheckList_Alarm: TRzCheckList;
+    btnECUAdd: TRzBitBtn;
+    btnECUErase: TRzBitBtn;
+    Label1: TLabel;
+    ComboBox_ECU: TRzComboBox;
+    Panel_ktlog: TRzPanel;
+    Image1: TImage;
+    ToolButton_Connect: TRzToolButton;
+    ToolButton_Disconnect: TRzToolButton;
+    RzSpacer1: TRzSpacer;
+    RzToolButton3: TRzToolButton;
+    RzToolButton4: TRzToolButton;
+    RzSpacer2: TRzSpacer;
+    RzToolButton5: TRzToolButton;
+    RzToolButton6: TRzToolButton;
+    Action_Connect: TAction;
+    Action_Disconnect: TAction;
+    Action_FileLoad: TAction;
+    ActionFIleSave: TAction;
+    RzRegIniFile1: TRzRegIniFile;
+    ComboBox_CardModeType2: TRzComboBox;
+    ComboBox_DoorModeType2: TRzComboBox;
+    SpinEdit_DoorOPen2: TRzSpinEdit;
+    SpinEdit_OpenMoni2: TRzSpinEdit;
+    ComboBox_UseSch2: TRzComboBox;
+    ComboBox_SendDoorStatus2: TRzComboBox;
+    ComboBox_AlarmLongOpen2: TRzComboBox;
+    ComboBox_LockType2: TRzComboBox;
+    ComboBox_ControlFire2: TRzComboBox;
+    RzPanel2: TRzPanel;
+    RzPanel4: TRzPanel;
+    N7: TMenuItem;
+    Action_SetComport: TAction;
+    CommPort: TApdComPort;
+    RzClockStatus1: TRzClockStatus;
+    FieldStatus_ComStatus: TRzFieldStatus;
+    RzFieldStatus2: TRzFieldStatus;
+    Label2: TLabel;
+    Label7: TLabel;
+    StatusLight_TX: TApdStatusLight;
+    StatusLight_RX: TApdStatusLight;
+    ApdSLController: TApdSLController;
+    RzGroupBox7: TRzGroupBox;
+    RzLabel2: TRzLabel;
+    RzLabel3: TRzLabel;
+    Label8: TLabel;
+    Edit_IP: TRzEdit;
+    Edit_subnet: TRzEdit;
+    Label9: TLabel;
+    edit_Gateway: TRzEdit;
+    edit_port: TRzEdit;
+    btnRefresh: TRzBitBtn;
+    btnReg: TRzBitBtn;
+    btnRegCard: TRzBitBtn;
+    btnRegSchedule: TRzBitBtn;
+    RzFieldStatus1: TRzFieldStatus;
+    About1: TMenuItem;
+    dsTB_CARD: TDataSource;
+    TB_CARD: TDBISAMTable;
+    toolslist: TImageList;
+    Status_AlarmMode: TRzGlyphStatus;
+    Status_Door1: TRzGlyphStatus;
+    Status_Door2: TRzGlyphStatus;
+    SmallDoorList: TImageList;
+    Edit_DeviceID7: TRzEdit;
+    procedure Action_SearchMCUExecute(Sender: TObject);
+    procedure Action_RegMCUExecute(Sender: TObject);
+    procedure Action_RegECUExecute(Sender: TObject);
+    procedure Action_CloseExecute(Sender: TObject);
+    procedure CommportTriggerAvail(CP: TObject; Count: Word);
+    procedure cbCardReaderExit(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure sgCardReaderSelectCell(Sender: TObject; ACol, ARow: Integer;
+      var CanSelect: Boolean);
+    procedure sgPortSelectCell(Sender: TObject; ACol, ARow: Integer;
+      var CanSelect: Boolean);
+    procedure cbPortExit(Sender: TObject);
+    procedure btnECUAddClick(Sender: TObject);
+    procedure Action_ConnectExecute(Sender: TObject);
+    procedure Action_DisconnectExecute(Sender: TObject);
+    procedure Action_FileLoadExecute(Sender: TObject);
+    procedure ActionFIleSaveExecute(Sender: TObject);
+    procedure Action_SetComportExecute(Sender: TObject);
+    procedure CommPortPortOpen(Sender: TObject);
+    procedure CommPortPortClose(Sender: TObject);
+    procedure btnECUEraseClick(Sender: TObject);
+    procedure btnRegCardClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure btnRegScheduleClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure ComboBox_ECUChange(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+  private
+    { Private declarations }
+
+  public
+    { Public declarations }
+
+    xMCUID: string;
+    WiznetData: string;
+    ReserveSendDataList: TStringList; //내보낼 데이터 목록
+
+    function ListviewBinarySearch(listview: TRzListview;
+      const Item: string; var Index: Integer): Boolean;
+    // 모니터링 화면에 출력
+    procedure CommMoni(aData: string);
+    // 데이터 패킷찾기
+    function CheckDataPacket(aData: string; var bData: string): string;
+    // 읽혀진 데이터 처리
+    function DataPacektProcess(aData: string): Boolean;
+    // 데이터 전송
+    function SendPacket(aDeviceID: string; aCmd: Char; aData: string;
+      aQuick: Boolean): Boolean;
+    //ReserveSendDataList에 누적된 데이터를 전송한다.
+    procedure ExecSendPacket;
+
+    //카드리더 초기정보 등록
+    procedure MakeCardreaderInfo;
+    //포트 초기정보 등록
+    procedure MakePortInfo;
+
+    //wiznet 조회
+    function CheckWiznet(aDeviceID: string): Boolean;
+    // wiznet 등록
+    function Writewiznet(aDeviceID, aLocalIP, aSubnet, aGateway,
+      aPortNo: string): Boolean;
+    // wiznet 응답처리
+    procedure RcvWiznetInfo(aData: string);
+
+    //기기번호 조회(MCU조회)
+    function CheckID: Boolean;
+    // 기기번호등록(MCU 등록)
+    function RegID(aDeviceID: string): Boolean;
+    // 기기번호 응답
+    procedure RcvDeviceID(aData: string);
+
+    //ECU 조회
+    function CheckUsedDevice(aDeviceID: string): Boolean;
+    // ECU 등록
+    function RegUsedDevice(aDeviceID: string; UsedDevice: string): Boolean;
+    // ECU 응답
+    procedure RcvUsedDevice(aData: string);
+
+    //알람표시기 조회
+    function CheckUsedAlarmDisplay(aDeviceID: string): Boolean;
+    // 알람표시기 등록
+    function RegUsedAlarmDisplay(aDeviceID: string;
+      UsedDevice: string): Boolean;
+    // 알람표시기 응답
+    procedure RcvUsedAlarmdisplay(aData: string);
+
+
+    //링커스 ID 조회
+    function CheckLinkusID(aDeviceID: string): Boolean;
+    //링커스 ID 등록
+    function RegLinkusID(aDeviceID, aLinkusId: string): Boolean;
+    //링커스 ID응답
+    procedure RcvLinkusId(aData: string);
+
+
+    // 데코더 전화번호 조회
+    function CheckLinksTellNo(aDeviceID: string; aNo: Integer): Boolean;
+    // 데코더 전화번호 등록
+    function RegLinksTellNo(aDeviceID: string; aNo: Integer;
+      aTellno: string): Boolean;
+    //링커스 관제 번호 수신
+    procedure RcvLinkusTelNo(aData: string);
+
+
+    //텔카운트 조회
+    function CheckRingCount(aDeviceID: string): Boolean;
+    //텔카운트 등록
+    function RegRingCount(aDeviceID: string; aCount: Integer): Boolean;
+    //텔카운트 응답
+    procedure RcvRingCount(aData: string);
+
+
+    //시스템정보  조회
+    function CheckSysInfo(aDeviceID: string): Boolean;
+    //시스템정보  등록
+    function RegSysInfo(aDeviceID: string;      // 기기번호
+      WatchPowerOff: Integer; // 정전감시
+      DelayIn: Integer;       // 입실지연시간
+      DelayOut: Integer;      // 퇴실지연시간
+      Door1Type: Integer;
+      // Door1용도(0:방범,1:출입.2:방범+출입)
+      Door2Type: Integer;
+      //Door2용도(0:방범,1:출입.2:방범+출입)
+      Locate: string          // 위치명
+    ): Boolean;
+
+
+    //시스템정보  조회(출입통제)
+    function CheckSysInfo2(aDeviceID: string; aDoorNo: Integer): Boolean;
+    //시스템정보  등록(출입통제)
+    function RegSysInfo2(aDeviceID: string;        // 기기번호
+      aDoorNo: Integer;          // 문번호
+      aCardMode: Integer;
+      // 카드 운영모드 (0:Positive, 1:Negative)
+      aDoorMode: Integer;
+      // 출입문 운영모드 (0:운영, 1:개방)
+      aDoorOpenTime: Integer;   // Door 제어시간
+      aOpenMoniTime: Integer;   // 장시간 열림 경보
+      aUseSchedule: Integer;
+      // 스케줄 적용 여부 (0:사용안함, 1:사용)
+      aSendDoorState: Integer;
+      // 출입문 상태 전송(0:사용안함, 1:사용)
+      aUseOpenalarm: Integer;
+      // 장시간 열림 부저 출력(0:사용안함, 1:사용)
+      aLockType: Integer;       // 전기정 타입
+      aControledFire: Integer   // 화재 발생시 문제어
+    ): Boolean;
+    //시스템정보  응답
+    procedure RcvSysinfo(aData: string);
+
+    //사용카드리더 조회
+    function CheckCardReader(aDeviceID: string; aNo: Integer): Boolean;
+
+    //사용카드리더 등록
+    function RegCardReader(aDeviceID: string;       // 기기번호
+      aNo,                    // 카드리더 번호
+      aUsed,                  //  사용여부
+      aDoorNo: Integer;        // 연결 문번호
+      aLocate: string          // 위치명
+    ): Boolean;
+
+    //카드리더 설정 응답
+    procedure RcvCardReader(aData: string);
+
+    //사용포트LOOP 조회
+    function CheckPort(aDeviceID: string; aNo: Integer): Boolean;
+    //사용포트LOOP 등록
+    function RegPort(aDeviceID: string;            // 기기번호
+      aNo: Integer;                  // 포트번호
+      aAlarmType: Integer;          // 감시형태
+      aUseDelay: Integer;           // 지연시간
+      aDetectTime: Integer;         // 감지시간
+      aLocate: string               // 위치명
+    ): Boolean;
+    // 포트 설정 응답
+    procedure RcvPort(aData: string);
+
+                     
+    //시간동기화
+    function TimeSync(aDeviceID: string): Boolean;
+
+    //버젼확인
+    function CheckVersion(aDeviceID: string): Boolean;
+
+    //리더기버젼 확인
+    function CheckReaderVersion(aDeviceID: string; aNo: Integer): Boolean;
+
+    //기기리셋
+    function ResetDevice(aDeviceID: string): Boolean;
+
+    //기기 메모리 삭제
+    function ClearRegister(aDeviceID: string): Boolean;
+
+    //알람모드 변경
+    function ChangeAlarmMode(aDeviceID: string; aMode: Char): Boolean;
+
+    // 문제어
+    function DoorControl(aDeviceID: string;     //기기번호
+      aNo: Integer;            // 문번호
+      aControlType: Integer;
+      //제어방식 '0':해당사항없음,'1':카드운영,'2':출입운영,'3':원격제어
+      aControl: Integer      //제어 커맨드
+    ): Boolean;
+
+  end;
+
+var
+  Form_Main: TForm_Main;
+  ComTrace: IWinTrace; // TX/RX  Debug Trace
+  {$I zRegT.INC}
+
+implementation
+
+uses
+  uAppendECU,
+  uwinzet,
+  uSetcomm,
+  uCardReg;
+
+{$R *.dfm}
+
+
+  // TSendData constructor
+  // -----------------------------------------------------------------------------
+constructor TSendData.Create(const aMarker: string;
+  const aTRansmitData: string);
+begin
+  self.fMarker := aMarker;
+  self.fTRansmitData := aTRansmitData;
+  self.fSendTime := Now;
+end;
+
+function TForm_Main.ListviewBinarySearch(listview: TRzListview;
+  const Item: string; var Index: Integer): Boolean;
+var
+  First, last, pivot, res: Integer;
+begin
+  Assert(Assigned(listview));
+  Assert(Length(item) > 0);
+
+  Result := false;
+  Index := 0;
+  if listview.Items.Count = 0 then Exit;
+
+  First := 0;
+  last := listview.Items.Count - 1;
+  repeat
+    pivot := (First + last) div 2;
+    res   := lstrcmp(PChar(item), PChar(listview.Items[pivot].Caption));
+    if res = 0 then
+    begin
+      { Found the item, return its index and exit. }
+      Index := pivot;
+      Result := true;
+      Break;
+    end { If }
+    else if res > 0 then
+    begin
+      { Item is larger than item at pivot }
+      First := pivot + 1;
+    end { If }
+    else
+    begin
+      { Item is smaller than item at pivot }
+      last := pivot - 1;
+    end;
+  until last < First;
+  Index := First;
+end; { ListviewBinarySearch }
+
+
+// Search MCU
+
+procedure TForm_Main.Action_SearchMCUExecute(Sender: TObject);
+begin
+  Form_wiznet := TForm_wiznet.Create(Self);
+  Form_wiznet.ShowModal;
+  Form_wiznet.Free;
+end;
+
+
+//  MCU 등록
+procedure TForm_Main.Action_RegMCUExecute(Sender: TObject);
+begin
+  //
+  Panel_ktlog.Visible := false;
+end;
+
+// ECU 등록
+procedure TForm_Main.Action_RegECUExecute(Sender: TObject);
+begin
+  //
+  Panel_ktlog.Align := alClient;
+  Panel_ktlog.Visible := true;
+end;
+
+// Close Program
+procedure TForm_Main.Action_CloseExecute(Sender: TObject);
+begin
+  //
+  Close;
+end;
+
+// 통신연결
+procedure TForm_Main.Action_ConnectExecute(Sender: TObject);
+begin
+  //
+  try
+    FieldStatus_ComStatus.Caption := '연결시도  COM NO:' +
+      IntToStr(Commport.ComNumber);
+    Commport.Open := true;
+
+  except
+    MessageDlg('통신포트 설정이 잘못  되었습니다.', mtError, [mbOK], 0);
+    FieldStatus_ComStatus.Caption := '연결실패 COM NO:' +
+      IntToStr(Commport.ComNumber);
+    Exit;
+  end;
+end;
+
+// 통신끊기
+procedure TForm_Main.Action_DisconnectExecute(Sender: TObject);
+begin
+  //
+  Commport.Open := false;
+end;
+
+//파일 읽기
+procedure TForm_Main.Action_FileLoadExecute(Sender: TObject);
+begin
+  //
+end;
+
+// 파일 저장
+procedure TForm_Main.ActionFIleSaveExecute(Sender: TObject);
+begin
+  //
+end;
+
+//통신포트설정
+procedure TForm_Main.Action_SetComportExecute(Sender: TObject);
+begin
+  Form_SetComPort := TForm_SetComPort.Create(Self);
+
+  if Form_SetComPort.ShowModal = mrOk then
+  begin
+    if Commport.Open then Commport.Open := false;
+
+    Commport.DeviceLayer := dlWin32;
+    Commport.ComNumber   := Form_SetComPort.ComboBox_ComNo.ItemIndex + 1;
+  end;
+  Form_SetComPort.Free;
+end;
+
+
+// 모니터링 데이터 처리
+procedure TForm_Main.CommMoni(aData: string);
+var
+  st: string;
+begin
+{
+  if lbMoni.Count > 1000 then lbMoni.Delete(1000);
+  lbMoni.Insert(0,aData);
+}
+  st := FormatDateTime('yyyy-mm-dd hh:nn:ss:zzz', Now) + #9 + aData;
+
+  if ComTrace = nil then 
+  begin
+    ComTrace := TTrace.CreateWinTrace('COM Data', 'COM Monitoring');
+    ComTrace.SetMultiColumn(1);
+    ComTrace.setColumnsTitle('발생시각' + #9 + 'TX/RX' + #9 +
+      '기기번호' + #9 + 'CMD' + #9 + 'MSGNO' + #9 + 'DATA' + #9 + 'FULLDATA');
+    ComTrace.setColumnsWidth('130' + #9 + '50' + #9 + '100' + #9 +
+      '40' + #9 + '40' + #9 + '400' + #9 + '500');
+    ComTrace.DisplayWin();
+  end;
+  ComTrace.Debug.Send(st);
+end;
+
+
+procedure TForm_Main.CommportTriggerAvail(CP: TObject; Count: Word);
+var
+  st: string;
+  st2: string;
+  st3: string;
+  aIndex: Integer;
+  I: Integer;
+  Lenstr: string;
+  DataLength: Integer;
+begin
+  st := '';
+  for I := 1 to Count do st := st + Commport.GetChar;
+
+
+  ComBuff := ComBuff + st;
+  aIndex := Pos(STX, ComBuff);          // STX 위치를 확인 한다.
+  if aIndex = 0 then Exit               // STX가 없으면 루틴에서 나간다.
+  else if aIndex > 1 then
+  begin
+    Delete(ComBuff, 1, aIndex - 1);       //STX위치가 1아니면 STX앞까지 삭제
+  end;
+  if Length(Combuff) < 21 then Exit;
+  // 21Byte 이하이면 데이터처리 하지 않고 다시 받는다.
+  repeat
+    st3     := CheckDataPacket(ComBuff, st2);
+    ComBuff := st2;
+    if st <> '' then DataPacektProcess(st3);
+  until Pos(ETX, comBuff) = 0;
+end;
+
+
+function TForm_Main.CheckDataPacket(aData: string; var bData: string): string;
+var
+  aIndex: Integer;
+  Lenstr: string;
+  DefinedDataLength: Integer;
+  StrBuff: string;
+  etxIndex: Integer;
+begin
+  Result := '';
+  Lenstr := Copy(aData, 2, 3);
+  //데이터 길이 위치 데이터가 숫자가 아니면...
+  if not isDigit(Lenstr) then
+  begin
+    Delete(aData, 1, 1);       //1'st STX 삭제
+    aIndex := Pos(STX, aData); // 다음 STX 찾기
+    if aIndex = 0 then         //STX가 없으면...
+    begin
+      //전체 데이터 버림
+      bData := '';
+    end else if aIndex > 1 then // STX가 1'st가 아니면
+    begin
+      Delete(aData, 1, aIndex - 1);//STX 앞 데이터 삭제
+      bData := aData;
+    end else
+    begin
+      bData := aData;
+    end;
+    Exit;
+  end;
+  //패킷에 정의된 길이
+  DefinedDataLength := StrToInt(Lenstr);
+  //패킷에 정의된 길이보다 실제 데이터가 작으면
+  if Length(aData) < DefinedDataLength then
+  begin
+    //실제 데이터가 길이가 작으면(아직 다 못받은 상태)
+    etxIndex := Pos(ETX, aData);
+    if etxIndex > 0 then
+    begin
+      Delete(aData, 1, etxIndex);
+    end;
+    bData := aData;
+    Exit;
+  end;
+
+  // 정의된 길이 마지막 데이터가 ETX가 맞는가?
+  if aData[DefinedDataLength] = ETX then
+  begin
+    StrBuff := Copy(aData, 1, DefinedDataLength);
+    Result  := StrBuff;
+    Delete(aData, 1, DefinedDataLength);
+    bData := aData;
+  end else
+  begin
+    //마직막 데이터가 EXT가 아니면 1'st STX지우고 다음 STX를 찾는다.
+    Delete(aData, 1, 1);
+    aIndex := Pos(STX, aData); // 다음 STX 찾기
+    if aIndex = 0 then         //STX가 없으면...
+    begin
+      //전체 데이터 버림
+      bData := '';
+    end else if aIndex > 1 then // STX가 1'st가 아니면
+    begin
+      Delete(aData, 1, aIndex - 1);//STX 앞 데이터 삭제
+      bData := aData;
+    end else
+    begin
+      bData := aData;
+    end;
+  end;
+end;
+
+{정상적으로 들어온 데이터 패킷 처리 루틴}
+function TForm_Main.DataPacektProcess(aData: string): Boolean;
+var
+  aKey: Byte;
+  st: string;
+  aCommand: Char;
+  aCntId: string;
+begin
+  Result := false;
+  if aData = '' then Exit;
+
+  //31:Q++()./,-**s*S^**+()./,-()
+  aKey := Ord(aData[5]);
+  st := Copy(aData, 1, 5) + EncodeData(aKey,
+    Copy(aData, 6, Length(aData) - 6)) + aData[Length(aData)];
+  aData := st;
+  aCntId := Copy(aData, 8, 9);
+  aCommand := aData[17];
+  Rcv_MsgNo := aData[18];
+  {
+  st:=  'RX'+#9+
+        Copy(aCntId,1,9)+#9+
+        aCommand+#9+
+        Rcv_MsgNo+#9+
+        Copy(aData,19,Length(aData)-21)+#9+
+        aData;
+
+
+  //if aCommand <> 'e' then CommMoni(st);
+  CommMoni(st);
+  }
+
+  TTRace.Debug.Send('COMM', 'RX>' + aData);
+
+
+  if (aCommand = 'e') then // Polling command
+  begin
+    SendPacket(aCntID, 'a', '', true);
+  end else if (aCommand = 'a') then
+  begin
+    Exit;
+  end else if (aCommand <> 'c') then
+  begin
+    SendPacket(aCntID, 'a', '', true);
+  end;
+
+  {받은 데이터 커맨드별 처리}
+  { ================================================================================
+  "A" = Alarm Data
+  "I" = Initial Data
+  "R" = Remote Command
+  "e" = ENQ
+  "E" = ERROR
+  "a" = ACK
+  "n" = NAK
+  "r" = Remote Answer
+  "c" = Access Control data
+  ★ c(출입통제 데이터)인경우에는 ACK 를 'c' command를 만들어 응답을 해야 한다.
+    ================================================================================ }
+
+ (*
+  case aCommand of
+    'A':{알람}          begin  end;
+    'i':{Initial}       begin  RegDataProcess(aData)    end;
+    'R':{Remote}        begin  RemoteDataProcess(aData) end;
+    'r':{Remote Answer} begin  RemoteDataProcess(aData) end;
+    'c':{출입통제}      begin  AccessDataProcess(aData) end;
+    //'f':{펌웨어}        begin  FirmwareProcess(aData)   end;
+    //'F':{펌웨어}        begin  FirmwareProcess2(aData)  end;
+    'e':{ERROR}
+    else {error 발생: [E003]정의 되지 않은 커맨드}
+  end;
+  *)
+  Result := true;
+end;
+
+
+function TForm_Main.SendPacket(aDeviceID: string; aCmd: Char;
+  aData: string; aQuick: Boolean): Boolean;
+var
+  ACKStr: string;
+  ACKStr2: string;
+  aDataLength: Integer;
+  aLengthStr: string;
+  aKey: Integer;
+  aMsgNo: Integer;
+  st: string;
+  aMarker: string;
+  aSendData: TSendData;
+begin
+  if not Commport.Open then
+  begin
+    //Off_Timer.Enabled:= False;
+    ShowMessage('통신 연결이 안되었습니다.');
+    Exit;
+  end;
+
+  Result := false;
+  aDataLength := 21 + Length(aData);
+  aLengthStr := FillZeroNumber(aDataLength, 3);
+
+  if aCmd = 'a' then {응답 처리}
+  begin
+    ACkStr  := STX + aLengthStr + #$20 + 'K1' + aDeviceID + aCmd + Rcv_MsgNo;
+    ACkStr  := ACkStr + MakeCSData(ACKStr + ETX) + ETX;
+    aKey    := $20;
+    ACkStr2 := Copy(ACKStr, 1, 5) + EncodeData(aKey,
+      Copy(ACkStr, 6, Length(ACkStr) - 6)) + ETX;
+  end else {제어 or 등록 }
+  begin
+    aMsgNo  := Send_MsgNo;
+    ACkStr  := STX + aLengthStr + #$20 + 'K1' + aDeviceID + aCmd +
+      IntToStr(aMsgNo) + aData;
+    ACkStr  := ACkStr + MakeCSData(ACKStr + ETX) + ETX;
+    aKey    := Ord(ACkStr[5]);
+    ACkStr2 := Copy(ACKStr, 1, 5) + EncodeData(aKey,
+      Copy(ACkStr, 6, Length(ACkStr) - 6)) + ETX;
+    if aMsgNo >= 9 then Send_MsgNo := 0
+    else Send_MsgNo := aMsgNo + 1;
+  end;
+
+
+  if aQuick then
+  begin
+    if Commport.Open then
+    begin
+      Commport.PutString(ACKStr2);
+      TTRace.Debug.Send('COMM', 'TXq>' + ACkStr2);
+    end;
+  end else
+  begin
+    aMarker   := Copy(ACKStr2, 8, 13);
+    aSendData := TSendData.Create(aMarker, ACKStr2);
+    ReserveSendDataList.AddObject(aMarker, aSendData);
+  end;
+
+  Result := true;
+end;
+
+//ReserveSendDataList에 누적된 데이터를 전송한다.
+procedure TForm_Main.ExecSendPacket;
+var
+  I: Integer;
+  st: string;
+begin
+  if not CommPort.Open then Exit;
+
+
+  if ReserveSendDataList.Count > 0 then
+  begin
+    st := ReserveSendDataList.Objects[0]      CommPort.PutString(st);
+    FlushOutBuffer;
+
+    DebugScreen.Trace('[TX]' + wsAddress + ':' + st);
+    ReserveSendDataList.Delete(0);
+  end;
+end;
+
+
+//카드리더 정보 만들기
+procedure TForm_Main.MakeCardreaderInfo;
+var
+  I: Integer;
+begin
+  sgCardReader.Cells[0, 0] := 'No';
+  sgCardReader.Cells[1, 0] := '사용여부';
+  sgCardReader.Cells[2, 0] := '문번호';
+  sgCardReader.Cells[3, 0] := '위치명';
+
+  for I := 1 to 4 do
+  begin
+    sgCardReader.Cells[0, I] := IntToStr(I);
+    sgCardReader.Cells[1, I] := '0';
+    sgCardReader.Cells[2, I] := '1';
+    sgCardReader.Cells[3, I] := '미설정';
+  end;
+end;
+
+//포트 초기정보 등록
+procedure TForm_Main.MakePortInfo;
+var
+  I: Integer;
+begin
+  sgPort.Cells[0, 0] := 'No';
+  sgPort.Cells[1, 0] := '감시형태';
+  sgPort.Cells[2, 0] := '지연시간';
+  sgPort.Cells[3, 0] := '감지시간';
+  sgPort.Cells[4, 0] := '위치명';
+
+  for I := 1 to 8 do
+  begin
+    sgPort.Cells[0, I] := IntToStr(I);
+    sgPort.Cells[1, I] := '0.방범';
+    sgPort.Cells[2, I] := '0';
+    sgPort.Cells[3, I] := '04';
+    sgPort.Cells[4, I] := '미설정';
+  end;
+end;
+
+
+procedure TForm_Main.cbCardReaderExit(Sender: TObject);
+var
+  st: string;
+begin
+  with Sender as TRzCombobox do
+  begin
+    hide;
+    if ItemIndex >= 0 then
+    begin
+      with sgCardReader do
+      begin
+        st := Items[ItemIndex];
+        Cells[Col, row] := st;
+      end;
+    end;
+  end;
+end;
+
+procedure TForm_Main.FormCreate(Sender: TObject);
+begin
+  //프로그램 구동시 MCU 설정화면
+  IsConfigMCU := true;
+
+  //SEND Buffer List
+  ReserveSendDataList := ReserveSendDataList.Create;
+  ReserveSendDataList.Clear;
+
+  // 카드 등록 모드
+  RegCardMode := false;
+
+  //카드리더 정보 생성
+  MakeCardreaderInfo;
+  cbCardReader.Visible := false;
+
+  //루프 정보 생성
+  MakePortInfo;
+  cbPort.Visible := false;
+
+
+  with ComboBox_WatchPowerOff do //정전감시
+  begin
+    Clear;
+    Items.Add('정전 감시 OFF');
+    Items.Add('정전 감시 ON');
+    ItemIndex := 0;
+  end;
+
+  with ComboBox_DoorType1 do //문1 용도
+  begin
+    Clear;
+    Items.Add('0.방범전용');
+    Items.Add('1.출입전용');
+    Items.Add('2.방범 + 출입');
+    ItemIndex := 0;
+  end;
+
+  with ComboBox_DoorType2 do  //문2용도
+  begin
+    Clear;
+    Items.Add('0.방범전용');
+    Items.Add('1.출입전용');
+    Items.Add('2.방범 + 출입');
+    ItemIndex := 0;
+  end;
+
+  with ComboBox_CardModeType1 do     //출입문1 카드운영 모드
+  begin
+    Clear;
+    Items.Add('Positive');
+    Items.Add('Negative');
+    ItemIndex := 0;
+  end;
+
+  with ComboBox_CardModeType2 do     //출입문2 카드운영 모드
+  begin
+    Clear;
+    Items.Add('Positive');
+    Items.Add('Negative');
+    ItemIndex := 0;
+  end;
+
+
+  with ComboBox_DoorModeType1 do     //출입문1 운영 모드
+  begin
+    Clear;
+    Items.Add('운영');
+    Items.Add('개방');
+    ItemIndex := 0;
+  end;
+  with ComboBox_DoorModeType2 do     //출입문2 운영 모드
+  begin
+    Clear;
+    Items.Add('운영');
+    Items.Add('개방');
+    ItemIndex := 0;
+  end;
+
+
+  with ComboBox_UseSch1 do     //출입문1 스케쥴
+  begin
+    Clear;
+    Items.Add('안함');
+    Items.Add('적용');
+    ItemIndex := 0;
+  end;
+  with ComboBox_UseSch2 do     //출입문2 스케쥴
+  begin
+    Clear;
+    Items.Add('안함');
+    Items.Add('적용');
+    ItemIndex := 0;
+  end;
+
+  with ComboBox_SendDoorStatus1 do     //출입문1 상태 전송여부
+  begin
+    Clear;
+    Items.Add('사용안함');
+    Items.Add('출입문상태');
+    Items.Add('전기정상태');
+    Items.Add('출입문+전기정상태');
+    ItemIndex := 0;
+  end;
+  with ComboBox_SendDoorStatus2 do     //출입문1 상태 전송여부
+  begin
+    Clear;
+    Items.Add('사용안함');
+    Items.Add('출입문상태');
+    Items.Add('전기정상태');
+    Items.Add('출입문+전기정상태');
+    ItemIndex := 0;
+  end;
+
+  with ComboBox_AlarmLongOpen1 do     //출입문1장시간 열림 부저 출력
+  begin
+    Clear;
+    Items.Add('안함');
+    Items.Add('사용');
+    ItemIndex := 0;
+  end;
+  with ComboBox_AlarmLongOpen2 do     //출입문2장시간 열림 부저 출력
+  begin
+    Clear;
+    Items.Add('안함');
+    Items.Add('사용');
+    ItemIndex := 0;
+  end;
+
+  with ComboBox_LockType1 do       //출입문1 전기정 타입
+  begin
+    Clear;
+    Items.Add('일반형(정전시 잠김)');
+    Items.Add('일반형(정전시 열림)');
+    Items.Add('데드볼트(정전시 잠김)');
+    Items.Add('데드볼트(정전시 열림)');
+    Items.Add('스트라이커(정전시 열림)');
+    Items.Add('0x35 예비');
+    Items.Add('0x36 예비');
+    Items.Add('0x37 식당');
+    ItemIndex := 1;
+  end;
+  with ComboBox_LockType2 do       //출입문2 전기정 타입
+  begin
+    Clear;
+    Items.Add('일반형(정전시 잠김)');
+    Items.Add('일반형(정전시 열림)');
+    Items.Add('데드볼트(정전시 잠김)');
+    Items.Add('데드볼트(정전시 열림)');
+    Items.Add('스트라이커(정전시 열림)');
+    Items.Add('0x35 예비');
+    Items.Add('0x36 예비');
+    Items.Add('0x37 식당');
+    ItemIndex := 1;
+  end;
+
+
+
+  with ComboBox_ControlFire1 do     //출입문1 화재 발생시 문제어
+  begin
+    Clear;
+    Items.Add('안함');
+    Items.Add('사용');
+    ItemIndex := 0;
+  end;
+  with ComboBox_ControlFire2 do     //출입문2 화재 발생시 문제어
+  begin
+    Clear;
+    Items.Add('안함');
+    Items.Add('사용');
+    ItemIndex := 0;
+  end;
+end;
+
+
+procedure TForm_Main.sgCardReaderSelectCell(Sender: TObject;
+  ACol, ARow: Integer; var CanSelect: Boolean);
+var
+  Rect: TRect;
+begin
+  if ACol = 1 then    // 1번째열로 포커스가 이동됐을때 combobox 보여주기
+  begin
+    Rect := sgCardReader.CellRect(ACol, ARow);
+    // 현재 Cell의 좌표를 Rect로 저장
+    with cbCardReader do
+    begin
+      // 사용 여부 등록
+      Clear;
+      Items.Add('0');
+      Items.Add('1');
+      ItemIndex := 0;
+      Visible := true;
+      Left := sgCardReader.Left + Rect.Left + 2;
+      Top := sgCardReader.Top + Rect.Top + 3;
+      Width := Rect.Right - Rect.Left;
+      Height := (Rect.Bottom - Rect.Top);
+      Text := sgCardReader.Cells[ACol, ARow];
+      BringToFront;   // comboBox1을 최상위로 옮기기 <> SendToBack
+      SetFocus;
+    end;
+  end else if ACol = 2 then
+  begin
+    Rect := sgCardReader.CellRect(ACol, ARow);
+    // 현재 Cell의 좌표를 Rect로 저장
+    with cbCardReader do
+    begin
+      //사용문번호
+      Clear;
+      Items.Add('0');
+      Items.Add('1');
+      Items.Add('2');
+      ItemIndex := 1;
+      Visible := true;
+      Left := sgCardReader.Left + Rect.Left + 2;
+      Top := sgCardReader.Top + Rect.Top + 3;
+      Width := Rect.Right - Rect.Left;
+      Height := (Rect.Bottom - Rect.Top);
+      Text := sgCardReader.Cells[ACol, ARow];
+      BringToFront;   // comboBox1을 최상위로 옮기기 <> SendToBack
+      SetFocus;
+    end;
+  end;
+end;
+
+procedure TForm_Main.sgPortSelectCell(Sender: TObject;
+  ACol, ARow: Integer; var CanSelect: Boolean);
+var
+  Rect: TRect;
+begin
+  Rect := sgPort.CellRect(ACol, ARow);
+
+  case ACol of
+    1: // 감시형태
+    begin
+      with cbPort do
+      begin
+        Clear;
+        Items.Add('0.방범');
+        Items.Add('1.화재');
+        Items.Add('2.가스');
+        Items.Add('3.비상');
+        Items.Add('4.설비');
+        ItemIndex := 0;
+        Visible := true;
+        Left := sgPort.Left + Rect.Left + 2;
+        Top := sgPort.Top + Rect.Top + 3;
+        Width := Rect.Right - Rect.Left;
+        Height := (Rect.Bottom - Rect.Top);
+        Text := sgPort.Cells[ACol, ARow];
+        BringToFront;   // comboBox1을 최상위로 옮기기 <> SendToBack
+        SetFocus;
+      end;
+    end;
+    2: //지연시간 사용유무
+    begin
+      with cbPort do
+      begin
+        Clear;
+        Items.Add('0');
+        Items.Add('1');
+        ItemIndex := 0;
+        Visible := true;
+        Left := sgPort.Left + Rect.Left + 2;
+        Top := sgPort.Top + Rect.Top + 3;
+        Width := Rect.Right - Rect.Left;
+        Height := (Rect.Bottom - Rect.Top);
+        Text := sgPort.Cells[ACol, ARow];
+        BringToFront;   // comboBox1을 최상위로 옮기기 <> SendToBack
+        SetFocus;
+      end;
+    end;
+    3: //감지시간
+    begin
+      with cbPort do
+      begin
+        Clear;
+        Items.Add('04');
+        Items.Add('06');
+        Items.Add('08');
+        Items.Add('10');
+
+        ItemIndex := 0;
+        Visible := true;
+        Left := sgPort.Left + Rect.Left + 2;
+        Top := sgPort.Top + Rect.Top + 3;
+        Width := Rect.Right - Rect.Left;
+        Height := (Rect.Bottom - Rect.Top);
+        Text := sgPort.Cells[ACol, ARow];
+        BringToFront;   // comboBox1을 최상위로 옮기기 <> SendToBack
+        SetFocus;
+      end;
+    end;
+  end;
+end;
+
+procedure TForm_Main.cbPortExit(Sender: TObject);
+var
+  st: string;
+begin
+  with Sender as TRzCombobox do
+  begin
+    hide;
+    if ItemIndex >= 0 then
+    begin
+      with sgPort do
+      begin
+        st := Items[ItemIndex];
+        Cells[Col, row] := st;
+      end;
+    end;
+  end;
+end;
+
+// ECU 추가
+procedure TForm_Main.btnECUAddClick(Sender: TObject);
+begin
+  Form_AddECU := TForm_AddECU.Create(Self);
+  Form_AddECU.ShowModal;
+  Form_AddECU.Free;
+end;
+//ECU 삭제
+
+procedure TForm_Main.btnECUEraseClick(Sender: TObject);
+begin
+  if lvECU.Selected <> nil then lvECU.Selected.Delete;
+end;
+
+
+procedure TForm_Main.CommPortPortOpen(Sender: TObject);
+begin
+  ToolButton_Connect.Enabled := false;
+  ToolButton_Disconnect.Enabled := true;
+  FieldStatus_ComStatus.Caption := '연결 COM NO:' + IntToStr(Commport.ComNumber);
+  ApdSLController.Monitoring := true;
+end;
+
+procedure TForm_Main.CommPortPortClose(Sender: TObject);
+begin
+  ToolButton_Connect.Enabled := true;
+  ToolButton_Disconnect.Enabled := false;
+  ApdSLController.Monitoring := false;
+  FieldStatus_ComStatus.Caption := '연결종료 COM NO:' +
+    IntToStr(Commport.ComNumber);
+end;
+
+
+procedure TForm_Main.btnRegCardClick(Sender: TObject);
+begin
+  Form_RegCard := TForm_RegCard.Create(Self);
+  Form_RegCard.ShowModal;
+  Form_RegCard.Free;
+end;
+
+procedure TForm_Main.FormShow(Sender: TObject);
+begin
+  TB_CARD.CreateTable;
+  TB_CARD.Active := true;
+end;
+
+procedure TForm_Main.btnRegScheduleClick(Sender: TObject);
+begin
+  //TTrace.Debug.
+end;
+
+procedure TForm_Main.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  if CommPort.Open then CommPort.Open := false;
+end;
+
+//wiznet 정보확인
+function TForm_Main.CheckWiznet(aDeviceID: string): Boolean;
+var
+  aData: string;
+begin
+  Result := false;
+  aData := 'NW00';
+  SendPacket(aDeviceID, 'Q', aData, false);
+  Result := true;
+end;
+
+//랜모듈 설정
+function TForm_Main.Writewiznet(aDeviceID, aLocalIP, aSubnet,
+  aGateway, aPortNo: string): Boolean;
+var
+  I: Integer;
+  No: Integer;
+  st, st2: string;
+  DataStr: string;
+  FHeader: string[2];
+  FMacAddress: string[12];
+  FMode: string[2];
+  FIPAddress: string[8];
+  FSubnet: string[8];
+  FGateway: string[8];
+  FClientPort: string[4];
+  FServerIP: string[8];
+  FServerPort: string[4];
+  FSerial_Baud: string[2];
+  FSerial_data: string[2];
+  FSerial_Parity: string[2];
+  FSerial_stop: string[2];
+  FSerial_flow: string[2];
+  FDelimiterChar: string[2];
+  FDelimiterSize: string[4];
+  FDelimitertime: string[4];
+  FDelimiterIdle: string[4];
+  FDebugMode: string[2];
+  FROMVer: string[4];
+  FOnDHCP: string[2];
+  FReserve: string[6];
+begin
+  Result := false;
+
+  //1.Header
+  FHeader := 'AA';
+  //2.MAC Address 지정안함
+  FMacAddress := '000000000000';
+  //3.Mode (Server mode: 01, Client mode: 00)
+  FMode := '00';
+  {
+  if Checkbox_Client.Checked then FMode:= '00'
+  else                            FMode:= '01';
+   }
+
+  // 4.IP address
+  st2 := '';
+  for I := 0 to 3 do
+  begin
+    st  := FindCharCopy(aLocalIP, I, '.');
+    No  := StrToInt(st);
+    st2 := st2 + Char(No);
+  end;
+  FIPAddress := ToHexStrNoSpace(st2);
+
+  // 5.Subnet mask
+  st2 := '';
+
+  //if Edit_Subnet.Text = '' then Edit_Subnet.Text:= '0.0.0.0';
+  for I := 0 to 3 do
+  begin
+    st  := FindCharCopy(aSubnet, I, '.');
+    No  := StrToInt(st);
+    st2 := st2 + Char(No);
+  end;
+  FSubnet := ToHexStrNoSpace(st2);
+
+  // 6.Gateway address
+  st2 := '';
+  //if Edit_Gateway.Text = '' then Edit_Gateway.Text:= '0.0.0.0';
+  for I := 0 to 3 do
+  begin
+    st  := FindCharCopy(aGateway, I, '.');
+    No  := StrToInt(st);
+    st2 := st2 + Char(No);
+  end;
+  FGateway := ToHexStrNoSpace(st2);
+
+  //7.Port number (Client)
+  st2 := '';
+  //if Edit_LocalPort.Text = '' then Edit_LocalPort.Text:= '0';
+  st := Dec2Hex(StrToInt(aPortNo), 2);
+  if Length(st) < 4 then st := '0' + st;
+  st2 := Chr(Hex2Dec(Copy(st, 1, 2))) + Char(Hex2Dec(Copy(st, 3, 2)));
+  FClientPort := ToHexStrNoSpace(st2);
+
+  //8. Server IP address
+  st2 := '';
+  for I := 0 to 3 do
+  begin
+    st  := FindCharCopy('192.168.0.1', I, '.');
+    No  := StrToInt(st);
+    st2 := st2 + Char(No);
+  end;
+  FServerIP := ToHexStrNoSpace(st2);
+
+  //9.  Port number (Server)
+  st2 := '';
+  //if Edit_Serverport.Text = '' then Edit_Serverport.Text:= '3000';
+  if aPortNo = '' then aPortNo := '3000';
+  st2 := '';
+  st := Dec2Hex(StrToInt(aPortNo), 2);
+  if Length(st) < 4 then st := '0' + st;
+  st2 := Chr(Hex2Dec(Copy(st, 1, 2))) + Char(Hex2Dec(Copy(st, 3, 2)));
+  FServerPort := ToHexStrNoSpace(st2);
+
+  //10. Serial speed (bps)
+  FSerial_Baud := 'FD';
+  {
+  case ComboBox_Boad.ItemIndex of
+    0: FSerial_Baud:= 'F4'; //9600           F4
+    1: FSerial_Baud:= 'FA'; //19200          FA
+    2: FSerial_Baud:= 'FD'; //38400 Default  FD
+    3: FSerial_Baud:= 'FE'; //57600          FE
+    4: FSerial_Baud:= 'FF'; //115200         FF
+    else FSerial_Baud:= 'FD';
+  end;
+   }
+
+  //11. Serial data size (08: 8 bit), (07: 7 bit)
+  FSerial_data := '08';
+  {
+  case ComboBox_Databit.ItemIndex of
+      0: FSerial_data:= '07';
+      1: FSerial_data:= '08'; //Default
+      else FSerial_data:= '08';
+  end;
+   }
+
+  //12. Parity (00: No), (01: Odd), (02: Even)
+  FSerial_Parity := '00';
+  {
+  case ComboBox_Parity.ItemIndex of
+    0: FSerial_Parity:= '00'; //None Default
+    1: FSerial_Parity:= '01'; //Odd
+    2: FSerial_Parity:= '02'; //Even
+    else FSerial_Parity:= '00';
+  end;
+   }
+  //13. Stop bit
+  FSerial_stop := '01';
+
+  //14.Flow control (00: None), (01: XON/XOFF), (02: CTS/RTS)
+  FSerial_flow := '00';
+  {
+  case ComboBox_Flow.ItemIndex  of
+    0: FSerial_flow:= '00'; //Default
+    1: FSerial_flow:= '01';
+    2: FSerial_flow:= '02';
+  end;
+   }
+
+  //15. Delimiter char
+  FDelimiterChar := '03';
+  {
+  if Edit_Char.Text ='' then Edit_Char.Text:= '00';
+  FDelimiterChar:= Edit_Char.Text;
+   }
+
+  //16.Delimiter size
+  {
+  if Edit_Size.Text ='' then Edit_Size.Text:= '0';
+  st:= Dec2Hex(StrtoInt(Edit_Size.Text),2);
+  st:=FillZeroStrNum(st,4);
+   }
+  st := '0000';
+  st2 := '';
+  st2 := Chr(Hex2Dec(Copy(st, 1, 2))) + Char(Hex2Dec(Copy(st, 3, 2)));
+  FDelimiterSize := ToHexStrNoSpace(st2);
+
+  //17. Delimiter time
+
+  //if Edit_Time.Text = '' then Edit_Time.Text:= '20';
+
+  st := Dec2Hex(StrToInt('10'), 2);
+  st := FillZeroStrNum(st, 4);
+
+  st2 := '';
+  st2 := Chr(Hex2Dec(Copy(st, 1, 2))) + Char(Hex2Dec(Copy(st, 3, 2)));
+  FDelimitertime := ToHexStrNoSpace(st2);
+
+  //18.Delimiter idle time
+  //if Edit_Idle.Text = '' then Edit_Idle.Text:= '0';
+  //st:= Dec2Hex(StrtoInt(Edit_Idle.Text),2);
+  //st:=FillZeroStrNum(st,4);
+  st := '0000';
+  st2 := '';
+  st2 := Chr(Hex2Dec(Copy(st, 1, 2))) + Char(Hex2Dec(Copy(st, 3, 2)));
+  FDelimiterIdle := ToHexStrNoSpace(st2);
+
+  //19. Debug code (00: ON), (01: OFF)
+  FDebugMode := '01';
+  {
+  if Checkbox_Debugmode.Checked then FDebugMode:= '00'
+  else                               FDebugMode:= '01';
+   }
+  //20.Software major version
+  FROMVer := '0000';
+
+  // 21.DHCP option (00: DHCP OFF, 01:DHCP ON)
+  FOnDHCP := '00';
+  {
+  if Checkbox_DHCP.Checked then FOnDHCP:= '01'
+  else                          FOnDHCP:= '00';
+  }
+
+  //22.Reserved for future use
+  FReserve := '000000';
+
+  DataStr := FHeader + FMacAddress + FMode + FIPAddress + FSubnet +
+    FGateway + FClientPort + FServerIP + FServerPort + FSerial_Baud +
+    FSerial_data + FSerial_Parity + FSerial_stop + FSerial_flow +
+    FDelimiterChar + FDelimiterSize + FDelimitertime + FDelimiterIdle +
+    FDebugMode + FROMVer + FOnDHCP + FReserve;
+
+  WiznetData := DataStr;
+  {
+  SHowMessage(FHeader+#13+
+              FMacAddress+#13+
+              FMode+#13+
+              FIPAddress+#13+
+              FSubnet+#13+
+              FGateway+#13+
+              FClientPort+#13+
+              FServerIP+#13+
+              FServerPort+#13+
+              FSerial_Baud+#13+
+              FSerial_data+#13+
+              FSerial_Parity+#13+
+              FSerial_stop+#13+
+              FSerial_flow+#13+
+              FDelimiterChar+#13+
+              FDelimiterSize+#13+
+              FDelimitertime+#13+
+              FDelimiterIdle+#13+
+              FDebugMode+#13+
+              FROMVer+#13+
+              FOnDHCP+#13+
+              FReserve+#13+
+            '길이:'+InttoStr(Length(DataStr)));
+  }
+  SendPacket(aDeviceID, 'I', 'NW00' + DataStr, false);
+  Result := true;
+end;
+
+procedure TForm_Main.RcvWiznetInfo(aData: string);
+var
+  I: Integer;
+  TempStr: string;
+  st, st2: string;
+  DataStr: string;
+  ErrorLog: string;
+  FHeader: string[2];
+  FMacAddress: string[12];
+  FMode: string[2];
+  FIPAddress: string[8];
+  FSubnet: string[8];
+  FGateway: string[8];
+  FClientPort: string[4];
+  FServerIP: string[8];
+  FServerPort: string[4];
+  FSerial_Baud: string[2];
+  FSerial_data: string[2];
+  FSerial_Parity: string[2];
+  FSerial_stop: string[2];
+  FSerial_flow: string[2];
+  FDelimiterChar: string[2];
+  FDelimiterSize: string[4];
+  FDelimitertime: string[4];
+  FDelimiterIdle: string[4];
+  FDebugMode: string[2];
+  FROMVer: string[4];
+  FOnDHCP: string[2];
+  FReserve: string[4];
+begin
+  Delete(aData, 1, 1);
+  //데이터길이 1Byte가 나중에 추가되어 임의로 1Byte 삭제 처리
+  DataStr := Copy(aData, 22, 94);
+
+  FHeader := Copy(DataStr, 1, 2);
+  FMacAddress := Copy(DataStr, 3, 12);
+  FMode := Copy(DataStr, 15, 2);
+  FIPAddress := Copy(DataStr, 17, 8);
+  FSubnet := Copy(DataStr, 25, 8);
+  FGateway := Copy(DataStr, 33, 8);
+  FClientPort := Copy(DataStr, 41, 4);
+  FServerIP := Copy(DataStr, 45, 8);
+  FServerPort := Copy(DataStr, 53, 4);
+  FSerial_Baud := Copy(DataStr, 57, 2);
+  FSerial_data := Copy(DataStr, 59, 2);
+  FSerial_Parity := Copy(DataStr, 61, 2);
+  FSerial_stop := Copy(DataStr, 63, 2);
+  FSerial_flow := Copy(DataStr, 65, 2);
+  FDelimiterChar := Copy(DataStr, 67, 2);
+  FDelimiterSize := Copy(DataStr, 69, 4);
+  FDelimitertime := Copy(DataStr, 73, 4);
+  FDelimiterIdle := Copy(DataStr, 77, 4);
+  FDebugMode := Copy(DataStr, 81, 2);
+  FROMVer := Copy(DataStr, 83, 4);
+  FOnDHCP := Copy(DataStr, 87, 2);
+  FReserve := Copy(DataStr, 89, 6);
+
+  //헤더가 aa이면 설정응답
+  if FHeader = 'aa' then
+  begin
+    //Wiznet 조회 요청 처리 할것
+    //WizNetRcvACK:= True;
+    //btnCheckwiznetClick(Self);
+
+    Exit;
+  end;
+
+  //2.MAC Address
+  TempStr := 'MAC Addr;' + FMacAddress;
+  //LMDListBox1.Items.Add(TempStr);
+
+  //3.Mode (Server mode: 01, Client mode: 00)
+  TempStr := 'Client Mode;';
+  if FMode = '00' then TempStr := TempStr + 'Cleint Mode Only'
+  else TempStr := TempStr + 'Server Mode';
+  //LMDListBox1.Items.Add(TempStr);
+
+  // 4.IP address ★★★★★
+  st2 := '';
+  st := Hex2Ascii(FIPAddress);
+  for I := 1 to 4 do
+  begin
+    if I < 4 then st2 := st2 + IntToStr(Ord(st[I])) + '.'
+    else st2 := st2 + IntToStr(Ord(st[I]));
+  end;
+
+  Edit_IP.Text := st2;
+  TempStr := 'Local/IP;' + st2;
+  //LMDListBox1.Items.Add(TempStr);
+
+  // 5.Subnet mask ★★★★★
+  st2 := '';
+  st := Hex2Ascii(FSubnet);
+  for I := 1 to 4 do
+  begin
+    if I < 4 then st2 := st2 + IntToStr(Ord(st[I])) + '.'
+    else st2 := st2 + IntToStr(Ord(st[I]));
+  end;
+  Edit_subnet.Text := st2;
+  TempStr := 'Local/SubNet;' + st2;
+  //LMDListBox1.Items.Add(TempStr);
+
+  // 6.Gateway address  ★★★★★
+  st2 := '';
+  st := Hex2Ascii(FGateway);
+  for I := 1 to 4 do
+  begin
+    if I < 4 then st2 := st2 + IntToStr(Ord(st[I])) + '.'
+    else st2 := st2 + IntToStr(Ord(st[I]));
+  end;
+  edit_Gateway.Text := st2;
+  TempStr := 'Local/Gateway;' + st2;
+  //LMDListBox1.Items.Add(TempStr);
+
+
+  //7.Port number (Client) ★★★★★
+  st2 := Hex2DecStr(FClientPort);
+  edit_port.Text := st2;
+  TempStr := 'Local/Port;' + st2;
+  //LMDListBox1.Items.Add(TempStr);
+
+
+  //8. Server IP address
+  st2 := '';
+  st := Hex2Ascii(FServerIP);
+  for I := 1 to 4 do
+  begin
+    if I < 4 then st2 := st2 + IntToStr(Ord(st[I])) + '.'
+    else st2 := st2 + IntToStr(Ord(st[I]));
+  end;
+  //Edit_ServerIp.Color:= clYellow;
+  //Edit_ServerIp.Text:= st2;
+  TempStr := 'Server/IP;' + st2;
+  //LMDListBox1.Items.Add(TempStr);
+
+
+  //9.  Port number (Server)
+  st2 := '';
+  st2 := Hex2DecStr(FServerPort);
+  TempStr := 'Server/Port;' + st2;
+  //Edit_Serverport.Color:= clYellow;
+  //Edit_Serverport.Text:= st2;
+  //LMDListBox1.Items.Add(TempStr);
+
+  //10. Serial speed (bps)
+  TempStr := 'Serial/Baud;';
+
+  if FSerial_Baud = 'F4' then TempStr := TempStr + '9600[F4]'
+  else if FSerial_Baud = 'FA' then TempStr := TempStr + '19200[FA]'
+  else if FSerial_Baud = 'FD' then TempStr := TempStr + '38400[FD]'
+  else if FSerial_Baud = 'FE' then TempStr := TempStr + '57600[FE]'
+  else if FSerial_Baud = 'FF' then TempStr := TempStr + '115200[FF]'
+  else TempStr := TempStr + FSerial_Baud;
+  //LMDListBox1.Items.Add(TempStr);
+
+  //11. Serial data size (08: 8 bit), (07: 7 bit)
+  TempStr := 'Serial/Data;';
+  if FSerial_data = '07' then TempStr := TempStr + '7'
+  else if FSerial_data = '08' then TempStr := TempStr + '8'
+  else TempStr := TempStr + 'error:' + FSerial_data;
+  //LMDListBox1.Items.Add(TempStr);
+
+  //12. Parity (00: No), (01: Odd), (02: Even)
+  TempStr := 'Serial/Parity;';
+  if FSerial_Parity = '00' then TempStr := TempStr + 'No'
+  else if FSerial_Parity = '01' then TempStr := TempStr + 'Odd'
+  else if FSerial_Parity = '02' then TempStr := TempStr + 'even'
+  else TempStr := TempStr + 'error:' + FSerial_Parity;
+  //LMDListBox1.Items.Add(TempStr);
+
+  //13. Stop bit
+  TempStr := 'Serial/Stop;';
+  if FSerial_stop = '01' then TempStr := TempStr + '1'
+  else TempStr := TempStr + 'error:' + FSerial_stop;
+  //LMDListBox1.Items.Add(TempStr);
+
+  //14.Flow control (00: None), (01: XON/XOFF), (02: CTS/RTS)
+  TempStr := 'Serial/Flow;';
+  if FSerial_flow = '00' then TempStr := TempStr + 'None'
+  else if FSerial_flow = '01' then TempStr := TempStr + 'XON/XOFF'
+  else if FSerial_flow = '02' then TempStr := TempStr + 'CTS/RTS'
+  else TempStr := TempStr + 'error:' + FSerial_flow;
+  //LMDListBox1.Items.Add(TempStr);
+
+  //15. Delimiter char
+  TempStr := 'Delimiter/char;';
+  TempStr := TempStr + FDelimiterChar;
+  //LMDListBox1.Items.Add(TempStr);
+
+  //16.Delimiter size
+  TempStr := 'Delimiter/Size;';
+  st2 := '';
+  st2 := Hex2DecStr(FDelimiterSize);
+  TempStr := TempStr + st2;
+  //LMDListBox1.Items.Add(TempStr);
+
+  //17. Delimiter time
+  TempStr := 'Delimiter/Time;';
+  st2 := '';
+  st2 := Hex2DecStr(FDelimitertime);
+  TempStr := TempStr + st2;
+  //LMDListBox1.Items.Add(TempStr);
+
+  //18.Delimiter idle time
+  TempStr := 'Delimiter/idleTime;';
+  st2 := '';
+  st2 := Hex2DecStr(FDelimiterIdle);
+  TempStr := TempStr + st2;
+  //LMDListBox1.Items.Add(TempStr);
+
+  //19. Debug code (00: ON), (01: OFF)
+  TempStr := 'Debug Mode;';
+  if FDebugMode = '00' then TempStr := TempStr + 'ON[00]'
+  else TempStr := TempStr + 'OFF[01]';
+  //LMDListBox1.Items.Add(TempStr);
+
+  //20.Software major version
+  TempStr := 'version;';
+  st := Hex2Ascii(FROMVer);
+  TempStr := TempStr + IntToStr(Ord(st[1])) + '.' + IntToStr(Ord(st[2]));
+  //LMDListBox1.Items.Add(TempStr);
+
+  // 21.DHCP option (00: DHCP OFF, 01:DHCP ON)
+
+  TempStr := 'DHCP;';
+  if FOnDHCP = '01' then
+  begin
+    //Checkbox_DHCP.Checked:= True;
+    TempStr := TempStr + 'ON[01]'
+  end else if FOnDHCP = '00' then
+  begin
+    //Checkbox_DHCP.Checked:= False;
+    TempStr := TempStr + 'OFF[00]';
+  end;
+
+  ErrorLog := '';
+
+  if FMode <> Copy(wiznetData, 15, 2) then
+    ErrorLog := ErrorLog + 'Mode:' + Copy(wiznetData, 15, 2) + '<>' + FMode + #13;
+  if FIPAddress <> Copy(wiznetData, 17, 8) then
+    ErrorLog := ErrorLog + 'IPAddress:' + Copy(wiznetData, 17,
+      8) + '<>' + FIPAddress + #13;
+  if FSubnet <> Copy(wiznetData, 25, 8) then
+    ErrorLog := ErrorLog + 'SubNet:' + Copy(wiznetData, 25,
+      8) + '<>' + FSubnet + #13;
+  if FGateway <> Copy(wiznetData, 33, 8) then
+    ErrorLog := ErrorLog + 'Gateway:' + Copy(wiznetData, 33,
+      8) + '<>' + FGateway + #13;
+  if FClientPort <> Copy(wiznetData, 41, 4) then
+    ErrorLog := ErrorLog + 'ClientPort:' + Copy(wiznetData, 41,
+      8) + '<>' + FClientPort + #13;
+  if FServerIP <> Copy(wiznetData, 45, 8) then
+    ErrorLog := ErrorLog + 'ServerIP:' + Copy(wiznetData, 45,
+      8) + '<>' + FServerIP + #13;
+  if FServerPort <> Copy(wiznetData, 53, 4) then
+    ErrorLog := ErrorLog + 'ServerPort:' + Copy(wiznetData, 53,
+      8) + '<>' + FServerPort + #13;
+  if FSerial_Baud <> Copy(wiznetData, 57, 2) then
+    ErrorLog := ErrorLog + 'Serial_Baud:' + Copy(wiznetData, 57,
+      2) + '<>' + FSerial_Baud + #13;
+  if FSerial_data <> Copy(wiznetData, 59, 2) then
+    ErrorLog := ErrorLog + 'Serial_data:' + Copy(wiznetData, 59,
+      2) + '<>' + FSerial_data + #13;
+  if FSerial_Parity <> Copy(wiznetData, 61, 2) then
+    ErrorLog := ErrorLog + 'Serial_Parity:' + Copy(wiznetData, 61,
+      2) + '<>' + FSerial_Parity + #13;
+  if FSerial_stop <> Copy(wiznetData, 63, 2) then
+    Errorlog := Errorlog + 'Serial_stop:' + Copy(wiznetData, 63,
+      2) + '<>' + FSerial_stop + #13;
+  if FSerial_flow <> Copy(wiznetData, 65, 2) then
+    Errorlog := Errorlog + 'Serial_flow:' + Copy(wiznetData, 65,
+      2) + '<>' + FSerial_flow + #13;
+  if FDelimiterChar <> Copy(wiznetData, 67, 2) then
+    Errorlog := Errorlog + 'DelimiterChar:' + Copy(wiznetData, 67,
+      2) + '<>' + FDelimiterChar + #13;
+  if FDelimiterSize <> Copy(wiznetData, 69, 4) then
+    Errorlog := Errorlog + 'DelimiterSize:' + Copy(wiznetData, 69,
+      2) + '<>' + FDelimiterSize + #13;
+  if FDelimitertime <> Copy(wiznetData, 73, 4) then
+    Errorlog := Errorlog + 'Delimitertime:' + Copy(wiznetData, 73,
+      4) + '<>' + FDelimitertime + #13;
+  if FDelimiterIdle <> Copy(wiznetData, 77, 4) then
+    Errorlog := Errorlog + 'DelimiterIdle:' + Copy(wiznetData, 77,
+      4) + '<>' + FDelimiterIdle + #13;
+  if FDebugMode <> Copy(wiznetData, 81, 2) then
+    Errorlog := Errorlog + 'DebugMode:' + Copy(wiznetData, 81,
+      4) + '<>' + FDebugMode + #13;
+  {
+  if FROMVer <> Copy(wiznetData,83,4)then
+     Errorlog:= Errorlog +'ROMVer:' +Copy(wiznetData,83,4) +'<>'+FROMVer+#13;
+  }
+  if FOnDHCP <> Copy(wiznetData, 87, 2) then
+    Errorlog := Errorlog + 'OnDHCP:' + Copy(wiznetData, 87, 4) + '<>' + FOnDHCP;
+  if FReserve <> Copy(wiznetData, 89, 6) then
+    //if (Errorlog <> '') and (WizNetRegMode = True) then
+    if Errorlog <> '' then
+    begin
+      Errorlog := '설정값과 응답값이 틀립니다.' + #13 +
+        '===========================' + #13 + '  설정값 < ===== > 응답값  ' +
+        #13 + '===========================' + #13 + Errorlog;
+      ShowMessage(Errorlog);
+    end;
+  {
+  else
+  begin
+    SHowMessage('설정/조회 완료 되었습니다..');
+  end;
+  }
+end;
+
+
+//기기번호 조회(MCU조회)
+function TForm_Main.CheckID: Boolean;
+var
+  aData: string;
+begin
+  Result := false;
+  aData := 'ID000000000';
+  SendPacket('000000000', 'Q', aData, false);
+  Result := true;
+end;
+// 기기번호등록
+
+function TForm_Main.RegID(aDeviceID: string): Boolean;
+begin
+  Result := false;
+  if (not isdigit(aDeviceID)) or (Length(aDeviceID) <> 7) then Exit;
+  SendPacket('000000000', 'I', 'ID00' + aDeviceID, false);
+  Result := true;
+end;
+
+// 기기번호 응답
+procedure TForm_Main.RcvDeviceID(aData: string);
+var
+  st: string;
+begin
+  //40 K1123456700i1IF00제론시스템      61
+  Delete(aData, 1, 1);
+  //데이터길이 1Byte가 나중에 추가되어 임의로 1Byte 삭제 처리
+  st := Copy(aData, 22, 7);
+
+  Edit_DeviceID1.Text := st[1];
+  Edit_DeviceID2.Text := st[2];
+  Edit_DeviceID3.Text := st[3];
+  Edit_DeviceID4.Text := st[4];
+  Edit_DeviceID5.Text := st[5];
+  Edit_DeviceID6.Text := st[6];
+  Edit_DeviceID7.Text := st[7];
+  // 기기 응답 완료후 나머지 정보를 조회를 수행한다.
+  {
+  if isRegMode then RegSysInfo(xDeviceID)
+  else CheckSysInfo(xDeviceID);
+   }
+end;
+
+//ECU 조회
+function TForm_Main.CheckUsedDevice(aDeviceID: string): Boolean;
+var
+  aData: string;
+begin
+  Result := false;
+  if (not isdigit(aDeviceID)) or (Length(aDeviceID) <> 7) then Exit;
+  aData := 'EX00';
+  SendPacket(aDeviceID, 'Q', aData, false);
+  Result := true;
+end;
+  // ECU 등록
+  //UsedDevice:00~99 ==> '00000 ~000000'(100Byte)
+
+function TForm_Main.RegUsedDevice(aDeviceID: string;
+  UsedDevice: string): Boolean;
+begin
+  Result := false;
+  if (not isdigit(aDeviceID)) or (Length(aDeviceID) <> 9) then Exit;
+  if (not isdigit(UsedDevice)) or (Length(UsedDevice) <> 100) then Exit;
+  SendPacket(aDeviceID, 'I', 'EX00' + UsedDevice, false);
+  Result := true;
+end;
+
+// ECU 응답
+procedure TForm_Main.RcvUsedDevice(aData: string);
+var
+  st: string;
+  I: Integer;
+  ECUNo: string;
+  aIndex: Integer;
+  alist: TListItem;
+begin
+  Delete(aData, 1, 1);
+  //데이터길이 1Byte가 나중에 추가되어 임의로 1Byte 삭제 처리
+  st := Copy(aData, 22, 100);
+  for I := 1 to 100 do
+  begin
+    if st[I] = '1' then
+    begin
+      ECUNo := FillZeroNumber(I, 2);
+      if ListviewBinarySearch(lvECU, ECUNo, aIndex) then
+      begin
+        // 이미등록되어 있음
+      end else
+      begin
+        // ECU 추가
+        aList := lvECU.Items.Add;
+        aList.Caption := ECUNo; //ECU 번호
+        aList.ImageIndex := 4;
+        aList.SubItems.Add('ECU');
+      end;
+    end;
+  end;
+end;
+
+
+//알람표시기 조회
+function TForm_Main.CheckUsedAlarmDisplay(aDeviceID: string): Boolean;
+var
+  aData: string;
+begin
+  Result := false;
+  if (not isdigit(aDeviceID)) or (Length(aDeviceID) <> 9) then Exit;
+  aData := 'AD00';
+  SendPacket(aDeviceID, 'Q', aData, false);
+  Result := true;
+end;
+
+  // 알람표시기 등록
+  // UsedDevice:1~4==> '0000'(4Byte)
+function TForm_Main.RegUsedAlarmDisplay(aDeviceID: string;
+  UsedDevice: string): Boolean;
+begin
+  Result := false;
+  if (not isdigit(aDeviceID)) or (Length(aDeviceID) <> 9) then Exit;
+  if (not isdigit(UsedDevice)) or (Length(UsedDevice) <> 4) then Exit;
+  SendPacket(aDeviceID, 'I', 'AD00' + '0' + UsedDevice, false);
+  Result := false;
+end;
+
+// 알람표시기 응답
+procedure TForm_Main.RcvUsedAlarmdisplay(aData: string);
+var
+  st: string;
+  I: Integer;
+begin
+  Delete(aData, 1, 1);
+  //데이터길이 1Byte가 나중에 추가되어 임의로 1Byte 삭제 처리
+  st := Copy(aData, 23, 12);
+
+  for I := 1 to 12 do
+  begin
+    if st[I] = '1' then CheckList_Alarm.ItemChecked[I - 1] := true
+    else CheckList_Alarm.ItemChecked[I - 1] := false;
+  end;
+end;
+
+
+//링커스 ID 조회
+function TForm_Main.CheckLinkusID(aDeviceID: string): Boolean;
+var
+  aData: string;
+begin
+  Result := false;
+  if (not isdigit(aDeviceID)) or (Length(aDeviceID) <> 9) then Exit;
+  aData := 'Id00';
+  SendPacket(aDeviceID, 'Q', aData, false);
+  Result := true;
+end;
+
+//링커스 ID 등록
+function TForm_Main.RegLinkusID(aDeviceID, aLinkusId: string): Boolean;
+var
+  aID: Integer;
+  bID: string;
+begin
+  Result := false;
+  if (not isdigit(aDeviceID)) or (Length(aDeviceID) <> 9) then Exit;
+  if not isdigit(aLinkusId) then Exit;
+  aID := StrToInt(aLinkusId);
+  bID := Dec2Hex(aID, 4);
+  SendPacket(aDeviceID, 'I', 'Id00' + bID, false);
+  Result := true;
+end;
+
+//링커스 ID응답
+procedure TForm_Main.RcvLinkusId(aData: string);
+var
+  st: string;
+begin
+  Delete(aData, 1, 1);
+  //데이터길이 1Byte가 나중에 추가되어 임의로 1Byte 삭제 처리
+  st := Copy(aData, 22, 4);
+  Edit_LinkusID.Text := Hex2DecStr(st);
+end;
+
+
+// 데코더 전화번호 조회
+function TForm_Main.CheckLinksTellNo(aDeviceID: string; aNo: Integer): Boolean;
+var
+  IndexStr: string;
+  aData: string;
+begin
+  Result := false;
+  if (not isdigit(aDeviceID)) or (Length(aDeviceID) <> 9) then Exit;
+  IndexStr := '0' + IntToStr(aNo);
+  aData := 'Tn00' +  //COMMAND
+    IndexStr;        //전화 번호 인덱스
+  SendPacket(aDeviceID, 'Q', aData, false);
+  Result := true;
+end;
+
+// 데코더 전화번호 등록
+function TForm_Main.RegLinksTellNo(aDeviceID: string; aNo: Integer;
+  aTellno: string): Boolean;
+var
+  NoStr: string[2];
+  st: string;
+begin
+  Result := false;
+  if (not isdigit(aDeviceID)) or (Length(aDeviceID) <> 9) then Exit;
+  if not isdigit(aTellNo) then Exit;
+  NoStr := IntToStr(aNo);
+  if Length(NoStr) < 2 then NoStr := '0' + NoStr;
+  st := SetLength(aTellNo, 20);
+  SendPacket(aDeviceID, 'I', 'Tn00' + NoStr + st, false);
+  Result := true;
+end;
+
+//링커스 관제 번호 수신
+procedure TForm_Main.RcvLinkusTelNo(aData: string);
+var
+  st: string;
+  MNo: Integer;
+begin
+  Delete(aData, 1, 1);
+  //데이터길이 1Byte가 나중에 추가되어 임의로 1Byte 삭제 처리
+  st := Copy(aData, 22, Length(aData) - 24);
+  MNo := StrToInt(Copy(st, 1, 2));
+  Delete(st, 1, 2);
+  DeleteChar(st, ' ');
+  //MNo(Index)무시: 0번 하나만 사용중...
+  Edit_LinkusTel.Text := st;
+end;
+
+
+//텔카운트 조회
+function TForm_Main.CheckRingCount(aDeviceID: string): Boolean;
+var
+  aData: string;
+begin
+  Result := false;
+  if (not isdigit(aDeviceID)) or (Length(aDeviceID) <> 9) then Exit;
+  aData := 'Rc00';
+  SendPacket(aDeviceID, 'Q', aData, false);
+  Result := true;
+end;
+//텔카운트 등록
+
+function TForm_Main.RegRingCount(aDeviceID: string; aCount: Integer): Boolean;
+var
+  Countstr: string;
+begin
+  Result := false;
+  if (not isdigit(aDeviceID)) or (Length(aDeviceID) <> 9) then Exit;
+  CountStr := FillZeroNumber(aCount, 2);
+  SendPacket(aDeviceID, 'I', 'Rc00' + CountStr, false);
+  Result := true;
+end;
+//텔카운트 응답
+
+procedure TForm_Main.RcvRingCount(aData: string);
+var
+  st: string;
+  aCount: Integer;
+begin
+  Delete(aData, 1, 1);
+  //데이터길이 1Byte가 나중에 추가되어 임의로 1Byte 삭제 처리
+  st := Copy(aData, 22, 2);
+  aCount := StrToInt(st);
+  Spinner_Ring.Value := aCount;
+end;
+
+
+//시스템정보  조회
+function TForm_Main.CheckSysInfo(aDeviceID: string): Boolean;
+var
+  aData: string;
+begin
+  Result := false;
+  if (not isdigit(aDeviceID)) or (Length(aDeviceID) <> 9) then Exit;
+  aData := 'SY00';
+  SendPacket(aDeviceID, 'Q', aData, false);
+  Result := true;
+end;
+
+//시스템정보  등록
+function TForm_Main.RegSysInfo(aDeviceID: string; WatchPowerOff: Integer;
+  DelayIn: Integer; DelayOut: Integer; Door1Type: Integer;
+  Door2Type: Integer; Locate: string): Boolean;
+var
+  aData: string;
+begin
+  Result := false;
+  if (not isdigit(aDeviceID)) or (Length(aDeviceID) <> 9) then Exit;
+  if (WatchPowerOff + DelayIn + DelayOut + Door1Type + Door2Type) < 0 then
+    Exit;
+
+  aData := 'SY00' +                                   // COMMAND
+    IntToStr(WatchPowerOff) +                         // 정전감시여부
+    FillZeroNumber(DelayOut, 3) +                     // 퇴실지연시간
+    '2' +                                             // 예비
+    IntToStr(Door1Type) +                             // Door1
+    IntToStr(Door2Type) +                             //Door2
+    SetLength(Locate, 16) +                           // 위치명
+    FillZeroNumber(DelayIn, 3) +                      // 입실지연시간
+    '1';                                              // 관제 통신 방식(고정)
+  SendPacket(aDeviceID, 'I', aData, false);
+  Result := true;
+end;
+
+//시스템정보  조회
+procedure TForm_Main.RcvSysinfo(aData: string);
+var
+  st: string;
+begin
+  //         1         2         3         4         5
+  //12345678901234567890123456789012345678901234567890123
+  //052 K1000000000i5SY001000221                000157
+  //                      ---------------------------
+
+  Delete(aData, 1, 1);
+  //데이터길이 1Byte가 나중에 추가되어 임의로 1Byte 삭제 처리
+  st := Copy(aData, 22, 7);
+  if not isDigit(st) then Exit;
+
+  {정전 감시여부}
+  ComboBox_WatchPowerOff.ItemIndex := StrToInt(st[1]);
+  ComboBox_WatchPowerOff.Text := ComboBox_WatchPowerOff.Items
+    [ComboBox_WatchPowerOff.ItemIndex];
+
+  {퇴실지연시간}
+  SpinEdit_OutDelay.IntValue := StrToInt(Copy(st, 2, 3));
+
+  {예비}
+  //ComboBox_DeviceType.ItemIndex:= StrtoInt(st[5]);
+  //ComboBox_DeviceType.Text:= ComboBox_DeviceType.Items[ComboBox_DeviceType.ItemIndex];
+
+  {Door1 용도}
+  ComboBox_DoorType1.ItemIndex := StrToInt(st[6]);
+  ComboBox_DoorType1.Text := ComboBox_DoorType1.Items[ComboBox_DoorType1.ItemIndex];
+  {Door2 용도}
+  ComboBox_DoorType2.ItemIndex := StrToInt(st[7]);
+  ComboBox_DoorType2.Text := ComboBox_DoorType2.Items[ComboBox_DoorType2.ItemIndex];
+
+  {시스템 위치명}
+  Edit_Locate.Text := Copy(aData, 30, 16);
+  {입실지연시간}
+  SpinEdit_InDelay.IntValue := StrToInt(Copy(aData, 46, 3));
+end;
+
+
+//시스템정보  조회(출입통제)
+function TForm_Main.CheckSysInfo2(aDeviceID: string;
+  aDoorNo: Integer): Boolean;
+var
+  aData: string;
+  DeviceID: string;
+begin
+  aData := 'B' + '0' +                             //MSG Code
+    IntToStr(aDoorNo) +               //문번호
+    #$20 + #$20 + '00000000000000000000';          //조회는 전체를 '0'으로 마킹
+  SendPacket(aDeviceID, 'c', aData, false);
+end;
+//출입통제 시스템정보  등록
+
+function TForm_Main.RegSysInfo2(aDeviceID: string;
+  aDoorNo, aCardMode, aDoorMode, aDoorOpenTime, aOpenMoniTime,
+  aUseSchedule, aSendDoorState, aUseOpenalarm, aLockType,
+  aControledFire: Integer): Boolean;
+var
+  aData: string;
+begin
+  Result := false;
+  aData := 'A' +                       //MSG Code
+    '0' +                              //Msg Count(고정)
+    IntToStr(aDoorNo) +                //문번호
+    #$20 + #$20 +                      // Record count
+    IntToStr(aCardMode) +              //카드운영모드
+    IntToStr(aDoorMode) +              //출입문 운영모드
+    IntToStr(aDoorOpenTime) +          //Door제어 시간
+    IntToStr(aOpenMoniTime) +          //장시간 열림 경보
+    IntToStr(aUseSchedule) +           //스케줄 적용유무
+    IntToStr(aSendDoorState) +         //출입문상태전송
+    '0' +                              //통신이상시 기기운영(사용안함:고정)
+    '0' +                              //AntiPassBack(사용안함:고정)
+    IntToStr(aUseOpenalarm) +          //장시간 열림 부저출력
+    '0' +                              //통신 이상시 부저 출력 (사용안함:고정)
+    IntToStr(aLockType) +              //전기정 타입
+    IntToStr(aControledFire) +         //화재 발생시 문제어
+    '0' +                              //DS LS 검사(사용안함:고정)
+    '0000000';                         //예비
+  SendPacket(aDeviceID, 'c', aData, false);
+  Result := true;
+end;
+
+
+//사용카드리더 조회
+function TForm_Main.CheckCardReader(aDeviceID: string; aNo: Integer): Boolean;
+var
+  aData: string;
+  ReaderNoStr: string;
+begin
+  Result := false;
+  if (not isdigit(aDeviceID)) or (Length(aDeviceID) <> 9) then Exit;
+  ReaderNoStr := FillZeroNumber(aNo, 2);
+  aData := 'CD' + ReaderNoStr;
+  SendPacket(aDeviceID, 'Q', aData, false);
+  Result := true;
+end;
+
+//카드리더 등록
+function TForm_Main.RegCardReader(aDeviceID: string;    // 기기번호
+  aNo,                  // 카드리더 번호
+  aUsed,                //  사용여부
+  aDoorNo: Integer;     // 연결 문번호
+  aLocate: string       // 위치명
+  ): Boolean;
+var
+  aReaderNoStr: string;
+  aData: string;
+begin
+  Result := false;
+  aReaderNoStr := FillZeroNumber(aNo, 2);
+  aData := 'CD' +                                         //COMMAND
+    aReaderNoStr +                                        //리더 번호
+    IntToStr(aUsed) +                                     //리더 사용 유무
+    '0' +                                                 //리더 위치(고정)
+    IntToStr(aDoorNo) +                                   //Door No
+    '00' +                                                //존번호
+    SetLength(aLocate, 16);                               //위치명
+  SendPacket(aDeviceID, 'I', aData, false);
+  Result := true;
+end;
+
+//카드리더 설정 응답
+procedure TForm_Main.RcvCardReader(aData: string);
+var
+  st: string;
+  aReaderNo: Integer;
+  UsedCardreader: Char;
+  DoorNo: Char;
+  Locate: string;
+begin
+  Delete(aData, 1, 1);
+  //데이터길이 1Byte가 나중에 추가되어 임의로 1Byte 삭제 처리
+  st := Copy(aData, 20, 2);
+
+  aReaderNo := StrToInt(st);
+  st := Copy(aData, 22, 21);
+  if not isdigit(st) then Exit;
+  UsedCardreader := st[1];         // 카드리더 사용여부
+  DoorNo := st[3];                 // 연동 문번호
+  Locate := Copy(st, 6, 16);       // 카드리더 위치명
+
+  sgCardReader.Cells[1, aReaderNo] := UsedCardreader;
+  sgCardReader.Cells[2, aReaderNo] := DoorNo;
+  sgCardReader.Cells[3, aReaderNo] := Locate;
+end;
+
+
+//사용포트LOOP 조회
+function TForm_Main.CheckPort(aDeviceID: string; aNo: Integer): Boolean;
+var
+  aData: string;
+  aPortNoStr: string;
+begin
+  Result := false;
+  if (not isdigit(aDeviceID)) or (Length(aDeviceID) <> 9) then Exit;
+  aPortNoStr := FillZeroNumber(aNo, 2);
+  aData := 'LP' + aPortNoStr;
+  SendPacket(aDeviceID, 'Q', aData, false);
+  Result := true;
+end;
+
+// 포트 등록
+function TForm_Main.RegPort(aDeviceID: string;           // 기기번호
+  aNo,                         // 포트번호
+  aAlarmType,                  // 감시형태
+  aUseDelay,                   // 지연시간
+  aDetectTime: Integer;         // 감지시간
+  aLocate: string              // 위치명
+  ): Boolean;
+var
+  aData: string;
+  aPortNoStr: string;
+begin
+  Result := false;
+  aPortNoStr := FillZeroNumber(aNo, 2);
+  aData := 'LP' +                              //COMMAND
+    aPortNoStr +                               //포트번호
+    'SS' +                                     //상태코드('SS' 고정)
+    IntToStr(aAlarmType) +                     //감시형태
+    '0' +                                      //알람발생 방식(고정)
+    '0' +                                      //복구신호전송(고정)
+    IntToStr(aUseDelay) +                      //지연시간 사용유무
+    '00' +                                     //램프
+    '00' +                                     //싸이렌
+    '00' +                                     //릴레이1
+    '00' +                                     //릴레이2
+    '00' +                                     //출입문연동1
+    '00' +                                     //출입문연동2
+    '00' +                                     //메인램프
+    '00' +                                     //메인싸이렌
+    '00' +                                     //메인릴레이1
+    '00' +                                     //메인릴레이2
+    '00' +                                     //존번호
+    SetLength(aLocate, 16) +                   //위치명
+    FillZeroNumber(aDetectTime, 2) +           //감지시간
+    '00';                                      //사용안함
+  SendPacket(aDeviceID, 'I', aData, false);
+  Result := true;
+end;
+
+// 포트 설정 응답
+procedure TForm_Main.RcvPort(aData: string);
+var
+  st: string;
+  aIndex: Integer;
+  aWatchCode: Integer;
+  aWatchStr: string;
+  aDelayTime: string;
+  aDetectTime: string;
+  aLocate: string;
+begin
+  Delete(aData, 1, 1);
+  //데이터길이 1Byte가 나중에 추가되어 임의로 1Byte 삭제 처리
+  st := Copy(aData, 20, 2);
+  aIndex := StrToInt(st);
+
+  //감시형태
+  aWatchCode := StrToInt(aData[24]);
+  //지연시간
+  aDelayTime := aData[27];
+  //감지시간
+  aDetecttime := Copy(aData, 66, 2);
+  //위치명
+  aLocate := Copy(aData, 50, 16);
+
+  sgPort.Cells[1, aIndex] := IntToStr(aIndex);
+  //감시형태
+  case aWatchCode of
+    0: aWatchStr := '0.방범';
+    1: aWatchStr := '1.화재';
+    2: aWatchStr := '2.가스';
+    3: aWatchStr := '3.비상';
+    4: aWatchStr := '4.설비';
+    else aWatchStr := '0.방범';
+  end;
+  //지연시간
+  sgPort.Cells[2, aIndex] := aWatchStr;
+  //감지시간
+  sgPort.Cells[3, aIndex] := aDetecttime;
+  //위치명
+  sgPort.Cells[3, aIndex] := aDetecttime;
+end;
+
+
+//시간동기화
+function TForm_Main.TimeSync(aDeviceID: string): Boolean;
+var
+  aTimeStr: string;
+  aData: string;
+begin
+  Result := false;
+  aTimeStr := FormatDateTime('yyyymmddhhnnss', Now);
+  aData := 'TM00' +   // COMMAND
+    aTimeStr;         // 시간데이터
+  SendPacket(aDeviceID, 'R', aData, false);
+  Result := true;
+end;
+
+//버젼확인
+function TForm_Main.CheckVersion(aDeviceID: string): Boolean;
+var
+  aData: string;
+begin
+  Result := false;
+  aData := 'VR00';
+  SendPacket(aDeviceID, 'R', aData, false);
+  Result := true;
+end;
+
+//리더기버젼 확인
+function TForm_Main.CheckReaderVersion(aDeviceID: string;
+  aNo: Integer): Boolean;
+var
+  aReaderNoStr: string;
+  aData: string;
+begin
+  Result := false;
+  aReaderNoStr := FillZeroNumber(aNo, 2);
+  aData := 'CV' +          // COMMAND
+    aReaderNoStr;          // Reader No
+  SendPacket(aDeviceID, 'R', aData, false);
+  Result := true;
+end;
+
+//기기리셋
+function TForm_Main.ResetDevice(aDeviceID: string): Boolean;
+var
+  aData: string;
+begin
+  Result := false;
+  aData := 'RS00Reset';
+  SendPacket(aDeviceID, 'R', aData, false);
+  Result := true;
+end;
+
+//기기 메모리삭제
+function TForm_Main.ClearRegister(aDeviceID: string): Boolean;
+var
+  aData: string;
+begin
+  Result := false;
+  aData := 'ac00Register Clear';
+  SendPacket(aDeviceID, 'I', aData, false);
+  Result := true;
+end;
+
+// 알람 모드 변경
+function TForm_Main.ChangeAlarmMode(aDeviceID: string; aMode: Char): Boolean;
+var
+  aData: string;
+begin
+  Result := false;
+  aData := 'MC' +         //COMMAND
+    '00' +                //ZONE 고정
+    aMode;                //A:경계, D:해제, P:순회
+  SendPacket(aDeviceID, 'R', aData, false);
+  Result := true;
+end;
+
+// 문제어
+function TForm_Main.DoorControl(aDeviceID: string;  //기기번호
+  aNo,               // 문번호
+  aControlType,      //제어방식
+  aControl: Integer  //제어 커맨드
+  ): Boolean;
+var
+  aData: string;
+begin
+  Result := false;
+  aData := 'C' + '0' +                                    //정상/비정상 여부
+    IntToStr(aNo) +                          //기기내 문번호
+    '0' +                                    //고정
+    IntToStr(aControlType) +                    //'0':해당사항없음,'1':카드운영,'2':출입운영,'3':원격제어
+    IntToStr(aControl);                        // 카드운영:Positive:'0',Negative:'1'
+  // 출입운영:'0':운영 ,'1':개방
+  // 원격제어:'0':시정,'1':해정
+  SendPacket(aDeviceID, 'c', aData, false);
+  Result := true;
+end;
+
+
+
+
+procedure TForm_Main.ComboBox_ECUChange(Sender: TObject);
+begin
+  // ECU가 변경 되면 통신버퍼를 Clear한다.
+  if ReserveSendDataList.Count > 0 then ReserveSendDataList.Clear;
+  CommPort.FlushOutBuffer;
+  CommPort.FlushInBuffer;
+end;
+
+procedure TForm_Main.FormDestroy(Sender: TObject);
+begin
+  ReserveSendDataList.Free;
+end;
+
+end.

@@ -1,0 +1,2 @@
+CREATE TABLE TB_ALARMSTATUSCODE (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , al_alarmstatuscode VARCHAR(5) NOT NULL , al_alarmname VARCHAR(30), al_alarmview INTEGER, al_alarmgrade INTEGER, al_alarmsound INTEGER NOT NULL  DEFAULT 0 ); 
+ ALTER TABLE TB_ALARMSTATUSCODE   ADD CONSTRAINT TB_ALARMSTATUSCODE_pkey PRIMARY KEY (group_code, al_alarmstatuscode);

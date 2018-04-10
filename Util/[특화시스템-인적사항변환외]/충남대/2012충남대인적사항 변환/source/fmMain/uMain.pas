@@ -1,0 +1,1624 @@
+unit uMain;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons, Grids, BaseGrid, AdvGrid, ExtCtrls, DB, ADODB,
+  ActiveX, Gauges, ComCtrls, uSubForm, CommandArray;
+
+type
+  TfmMain = class(TfmASubForm)
+    GroupBox2: TGroupBox;
+    ed_DBPath: TEdit;
+    btn_FileSearch: TSpeedButton;
+    Label4: TLabel;
+    OpenDialog1: TOpenDialog;
+    GroupBox4: TGroupBox;
+    btn_targetAdoConnect: TSpeedButton;
+    ed_Host: TEdit;
+    rg_dbtype: TRadioGroup;
+    Label5: TLabel;
+    Label6: TLabel;
+    ed_Port: TEdit;
+    Label7: TLabel;
+    ed_Userid: TEdit;
+    Label8: TLabel;
+    ed_Passwd: TEdit;
+    MDBADOConnection: TADOConnection;
+    TargetADOConnection: TADOConnection;
+    MdbADO: TADOQuery;
+    Label9: TLabel;
+    ed_DBName: TEdit;
+    targetTempADOQuery: TADOQuery;
+    targetADOExecQuery: TADOQuery;
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Label1: TLabel;
+    Label2: TLabel;
+    cmb_Depart: TComboBox;
+    cmb_PosiName: TComboBox;
+    btn_MDBSearch: TSpeedButton;
+    Panel3: TPanel;
+    lb_CompanyName1: TLabel;
+    lb_JijumName1: TLabel;
+    lb_PosiName1: TLabel;
+    lb_DepartName1: TLabel;
+    lb_emType: TLabel;
+    cmb_sCompany: TComboBox;
+    cmb_sJijum: TComboBox;
+    cmb_sPosi: TComboBox;
+    cmb_sDepart: TComboBox;
+    btn_WorkBranch: TBitBtn;
+    cmb_emType: TComboBox;
+    btnClose: TBitBtn;
+    MdbADOTemp: TADOQuery;
+    sg_Employ: TAdvStringGrid;
+    Gauge1: TGauge;
+    procedure btn_FileSearchClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btn_CloseClick(Sender: TObject);
+    procedure btn_targetAdoConnectClick(Sender: TObject);
+    procedure btnCloseClick(Sender: TObject);
+    procedure btn_WorkBranchClick(Sender: TObject);
+    procedure btn_MDBSearchClick(Sender: TObject);
+    procedure cmb_DepartChange(Sender: TObject);
+    procedure cmb_PosiNameChange(Sender: TObject);
+    procedure cmb_sCompanyChange(Sender: TObject);
+    procedure cmb_sJijumChange(Sender: TObject);
+  private
+    CompanyCodeList : TStringList;
+    JijumCodeList : TStringList;
+    DepartCodeList : TStringList;
+    PosiCodeList : TStringList;
+    EmpTypeCodeList : TStringList;
+    { Private declarations }
+    Function MDBAdoConnect(aDBPath:string):Boolean;
+    Function targetAdoConnect:Boolean;
+  private
+    Function GetFdmsID:string;
+    Function GetMaxPositionNum : integer;
+    Function CheckTB_EMPLOYEE(aCompanyCode,aEmpID:string):Boolean;
+    Function CheckTB_CARDEMPCODE(aCompanyCode,aEmpID:string):Boolean;
+    Function CheckTB_CARD(aCardNo:string):Boolean;
+    Function InsertTB_EMPLOYEE(aEmpID,aEmpNM,aCompanyCode,aJijumCode,aDepartCode,aPosiCode,aCompanyPhone,
+                                 aJoinDate,aRetireDate,aZipcode,aAddr1,aAddr2,aHomePhone,aHandphone,
+                                 aRegGubun,aCardNo,aEmpImg,afdmsId,aEmTypeCode:string):Boolean;
+    Function UpdateTB_EMPLOYEE(aEmpID,aEmpNM,aCompanyCode,aJijumCode,aDepartCode,aPosiCode,aCompanyPhone,
+                                 aJoinDate,aRetireDate,aZipcode,aAddr1,aAddr2,aHomePhone,aHandphone,
+                                 aRegGubun,aCardNo,aEmpImg,afdmsId,aEmTypeCode:string):Boolean;
+
+    Function InsertIntoTB_EMPHIS(aCompanyCode,aEmCode,afdmsID,aMode,aCardNo,aCardType,aEmName,aHandPhone,aCompanyName,aJijumName,aDepartName,aPosiName:string):string;
+    Function InsertTB_CARD(aCardNo,aCardGubun,aCardType,aEmpID,aCompanyCode:string) : Boolean;
+    Function UpdateTB_CARD(aCardNo,aCardGubun,aCardType,aEmpID,aCompanyCode:string) : Boolean;
+
+
+    Function UpdateTB_FORMNAME(aCode,aName:string):Boolean;
+    Function InsertIntoTB_RELAYGUBUN(aRgCode,aRgName:string):Boolean;
+    Function InsertIntoTB_POSI(aCompanyCode,aPosiCode,aPosiName:string):Boolean;
+    Function InsertIntoTB_COMPANY(aCompanyCode,aJijumCode,aDepartCode,aGubun,aName:string):Boolean;
+    Function ProcessExecSQL(aSql:string;bUpdateResult:Boolean=False):Boolean;
+  private
+    Function GetJijumCode(aJijumName:string):string;
+    Function GetDepartCode(aJijumCode,aDepartName:string):string;
+    Function GetMaxDepartCode(aJijumCode:string):string;
+    Function MakeCardNo( aIDNO,aSeq:string):string;
+  public
+    { Public declarations }
+    procedure DeleteTB_COMPANYCODE;
+    procedure DeleteTB_PosiCODE;
+    procedure DeleteTB_RelayCode;
+    procedure AlterTableTB_COMPANYName;
+    procedure CreatePosiCode;
+    procedure CreateRelayGubunCode;
+    procedure CreateCompanyCode;
+    procedure CreateJijumCode;
+    procedure CreateDeprtCode;
+    procedure FormNameChange;
+    procedure PersonDataConversion(aCompanyCode,aJijumCode,aDepartCode,aPosiCode,aEmpTypeCode,
+                             aEmCode,aSeq,aEmName:string);
+  private
+    procedure LoadMDBDepartName;
+    procedure LoadMDBPosiName;
+  private
+    procedure LoadsCompanyCode(aStringList:TStringList;cmb_Box:TComboBox);
+    procedure LoadsJijumCode(aCompanyCode:string;aStringList:TStringList;cmb_Box:TComboBox);
+    procedure LoadsDepartCode(aCompanyCode,aJijumCode:string;aStringList:TStringList;cmb_Box:TComboBox);
+    procedure LoadsPosiCode(aCompanyCode:string;aStringList:TStringList;cmb_Box:TComboBox);
+    procedure LoadsEmpType(aStringList:TStringList;cmb_Box:TComboBox);
+
+  end;
+
+var
+  fmMain: TfmMain;
+  GROUPCODE : string;
+
+implementation
+
+uses
+  uLomosUtil;
+
+{$R *.dfm}
+
+procedure TfmMain.btn_FileSearchClick(Sender: TObject);
+begin
+  ed_DBPath.Text := '';
+  if OpenDialog1.Execute then
+  begin
+    ed_DBPath.Text := OpenDialog1.FileName;
+    if MDBAdoConnect(ed_DBPath.Text) then
+    begin
+      btn_targetAdoConnect.Enabled := True;
+      //btn_WorkBranch.Enabled := True;
+    end else
+    begin
+      showmessage('데이터베이스 접속에 실패했습니다.');
+      btn_WorkBranch.Enabled := False;
+      Exit;
+    end;
+    LoadMDBPosiName;
+    LoadMDBDepartName;
+    btn_MDBSearch.Enabled := True;
+    btn_MDBSearchClick(self);
+  end;
+end;
+
+function TfmMain.MDBAdoConnect(aDBPath: string): Boolean;
+var
+  conStr : wideString;
+begin
+  result := False;
+  conStr := 'Provider=Microsoft.Jet.OLEDB.4.0;';
+  conStr := conStr + 'Data Source=' + aDBPath + ';';
+  conStr := conStr + 'Persist Security Info=True;';
+  conStr := conStr + 'Jet OLEDB:Database ';
+
+  with MDBADOConnection do
+  begin
+    Connected := False;
+    Try
+      ConnectionString := conStr;
+      LoginPrompt:= false ;
+      Connected := True;
+    Except
+      on E : EDatabaseError do
+        begin
+          // ERROR MESSAGE-BOX DISPLAY
+          ShowMessage(E.Message );
+          Exit;
+        end;
+      else
+        begin
+          ShowMessage('데이터베이스 접속 에러' );
+          Exit;
+        end;
+    End;
+    CursorLocation := clUseServer;
+  end;
+  result := True;
+end;
+
+procedure TfmMain.FormActivate(Sender: TObject);
+begin
+  btn_WorkBranch.Enabled := False;
+end;
+
+procedure TfmMain.FormCreate(Sender: TObject);
+begin
+  CompanyCodeList := TStringList.Create;
+  JijumCodeList := TStringList.Create;
+  DepartCodeList := TStringList.Create;
+  PosiCodeList := TStringList.Create;
+  EmpTypeCodeList := TStringList.Create;
+
+  GROUPCODE := '1234567890';
+end;
+
+procedure TfmMain.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  CompanyCodeList.Free;
+  JijumCodeList.Free;
+  DepartCodeList.Free;
+  PosiCodeList.Free;
+  EmpTypeCodeList.Free;
+
+end;
+
+procedure TfmMain.btn_CloseClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmMain.btn_targetAdoConnectClick(Sender: TObject);
+var
+  stCompanyCode : string;
+  stJijumCode : string;
+begin
+  btn_WorkBranch.Enabled := False;
+  if targetAdoConnect then
+  begin
+    btn_WorkBranch.Enabled := True;
+  end else
+  begin
+    showmessage('데이터베이스 접속실패');
+  end;
+  LoadsCompanyCode(CompanyCodeList,cmb_sCompany);
+  stCompanyCode := '000';
+  stJijumCode := '000';
+  if cmb_sCompany.ItemIndex > -1 then stCompanyCode := CompanyCodeList.Strings[cmb_sCompany.ItemIndex];
+  LoadsJijumCode(stCompanyCode,JijumCodeList,cmb_sJijum);
+  if cmb_sJijum.ItemIndex > 0 then stJijumCode := copy(JijumCodeList.Strings[cmb_sJijum.ItemIndex],4,3);
+  LoadsDepartCode(stCompanyCode,stJijumCode,DepartCodeList,cmb_sDepart);
+  LoadsPosiCode(stCompanyCode,PosiCodeList,cmb_sPosi);
+  LoadsEmpType(EmpTypeCodeList,cmb_EmType);
+end;
+
+function TfmMain.targetAdoConnect: Boolean;
+var
+  conStr : wideString;
+begin
+  result := False;
+  if rg_dbtype.ItemIndex = 0 then  //Mssql
+  begin
+    conStr := constr + 'Provider=SQLOLEDB.1;';
+    conStr := constr + 'Password=' + ed_Passwd.Text + ';';
+    conStr := constr + 'Persist Security Info=True;';
+    conStr := constr + 'User ID=' + ed_Userid.Text + ';';
+    conStr := constr + 'Initial Catalog=' + ed_DBName.Text + ';';
+    conStr := constr + 'Data Source=' + ed_Host.Text  + ',' + ed_Port.Text;
+  end else if rg_dbtype.ItemIndex = 1 then   //PostGresql
+  begin
+    conStr := 'Provider=PostgreSQL OLE DB Provider;';
+    conStr := constr + 'Data Source=' + ed_Host.Text + ';'   ;
+    conStr := constr + 'location=' + ed_DBName.Text + ';';
+    conStr := constr + 'User Id='+ ed_Userid.Text + ';';
+    conStr := constr + 'password=' + ed_Passwd.Text;
+  end  else
+  begin
+    showmessage('데이터베이스 타입을 선택 하세요.');
+    Exit;
+  end;
+  with TargetADOConnection do
+  begin
+    Connected := False;
+    Try
+      ConnectionString := conStr;
+      LoginPrompt:= false ;
+      Connected := True;
+    Except
+      on E : EDatabaseError do
+        begin
+          // ERROR MESSAGE-BOX DISPLAY
+          ShowMessage(E.Message );
+          Exit;
+        end;
+      else
+        begin
+          ShowMessage('데이터베이스 접속 에러' );
+          Exit;
+        end;
+    End;
+    CursorLocation := clUseServer;
+  end;
+
+  result := True;
+end;
+
+function TfmMain.GetFdmsID: string;
+var
+  stSql : string;
+  nFdms_id : integer;
+begin
+  result := '123';
+  stSql := 'select Max(Fdms_id) as fdms_id from TB_EMPLOYEE ';
+  with targetTempADOQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordCount < 1 then Exit;
+    Try
+      nFdms_id := FindField('fdms_id').AsInteger;
+      if nFdms_id = 0 then Exit;
+    Except
+      Exit;
+    End;
+    result := inttostr(nFdms_id + 1);
+  end;
+end;
+
+function TfmMain.CheckTB_EMPLOYEE(aCompanyCode, aEmpID: string): Boolean;
+var
+  stSql: string;
+  TempAdoQuery : TADOQuery;
+begin
+  Result := False;
+  stSql := 'select * from TB_EMPLOYEE ';
+  stSql := stSql + ' where EM_CODE = ''' + aEmpID + ''' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = ''' +  aCompanyCode + ''' ';
+
+  CoInitialize(nil);
+  TempAdoQuery := TADOQuery.Create(nil);
+  TempAdoQuery.Connection := TargetADOConnection;
+  with TempAdoQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+
+    Try
+      Open;
+    Except
+      TempAdoQuery.Free;
+      CoUninitialize;
+      Exit;
+    End;
+    if RecordCount > 0 then Result := True;
+  end;
+  TempAdoQuery.Free;
+  CoUninitialize;
+
+end;
+
+function TfmMain.InsertTB_EMPLOYEE(aEmpID, aEmpNM, aCompanyCode,
+  aJijumCode, aDepartCode, aPosiCode, aCompanyPhone, aJoinDate, aRetireDate,
+  aZipcode, aAddr1, aAddr2, aHomePhone, aHandphone, aRegGubun, aCardNo,
+  aEmpImg, afdmsId, aEmTypeCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Insert Into TB_EMPLOYEE( ';
+  stSql := stSql + 'GROUP_CODE,';
+  stSql := stSql + 'EM_CODE,';
+  stSql := stSql + 'CO_COMPANYCODE,';
+  stSql := stSql + 'CO_JIJUMCODE,';
+  stSql := stSql + 'CO_DEPARTCODE,';
+  stSql := stSql + 'PO_POSICODE,';
+  stSql := stSql + 'EM_NAME,';
+  stSql := stSql + 'EM_COPHONE,';
+  stSql := stSql + 'EM_HOMEPHONE,';
+  stSql := stSql + 'EM_HANDPHONE,';
+  stSql := stSql + 'ZI_ZIPCODE,';
+  stSql := stSql + 'EM_ADDR1,';
+  stSql := stSql + 'EM_ADDR2,';
+  stSql := stSql + 'EM_JOINDATE,';
+  stSql := stSql + 'EM_RETIREDATE,';
+  stSql := stSql + 'FDMS_ID,';
+  stSql := stSql + 'RG_CODE) ';
+  stSql := stSql + ' Values( ';
+  stSql := stSql + '''' + GROUPCODE + ''',';
+  stSql := stSql + '''' + aEmpID + ''',';
+  stSql := stSql + '''' + aCompanyCode + ''',';
+  stSql := stSql + '''' + aJijumCode + ''',';
+  stSql := stSql + '''' + aDepartCode + ''',';
+  stSql := stSql + '''' + aPosiCode + ''',';
+  stSql := stSql + '''' + aEmpNM + ''',';
+  stSql := stSql + '''' + aCompanyPhone + ''',';
+  stSql := stSql + '''' + aHomePhone + ''',';
+  stSql := stSql + '''' + aHandphone + ''',';
+  stSql := stSql + '''' + aZipcode + ''',';
+  stSql := stSql + '''' + aAddr1 + ''',';
+  stSql := stSql + '''' + aAddr2 + ''',';
+  stSql := stSql + '''' + aJoinDate + ''',';
+  stSql := stSql + '''' + aRetireDate + ''',';
+  stSql := stSql + '' + afdmsId + ',';
+  stSql := stSql + '''' + aEmTypeCode + ''')';
+
+  result := ProcessExecSQL(stSql);
+
+
+end;
+
+function TfmMain.InsertIntoTB_EMPHIS(aCompanyCode, aEmCode, afdmsID, aMode,
+  aCardNo, aCardType, aEmName, aHandPhone, aCompanyName, aJijumName,
+  aDepartName, aPosiName: string): string;
+var
+  stSql : string;
+begin
+  stSql := 'Insert Into TB_EMPHIS(';
+  stSql := stSql + ' GROUP_CODE,';
+  stSql := stSql + ' CO_COMPANYCODE,';
+  stSql := stSql + ' EM_CODE,';
+  if afdmsID <> '' then
+    stSql := stSql + ' FDMS_ID,';
+  stSql := stSql + ' MODE, ';
+  stSql := stSql + ' SEND_STATUS, ';
+  stSql := stSql + ' CA_CARDNO, ';
+  stSql := stSql + ' CA_CARDTYPE, ';
+  stSql := stSql + ' SEND_STATUS2,';
+  stSql := stSql + ' EH_INSERTTIME, ';
+  stSql := stSql + ' EM_NAME, ';
+  stSql := stSql + ' EM_HANDPHONE, ';
+  stSql := stSql + ' COMPANY_NAME, ';
+  stSql := stSql + ' JIJUM_NAME, ';
+  stSql := stSql + ' DEPART_NAME, ';
+  stSql := stSql + ' PO_NAME) ';
+  stSql := stSql + ' Values( ';
+  stSql := stSql + '''1234567890'',';
+  stSql := stSql + '''' + aCompanyCode + ''',';
+  stSql := stSql + '''' + aEmCode + ''',';
+  if afdmsID <> '' then
+    stSql := stSql + afdmsID + ',';
+  stSql := stSql + '''' + aMode + ''',';
+  stSql := stSql + '''N'',';
+  stSql := stSql + '''' + aCardNo + ''',';
+  stSql := stSql + '''' + aCardType + ''',';
+  stSql := stSql + '''N'',';
+  stSql := stSql + '''' + FormatDateTime('yyyymmddhhnnss',Now) + ''',';
+  stSql := stSql + '''' + aEmName + ''',';
+  stSql := stSql + '''' + aHandPhone + ''',';
+  stSql := stSql + '''' + aCompanyName + ''',';
+  stSql := stSql + '''' + aJijumName + ''',';
+  stSql := stSql + '''' + aDepartName + ''',';
+  stSql := stSql + '''' + aPosiName + ''') ';
+
+  result := stSql;
+end;
+
+function TfmMain.ProcessExecSQL(aSql: string;bUpdateResult:Boolean=False): Boolean;
+var
+  ExecQuery :TADOQuery;
+  nResult : integer;
+begin
+  Result:= False;
+  Try
+    CoInitialize(nil);
+    ExecQuery := TADOQuery.Create(nil);
+    ExecQuery.Connection := TargetADOConnection;
+    ExecQuery.DisableControls;
+    with ExecQuery do
+    begin
+      Close;
+      SQL.Text:= aSql;
+      try
+        nResult := ExecSQL;
+      except
+      ON E: Exception do
+        begin
+
+{          //SQLErrorLog('DBError('+ E.Message + ')' + aSql);
+          if Pos('no connection to the server',E.Message) > 0 then
+          begin
+            if Assigned(FOnAdoConnected) then
+            begin
+              OnAdoConnected(Self,False);
+            end;
+          end;
+          if Pos('server closed the connection',E.Message) > 0 then
+          begin
+            if Assigned(FOnAdoConnected) then
+            begin
+              OnAdoConnected(Self,False);
+            end;
+          end;
+          if Pos('연결을 실패했습니다',E.Message) > 0 then
+          begin
+            if Assigned(FOnAdoConnected) then
+            begin
+              OnAdoConnected(Self,False);
+            end;
+          end;      }
+
+          Exit;
+        end
+      end;
+    end;
+  Finally
+    ExecQuery.EnableControls;
+    ExecQuery.Free;
+    CoUninitialize;
+  End;
+
+  if bUpdateResult then
+  begin
+    if nResult > 0 then Result := True
+    else
+    begin
+      Result := False;
+      //SQLErrorLog('DBError:'+ aSql);
+    end;
+  end else
+  begin
+    Result:= True;
+  end;
+end;
+
+function TfmMain.CheckTB_CARDEMPCODE(aCompanyCode,
+  aEmpID: string): Boolean;
+var
+  stSql: string;
+  TempAdoQuery : TADOQuery;
+begin
+  Result := False;
+  stSql := 'select * from TB_CARD ';
+  stSql := stSql + ' where EM_CODE = ''' + aEmpID + ''' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = ''' +  aCompanyCode + ''' ';
+
+  CoInitialize(nil);
+  TempAdoQuery := TADOQuery.Create(nil);
+  TempAdoQuery.Connection := TargetADOConnection;
+  with TempAdoQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+
+    Try
+      Open;
+    Except
+      TempAdoQuery.Free;
+      CoUninitialize;
+      Exit;
+    End;
+    if RecordCount > 0 then Result := True;
+  end;
+  TempAdoQuery.Free;
+  CoUninitialize;
+
+end;
+
+function TfmMain.CheckTB_CARD(aCardNo: string): Boolean;
+var
+  stSql: string;
+  TempAdoQuery : TADOQuery;
+begin
+  Result := False;
+  stSql := 'select * from TB_CARD ';
+  stSql := stSql + ' where CA_CARDNO = ''' + aCardNo + ''' ';
+
+  CoInitialize(nil);
+  TempAdoQuery := TADOQuery.Create(nil);
+  TempAdoQuery.Connection := TargetADOConnection;
+  with TempAdoQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+
+    Try
+      Open;
+    Except
+      TempAdoQuery.Free;
+      CoUninitialize;
+      Exit;
+    End;
+    if RecordCount > 0 then Result := True;
+  end;
+  TempAdoQuery.Free;
+  CoUninitialize;
+
+end;
+
+function TfmMain.InsertTB_CARD(aCardNo, aCardGubun, aCardType, aEmpID,
+  aCompanyCode: string): Boolean;
+var
+  stSql : string;
+  nPositionNum : integer;
+begin
+  result := False;
+  if Length(aCardNo) = 0 then
+  begin
+    result := True;
+    Exit;
+  end;
+  if Not IsDigit(aCardGubun) then aCardGubun := '1';
+
+  nPositionNum := GetMaxPositionNum;
+
+  stSql := 'Insert Into TB_CARD(GROUP_CODE,CA_CARDNO,CA_GUBUN,CA_CARDTYPE,';
+  stSql := stSql + 'EM_CODE,CO_COMPANYCODE,CA_UPDATETIME,POSITIONNUM,CA_UPDATEOPERATOR) ';
+  stSql := stSql + ' Values ( ';
+  stSql := stSql + '''' + GROUPCODE + ''',';
+  stSql := stSql + '''' + aCardNo + ''',' ;
+  stSql := stSql + '''' + aCardGubun + ''',' ;
+  stSql := stSql + '''' + aCardType + ''',' ;
+  stSql := stSql + '''' + aEmpID + ''',' ;
+  stSql := stSql + '''' + aCompanyCode + ''',' ;
+  stSql := stSql + '''' + FormatDateTime('yyyymmddHHMMSS',Now) + ''',' ;
+  stSql := stSql + inttostr(nPositionNum) + ',' ;
+  stSql := stSql + '''SYSTEM'')' ;
+
+  result := ProcessExecSQL(stSql);
+end;
+
+function TfmMain.GetMaxPositionNum: integer;
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+begin
+  result := 1;
+
+  stSql := 'Select Max(PositionNum) as MaxPosition From TB_CARD ';
+
+  CoInitialize(nil);
+  TempAdoQuery := TADOQuery.Create(nil);
+  TempAdoQuery.Connection := TargetADOConnection;
+  with TempAdoQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      TempAdoQuery.Free;
+      CoUninitialize;
+      Exit;
+    End;
+
+    if RecordCount < 1 then
+    begin
+      TempAdoQuery.Free;
+      CoUninitialize;
+      Exit;
+    end;
+    if Not IsDigit(FindField('MaxPosition').AsString) then
+    begin
+      TempAdoQuery.Free;
+      CoUninitialize;
+      Exit;
+    end;
+    result := FindField('MaxPosition').AsInteger + 1;
+  end;
+  TempAdoQuery.Free;
+  CoUninitialize;
+end;
+
+procedure TfmMain.btnCloseClick(Sender: TObject);
+begin
+  Close;
+end;
+{
+procedure TfmMain.LoadMDB;
+var
+  stSql : string;
+  nRow : integer;
+begin
+  stSql := 'select * from SECU_VIEW ';
+
+  with MdbADOCodeLoad do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    end;
+
+    sg_Employ.RowCount := recordcount + 1;
+    Gauge1.MaxValue := recordcount + 1;
+    Gauge1.Visible := True;
+    nRow := 1;
+    while Not Eof do
+    begin
+      with sg_Employ do
+      begin
+        cells[0,nRow] := FindField('SECU_IDNO').AsString;
+        cells[1,nRow] := FindField('SECU_IDDI').AsString;
+        cells[2,nRow] := FindField('SECU_SDCO').AsString;
+        cells[3,nRow] := FindField('SECU_NAME').AsString;
+        cells[4,nRow] := FindField('SECU_UNNM').AsString;
+        cells[5,nRow] := FindField('SECU_PSNM').AsString;
+        cells[6,nRow] := FindField('SECU_ISFG').AsString;
+        cells[7,nRow] := FindField('SECU_FLAG').AsString;
+        Gauge1.Progress := nRow;
+        Application.ProcessMessages;
+      end;
+      inc(nRow);
+      Next;
+    end;
+    Gauge1.Visible := false;
+  end;
+end;   }
+
+procedure TfmMain.btn_WorkBranchClick(Sender: TObject);
+var
+  i : integer;
+  bchkState : Boolean;
+  stCompanyCode,stJijumCode,stDepartCode,stPosiCode,stEmpTypeCode : string;
+begin
+  stCompanyCode := '';
+  stJijumCode := '';
+  stDepartCode := '';
+  stPosiCode := '';
+  stEmpTypeCode := '';
+
+  if cmb_sCompany.ItemIndex > -1 then stCompanycode := CompanyCodeList.Strings[cmb_sCompany.ItemIndex];
+  if cmb_sJijum.ItemIndex > 0 then stJijumcode := copy(JijumCodeList.Strings[cmb_sJijum.ItemIndex],4,3);
+  if cmb_sDepart.ItemIndex > 0 then stDepartcode := copy(DepartCodeList.Strings[cmb_sDepart.ItemIndex],7,3);
+  if cmb_sPosi.ItemIndex > 0 then stPosicode := copy(PosiCodeList.Strings[cmb_sPosi.ItemIndex],4,3);
+  if cmb_emType.ItemIndex > 0 then stEmpTypeCode := EmpTypeCodeList.Strings[cmb_emType.ItemIndex];
+
+  btn_WorkBranch.Enabled := False;
+  Gauge1.Visible := True;
+  With sg_Employ do
+  begin
+    Gauge1.MaxValue := RowCount - 1;
+    for i:= 1 to RowCount - 1 do
+    begin
+      GetCheckBoxState(0,i, bchkState);
+      if bchkState then
+      begin
+        if cells[0,i] <> '' then
+        PersonDataConversion(stCompanyCode,stJijumCode,stDepartCode,stPosiCode,stEmpTypeCode,
+                             cells[0,i],cells[1,i],cells[3,i]);
+      end;
+      Gauge1.Progress := i;
+    end;
+  End;
+  Gauge1.Visible := False;
+  btn_WorkBranch.Enabled := True;
+
+end;
+
+procedure TfmMain.CreateCompanyCode;
+var
+  stSql : string;
+begin
+  InsertIntoTB_COMPANY('001','000','000','1','충남대학교');
+end;
+
+procedure TfmMain.CreateDeprtCode;
+var
+  stSql : string;
+  nCode : integer;
+  stCompanyCode : string;
+  stJijumCode : string;
+  stDepartCode : string;
+  stGubun : string;
+begin
+  stSql := ' select SECU_UNNM,SECU_PSNM from SECU_VIEW ';
+  stSql := stSql + ' GROUP BY SECU_UNNM,SECU_PSNM ';
+  stSql := stSql + ' Order by SECU_UNNM,SECU_PSNM ';
+
+  stCompanyCode := '001';
+  stGubun := '3';
+
+  with MdbADO do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    while Not Eof do
+    begin
+      if Trim(FindField('SECU_PSNM').AsString) <> '' then
+      begin
+        stJijumCode := GetJijumCode(FindField('SECU_UNNM').AsString);
+        stDepartCode := GetMaxDepartCode(stJijumCode);
+        InsertIntoTB_COMPANY(stCompanyCode,stJijumCode,stDepartCode,stGubun,Trim(FindField('SECU_PSNM').AsString));
+        inc(nCode);
+      end;
+      Next;
+    end;
+  end;
+
+end;
+
+procedure TfmMain.CreateJijumCode;
+var
+  stSql : string;
+  stCompanyCode : string;
+  stJijumCode : string;
+  stDepartCode : string;
+  stGubun : string;
+  nCode : integer;
+begin
+  stSql := ' select SECU_UNNM from SECU_VIEW ';
+  stSql := stSql + ' GROUP BY SECU_UNNM ';
+  stSql := stSql + ' Order by SECU_UNNM ';
+
+  stCompanyCode := '001';
+  stDepartCode := '000';
+  stGubun := '2';
+  nCode := 1;
+
+  with MdbADO do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    while Not Eof do
+    begin
+      if Trim(FindField('SECU_UNNM').AsString) <> '' then
+      begin
+        stJijumCode := FillZeroNumber(nCode,3);
+        InsertIntoTB_COMPANY(stCompanyCode,stJijumCode,stDepartCode,stGubun,Trim(FindField('SECU_UNNM').AsString));
+        inc(nCode);
+      end;
+      Next;
+    end;
+  end;
+end;
+
+procedure TfmMain.CreatePosiCode;
+begin
+  InsertIntoTB_POSI('001','001','학사');
+  InsertIntoTB_POSI('001','002','석사');
+  InsertIntoTB_POSI('001','003','박사');
+  InsertIntoTB_POSI('001','004','교원');
+  InsertIntoTB_POSI('001','005','직원');
+  InsertIntoTB_POSI('001','006','기타');
+  InsertIntoTB_POSI('001','007','외부학생');
+end;
+
+procedure TfmMain.CreateRelayGubunCode;
+begin
+  InsertIntoTB_RELAYGUBUN('001','재학생');
+  InsertIntoTB_RELAYGUBUN('002','일반휴학');
+  InsertIntoTB_RELAYGUBUN('003','군휴학');
+  InsertIntoTB_RELAYGUBUN('005','수료생');
+  InsertIntoTB_RELAYGUBUN('006','졸업생');
+  InsertIntoTB_RELAYGUBUN('007','재직');
+  InsertIntoTB_RELAYGUBUN('008','퇴직');
+  InsertIntoTB_RELAYGUBUN('009','기타');
+
+end;
+
+procedure TfmMain.PersonDataConversion(aCompanyCode,aJijumCode,aDepartCode,aPosiCode,aEmpTypeCode,
+                             aEmCode,aSeq,aEmName:string);
+var
+  stSql : string;
+  stCardNo : string;
+  stRegGubun : string;
+  nFdmsID : integer;
+begin
+  nFdmsID := strtoint(GetFdmsID);
+
+  if Length(aEmCode) <> 9 then aEmCode := FillZeroStrNum(aEmCode,9,True);
+
+  stCardNo := MakeCardNo(aEmCode,aSeq);
+  stRegGubun := '1';
+  if CheckTB_EMPLOYEE(aCompanyCode,aEmCode) then
+  begin
+    UpdateTB_EMPLOYEE(aEmCode,
+                    aEmName,
+                    aCompanyCode,
+                    aJijumCode,
+                    aDepartCode,
+                    aPosiCode,
+                    '',
+                    '20000101',
+                    '99991231',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    stRegGubun,
+                    stCardNo,
+                    '',
+                    inttostr(nFdmsID),
+                    aEmpTypeCode);
+    InsertIntoTB_EMPHIS(aCompanyCode,aEmCode,inttostr(nFdmsID),'2',stCardNo,'1',aEmName,'',cmb_sCompany.Text,cmb_sJijum.Text,cmb_sDepart.Text,cmb_sPosi.Text);
+  end else
+  begin
+    InsertTB_EMPLOYEE(aEmCode,
+                    aEmName,
+                    aCompanyCode,
+                    aJijumCode,
+                    aDepartCode,
+                    aPosiCode,
+                    '',
+                    '20000101',
+                    '99991231',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    stRegGubun,
+                    stCardNo,
+                    '',
+                    inttostr(nFdmsID),
+                    aEmpTypeCode);
+    InsertIntoTB_EMPHIS(aCompanyCode,aEmCode,inttostr(nFdmsID),'1',stCardNo,'1',aEmName,'',cmb_sCompany.Text,cmb_sJijum.Text,cmb_sDepart.Text,cmb_sPosi.Text);
+  end;
+  if CheckTB_CARD(stCardNo) then
+  begin
+    UpdateTB_CARD(stCardNo,stRegGubun,'1',aEmCode,aCompanyCode);
+  end else
+  begin
+    InsertTB_CARD(stCardNo,stRegGubun,'1',aEmCode,aCompanyCode);
+  end;
+
+
+end;
+
+procedure TfmMain.DeleteTB_COMPANYCODE;
+var
+  stSql : string;
+begin
+  stSql := ' Delete From TB_COMPANY ';
+  ProcessExecSQL(stSql);
+
+end;
+
+function TfmMain.InsertIntoTB_COMPANY(aCompanyCode, aJijumCode,
+  aDepartCode, aGubun, aName: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := ' Insert Into TB_COMPANY(';
+  stSql := stSql + ' GROUP_CODE,';
+  stSql := stSql + ' CO_COMPANYCODE,';
+  stSql := stSql + ' CO_JIJUMCODE,';
+  stSql := stSql + ' CO_DEPARTCODE,';
+  stSql := stSql + ' CO_NAME,';
+  stSql := stSql + ' CO_GUBUN) ';
+  stSql := stSql + ' Values(';
+  stSql := stSql + '''' + GROUPCODE + ''',';
+  stSql := stSql + '''' + aCompanyCode + ''',';
+  stSql := stSql + '''' + aJijumCode + ''',';
+  stSql := stSql + '''' + aDepartCode + ''',';
+  stSql := stSql + '''' + aName + ''',';
+  stSql := stSql + '''' + aGubun + ''')';
+
+  ProcessExecSQL(stSql);
+end;
+
+procedure TfmMain.FormNameChange;
+begin
+  UpdateTB_FORMNAME('001','대학교코드');
+  UpdateTB_FORMNAME('002','대학교명칭');
+  UpdateTB_FORMNAME('011','단과대코드');
+  UpdateTB_FORMNAME('012','단과대명칭');
+  UpdateTB_FORMNAME('021','학과코드');
+  UpdateTB_FORMNAME('022','학과명칭');
+  UpdateTB_FORMNAME('031','신분코드');
+  UpdateTB_FORMNAME('032','신분명');
+  UpdateTB_FORMNAME('040','재직구분');
+  UpdateTB_FORMNAME('041','재직코드');
+  UpdateTB_FORMNAME('042','재직구분');
+  UpdateTB_FORMNAME('101','교번');
+  UpdateTB_FORMNAME('102','성명');
+  UpdateTB_FORMNAME('103','교내전화번호');
+  UpdateTB_FORMNAME('104','입학일');
+  UpdateTB_FORMNAME('105','졸업일');
+  UpdateTB_FORMNAME('106','학생');
+  UpdateTB_FORMNAME('901','단과대코드');
+  UpdateTB_FORMNAME('902','단과대명칭');
+  UpdateTB_FORMNAME('903','단과대권한');
+  UpdateTB_FORMNAME('911','건물코드');
+  UpdateTB_FORMNAME('912','건물명칭');
+  UpdateTB_FORMNAME('913','건물권한');
+  UpdateTB_FORMNAME('921','층코드');
+  UpdateTB_FORMNAME('922','층명칭');
+  UpdateTB_FORMNAME('923','층권한');
+  UpdateTB_FORMNAME('933','기기별권한');
+
+end;
+
+procedure TfmMain.AlterTableTB_COMPANYName;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_COMPANY ALTER COLUMN CO_NAME varchar(100) ';
+  ProcessExecSQL(stSql);
+end;
+
+function TfmMain.GetMaxDepartCode(aJijumCode: string): string;
+var
+  stSql : string;
+begin
+  result := '000';
+  stSql := ' Select CO_JIJUMCODE,Max(CO_DEPARTCODE) as departCode from TB_COMPANY ';
+  stSql := stSql + ' Where CO_JIJUMCODE = ''' + aJijumCode + '''';
+  stSql := stSql + ' Group by CO_JIJUMCODE ';
+
+  with targetTempADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordCount < 1 then Exit;
+    if isDigit(FindField('departCode').AsString) then
+    begin
+      result := FillZeroNumber(strtoint(FindField('departCode').AsString) + 1 ,3);
+    end else
+    begin
+      result := '001';
+    end;
+  end;
+
+end;
+
+procedure TfmMain.DeleteTB_PosiCODE;
+var
+  stSql : string;
+begin
+  stSql := ' Delete From TB_POSI ';
+  ProcessExecSQL(stSql);
+end;
+
+function TfmMain.InsertIntoTB_POSI(aCompanyCode, aPosiCode,
+  aPosiName: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := ' Insert Into TB_POSI(';
+  stSql := stSql + ' GROUP_CODE,';
+  stSql := stSql + ' CO_COMPANYCODE,';
+  stSql := stSql + ' PO_POSICODE,';
+  stSql := stSql + ' PO_NAME,';
+  stSql := stSql + ' PO_UPDATECHECK) ';
+  stSql := stSql + ' VALUES(';
+  stSql := stSql + '''' + GROUPCODE + ''',';
+  stSql := stSql + '''' + aCompanyCode + ''',';
+  stSql := stSql + '''' + aPosiCode + ''',';
+  stSql := stSql + '''' + aPosiName + ''',';
+  stSql := stSql + '''N'') ';
+  
+  ProcessExecSQL(stSql);
+end;
+
+procedure TfmMain.DeleteTB_RelayCode;
+var
+  stSql : string;
+begin
+  stSql := ' Delete From TB_RELAYGUBUN ';
+  ProcessExecSQL(stSql);
+end;
+
+function TfmMain.InsertIntoTB_RELAYGUBUN(aRgCode,
+  aRgName: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := ' Insert Into TB_RELAYGUBUN(';
+  stSql := stSql + 'GROUP_CODE,';
+  stSql := stSql + 'RG_CODE,';
+  stSql := stSql + 'RG_NAME) ';
+  stSql := stSql + ' Values(';
+  stSql := stSql + '''' + GROUPCODE + ''',';
+  stSql := stSql + '''' + aRgCode + ''',';
+  stSql := stSql + '''' + aRgName + ''')';
+
+  ProcessExecSQL(stSql);
+end;
+
+function TfmMain.UpdateTB_FORMNAME(aCode, aName: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := ' Update TB_FORMNAME set FM_NAME = ''' + aName + ''' ';
+  stSql := stSql + ' Where FM_CODE = ''' + aCode + ''' ';
+
+  ProcessExecSQL(stSql);
+end;
+
+function TfmMain.GetJijumCode(aJijumName: string): string;
+var
+  stSql : string;
+begin
+  result := '000';
+  stSql := ' select * from TB_COMPANY ';
+  stSql := stSql + ' Where CO_GUBUN = ''2'' ';
+  stSql := stSql + ' AND CO_NAME = ''' + aJijumName + ''' ';
+
+  with targetTempADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordCount < 1 then Exit;
+    result := FindField('CO_JIJUMCODE').AsString;
+  end;
+
+end;
+
+function TfmMain.GetDepartCode(aJijumCode, aDepartName: string): string;
+var
+  stSql : string;
+begin
+  result := '000';
+  stSql := ' select * from TB_COMPANY ';
+  stSql := stSql + ' Where CO_GUBUN = ''3'' ';
+  stSql := stSql + ' AND CO_JIJUMCODE = ''' + aJijumCode + ''' ';
+  stSql := stSql + ' AND CO_NAME = ''' + aDepartName + ''' ';
+
+  with targetTempADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordCount < 1 then Exit;
+    result := FindField('CO_DEPARTCODE').AsString;
+  end;
+
+end;
+
+function TfmMain.MakeCardNo(aIDNO, aSeq: string): string;
+var
+  i : integer;
+  nLength : integer;
+begin
+  nLength:= Length(aIDNO);
+  for i := nLength + 1 to 13 do
+  begin
+    aIDNO := aIDNO + 'N';  
+  end;
+  //nLength:= Length(aIDNO);
+  if Not isDigit(aSeq) then aSeq := '0';
+  result := aIDNO + FillZeroNumber(strtoint(aSeq),2);
+
+end;
+
+function TfmMain.UpdateTB_CARD(aCardNo, aCardGubun, aCardType, aEmpID,
+  aCompanyCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update TB_CARD set ';
+  stSql := stSql + 'EM_CODE = ''' + aEmpID + ''',';
+  stSql := stSql + 'CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' Where CA_CARDNO = ''' + aCardNo + ''' ';
+
+  result := ProcessExecSQL(stSql);
+end;
+
+function TfmMain.UpdateTB_EMPLOYEE(aEmpID, aEmpNM, aCompanyCode,
+  aJijumCode, aDepartCode, aPosiCode, aCompanyPhone, aJoinDate,
+  aRetireDate, aZipcode, aAddr1, aAddr2, aHomePhone, aHandphone, aRegGubun,
+  aCardNo, aEmpImg, afdmsId, aEmTypeCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update TB_EMPLOYEE set ';
+  stSql := stSql + 'CO_JIJUMCODE =''' + aJijumCode + ''',';
+  stSql := stSql + 'CO_DEPARTCODE = ''' + aDepartCode + ''',';
+  stSql := stSql + 'PO_POSICODE = ''' + aPosiCode + ''',';
+  stSql := stSql + 'EM_NAME = ''' + aEmpNM + ''',';
+  stSql := stSql + 'RG_CODE = ''' + aEmTypeCode + ''' ';
+  stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND EM_CODE = ''' + aEmpID + ''' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+
+  result := ProcessExecSQL(stSql);
+end;
+
+
+procedure TfmMain.LoadMDBDepartName;
+var
+  stSql : string;
+begin
+  cmb_Depart.Items.Clear;
+  stSql := 'Select DEPARTNAME from EMPLOYEE ';
+  stSql := stSql + ' Where POSINAME = ''' + cmb_PosiName.Text + ''' ';
+  stSql := stSql + ' Group by DEPARTNAME ';
+
+  with MdbADOTemp do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    while Not Eof do
+    begin
+      cmb_Depart.Items.Add(FindField('DEPARTNAME').AsString);
+      Next;
+    end;
+    cmb_Depart.Sorted := True;
+    cmb_Depart.ItemIndex := 0;
+  end;
+end;
+
+procedure TfmMain.LoadMDBPosiName;
+var
+  stSql : string;
+begin
+  cmb_PosiName.Items.Clear;
+  stSql := 'Select POSINAME from EMPLOYEE ';
+  stSql := stSql + ' Group by POSINAME ';
+
+  with MdbADOTemp do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    while Not Eof do
+    begin
+      cmb_PosiName.Items.Add(FindField('POSINAME').AsString);
+      Next;
+    end;
+    cmb_PosiName.Sorted := True;
+    cmb_PosiName.ItemIndex := 0;
+  end;
+end;
+
+procedure TfmMain.btn_MDBSearchClick(Sender: TObject);
+var
+  stSql : string;
+  nRow : integer;
+begin
+  RowGridInitialize(sg_Employ,2,True); //스트링그리드 초기화
+  
+  stSql := 'Select * from EMPLOYEE ';
+  stSql := stSql + ' Where POSINAME = ''' + cmb_PosiName.Text + ''' ';
+  if cmb_Depart.Text <> '' then
+  begin
+    stSql := stSql + ' AND DEPARTNAME = ''' + cmb_Depart.Text + ''' ';
+  end else
+  begin
+    stSql := stSql + ' AND (DEPARTNAME = ''' + cmb_Depart.Text + '''  OR DEPARTNAME is null) ';
+  end;
+
+  with MdbADOTemp do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if RecordCount < 1 then Exit;
+    sg_Employ.RowCount := RecordCount + 1;
+    nRow := 1;
+    First;
+    while Not Eof do
+    begin
+      with sg_Employ do
+      begin
+        cells[0,nRow] := FindField('ID').AsString;
+        cells[1,nRow] := inttostr(FindField('SEQ').AsInteger);
+        cells[2,nRow] := FindField('DEPARTNAME').AsString;
+        cells[3,nRow] := FindField('EMNAME').AsString;
+        cells[4,nRow] := FindField('POSINAME').AsString;
+        AddCheckBox(0,nRow,True,False);
+      end;
+      nRow := nRow + 1;
+      Next;
+    end;
+  end;
+
+end;
+
+procedure TfmMain.cmb_DepartChange(Sender: TObject);
+begin
+  inherited;
+  btn_MDBSearchClick(self);
+
+end;
+
+procedure TfmMain.cmb_PosiNameChange(Sender: TObject);
+begin
+  inherited;
+  LoadMDBDepartName;
+  btn_MDBSearchClick(self);
+
+end;
+
+procedure TfmMain.LoadsCompanyCode(aStringList: TStringList;
+  cmb_Box: TComboBox);
+var
+  stSql :string;
+  TempAdoQuery : TADOQuery;
+begin
+  cmb_Box.Clear;
+  aStringList.Clear;
+
+  stSql := ' select a.CO_NAME,a.CO_COMPANYCODE from TB_COMPANY a ';
+  stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND a.CO_GUBUN = ''1''';
+  stSql := stSql + ' Group by a.CO_NAME,a.CO_COMPANYCODE ';
+  stSql := stSql + ' Order by a.CO_NAME ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := TargetADOConnection;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+
+      if RecordCount < 1 then
+      begin
+        Exit;
+      end;
+
+      First;
+
+      While Not Eof do
+      begin
+        cmb_Box.Items.Add(FindField('CO_NAME').AsString);
+        aStringList.Add(FindField('CO_COMPANYCODE').AsString);
+        Next;
+      end;
+      cmb_Box.ItemIndex := 0;
+    end;
+  Finally
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+procedure TfmMain.LoadsJijumCode(aCompanyCode: string;
+  aStringList: TStringList; cmb_Box: TComboBox);
+var
+  stSql :string;
+  TempAdoQuery : TADOQuery;
+  i : integer;
+  nIndex : integer;
+begin
+  cmb_Box.Clear;
+  aStringList.Clear;
+  cmb_Box.Items.Add('');
+  aStringList.Add('');
+  cmb_Box.ItemIndex := 0;
+
+  stSql := ' select a.CO_NAME,a.CO_COMPANYCODE,a.CO_JIJUMCODE,a.CO_DEPARTCODE from TB_COMPANY a ';
+  stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND a.CO_GUBUN = ''2''';
+  stSql := stSql + ' AND a.CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' Order by a.CO_NAME ';
+
+  CoInitialize(nil);
+  TempAdoQuery := TADOQuery.Create(nil);
+  TempAdoQuery.Connection := TargetADOConnection;
+
+  with TempAdoQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+
+    Try
+      Open;
+    Except
+      TempAdoQuery.Free;
+      CoUninitialize;
+      Exit;
+    End;
+
+    if RecordCount < 1 then
+    begin
+      TempAdoQuery.Free;
+      CoUninitialize;
+      Exit;
+    end;
+
+    First;
+
+    While Not Eof do
+    begin
+      cmb_Box.Items.Add(FindField('CO_NAME').AsString);
+      aStringList.Add(FindField('CO_COMPANYCODE').AsString + FindField('CO_JIJUMCODE').AsString);
+      Next;
+    end;
+   
+  end;
+  TempAdoQuery.Free;
+  CoUninitialize;
+
+end;
+
+procedure TfmMain.LoadsDepartCode(aCompanyCode, aJijumCode: string;
+  aStringList: TStringList; cmb_Box: TComboBox);
+var
+  stSql :string;
+  TempAdoQuery : TADOQuery;
+  nIndex : integer;
+begin
+  cmb_Box.Clear;
+  aStringList.Clear;
+  cmb_Box.Items.Add('');
+  aStringList.Add('');
+  cmb_Box.ItemIndex := 0;
+
+  if (aCompanyCode = '000') or (aCompanyCode = '') then Exit;
+
+  stSql := ' select a.CO_NAME,a.CO_COMPANYCODE,a.CO_JIJUMCODE,a.CO_DEPARTCODE from TB_COMPANY a ';
+  stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND a.CO_GUBUN = ''3''';
+  stSql := stSql + ' AND a.CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' AND a.CO_JIJUMCODE = ''' + aJijumCode + ''' ';
+  stSql := stSql + ' Order by a.CO_NAME ';
+
+  CoInitialize(nil);
+  TempAdoQuery := TADOQuery.Create(nil);
+  TempAdoQuery.Connection := TargetADOConnection;
+
+  with TempAdoQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+
+    Try
+      Open;
+    Except
+      TempAdoQuery.Free;
+      CoUninitialize;
+      Exit;
+    End;
+
+    if RecordCount < 1 then
+    begin
+      TempAdoQuery.Free;
+      CoUninitialize;
+      Exit;
+    end;
+
+    First;
+
+    While Not Eof do
+    begin
+      cmb_Box.Items.Add(FindField('CO_NAME').AsString);
+      aStringList.Add(FindField('CO_COMPANYCODE').AsString + FindField('CO_JIJUMCODE').AsString +  FindField('CO_DEPARTCODE').AsString);
+      Next;
+    end;
+  end;
+  TempAdoQuery.Free;
+  CoUninitialize;
+end;
+
+procedure TfmMain.LoadsEmpType(aStringList: TStringList;
+  cmb_Box: TComboBox);
+var
+  stSql :string;
+  TempAdoQuery : TADOQuery;
+begin
+  cmb_Box.Clear;
+  aStringList.Clear;
+  cmb_Box.Items.Add('');
+  aStringList.Add('');
+  cmb_Box.ItemIndex := 0;
+
+  stSql := 'select * from TB_RELAYGUBUN ';
+  stSql := stSql + ' order by RG_CODE ';
+
+  CoInitialize(nil);
+  TempAdoQuery := TADOQuery.Create(nil);
+  TempAdoQuery.Connection := TargetADOConnection;
+
+  with TempAdoQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+
+    Try
+      Open;
+    Except
+      TempAdoQuery.Free;
+      CoUninitialize;
+      Exit;
+    End;
+
+    if RecordCount < 1 then
+    begin
+      TempAdoQuery.Free;
+      CoUninitialize;
+      Exit;
+    end;
+
+    First;
+
+    While Not Eof do
+    begin
+      cmb_Box.Items.Add(FindField('RG_NAME').AsString);
+      aStringList.Add(FindField('RG_CODE').AsString);
+      Next;
+    end;
+
+  end;
+  TempAdoQuery.Free;
+  CoUninitialize;
+end;
+
+procedure TfmMain.LoadsPosiCode(aCompanyCode: string;
+  aStringList: TStringList; cmb_Box: TComboBox);
+var
+  stSql :string;
+  TempAdoQuery : TADOQuery;
+begin
+  cmb_Box.Clear;
+  aStringList.Clear;
+  cmb_Box.Items.Add('');
+  aStringList.Add('');
+  cmb_Box.ItemIndex := 0;
+
+  stSql := 'select * from TB_POSI ';
+  stSql := stSql + ' order by CO_COMPANYCODE,PO_POSICODE ';
+
+  CoInitialize(nil);
+  TempAdoQuery := TADOQuery.Create(nil);
+  TempAdoQuery.Connection := TargetADOConnection;
+
+  with TempAdoQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+
+    Try
+      Open;
+    Except
+      TempAdoQuery.Free;
+      CoUninitialize;
+      Exit;
+    End;
+
+    if RecordCount < 1 then
+    begin
+      TempAdoQuery.Free;
+      CoUninitialize;
+      Exit;
+    end;
+
+    First;
+
+    While Not Eof do
+    begin
+      cmb_Box.Items.Add(FindField('PO_NAME').AsString);
+      aStringList.Add(FindField('CO_COMPANYCODE').AsString + FindField('PO_POSICODE').AsString);
+      Next;
+    end;
+
+  end;
+  TempAdoQuery.Free;
+  CoUninitialize;
+end;
+
+procedure TfmMain.cmb_sCompanyChange(Sender: TObject);
+begin
+  inherited;
+    LoadsJijumCode(CompanyCodeList.Strings[cmb_sCompany.ItemIndex],JijumCodeList,cmb_sJijum);
+    LoadsDepartCode(copy(JijumCodeList.Strings[cmb_sJijum.ItemIndex],1,3),copy(JijumCodeList.Strings[cmb_sJijum.ItemIndex],4,3),DepartCodeList,cmb_sDepart);
+    LoadsPosiCode(CompanyCodeList.Strings[cmb_sCompany.ItemIndex],PosiCodeList,cmb_sPosi);
+
+end;
+
+procedure TfmMain.cmb_sJijumChange(Sender: TObject);
+begin
+  inherited;
+  LoadsDepartCode(copy(JijumCodeList.Strings[cmb_sJijum.ItemIndex],1,3),copy(JijumCodeList.Strings[cmb_sJijum.ItemIndex],4,3),DepartCodeList,cmb_sDepart);
+
+end;
+
+end.

@@ -1,0 +1,25 @@
+program TelNumberAdmin;
+
+uses
+  Forms,
+  uTelNumberAdmin in 'uTelNumberAdmin.pas' {fmMain},
+  uDataModule1 in 'LIB\uDataModule1.pas' {DataModule1: TDataModule},
+  uMSDEsql in 'LIB\uMSDEsql.pas',
+  uAdminConfig in 'LIB\uAdminConfig.pas' {fmAdminConfig},
+  uManageShow in 'uManageShow.pas' {fmManageShow},
+  uCustomer in 'uCustomer.pas' {fmCustomer},
+  uLomosUtil in '..\..\ZTBMS\Lib\uLomosUtil.pas',
+  uSubForm in '..\Lib\uSubForm.pas' {fmASubForm},
+  uDataBaseConfig in 'DBConnect\uDataBaseConfig.pas' {fmDataBaseConfig},
+  DIMime in 'LIB\DIMime.pas';
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.CreateForm(TDataModule1, DataModule1);
+  Application.CreateForm(TfmMain, fmMain);
+  Application.CreateForm(TfmASubForm, fmASubForm);
+  Application.CreateForm(TfmDataBaseConfig, fmDataBaseConfig);
+  Application.Run;
+end.

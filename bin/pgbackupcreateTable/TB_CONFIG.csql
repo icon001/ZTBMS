@@ -1,0 +1,2 @@
+CREATE TABLE TB_CONFIG (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , co_configgroup VARCHAR(10) NOT NULL , co_configcode VARCHAR(10) NOT NULL , co_configvalue VARCHAR(100), co_configdetail VARCHAR(50) ); 
+ ALTER TABLE TB_CONFIG   ADD CONSTRAINT TB_CONFIG_pkey PRIMARY KEY (group_code, co_configgroup, co_configcode);

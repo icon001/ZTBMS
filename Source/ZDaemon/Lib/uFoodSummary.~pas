@@ -1,0 +1,126 @@
+unit uFoodSummary;
+
+interface
+
+uses
+  SysUtils, Classes,ADODB,ActiveX;
+
+type
+  TdmFoodSummary = class(TDataModule)
+  private
+    { Private declarations }
+    function CheckTB_FoodCodeCount(aDate,aFoodCode,aCompanyCode,aEMCode:string):integer;
+    function CheckTB_FoodDayCount(aDate,aCompanyCode,aEMCode:string):integer;
+  public
+    { Public declarations }
+    function GSdepFoodSummary(aDate,aCompanyCode,aEmCode,aFoodCode:string):Boolean;
+  end;
+
+var
+  dmFoodSummary: TdmFoodSummary;
+
+implementation
+uses
+  uCommonSql,
+  uDataModule1,
+  uLomosUtil;
+
+{$R *.dfm}
+
+{ TdmFoodSummary }
+
+function TdmFoodSummary.CheckTB_FoodCodeCount(aDate, aFoodCode,
+  aCompanyCode, aEMCode: string): integer;
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+begin
+  result := -1;
+  stSql := 'Select * from TB_FoodCodeCount ';
+  stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND FC_DATE = ''' + aDate + ''' ';
+  stSql := stSql + ' AND FO_FOODCODE = ''' + aFoodCode + ''' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' AND EM_CODE = ''' + aEMCODE + ''' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.DisableControls;
+
+    With TempAdoQuery do
+    begin
+      Close;
+      Sql.Text := stSql;
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      result := 0;
+      if recordcount < 1 then Exit;
+      result := 1;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TdmFoodSummary.CheckTB_FoodDayCount(aDate, aCompanyCode,
+  aEMCode: string): integer;
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+begin
+  result := -1;
+  stSql := 'Select * from TB_FoodDayCount ';
+  stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND FD_DATE = ''' + aDate + ''' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' AND EM_CODE = ''' + aEMCODE + ''' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.DisableControls;
+
+    With TempAdoQuery do
+    begin
+      Close;
+      Sql.Text := stSql;
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      result := 0;
+      if recordcount < 1 then Exit;
+      result := 1;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TdmFoodSummary.GSdepFoodSummary(aDate,aCompanyCode,aEmCode,aFoodCode:string): Boolean;
+begin
+  if CheckTB_FoodCodeCount(aDate,aFoodCode,aCompanyCode,aEmCode) = 1 then
+  begin
+    //존재 하는 경우
+    stSql := CommonSql.UpdateTB_FOODCODECount_Inc(aDate,aFoodCode,aCompanyCode,aEmCode);
+    result := DataModule1.ProcessExecSQL(stSql);
+  end else
+  begin
+    //존재하지 않으면
+    stSql := CommonSql.InsertIntoTB_FOODCODECount(aDate,aFoodCode,aCompanyCode,aEmCode,'1');
+    result := DataModule1.ProcessExecSQL(stSql);
+  end;
+end;
+
+end.

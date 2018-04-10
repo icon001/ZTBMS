@@ -1,0 +1,2 @@
+CREATE TABLE TB_USERCONFIG (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , ad_userid VARCHAR(20) NOT NULL , us_configid VARCHAR(20) NOT NULL , us_confgroup VARCHAR(10) NOT NULL , us_value VARCHAR(30) ); 
+ ALTER TABLE TB_USERCONFIG   ADD CONSTRAINT TB_USERCONFIG_pkey PRIMARY KEY (group_code, ad_userid, us_configid, us_confgroup);

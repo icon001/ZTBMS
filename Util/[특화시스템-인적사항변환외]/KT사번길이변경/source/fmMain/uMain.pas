@@ -1,0 +1,384 @@
+unit uMain;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs,Registry,TLHelp32, Buttons, Gauges, DB, ADODB, StdCtrls, ExtCtrls;
+
+type
+  TfmMain = class(TForm)
+    btn_Change: TSpeedButton;
+    Gauge1: TGauge;
+    MDBADOConnection: TADOConnection;
+    MdbTempADOQuery: TADOQuery;
+    st_count: TStaticText;
+    Timer1: TTimer;
+    procedure FormCreate(Sender: TObject);
+    procedure btn_ChangeClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
+  private
+    { Private declarations }
+    function GetZTBMSRegistry:string;
+    function KTEmployeeIDChange(aLine:string):Boolean;
+    function MDBConnected(aEmployeeFile:string):Boolean;
+  private
+    function GetNewEmCode(aOldEmCode:string):string;
+    function UpdateTABLE(aTableName,aOldEmployeeID,aNewEmployeeID:string):Boolean;
+    function CopyEmployeeChangeTable:Boolean;
+    function CreateTB_KTEMPCHANGE:Boolean;
+    function InsertTB_KTEMPCHANGE(aOLDEMPNO,aNEWEMPNO:string):Boolean;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmMain: TfmMain;
+
+implementation
+
+uses
+  uDataBaseConfig,
+  uDataModule1,
+  uLomosUtil;
+  
+{$R *.dfm}
+
+function KillTask(ExeFileName: string): Integer;
+//출처 http://www.delphi3000.com/articles/article_4324.asp?SK=
+const
+  PROCESS_TERMINATE = $0001;
+var
+  ContinueLoop: BOOL;
+  FSnapshotHandle: THandle;
+  FProcessEntry32: TProcessEntry32;
+begin
+  Result := 0;
+  FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+  FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
+  ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
+
+  while Integer(ContinueLoop) <> 0 do
+  begin
+    if ((UpperCase(ExtractFileName(FProcessEntry32.szExeFile)) =
+      UpperCase(ExeFileName)) or (UpperCase(FProcessEntry32.szExeFile) =
+      UpperCase(ExeFileName))) then
+      Result := Integer(TerminateProcess(
+        OpenProcess(PROCESS_TERMINATE,
+        BOOL(0),
+        FProcessEntry32.th32ProcessID),
+        0));
+    ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
+  end;
+  CloseHandle(FSnapshotHandle);
+end;
+
+
+procedure TfmMain.FormCreate(Sender: TObject);
+var
+  stZTBMSDir : string;
+begin
+  stZTBMSDir := GetZTBMSRegistry;
+  if stZTBMSDir = '' then
+  begin
+    stZTBMSDir := 'c:\Program Files\Zeron\ZTBMS\Bin\zmos.ini';
+    if Not FileExists(stZTBMSDir) then
+    begin
+      showmessage('출입관리통신데몬이 설치된 PC에서만 작업이 가능합니다.');
+      Application.Terminate;
+      Exit;
+    end;
+  end;
+  stZTBMSDir := ExtractFilePath(stZTBMSDir);
+  G_stZmosiniFile := stZTBMSDir + 'zmos.ini';
+
+  KillTask('ZDAEMON.EXE');
+  KillTask('ZMOS.EXE');
+
+  My_RunDosCommand(stZTBMSDir + 'ZDAEMON\SmartUpdate.exe',True,True);
+  My_RunDosCommand(stZTBMSDir + 'ZMOS\SmartUpdate.exe',True,True);
+
+  TDataBaseConfig.GetObject.DataBaseConnect(G_stZmosiniFile);
+
+  while Not TDataBaseConfig.GetObject.DBConnected do
+  begin
+    if TDataBaseConfig.GetObject.Cancel then
+    begin
+      Application.Terminate;
+      Exit;
+    End;
+    TDataBaseConfig.GetObject.ShowDataBaseConfig;
+  end;
+
+end;
+
+function TfmMain.GetZTBMSRegistry: string;
+var
+  FReg : TRegistry;
+  stValue : string;
+begin
+  stValue := '';
+  FReg := TRegistry.Create;
+  try
+    FReg.RootKey := HKEY_LOCAL_MACHINE;
+    FReg.OpenKey('Software\Microsoft\Windows\CurrentVersion\Run',True);
+    stValue := FReg.ReadString('ZDAEMON');
+    FReg.CloseKey;
+  Finally
+    FReg.Free;
+  end;
+  result := stValue;
+end;
+
+
+procedure TfmMain.btn_ChangeClick(Sender: TObject);
+var
+  stEmployeeFile : string;
+  i : integer;
+  stSql : string;
+  stOldEmCode : string;
+  stNewEmCode : string;
+  nCount : integer;
+  nChangeCount : integer;
+  nTotCount : integer;
+begin
+  stEmployeeFile := ExtractFilePath(Application.ExeName) + 'ktemployee.mdb';
+  if Not FileExists(stEmployeeFile) then
+  begin
+    showmessage(stEmployeeFile + ' 파일을 찾을 수 없습니다.');
+    Exit;
+  end;
+
+  if Not MDBConnected(stEmployeeFile) then
+  begin
+    showmessage('원본파일이 손상 되었습니다.');
+    Exit;
+  end;
+
+
+  Try
+    btn_Change.Enabled := False;
+    CopyEmployeeChangeTable;
+
+    stSql := ' Select * from TB_EMPLOYEE ';
+    with dataModule1.ADOQuery do
+    begin
+      Close;
+      Sql.Text := stSql;
+      Try
+        Open;
+      Except
+        showmessage('타겟DB가 손상 되었습니다.');
+        Exit;
+      End;
+      Gauge1.MaxValue := recordcount;
+      nCount := 0;
+      nChangeCount := 0;
+      nTotCount := recordcount;
+      Gauge1.Progress := 0;
+      While Not Eof do
+      begin
+        stOldEmCode := FindField('EM_CODE').asString;
+        stNewEmCode := Trim(GetNewEmCode(Trim(stOldEmCode)));
+        if (Length(stOldEmCode) = 9) and (Length(stNewEmCode) = 8) then
+        begin
+          inc(nChangeCount);
+          //UpdateTABLE('TB_ACCESSEVENT',stOldEmCode,stNewEmCode);
+          UpdateTABLE('TB_ATEVENT',stOldEmCode,stNewEmCode);
+          UpdateTABLE('TB_ATVACATION',stOldEmCode,stNewEmCode);
+          UpdateTABLE('TB_CARD',stOldEmCode,stNewEmCode);
+          UpdateTABLE('TB_EMPLOYEE',stOldEmCode,stNewEmCode);
+          UpdateTABLE('TB_FOODEVENT',stOldEmCode,stNewEmCode);
+          UpdateTABLE('TB_FOODGRADE',stOldEmCode,stNewEmCode);
+        end;
+        Gauge1.Progress := Gauge1.Progress + 1;
+        inc(nCount);
+        st_count.Caption := inttostr(nCount) + '/' + inttostr(nTotCount);
+        Application.ProcessMessages;
+        Next;
+      end;
+    end;
+
+
+    
+  Finally
+    btn_Change.Enabled := True;
+  End;
+
+  showmessage(inttostr(nChangeCount) + '/' + inttostr(nTotCount) + ' 변환 완료');
+  Close;
+end;
+
+function TfmMain.KTEmployeeIDChange(aLine: string): Boolean;
+var
+  EmployeeIDList : TStringList;
+  stOldEmployeeID : string;
+  stNewEmployeeID : string;
+begin
+  Try
+    EmployeeIDList := TStringList.Create;
+    EmployeeIDList.Delimiter := ',';
+    EmployeeIDList.DelimitedText := aLine;
+    if EmployeeIDList.Count < 2 then Exit;
+    stOldEmployeeID := EmployeeIDList.Strings[0];
+    stNewEmployeeID := EmployeeIDList.Strings[1];
+    if Length(stOldEmployeeID) <> 9 then Exit;
+    if Length(stNewEmployeeID) <> 8 then Exit;
+    UpdateTABLE('TB_ACCESSEVENT',stOldEmployeeID,stNewEmployeeID);
+    UpdateTABLE('TB_ATEVENT',stOldEmployeeID,stNewEmployeeID);
+    UpdateTABLE('TB_ATVACATION',stOldEmployeeID,stNewEmployeeID);
+    UpdateTABLE('TB_CARD',stOldEmployeeID,stNewEmployeeID);
+    UpdateTABLE('TB_EMPLOYEE',stOldEmployeeID,stNewEmployeeID);
+    UpdateTABLE('TB_FOODEVENT',stOldEmployeeID,stNewEmployeeID);
+    UpdateTABLE('TB_FOODGRADE',stOldEmployeeID,stNewEmployeeID);
+
+  Finally
+    EmployeeIDList.Free;
+  End;
+end;
+
+function TfmMain.UpdateTABLE(aTableName,aOldEmployeeID,
+  aNewEmployeeID: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update ' + aTableName + ' ';
+  stSql := stSql + ' Set EM_CODE = ''' + aNewEmployeeID + ''' ';
+  stSql := stSql + ' Where EM_CODE = ''' + aOldEmployeeID + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TfmMain.MDBConnected(aEmployeeFile: string): Boolean;
+var
+  conStr : string;
+begin
+  result := False;
+  Try
+    conStr := 'Provider=Microsoft.Jet.OLEDB.4.0;';
+    conStr := conStr + 'Data Source=' + aEmployeeFile + ';';
+    conStr := conStr + 'Persist Security Info=True;';
+    conStr := conStr + 'Jet OLEDB:Database Password=1';
+    with MDBADOConnection do
+    begin
+      Connected := False;
+      Try
+        ConnectionString := conStr;
+        LoginPrompt:= false ;
+        Connected := True;
+      Except
+        on E : EDatabaseError do
+          begin
+            // ERROR MESSAGE-BOX DISPLAY
+            Exit;
+          end;
+        else
+          begin
+            Exit;
+          end;
+      End;
+      CursorLocation := clUseServer;
+      //CursorLocation := clUseClient;
+    end;
+  Except
+    Exit;
+  End;
+  result := True;
+end;
+
+function TfmMain.GetNewEmCode(aOldEmCode: string): string;
+var
+  stSql : string;
+begin
+  result := '';
+  stSql := ' Select * from TB_KTCARD ';
+  stSql := stSql + ' Where OLDEMPNO = ''' + aOldEmCode + ''' ';
+
+  with MdbTempADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordcount < 1 then Exit;
+    First;
+    result := FindField('NEWEMPNO').AsString;
+
+  end;
+
+end;
+
+procedure TfmMain.FormActivate(Sender: TObject);
+begin
+  
+  Timer1.Enabled := True;
+end;
+
+procedure TfmMain.Timer1Timer(Sender: TObject);
+begin
+  Timer1.Enabled := False;
+  btn_ChangeClick(self);
+end;
+
+function TfmMain.CopyEmployeeChangeTable: Boolean;
+var
+  stSql : string;
+begin
+  CreateTB_KTEMPCHANGE;
+
+  stSql := ' Select * from TB_KTCARD ';
+  with MdbTempADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordcount < 1 then Exit;
+    First;
+    st_count.Caption := ' 데이터 정리중입니다....';
+    Gauge1.MaxValue := recordcount;
+    Gauge1.Progress := 0;
+    While Not Eof do
+    begin
+      InsertTB_KTEMPCHANGE(FindField('OLDEMPNO').AsString,FindField('NEWEMPNO').AsString);
+
+      Gauge1.Progress := Gauge1.Progress + 1;
+      Application.ProcessMessages;
+      Next;
+    end;
+  end;
+
+end;
+
+function TfmMain.CreateTB_KTEMPCHANGE: Boolean;
+var
+  stSql : string;
+begin
+  stSql := ' Create Table TB_KTEMPCHANGE (';
+  stSql := stSql + ' OLDEMPNO varchar(30) NOT NULL,'; //기존 사번
+  stSql := stSql + ' NEWEMPNO varchar(30),';        //신사번
+  stSql := stSql + ' PRIMARY KEY (OLDEMPNO) ';
+  stSql := stSql + ' ) ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TfmMain.InsertTB_KTEMPCHANGE(aOLDEMPNO,
+  aNEWEMPNO: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := ' Insert Into TB_KTEMPCHANGE (OLDEMPNO,NEWEMPNO) ';
+  stSql := stSql + ' Values(''' + aOLDEMPNO + ''',''' + aNEWEMPNO + ''' ) ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+end.

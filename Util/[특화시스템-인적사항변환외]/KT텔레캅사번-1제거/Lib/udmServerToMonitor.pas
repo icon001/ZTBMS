@@ -1,0 +1,327 @@
+unit udmServerToMonitor;
+
+interface
+
+uses
+  SysUtils, Classes,uDataModule1;
+
+type
+  TDeviceMonitorState = Class(TComponent)
+  private
+    FConnected: Boolean;
+    FWatchMode: TWatchMode;
+    FDoor2Fire: Boolean;
+    FDoor1Fire: Boolean;
+    FDoorLockMode1: TDoorLockState;
+    FDoorLockMode2: TDoorLockState;
+    FDoorManageMode2: TDoorManageMode;
+    FDoorManageMode1: TDoorManageMode;
+    FDoorPNMode2: TDoorPNMode;
+    FDoorPNMode1: TDoorPNMode;
+    FDoorState1: TDoorState;
+    FDoorState2: TDoorState;
+    procedure SetConnected(const Value: Boolean);
+    procedure SetWatchMode(const Value: TWatchMode);
+    procedure SetDoor1Fire(const Value: Boolean);
+    procedure SetDoor2Fire(const Value: Boolean);
+    procedure SetDoorLockMode1(const Value: TDoorLockState);
+    procedure SetDoorLockMode2(const Value: TDoorLockState);
+    procedure SetDoorManageMode1(const Value: TDoorManageMode);
+    procedure SetDoorManageMode2(const Value: TDoorManageMode);
+    procedure SetDoorPNMode1(const Value: TDoorPNMode);
+    procedure SetDoorPNMode2(const Value: TDoorPNMode);
+    procedure SetDoorState1(const Value: TDoorState);
+    procedure SetDoorState2(const Value: TDoorState);
+  public
+    Property Connected: Boolean Read FConnected write SetConnected;
+    Property WatchMode: TWatchMode read FWatchMode write SetWatchMode;
+    Property DoorManageMode1 : TDoorManageMode Read FDoorManageMode1 write SetDoorManageMode1;
+    Property DoorPNMode1 : TDoorPNMode Read FDoorPNMode1 write SetDoorPNMode1;
+    Property DoorState1 : TDoorState Read FDoorState1 write SetDoorState1;
+    Property DoorLockMode1 : TDoorLockState Read FDoorLockMode1 write SetDoorLockMode1;
+    property Door1Fire : Boolean read FDoor1Fire write SetDoor1Fire;
+    Property DoorManageMode2 : TDoorManageMode Read FDoorManageMode2 write SetDoorManageMode2;
+    Property DoorPNMode2 : TDoorPNMode Read FDoorPNMode2 write SetDoorPNMode2;
+    Property DoorState2 : TDoorState Read FDoorState2 write SetDoorState2;
+    Property DoorLockMode2 : TDoorLockState Read FDoorLockMode2 write SetDoorLockMode2;
+    property Door2Fire : Boolean read FDoor2Fire write SetDoor2Fire;
+  end;
+
+  TNodeLockState = Class(TComponent)
+  private
+    ECUList:TStringList;
+    ECUStateList:TStringList;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure EcuStateAdd(aEcuID,aDeviceState:string);
+    function GetEcuCount:integer;
+    function GetEcuID(aIndex:integer):string;
+    function GetEcuBinaryState(aEcuID:integer):string;
+    function GetEcuASCIIState(aEcuID:integer):string;
+    function GetEcuObject(aEcuID:integer):TDeviceMonitorState;
+  end;
+
+  TdmServerToMonitor = class(TDataModule)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  dmServerToMonitor: TdmServerToMonitor;
+
+implementation
+uses
+  uLomosUtil;
+
+{$R *.dfm}
+
+{ TNodeLockState }
+
+constructor TNodeLockState.Create(AOwner: TComponent);
+begin
+  inherited;
+  ECUList := TStringList.Create;
+  ECUStateList := TStringList.Create;
+  ECUList.Clear;
+  ECUStateList.Clear;
+
+end;
+
+destructor TNodeLockState.Destroy;
+begin
+  ECUList.Free;
+  ECUStateList.Free;
+
+  inherited;
+end;
+
+procedure TNodeLockState.EcuStateAdd(aEcuID, aDeviceState: string);
+var
+  nIndex : integer;
+  msDeviceState : TDeviceMonitorState;
+  stDeviceConnect : string;
+  stWatchMode : string;
+  stDoorManager1,stDoorManager2 : string;
+  stDoorPNmode1,stDoorPNmode2 : string;
+  stDoorOpenState1,stDoorOpenState2 : string;
+  stDoorLockState1,stDoorLockState2 : string;
+  stDoorFireState1,stDoorFireState2 : string;
+begin
+  msDeviceState := TDeviceMonitorState.Create(self);
+
+  stDeviceConnect := copy(aDeviceState,1,2);
+  stWatchMode := copy(aDeviceState,3,4);
+  stDoorManager1 := copy(aDeviceState,7,3);
+  stDoorManager2 := copy(aDeviceState,10,3);
+  stDoorPNmode1 := copy(aDeviceState,13,2);
+  stDoorPNmode2 := copy(aDeviceState,15,2);
+  stDoorOpenState1 := copy(aDeviceState,17,3);
+  stDoorOpenState2 := copy(aDeviceState,20,3);
+  stDoorLockState1 := copy(aDeviceState,23,2);
+  stDoorLockState2 := copy(aDeviceState,25,2);
+  stDoorFireState1 := copy(aDeviceState,27,1);
+  stDoorFireState2 := copy(aDeviceState,28,1);
+
+  if stDeviceConnect = '01' then msDeviceState.Connected := True
+  else msDeviceState.Connected := False;
+  if stWatchMode = '0000' then msDeviceState.WatchMode := cmNothing
+  else if stWatchMode = '0001' then msDeviceState.WatchMode := cmArm
+  else if stWatchMode = '0010' then msDeviceState.WatchMode := cmDisarm
+  else if stWatchMode = '0011' then msDeviceState.WatchMode := cmPatrol
+  else if stWatchMode = '0100' then msDeviceState.WatchMode := cmInit
+  else if stWatchMode = '0101' then msDeviceState.WatchMode := cmTest
+  else msDeviceState.WatchMode := cmNothing;
+  if stDoorManager1 = '000' then msDeviceState.DoorManageMode1 := dmNothing
+  else if stDoorManager1 = '001' then msDeviceState.DoorManageMode1 := dmManager
+  else if stDoorManager1 = '010' then msDeviceState.DoorManageMode1 := dmOpen
+  else if stDoorManager1 = '011' then msDeviceState.DoorManageMode1 := dmLock
+  else msDeviceState.DoorManageMode1 := dmNothing;
+  if stDoorManager2 = '000' then msDeviceState.DoorManageMode2 := dmNothing
+  else if stDoorManager2 = '001' then msDeviceState.DoorManageMode2 := dmManager
+  else if stDoorManager2 = '010' then msDeviceState.DoorManageMode2 := dmOpen
+  else if stDoorManager2 = '011' then msDeviceState.DoorManageMode2 := dmLock
+  else msDeviceState.DoorManageMode2 := dmNothing;
+  if stDoorPNmode1 = '00' then msDeviceState.DoorPNMode1 := pnNothing
+  else if stDoorPNmode1 = '01' then msDeviceState.DoorPNMode1 := pnPositive
+  else if stDoorPNmode1 = '10' then msDeviceState.DoorPNMode1 := pnNegative
+  else msDeviceState.DoorPNMode1 := pnNothing;
+  if stDoorPNmode2 = '00' then msDeviceState.DoorPNMode2 := pnNothing
+  else if stDoorPNmode2 = '01' then msDeviceState.DoorPNMode2 := pnPositive
+  else if stDoorPNmode2 = '10' then msDeviceState.DoorPNMode2 := pnNegative
+  else msDeviceState.DoorPNMode2 := pnNothing;
+  if stDoorOpenState1 = '000' then msDeviceState.DoorState1 := dsNothing
+  else if stDoorOpenState1 = '001' then msDeviceState.DoorState1 := dsClose
+  else if stDoorOpenState1 = '010' then msDeviceState.DoorState1 := dsOpen
+  else if stDoorOpenState1 = '011' then msDeviceState.DoorState1 := dsLongTime
+  else if stDoorOpenState1 = '100' then msDeviceState.DoorState1 := dsOpenErr
+  else if stDoorOpenState1 = '101' then msDeviceState.DoorState1 := dsCloseErr
+  else msDeviceState.DoorState1 := dsNothing;
+  if stDoorOpenState2 = '000' then msDeviceState.DoorState2 := dsNothing
+  else if stDoorOpenState2 = '001' then msDeviceState.DoorState2 := dsClose
+  else if stDoorOpenState2 = '010' then msDeviceState.DoorState2 := dsOpen
+  else if stDoorOpenState2 = '011' then msDeviceState.DoorState2 := dsLongTime
+  else if stDoorOpenState2 = '100' then msDeviceState.DoorState2 := dsOpenErr
+  else if stDoorOpenState2 = '101' then msDeviceState.DoorState2 := dsCloseErr
+  else msDeviceState.DoorState2 := dsNothing;
+  if stDoorLockState1 = '00' then msDeviceState.DoorLockMode1 := lsNothing
+  else if stDoorLockState1 = '01' then msDeviceState.DoorLockMode1 := lsClose
+  else if stDoorLockState1 = '10' then msDeviceState.DoorLockMode1 := lsOpen
+  else msDeviceState.DoorLockMode1 := lsNothing;
+  if stDoorLockState2 = '00' then msDeviceState.DoorLockMode2 := lsNothing
+  else if stDoorLockState2 = '01' then msDeviceState.DoorLockMode2 := lsClose
+  else if stDoorLockState2 = '10' then msDeviceState.DoorLockMode2 := lsOpen
+  else msDeviceState.DoorLockMode2 := lsNothing;
+  if stDoorFireState1 = '1' then msDeviceState.Door1Fire := True
+  else msDeviceState.Door1Fire := False;
+  if stDoorFireState2 = '1' then msDeviceState.Door2Fire := True
+  else msDeviceState.Door2Fire := False;
+
+  nIndex := ECUList.IndexOf(aEcuID);
+  if nIndex < 0 then
+  begin
+    ECUList.Addobject(aEcuID,msDeviceState);
+    ECUStateList.Add(aDeviceState);
+  end else
+  begin
+    TDeviceMonitorState(ECUList.Objects[nIndex]).Free;
+    ECUList.Objects[nIndex] := msDeviceState;
+    ECUStateList.Strings[nIndex] := aDeviceState;
+  end;
+
+end;
+
+function TNodeLockState.GetEcuASCIIState(aEcuID: integer): string;
+var
+  stBinary : string;
+  stHex : string;
+  nIndex : integer;
+begin
+  stBinary :=  FillZeroStrNum('',BINARYPACKETSIZE,False);
+  Try
+    nIndex := EcuList.IndexOf( FillZeroNumber(aEcuID,2));
+    if nIndex > -1 then
+    begin
+      stBinary := FillZeroStrNum(EcuStateList.Strings[nIndex],BINARYPACKETSIZE,False);
+    end;
+    stHex := BinToHexStr(stBinary);
+    result := Hex2Ascii(stHex);
+  Except
+    Exit;
+  End;
+end;
+
+function TNodeLockState.GetEcuBinaryState(aEcuID: integer): string;
+var
+  stBinary : string;
+  nIndex : integer;
+begin
+  stBinary := FillZeroStrNum('',BINARYPACKETSIZE,False);
+  Try
+    nIndex := EcuList.IndexOf( FillZeroNumber(aEcuID,2));
+    if nIndex > -1 then
+    begin
+      stBinary := EcuStateList.Strings[nIndex];
+      stBinary := FillZeroStrNum(stBinary,BINARYPACKETSIZE,False);
+    end;
+    result := stBinary;
+  Except
+    result := stBinary;
+  End;
+
+end;
+
+function TNodeLockState.GetEcuCount: integer;
+begin
+  result := ECUList.Count;
+
+end;
+
+function TNodeLockState.GetEcuID(aIndex: integer): string;
+begin
+  Try
+    result := EcuList.Strings[aIndex];
+  Except
+    result := '';
+  End;
+
+end;
+
+function TNodeLockState.GetEcuObject(aEcuID: integer): TDeviceMonitorState;
+var
+  nIndex : integer;
+begin
+  nIndex := EcuList.IndexOf(FillZeroNumber(aEcuID,2));
+  if nIndex > -1 then result := TDeviceMonitorState(ECUList.Objects[nIndex])
+  else result := nil;
+end;
+
+{ TDeviceMonitorState }
+
+procedure TDeviceMonitorState.SetConnected(const Value: Boolean);
+begin
+  FConnected := Value;
+end;
+
+procedure TDeviceMonitorState.SetDoor1Fire(const Value: Boolean);
+begin
+  FDoor1Fire := Value;
+end;
+
+procedure TDeviceMonitorState.SetDoor2Fire(const Value: Boolean);
+begin
+  FDoor2Fire := Value;
+end;
+
+procedure TDeviceMonitorState.SetDoorLockMode1(
+  const Value: TDoorLockState);
+begin
+  FDoorLockMode1 := Value;
+end;
+
+procedure TDeviceMonitorState.SetDoorLockMode2(
+  const Value: TDoorLockState);
+begin
+  FDoorLockMode2 := Value;
+end;
+
+procedure TDeviceMonitorState.SetDoorManageMode1(
+  const Value: TDoorManageMode);
+begin
+  FDoorManageMode1 := Value;
+end;
+
+procedure TDeviceMonitorState.SetDoorManageMode2(
+  const Value: TDoorManageMode);
+begin
+  FDoorManageMode2 := Value;
+end;
+
+procedure TDeviceMonitorState.SetDoorPNMode1(const Value: TDoorPNMode);
+begin
+  FDoorPNMode1 := Value;
+end;
+
+procedure TDeviceMonitorState.SetDoorPNMode2(const Value: TDoorPNMode);
+begin
+  FDoorPNMode2 := Value;
+end;
+
+procedure TDeviceMonitorState.SetDoorState1(const Value: TDoorState);
+begin
+  FDoorState1 := Value;
+end;
+
+procedure TDeviceMonitorState.SetDoorState2(const Value: TDoorState);
+begin
+  FDoorState2 := Value;
+end;
+
+procedure TDeviceMonitorState.SetWatchMode(const Value: TWatchMode);
+begin
+  FWatchMode := Value;
+end;
+
+end.

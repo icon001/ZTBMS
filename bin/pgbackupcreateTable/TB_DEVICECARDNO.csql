@@ -1,0 +1,2 @@
+CREATE TABLE TB_DEVICECARDNO (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , ac_nodeno INTEGER NOT NULL , ac_ecuid VARCHAR(2) NOT NULL , ca_cardno VARCHAR(20) NOT NULL , de_door1 CHAR(1), de_door2 CHAR(1), de_useaccess CHAR(1), de_usealarm CHAR(1), de_timecode CHAR(1), de_permit CHAR(1), de_rcvack CHAR(1), de_updatetime VARCHAR(14), de_updateoperator VARCHAR(10), ac_mcuid VARCHAR(7) ); 
+ ALTER TABLE TB_DEVICECARDNO   ADD CONSTRAINT TB_DEVICECARDNO_pkey PRIMARY KEY (group_code, ac_nodeno, ac_ecuid, ca_cardno);

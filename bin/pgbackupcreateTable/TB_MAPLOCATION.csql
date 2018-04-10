@@ -1,0 +1,2 @@
+CREATE TABLE TB_MAPLOCATION (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , ml_country VARCHAR(3) NOT NULL , ml_building VARCHAR(3) NOT NULL , ml_floor VARCHAR(3) NOT NULL , ml_area VARCHAR(3) NOT NULL , ml_gubun VARCHAR(1) NOT NULL , ml_name VARCHAR(50), ml_image VARCHAR(100), ml_imageuse VARCHAR(1) ); 
+ ALTER TABLE TB_MAPLOCATION   ADD CONSTRAINT TB_MAPLOCATION_pkey PRIMARY KEY (group_code, ml_country, ml_building, ml_floor, ml_area, ml_gubun);

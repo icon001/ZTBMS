@@ -1,0 +1,743 @@
+unit uKTTDDNS;
+
+interface
+
+uses
+  SysUtils, Classes, ExtCtrls, OoMisc, AdPort, AdWnPort,DXString,Windows,
+  Forms,AdSocket,uDataModule1;
+
+type
+PCAppr = ^CAppr;
+ CAppr = record
+  CheckSum       : array[0..3] of char ;
+  Length         : array[0..3] of char ;
+  Data           : array[0..1023] of char ;
+end;
+
+type
+  TdmKTTDDNS = class(TDataModule)
+    DDNSRegTimer: TTimer;
+    DDNSSocket: TApdWinsockPort;
+    DDNSQueryTimer: TTimer;
+    DDNSQuerySocket: TApdWinsockPort;
+    procedure DDNSQueryTimerTimer(Sender: TObject);
+    procedure DDNSQuerySocketTriggerAvail(CP: TObject; Count: Word);
+    procedure DDNSQuerySocketWsConnect(Sender: TObject);
+    procedure DDNSRegTimerTimer(Sender: TObject);
+    procedure DataModuleCreate(Sender: TObject);
+    procedure DDNSSocketTriggerAvail(CP: TObject; Count: Word);
+    procedure DDNSSocketWsConnect(Sender: TObject);
+    procedure DDNSQuerySocketWsDisconnect(Sender: TObject);
+    procedure DDNSSocketWsDisconnect(Sender: TObject);
+    procedure DDNSSocketWsError(Sender: TObject; ErrCode: Integer);
+    procedure DDNSQuerySocketWsError(Sender: TObject; ErrCode: Integer);
+  private
+    L_bFirstRegist : Boolean;
+    L_bDDNSRegistering : Boolean;
+    L_bQueryServerConnected  : Boolean;
+    L_bRegServerConnected : Boolean;
+    L_bRegDDNSResult : Boolean;
+    L_stQueryMyIP : string;
+    L_stReceiveHexData : string;
+
+    FDDNSUses: Boolean;
+    FDDNSServerIP: string;
+    FDDNSQueryServerPort: Integer;
+    FDDNSServerPort: Integer;
+    FDDNSQueryServerIP: string;
+    FMYIP: string;
+    FMYMAC: string;
+    FOnEvent: TKTTEvent;
+    procedure SetDDNSUses(const Value: Boolean);
+    procedure SetMYIP(const Value: string);
+    { Private declarations }
+    function DDNSQueryServerConnect:Boolean;
+    function GetDDNSServerQuery(aUserID:string):string;
+    function GetQueryHexPacket(aUserID:string):string;
+    function HextoSendQueryPacket(aData:string):Boolean;
+  private
+    function DDNSRegServerConnect:Boolean;
+    function DDNSRegistration(aUserID:string):integer;
+    function GetRegistHexPacket(aUserID:string;aKeyIndex:integer):string;
+    function GetKTIPHexHeader(aCheckSum:string;aorgLen,aDataLen,aKeyIndex:integer):string; //aDataLen:integer):string;
+    function HextoSendDDNSPacket(aData:string):Boolean;
+  private
+    function PacketFormatCheck(aData:string; var aLeavePacketData,aPacketData:string):integer;
+    procedure ReceiveHexPacketDataProcess(aSendHexData:string);
+    function KTTDecodeData(aReceiveData:string;aKeyIndex,aDataLength:integer;aCheckSum:string):string;
+  public
+    { Public declarations }
+  public
+    property DDNSUSES :Boolean read FDDNSUses write SetDDNSUses;
+    property MYIP :string read FMYIP write SetMYIP;
+    property MYMAC :string read FMYMAC write FMYMAC;
+    property DDNSServerIP:string read FDDNSServerIP write FDDNSServerIP;
+    property DDNSQueryServerIP:string read FDDNSQueryServerIP write FDDNSQueryServerIP;
+    property DDNSServerPort:Integer read FDDNSServerPort write FDDNSServerPort;
+    property DDNSQueryServerPort:Integer read FDDNSQueryServerPort write FDDNSQueryServerPort;
+
+    property OnEvent:      TKTTEvent read FOnEvent       write FOnEvent;
+  end;
+
+var
+  dmKTTDDNS: TdmKTTDDNS;
+
+implementation
+
+uses
+  uKTTControl,
+  uLomosUtil;
+
+
+  function KTTEncode(pReqBuf: PCAppr; aSource:pchar; aLength,aKeyIndex:integer  ):integer; stdcall; external 'KTTENCODE1.dll' Name 'KTTEncode';
+  function KTTDecode(pReqBuf: PCAppr; aSource:pchar; aLength,aKeyIndex:integer  ):integer; stdcall; external 'KTTENCODE1.dll' Name 'KTTDecode';
+{$R *.dfm}
+
+{ TdmKTTDDNS }
+
+procedure TdmKTTDDNS.SetDDNSUses(const Value: Boolean);
+begin
+  FDDNSUses := Value;
+  if Value then
+  begin
+    if dmKTTControl.SERVERUSES then
+    begin
+      DDNSQueryTimer.Interval := 100;  //자신의 IP를 확인한다.
+      DDNSQueryTimer.Enabled := True;
+      //DDNSQueryTimer.Interval := 1000;
+      //DDNSRegTimer.Enabled := True;
+    end else
+    begin
+      DDNSQueryTimer.Enabled := False;
+      //DDNSRegTimer.Enabled := False;
+    end;
+  end else
+  begin
+    DDNSQueryTimer.Enabled := False;
+    //DDNSRegTimer.Enabled := False;
+  end;
+end;
+
+procedure TdmKTTDDNS.DDNSQueryTimerTimer(Sender: TObject);
+begin
+  if Not DDNSUSES then
+  begin
+    DDNSQueryTimer.Enabled := False;
+    Exit;
+  end;
+  DDNSQueryTimer.Interval := 1000 * 60 * 3; //3분 주기로
+  if dmKTTControl.KTTIDList.Count = 0 then Exit; //MuxID가 없는 경우 빠져 나감
+  MYIP := GetDDNSServerQuery(dmKTTControl.KTTIDList.Strings[0]);
+end;
+
+procedure TdmKTTDDNS.SetMYIP(const Value: string);
+begin
+  if Trim(Value) = '' then
+  begin
+    DDNSQueryTimer.Interval := 200;
+    Exit;
+  end;
+  if FMYIP = Value then Exit;
+  FMYIP := Value;
+  DDNSRegTimer.Interval := 200;
+  DDNSRegTimer.Enabled := True;
+
+end;
+
+function TdmKTTDDNS.GetDDNSServerQuery(aUserID: string): string;
+var
+  PastTime : dword;
+  stHexPacket : string;
+begin
+  result := '';
+  if Not DDNSQueryServerConnect then Exit;
+
+  stHexPacket := GetQueryHexPacket(aUserID);
+  if stHexPacket = '' then Exit;
+  L_stQueryMyIP := '';
+  HextoSendQueryPacket(stHexPacket);
+
+  PastTime := GetTickCount + 1000;  //응답이 올때 까지 대기하자.  1초 대기
+  While (L_stQueryMyIP = '') do
+  begin
+    if GetTickCount > PastTime then
+    begin
+      break;  //3000밀리동안 응답 없으면 실패로 처리함
+    end;
+    Application.ProcessMessages;
+  end;
+  result := L_stQueryMyIP;
+
+end;
+
+function TdmKTTDDNS.DDNSQueryServerConnect: Boolean;
+var
+  PastTime : dword;
+begin
+  result := False;
+  L_bQueryServerConnected := False;
+
+  with DDNSQuerySocket do
+  begin
+    WsAddress := DDNSQueryServerIP;  //'127.0.0.1';//
+    WsPort := inttostr(DDNSQueryServerPort);
+    DeviceLayer:= dlWinsock;
+    wsMode:=    wsClient;
+    Try
+      Open := False;
+      Delay(200);
+      Open := True;
+    Except
+      Exit;
+    end;
+  end;
+
+  PastTime := GetTickCount + 3000;  //응답이 올때 까지 대기하자.  1초 대기
+  While Not L_bQueryServerConnected do
+  begin
+    if GetTickCount > PastTime then
+    begin
+      break;  //3000밀리동안 응답 없으면 실패로 처리함
+    end;
+    Application.ProcessMessages;
+  end;
+  if Not L_bQueryServerConnected then
+  begin
+    Exit;
+  end;
+  result := True;
+end;
+
+
+function TdmKTTDDNS.GetQueryHexPacket(aUserID: string): string;
+var
+  stData : string;
+  stHeader : string;
+begin
+  result := '';
+  Try
+{    stData := '00' +
+              '03' +
+              Ascii2Hex('SYS_ID='+aUserID+';MAIN_IP;MAIN_PORT');
+    stHeader := '01' +
+                '00' +
+                Ascii2Hex(FillZeroNumber(Length(stData) div 2,2));
+    result := stHeader + stData;                                   }
+    result := Ascii2Hex('GETIP='+aUserID + ';MAC' + #13#10);
+  Except
+    Exit;
+  End;
+
+end;
+
+function TdmKTTDDNS.HextoSendQueryPacket(aData: string): Boolean;
+var
+  nLength : integer;
+  i : integer;
+begin
+  result := False;
+  nLength := Length(aData) div 2;
+
+  for i := 0 to nLength - 1 do
+  begin
+    Try
+      if DDNSQuerySocket.Open then
+        DDNSQuerySocket.PutChar(Char(Hex2Dec(copy(aData,(i*2) + 1,2))))
+      else Exit;
+    Except
+      Exit;
+    End;
+  end;
+  if Assigned(FOnEvent) then
+  begin
+    OnEvent(Self,'QTx',DDNSQueryServerIP,Hex2ViewData(aData) ,'');
+  end;
+
+  result := True;
+end;
+
+procedure TdmKTTDDNS.DDNSQuerySocketTriggerAvail(CP: TObject; Count: Word);
+var
+  stTemp : string;
+  nPos : integer;
+  i : integer;
+begin
+  stTemp := '';
+  for i := 1 to Count do
+  begin
+    stTemp := stTemp + TApdWinsockPort(CP).GetChar;
+  end;
+  if Assigned(FOnEvent) then
+  begin
+    OnEvent(Self,'QRx',DDNSQueryServerIP,stTemp,'');
+  end;
+  nPos := Pos('IP=',stTemp);
+  if nPos > 0 then
+  begin
+    Delete(stTemp,1,nPos + 2);
+    L_stQueryMyIP := Trim(stTemp);
+  end;
+
+end;
+
+procedure TdmKTTDDNS.DDNSQuerySocketWsConnect(Sender: TObject);
+begin
+  L_bQueryServerConnected :=  True;
+  if Assigned(FOnEvent) then
+  begin
+    OnEvent(Self,'QTx',DDNSQueryServerIP,'Connected' ,'');
+  end;
+end;
+
+procedure TdmKTTDDNS.DDNSRegTimerTimer(Sender: TObject);
+var
+  i : integer;
+  bFail : Boolean;
+begin
+  if Not DDNSUSES then
+  begin
+    DDNSRegTimer.Enabled := False;
+    Exit;
+  end;
+  //L_bFirstRegist := False;
+  if L_bDDNSRegistering then exit;
+  Try
+    bFail := False;
+    L_bDDNSRegistering := True;
+    if Not L_bFirstRegist then DDNSRegTimer.Interval := 1000 * 60;
+    DDNSRegTimer.Enabled := False;
+    if dmKTTControl.KTTIDList.Count = 0 then Exit;
+    for i := 0 to dmKTTControl.KTTIDList.Count - 1 do
+    begin
+      if DDNSRegistration(dmKTTControl.KTTIDList.Strings[i]) < 0  then
+      begin
+        DDNSRegTimer.Enabled := True;  //다시 등록하기 위해서
+        bFail := True;
+      end;
+    end;
+    if L_bFirstRegist then DDNSRegTimer.Enabled := True; //처음 등록 후 다시 업데이트 하자.
+    if Not bFail then
+    begin
+      L_bFirstRegist := False; //처음 등록 할때만 DEV_REG 다음에는 UPDATE
+    end;
+
+  Finally
+    L_bDDNSRegistering := False;
+  End;
+end;
+
+procedure TdmKTTDDNS.DataModuleCreate(Sender: TObject);
+var
+  stMac : string;
+begin
+  L_bFirstRegist := True;
+  stMac := GetMACAddress;
+  MYMAC := copy(stMac,1,2) + ':' + copy(stMac,3,2) + ':' + copy(stMac,5,2) + ':' + copy(stMac,7,2) + ':' + copy(stMac,9,2) + ':' + copy(stMac,11,2);
+
+  //2014.03.17 TEST
+  MYMAC := '00:17:F4:00:10:CC';
+end;
+
+function TdmKTTDDNS.DDNSRegistration(aUserID: string): integer;
+var
+  PastTime : dword;
+  stHexPacket : string;
+begin
+  result := -1;
+  if Not DDNSRegServerConnect then Exit;
+
+  stHexPacket := GetRegistHexPacket(aUserID,1);
+  if stHexPacket = '' then Exit;
+  L_bRegDDNSResult := False;
+  HextoSendDDNSPacket(stHexPacket);
+
+  PastTime := GetTickCount + 5000;  //응답이 올때 까지 대기하자.  5초 대기
+  While Not L_bRegDDNSResult do
+  begin
+    if GetTickCount > PastTime then
+    begin
+      break;  //3000밀리동안 응답 없으면 실패로 처리함
+    end;
+    Application.ProcessMessages;
+  end;
+  if L_bRegDDNSResult then result := 1;
+  DDNSSocket.Open := False;
+end;
+
+function TdmKTTDDNS.DDNSRegServerConnect: Boolean;
+var
+  PastTime : dword;
+begin
+  result := False;
+  L_bRegServerConnected := False;
+
+  with DDNSSocket do
+  begin
+    WsAddress := DDNSServerIP;  //'127.0.0.1';//
+    WsPort := inttostr(DDNSServerPort);
+    DeviceLayer:= dlWinsock;
+    wsMode:=    wsClient;
+    Try
+      Open := False;
+      Delay(200);
+      Open := True;
+    Except
+      Exit;
+    end;
+  end;
+
+  PastTime := GetTickCount + 3000;  //응답이 올때 까지 대기하자.  1초 대기
+  While Not L_bRegServerConnected do
+  begin
+    if GetTickCount > PastTime then
+    begin
+      break;  //3000밀리동안 응답 없으면 실패로 처리함
+    end;
+    Application.ProcessMessages;
+  end;
+  if Not L_bRegServerConnected then
+  begin
+    Exit;
+  end;
+  result := True;
+end;
+
+function TdmKTTDDNS.GetRegistHexPacket(aUserID: string;aKeyIndex:integer): string;
+var
+  stData : string;
+  stHeader : string;
+  stHexDDNSData : string;
+  nDataLen : integer;
+
+  i : integer;
+  chTemp : array[0..1023] of char ;
+  TmpC : PCAppr;
+  nRtn : integer;
+  stLen : string;
+  chReturnData : array[0..1023] of char ;
+  chCheckSum : array[0..3] of char;
+  stCheckSum : string;
+  nTemp : integer;
+
+  stHexKTIPHeader : string;
+  stViewData : string;
+begin
+  result := '';
+  Try
+    if L_bFirstRegist then
+    begin
+      stData := '00' +  //'00'
+                '01' +
+                Ascii2Hex('DEV_NAME=801N;MODE=TCP/IP;SYS_ID='+aUserID + '00' +';MAIN_MAC=' + MYMAC + ';MAIN_IP=' + MYIP + ';MAIN_PORT=' + inttostr(dmKTTControl.ClientServerPort));
+    end else
+    begin
+      stData := '00' +   //'00'
+                '02' +
+                Ascii2Hex('SYS_ID='+aUserID + '00' +';MAIN_MAC=' + MYMAC + ';MAIN_IP=' + MYIP + ';MAIN_PORT=' + inttostr(dmKTTControl.ClientServerPort));
+    end;
+    stHeader := '01' +
+                '00' +   //'00'
+                //Dec2Hex(Length(stData) div 2,4); //길이 16진수로 변경
+                Dec2Hex(Length(stData) div 2,4); //Ascii2Hex(Dec2Hex(Length(stData) div 2,2)); //길이 16진수로 변경
+                //Ascii2Hex(FillZeroNumber(Length(stData) div 2,2));
+    stHexDDNSData := stHeader + stData;
+
+    stViewData := stHexDDNSData;
+
+    nDataLen := Length(stHexDDNSData) div 2;
+    for i := 0 to nDataLen - 1 do
+    begin
+      chTemp[i] := Char(Hex2Dec(copy(stHexDDNSData,(i*2) + 1,2)));
+    end;
+
+    New(TmpC);
+    nRtn := KTTEncode(TmpC,chTemp,nDataLen,aKeyIndex);
+    stLen := TmpC^.Length;
+    for i := 0 to strtoint(stLen) - 1 do
+    begin
+      chReturnData[i] := TmpC^.Data[i];
+    end;
+    stCheckSum := char2Hex(TmpC^.CheckSum[0]);
+    stHexDDNSData := Pchar2Hex(chReturnData,strtoint(stLen));
+    Dispose(TmpC);
+    stHexKTIPHeader := GetKTIPHexHeader(stCheckSum,nDataLen,strtoint(stLen),aKeyIndex);
+
+    //nTemp := Length(stHexKTIPHeader);
+    //nTemp := Length(stHexDDNSData);
+    result := stHexKTIPHeader + stHexDDNSData;
+
+    if Assigned(FOnEvent) then
+    begin
+      OnEvent(Self,'RTx',DDNSServerIP,Hex2ViewData(stHexKTIPHeader) + Hex2ViewData(stViewData),'');
+    end;
+
+  Except
+    Exit;
+  End;
+end;
+
+function TdmKTTDDNS.HextoSendDDNSPacket(aData: string): Boolean;
+var
+  nLength : integer;
+  i : integer;
+  stSendData:pchar;
+begin
+  result := False;
+  nLength := Length(aData) div 2;
+  Try
+    stSendData := strAlloc(nLength);
+    for i := 0 to nLength - 1 do
+    begin
+      stSendData[i] := Char(Hex2Dec(copy(aData,(i*2) + 1,2)));
+    end;
+    Try
+      if DDNSSocket.Open then
+        DDNSSocket.PutBlock(stSendData[0],nLength)
+      else Exit;
+    Except
+      Exit;
+    End;
+  Finally
+    StrDispose(stSendData);
+  End;
+  result := True;
+
+end;
+
+procedure TdmKTTDDNS.DDNSSocketTriggerAvail(CP: TObject; Count: Word);
+var
+  nPos : integer;
+  i : integer;
+
+  bLoop : Boolean;
+  stLeavePacketData : string;
+  stPacketData : string;
+  nFormat : integer;
+begin
+  for i := 1 to Count do
+  begin
+    L_stReceiveHexData := L_stReceiveHexData + char2Hex(TApdWinsockPort(CP).GetChar);
+  end;
+
+  bLoop := False;
+  repeat
+    if Trim(L_stReceiveHexData) = '' then break;
+    nFormat := PacketFormatCheck(L_stReceiveHexData,stLeavePacketData,stPacketData);
+    {/*
+     nFormat : -1 -> 비정상 전문
+               -2 -> 길이가 짧은 전문
+                1 ->  STX 포맷
+                2 ->  SOH 포맷
+    */}
+    L_stReceiveHexData:= stLeavePacketData;
+    if nFormat < 0 then
+    begin
+      if L_stReceiveHexData = '' then break;
+      if nFormat = -1 then  //비정상 전문 인경우
+      begin
+         Delete(L_stReceiveHexData,1,2);
+         continue;
+      end else break;   //포맷 길이가 작게 들어온 경우
+    end;
+    //memo1.Lines.Add('[RX]' + stPacketData);
+    if stPacketData <> '' then ReceiveHexPacketDataProcess(stPacketData);
+    Application.ProcessMessages;
+  until bLoop;
+
+
+
+
+end;
+
+procedure TdmKTTDDNS.DDNSSocketWsConnect(Sender: TObject);
+begin
+  L_bRegServerConnected :=  True;
+  if Assigned(FOnEvent) then
+  begin
+    OnEvent(Self,'RTx',DDNSQueryServerIP,'Connected' ,'');
+  end;
+
+end;
+
+function TdmKTTDDNS.GetKTIPHexHeader(aCheckSum: string; aorgLen,
+  aDataLen,aKeyIndex: integer): string;
+var
+  stHexData : string;
+  nTotLen : integer;
+begin
+  nTotLen := 20 + aDataLen;
+  stHexData := 'A8' +
+               '1B' +
+               FillzeroNumber(14,4) +//Ascii2Hex('14') +
+               '21' +
+               Dec2Hex(nTotLen,6) + //Ascii2Hex(Dec2Hex(nTotLen,3)) +
+               '00' +
+               '00' +
+               Ascii2Hex(aCheckSum) +
+               '10' +
+               '01' +
+               '3038' +
+               Dec2Hex(aorgLen,4) +//Ascii2Hex(Dec2Hex(aorgLen,2)) +
+               Dec2Hex(aKeyIndex,4);// '0001';     aKeyIndex
+  result := stHexData;
+end;
+
+function TdmKTTDDNS.PacketFormatCheck(aData: string; var aLeavePacketData,
+  aPacketData: string): integer;
+var
+  aIndex: Integer;
+  Lenstr: String;
+  StrBuff: String;
+  etxIndex: Integer;
+  aKey: Byte;
+  st : string;
+  stTotLength : string;
+  nTotLength : integer;
+begin
+
+  result := -1; //비정상 전문
+
+  aPacketData:= '';
+  if Length(aData) < 4 then //작은 사이즈
+  begin
+    aLeavePacketData := aData;
+    result := -2; //자릿수가 작게 들어온 경우
+    Exit;
+  end;
+  if copy(aData,1,4) <> 'A81B' then //처음 4자리는 'A81B' 임
+  begin
+    aLeavePacketData := aData;
+    Exit;
+  end;
+  if Length(aData) < (8*2)+1 then //작은 사이즈
+  begin
+    aLeavePacketData := aData;
+    result := -2; //자릿수가 작게 들어온 경우
+    Exit;
+  end;
+  stTotLength := copy(aData,(5*2)+1,(3*2));
+  nTotLength := Hex2Dec64(stTotLength);
+  //패킷에 정의된 길이보다 실제 데이터가 작으면
+  if Length(aData) < (nTotLength * 2) then
+  begin
+    result := -2; //자릿수가 작게 들어온 경우
+    aLeavePacketData:= aData;
+    Exit;
+  end;
+  result := 1; //포맷이 맞다
+
+  StrBuff:= Copy(aData,1,(nTotLength * 2));
+  Delete(aData, 1, (nTotLength * 2));
+  aLeavePacketData:= aData;
+  aPacketData:=StrBuff;
+end;
+
+procedure TdmKTTDDNS.ReceiveHexPacketDataProcess(
+  aSendHexData: string);
+var
+  stHeaderLength : string;
+  nHeaderLength : integer;
+  stTotLength : string;
+  nTotLength : integer;
+  stCheckSum : string;
+  stKeyIndex : string;
+  nKeyIndex : integer;
+  stReceiveData : string;
+  stDecodeData : string;
+  stDataLength : string;
+  nDataLength : integer;
+  stDataHeader : string;
+  stMessageType : string;
+  stData : string;
+begin
+  stHeaderLength := copy(aSendHexData,(2*2)+1,(2*2));
+  nHeaderLength := Hex2Dec64(stHeaderLength);
+  stTotLength := copy(aSendHexData,(5*2)+1,(3*2));
+  nTotLength := Hex2Dec64(stTotLength);
+  stCheckSum := copy(aSendHexData,(10*2)+1,(2*2));
+  stCheckSum := Hex2Ascii(stCheckSum);
+  stDataLength := copy(aSendHexData,(16*2)+1,(2*2));
+  nDataLength := Hex2Dec64(stDataLength);
+  stKeyIndex := copy(aSendHexData,(18*2)+1,(2*2));
+  nKeyIndex := Hex2Dec64(stKeyIndex);
+  stReceiveData := copy(aSendHexData,(nHeaderLength*2)+1,((nTotLength - nHeaderLength) *2));
+
+
+  stDecodeData := KTTDecodeData(stReceiveData,nKeyIndex,nDataLength,stCheckSum);
+  if Assigned(FOnEvent) then
+  begin
+    OnEvent(Self,'RRx',DDNSServerIP,Hex2ViewData(copy(aSendHexData,1,(nHeaderLength*2))) + Hex2ViewData(stDecodeData),'');
+  end;
+
+  stDataHeader := copy(stDecodeData,1,(4*2));
+  stMessageType := copy(stDecodeData,(4*2) + 1,4);
+  Delete(stDecodeData,1,(6*2));
+  stData := Hex2Ascii(stDecodeData);
+  if Pos('OK',stData) > 0 then L_bRegDDNSResult := True;
+  //result := stData;
+end;
+
+function TdmKTTDDNS.KTTDecodeData(aReceiveData: string; aKeyIndex,
+  aDataLength: integer; aCheckSum: string): string;
+var
+  nLength : integer;
+  stSendData:pchar;
+  i : integer;
+  stLen : string;
+  chReturnData : array[0..1023] of char ;
+  stHexData : string;
+
+  TmpC : PCAppr;
+  nRtn : integer;
+begin
+  nLength := Length(aReceiveData) div 2;
+  stSendData := strAlloc(nLength);
+  for i := 0 to nLength - 1 do
+  begin
+    stSendData[i] := Char(Hex2Dec(copy(aReceiveData,(i*2) + 1,2)));
+  end;
+
+  New(TmpC);
+  nRtn := KTTDecode(TmpC,pchar(stSendData),aDataLength,aKeyIndex);
+  stLen := TmpC^.Length;
+  for i := 0 to strtoint(stLen) - 1 do
+  begin
+    chReturnData[i] := TmpC^.Data[i];
+  end;
+  stHexData := Pchar2Hex(chReturnData,strtoint(stLen));
+  Dispose(TmpC);
+
+  result := stHexData;
+
+end;
+
+procedure TdmKTTDDNS.DDNSQuerySocketWsDisconnect(Sender: TObject);
+begin
+  if Assigned(FOnEvent) then
+  begin
+    OnEvent(Self,'QTx',DDNSQueryServerIP,'DisConnected' ,'');
+  end;
+
+end;
+
+procedure TdmKTTDDNS.DDNSSocketWsDisconnect(Sender: TObject);
+begin
+  if Assigned(FOnEvent) then
+  begin
+    OnEvent(Self,'RTx',DDNSQueryServerIP,'DisConnected' ,'');
+  end;
+
+end;
+
+procedure TdmKTTDDNS.DDNSSocketWsError(Sender: TObject; ErrCode: Integer);
+begin
+  ErrCode := 0;
+end;
+
+procedure TdmKTTDDNS.DDNSQuerySocketWsError(Sender: TObject;
+  ErrCode: Integer);
+begin
+  ErrCode := 0;
+end;
+
+end.

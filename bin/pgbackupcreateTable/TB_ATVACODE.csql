@@ -1,0 +1,2 @@
+CREATE TABLE TB_ATVACODE (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , at_vacode VARCHAR(3) NOT NULL , at_vaname VARCHAR(30), at_vatype CHAR(1), at_system CHAR(1), at_vamark VARCHAR(2) ); 
+ ALTER TABLE TB_ATVACODE   ADD CONSTRAINT TB_ATVACODE_pkey PRIMARY KEY (group_code, at_vacode);

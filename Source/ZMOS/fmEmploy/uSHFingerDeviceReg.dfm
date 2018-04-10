@@ -1,0 +1,113 @@
+object fmSHFingerDeviceReg: TfmSHFingerDeviceReg
+  Left = 192
+  Top = 114
+  Width = 621
+  Height = 245
+  Caption = #51648#47928#46321#47197
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  PixelsPerInch = 96
+  TextHeight = 13
+  object btn_Apply: TSpeedButton
+    Left = 216
+    Top = 130
+    Width = 209
+    Height = 57
+    Caption = #51201#50857
+    Enabled = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = #47569#51008' '#44256#46357
+    Font.Style = []
+    ParentFont = False
+    OnClick = btn_ApplyClick
+  end
+  object btn_Cancel: TSpeedButton
+    Left = 48
+    Top = 138
+    Width = 113
+    Height = 57
+    Caption = #52712#49548
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = #47569#51008' '#44256#46357
+    Font.Style = []
+    ParentFont = False
+    Visible = False
+    OnClick = btn_CancelClick
+  end
+  object lb_fingeruserid: TAdvSmoothLabel
+    Left = 0
+    Top = 0
+    Width = 613
+    Height = 57
+    Fill.ColorMirror = clNone
+    Fill.ColorMirrorTo = clNone
+    Fill.GradientType = gtVertical
+    Fill.GradientMirrorType = gtSolid
+    Fill.BorderColor = clNone
+    Fill.Rounding = 0
+    Fill.ShadowOffset = 0
+    Fill.Glow = gmNone
+    Caption.Text = 'AdvSmoothLabel'
+    Caption.Font.Charset = DEFAULT_CHARSET
+    Caption.Font.Color = clWindowText
+    Caption.Font.Height = -27
+    Caption.Font.Name = 'Tahoma'
+    Caption.Font.Style = []
+    Caption.ColorStart = clBlack
+    Caption.ColorEnd = clBlack
+    CaptionShadow.Text = 'AdvSmoothLabel'
+    CaptionShadow.Font.Charset = DEFAULT_CHARSET
+    CaptionShadow.Font.Color = clWindowText
+    CaptionShadow.Font.Height = -27
+    CaptionShadow.Font.Name = 'Tahoma'
+    CaptionShadow.Font.Style = []
+    Version = '1.5.0.1'
+    Align = alTop
+  end
+  object lb_Message: TAdvSmoothLabel
+    Left = 0
+    Top = 57
+    Width = 613
+    Height = 57
+    Fill.ColorMirror = clNone
+    Fill.ColorMirrorTo = clNone
+    Fill.GradientType = gtVertical
+    Fill.GradientMirrorType = gtSolid
+    Fill.BorderColor = clNone
+    Fill.Rounding = 0
+    Fill.ShadowOffset = 0
+    Fill.Glow = gmNone
+    Caption.Text = #51648#47928#51012' '#46321#47197#54616#45716' '#46041#50504' '#45824#44592' '#54616#50668' '#51452#49464#50836'...'
+    Caption.Font.Charset = DEFAULT_CHARSET
+    Caption.Font.Color = clWindowText
+    Caption.Font.Height = -27
+    Caption.Font.Name = 'Tahoma'
+    Caption.Font.Style = []
+    Caption.ColorStart = clBlack
+    Caption.ColorEnd = clBlack
+    CaptionShadow.Text = 'AdvSmoothLabel'
+    CaptionShadow.Font.Charset = DEFAULT_CHARSET
+    CaptionShadow.Font.Color = clWindowText
+    CaptionShadow.Font.Height = -27
+    CaptionShadow.Font.Name = 'Tahoma'
+    CaptionShadow.Font.Style = []
+    Version = '1.5.0.1'
+    Align = alTop
+  end
+  object Timer: TTimer
+    Enabled = False
+    OnTimer = TimerTimer
+    Left = 504
+    Top = 136
+  end
+end

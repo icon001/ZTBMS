@@ -1,0 +1,24 @@
+unit uCardReader;
+
+interface
+
+uses
+  SysUtils, Classes, OoMisc, AdPort, AdWnPort;
+
+type
+  TdmCardReader = class(TDataModule)
+    CardCreatePort: TApdWinsockPort;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  dmCardReader: TdmCardReader;
+
+implementation
+
+{$R *.dfm}
+
+end.

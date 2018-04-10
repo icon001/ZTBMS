@@ -1,0 +1,2 @@
+CREATE TABLE TB_ADMINFOOD (  group_code VARCHAR(10) NOT NULL , ad_userid VARCHAR(20) NOT NULL , ac_nodeno INTEGER NOT NULL , ac_ecuid VARCHAR(2) NOT NULL , fo_doorno CHAR(1) NOT NULL , ad_updatetime VARCHAR(14), ad_updateoperator VARCHAR(10), ac_mcuid VARCHAR(7) ); 
+ ALTER TABLE TB_ADMINFOOD   ADD CONSTRAINT TB_ADMINFOOD_pkey PRIMARY KEY (group_code, ad_userid, ac_nodeno, ac_ecuid, fo_doorno);

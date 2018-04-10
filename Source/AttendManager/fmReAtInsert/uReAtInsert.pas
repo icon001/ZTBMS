@@ -1,0 +1,1154 @@
+unit uReAtInsert;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ComCtrls, StdCtrls, Gauges, Buttons,ADODB,ActiveX,DateUtils;
+
+type
+  TfmReAtInsert = class(TForm)
+    StaticText1: TStaticText;
+    dt_Fromdate: TDateTimePicker;
+    dt_todate: TDateTimePicker;
+    StaticText2: TStaticText;
+    btn_AtReInsert: TSpeedButton;
+    btn_Close: TSpeedButton;
+    Gauge1: TGauge;
+    procedure FormCreate(Sender: TObject);
+    procedure btn_CloseClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormShow(Sender: TObject);
+    procedure btn_AtReInsertClick(Sender: TObject);
+  private
+    AttendConfigCodeList : TStringList; //근태코드 리스트
+    AttendConfigInFromTimeList : TStringList; //출입가능시작 시간
+    AttendConfigInToTimeList : TStringList; //출입가능끝 시간
+    AttendConfigWorkTimeList : TStringList; //근무 시작 시간
+    AttendConfigOutTimeList : TStringList; //퇴근 시간
+    AttendConfigExtendTimeList : TStringList; //연장근무 시간
+    AttendConfigNightTimeList : TStringList; //야간근무 시간
+    AttendConfigSInFromTimeList : TStringList; //반휴일 출입가능시작 시간
+    AttendConfigSInToTimeList : TStringList; //반휴일 출입가능끝 시간
+    AttendConfigSWorkTimeList : TStringList; //반휴일 근무 시작 시간
+    AttendConfigSOutTimeList : TStringList; //반휴일 퇴근 시간
+    AttendConfigSExtendTimeList : TStringList; //반휴일연장근무 시간
+    AttendConfigSNightTimeList : TStringList; //반휴일야간근무 시간
+    AttendConfigHInFromTimeList : TStringList; //공휴일 출입가능시작 시간
+    AttendConfigHInToTimeList : TStringList; //공휴일 출입가능끝 시간
+    AttendConfigHWorkTimeList : TStringList; //공휴일 근무 시작 시간
+    AttendConfigHOutTimeList : TStringList; //공휴일 퇴근 시간
+    AttendConfigHExtendTimeList : TStringList; //공휴일 연장근무 시간
+    AttendConfigHNightTimeList : TStringList; //공휴일 야간근무 시간
+    L_stAtYesterDayStandTime : string;           //어제날짜 기준 시간
+    L_ToDayStandTime : string;           //오늘날짜 기준 시간
+    L_nSaturday : integer;         //0:휴무,1:반휴일,2:평일
+    L_nATInOutDeviceType : integer;       //0:업데이트,1:카드리더,2:버튼
+    L_nATType : integer;           //0:고정근무1:사원별,2:교대근무
+    L_nATType1 : integer;           //0:교대근무1:모든사원 정시출퇴근
+    L_nNonBackType : integer;           //0:미복귀시퇴근처리,1:미복귀시정상퇴근
+    { Private declarations }
+    Function LoadAttendConfig : Boolean;
+    //근태처리 함수
+    Function GetATInCode(aAttendCode,aTime:string;nWeekCode:integer):string; //출근타입에 대한 출근코드 가져오기
+    Function GetATOutCode(aAttendCode,aTime:string;nWeekCode:integer;bYesterDay:Boolean):string; //출근타입에 대한 출근코드 가져오기
+    Function GetAttendCode(aTime,aCompanyCode,aEMCode:string;nWeekCode:integer):string; //해당일자의 출근타입 가져오자
+    Function GetOutAttendCode(aDate,aCompanyCode,aEMCode:string):string; //해당근태일자의 출근 근태 타입을 가져오자.
+    Function GetEMPLOYEEATCode(aCompanyCode,aEMCode:string):string;
+    Function GetChangeATCode(aTime:string;nWeekCode:integer):string;
+    Function GetUpdateAttendType(aTime,aCompanyCode,aEMCode:string;dtYesterDay:TDatetime):string;
+
+    Function InsertATTENDINCode(aDate,aTime,aCompanyCode,aEMCode:String;nWeekCode:integer):Boolean;
+    Function InsertATTENDOutCode(aDate,aTime,aCompanyCode,aEMCode:String;nWeekCode:integer;dtYesterDay:TDatetime):Boolean;
+    Function InsertATTENDLEAVECode(aDate,aTime,aCompanyCode,aEMCode:String;nWeekCode:integer;dtYesterDay:TDatetime):Boolean;
+    Function InsertATTENDBACKCode(aDate,aTime,aCompanyCode,aEMCode:String;nWeekCode:integer;dtYesterDay:TDatetime):Boolean;
+
+    Function ProcessAttendData1(aTime:String;aCardNo:String):Boolean; // 업데이트 방식
+    Function ProcessAttendData2(aTime:String;aCardNo,aAttendCode:String):Boolean; // 리더기 번호 또는 버튼 방식 처리
+    //Function GetEmployeeInfo(aCardNo:string;bPassNo:Boolean; var aCompanyCode,aEMCode:string ):Boolean;
+    Function  GetEmployeeInfo(aCardNo:string;bPassNo:Boolean; var aCompanyCode,aEMCode:string ):Boolean;
+
+    Function CheckHolidy(aYear,aMonth,aDay:string):Boolean;
+
+    Function Process_ATEvent(aTime,aNodeNo,aECUID,aCardNo,aDoorNo,aReaderNo,aButton:string):Boolean;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmReAtInsert: TfmReAtInsert;
+
+implementation
+uses
+  uDataModule1,
+  udmAdoQuery,
+  uLomosutil,
+  uMDBSql,uMssql,uPostGreSql;
+
+{$R *.dfm}
+
+procedure TfmReAtInsert.FormCreate(Sender: TObject);
+begin
+  dt_Fromdate.DateTime := Now;
+  dt_toDate.DateTime := Now;
+
+  AttendConfigCodeList := TStringList.Create; //근태코드 리스트
+  AttendConfigInFromTimeList := TStringList.Create; //출입가능시작 시간
+  AttendConfigInToTimeList := TStringList.Create; //출입가능끝 시간
+  AttendConfigWorkTimeList := TStringList.Create; //근무 시작 시간
+  AttendConfigOutTimeList := TStringList.Create; //퇴근 시간
+  AttendConfigExtendTimeList := TStringList.Create; //연장근무 시간
+  AttendConfigNightTimeList := TStringList.Create; //야간근무 시간
+  AttendConfigSInFromTimeList := TStringList.Create; //반휴일 출입가능시작 시간
+  AttendConfigSInToTimeList := TStringList.Create; //반휴일 출입가능끝 시간
+  AttendConfigSWorkTimeList := TStringList.Create; //반휴일 근무 시작 시간
+  AttendConfigSOutTimeList := TStringList.Create; //반휴일 퇴근 시간
+  AttendConfigSExtendTimeList := TStringList.Create; //반휴일연장근무 시간
+  AttendConfigSNightTimeList := TStringList.Create; //반휴일야간근무 시간
+  AttendConfigHInFromTimeList := TStringList.Create; //공휴일 출입가능시작 시간
+  AttendConfigHInToTimeList := TStringList.Create; //공휴일 출입가능끝 시간
+  AttendConfigHWorkTimeList := TStringList.Create; //공휴일 근무 시작 시간
+  AttendConfigHOutTimeList := TStringList.Create; //공휴일 퇴근 시간
+  AttendConfigHExtendTimeList := TStringList.Create; //공휴일 연장근무 시간
+  AttendConfigHNightTimeList := TStringList.Create; //공휴일 야간근무 시간
+
+end;
+
+procedure TfmReAtInsert.btn_CloseClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmReAtInsert.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  AttendConfigCodeList.Free;
+  AttendConfigInFromTimeList.Free;
+  AttendConfigInToTimeList.Free;
+  AttendConfigWorkTimeList.Free;
+  AttendConfigOutTimeList.Free;
+  AttendConfigExtendTimeList.Free;
+  AttendConfigNightTimeList.Free;
+  AttendConfigSInFromTimeList.Free;
+  AttendConfigSInToTimeList.Free;
+  AttendConfigSWorkTimeList.Free;
+  AttendConfigSOutTimeList.Free;
+  AttendConfigSExtendTimeList.Free;
+  AttendConfigSNightTimeList.Free;
+  AttendConfigHInFromTimeList.Free;
+  AttendConfigHInToTimeList.Free;
+  AttendConfigHWorkTimeList.Free;
+  AttendConfigHOutTimeList.Free;
+  AttendConfigHExtendTimeList.Free;
+  AttendConfigHNightTimeList.Free;
+
+end;
+
+function TfmReAtInsert.LoadAttendConfig: Boolean;
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+begin
+  Result := False;
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.DisableControls;
+
+    AttendConfigCodeList.Clear;
+    AttendConfigInFromTimeList.Clear;
+    AttendConfigInToTimeList.Clear;
+    AttendConfigWorkTimeList.Clear;
+    AttendConfigOutTimeList.Clear;
+    AttendConfigExtendTimeList.Clear;
+    AttendConfigNightTimeList.Clear;
+    AttendConfigSInFromTimeList.Clear;
+    AttendConfigSInToTimeList.Clear;
+    AttendConfigSWorkTimeList.Clear;
+    AttendConfigSOutTimeList.Clear;
+    AttendConfigSExtendTimeList.Clear;
+    AttendConfigSNightTimeList.Clear;
+    AttendConfigHInFromTimeList.Clear;
+    AttendConfigHInToTimeList.Clear;
+    AttendConfigHWorkTimeList.Clear;
+    AttendConfigHOutTimeList.Clear;
+    AttendConfigHExtendTimeList.Clear;
+    AttendConfigHNightTimeList.Clear;
+
+    L_stAtYesterDayStandTime := '0000'; //기준시간 = 00시 00분
+    L_ToDayStandTime := '0000'; // 기준시간 = 00시 00분
+    L_nATType := 1;
+    L_nATType1 := 0;
+
+    stSql := 'select * from TB_ATCODE ';
+    stSql := stSql + 'where GROUP_CODE = ''' + GROUPCODE + ''' ';
+    with TempAdoQuery do
+    begin
+      Close;
+      //Sql.Clear;
+      Sql.Text := stSql;
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+
+      First;
+      while Not Eof do
+      begin
+        if bApplicationTerminate then Exit;
+        AttendConfigCodeList.Add(FindField('AT_ATCODE').AsString);
+        AttendConfigInFromTimeList.Add(FindField('AT_INFROMTIME').AsString);
+        AttendConfigInToTimeList.Add(FindField('AT_INTOTIME').AsString);
+        AttendConfigWorkTimeList.Add(FindField('AT_WORKSTARTTIME').AsString);
+        AttendConfigOutTimeList.Add(FindField('AT_WORKENDTIME').AsString);
+        AttendConfigExtendTimeList.Add(FindField('AT_EXTENDTIME').AsString);
+        AttendConfigNightTimeList.Add(FindField('AT_NIGHTTIME').AsString);
+        AttendConfigSInFromTimeList.Add(FindField('AT_SINFROMTIME').AsString);
+        AttendConfigSInToTimeList.Add(FindField('AT_SINTOTIME').AsString);
+        AttendConfigSWorkTimeList.Add(FindField('AT_SWORKSTARTTIME').AsString);
+        AttendConfigSOutTimeList.Add(FindField('AT_SWORKENDTIME').AsString);
+        AttendConfigSExtendTimeList.Add(FindField('AT_SEXTENDTIME').AsString);
+        AttendConfigSNightTimeList.Add(FindField('AT_SNIGHTTIME').AsString);
+        AttendConfigHInFromTimeList.Add(FindField('AT_HINFROMTIME').AsString);
+        AttendConfigHInToTimeList.Add(FindField('AT_HINTOTIME').AsString);
+        AttendConfigHWorkTimeList.Add(FindField('AT_HWORKSTARTTIME').AsString);
+        AttendConfigHOutTimeList.Add(FindField('AT_HWORKENDTIME').AsString);
+        AttendConfigHExtendTimeList.Add(FindField('AT_HEXTENDTIME').AsString);
+        AttendConfigHNightTimeList.Add(FindField('AT_HNIGHTTIME').AsString);
+
+        Next;
+      end;
+
+      stSql := 'select * from TB_CONFIG ';
+      stSql := stSql + ' where GROUP_CODE = ''' + GROUPCODE + ''' ';
+      stSql := stSql + ' AND CO_CONFIGGROUP = ''ATTEND'' ';
+
+      Close;
+      //Sql.Clear;
+      Sql.Text := stSql;
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+
+      First;
+      if RecordCount > 0 then
+      begin
+        while Not Eof do
+        begin
+          if bApplicationTerminate then Exit;
+          if FindField('CO_CONFIGCODE').AsString = 'YTIME' then
+            L_stAtYesterDayStandTime := FindField('CO_CONFIGVALUE').AsString
+          else if FindField('CO_CONFIGCODE').AsString = 'TTIME' then
+            L_ToDayStandTime := FindField('CO_CONFIGVALUE').AsString
+          else if FindField('CO_CONFIGCODE').AsString = 'SATURDAY' then
+            L_nSaturday := strtoint(FindField('CO_CONFIGVALUE').AsString)
+          else if FindField('CO_CONFIGCODE').AsString = 'DEVICETYPE' then
+            L_nATInOutDeviceType := strtoint(FindField('CO_CONFIGVALUE').AsString)
+          else if FindField('CO_CONFIGCODE').AsString = 'ATTYPE' then
+            L_nATType := strtoint(FindField('CO_CONFIGVALUE').AsString)
+          else if FindField('CO_CONFIGCODE').AsString = 'ATTYPE1' then
+            L_nATType1 := strtoint(FindField('CO_CONFIGVALUE').AsString)
+          else if FindField('CO_CONFIGCODE').AsString = 'OUTTIME' then
+            L_nNonBackType := strtoint(FindField('CO_CONFIGVALUE').AsString);
+
+          next;
+        end;
+      end;
+
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+  Result := True;
+end;
+
+procedure TfmReAtInsert.FormShow(Sender: TObject);
+begin
+  LoadAttendConfig;
+end;
+
+function TfmReAtInsert.GetATInCode(aAttendCode, aTime: string;
+  nWeekCode: integer): string;
+var
+  nIndex : integer;
+  stInFromTime,stWorkStartTime:string;
+begin
+  result := '000';
+
+  nIndex := AttendConfigCodeList.IndexOf(aAttendCode);
+  if nIndex < 0 then Exit;
+  if nWeekCode = 1 then  //공휴일
+  begin
+    stInFromTime := AttendConfigHInFromTimeList.Strings[nIndex];
+    stWorkStartTime := AttendConfigHWorkTimeList.Strings[nIndex];
+  end else if nWeekCode = 7 then //토요일
+  begin
+    stInFromTime := AttendConfigSInFromTimeList.Strings[nIndex];
+    stWorkStartTime := AttendConfigSWorkTimeList.Strings[nIndex];
+  end else //평일
+  begin
+    stInFromTime := AttendConfigInFromTimeList.Strings[nIndex];
+    stWorkStartTime := AttendConfigWorkTimeList.Strings[nIndex];
+  end;
+  if copy(aTime,9,4) < stInFromTime then result := '004' //조기출근
+  else if copy(aTime,9,4) > stWorkStartTime then result := '002' //지각
+  else result := '001'; //정상출근
+
+  if L_nATType1 = 1 then  result := '001';  //전사원 정시출퇴근이면 정상퇴근으로 넘김
+end;
+
+function TfmReAtInsert.GetATOutCode(aAttendCode, aTime: string;
+  nWeekCode: integer; bYesterDay: Boolean): string;
+var
+  nIndex : integer;
+  stWorkEndTime:string;
+  stExtendTime:string;
+  stNightTime:string;
+begin
+  result := '000';
+
+  nIndex := AttendConfigCodeList.IndexOf(aAttendCode);
+  if nIndex < 0 then Exit;
+  if nWeekCode = 1 then  //공휴일
+  begin
+    stWorkEndTime := AttendConfigHOutTimeList.Strings[nIndex];
+    stExtendTime := AttendConfigHExtendTimeList.Strings[nIndex];
+    stNightTime := AttendConfigHNightTimeList.Strings[nIndex];
+  end else if nWeekCode = 7 then //토요일
+  begin
+    stWorkEndTime := AttendConfigSOutTimeList.Strings[nIndex];
+    stExtendTime := AttendConfigSExtendTimeList.Strings[nIndex];
+    stNightTime := AttendConfigSNightTimeList.Strings[nIndex];
+  end else //평일
+  begin
+    stWorkEndTime := AttendConfigOutTimeList.Strings[nIndex];
+    stExtendTime := AttendConfigExtendTimeList.Strings[nIndex];
+    stNightTime := AttendConfigNightTimeList.Strings[nIndex];
+  end;
+
+  if Not bYesterDay then  //저녁에 퇴근이면...
+  begin
+    if copy(aTime,9,4) < stWorkEndTime then result := '002' //조퇴
+    else result := '001';    //정상퇴근
+    if stExtendTime <> '0000' then
+    begin
+      if stExtendTime > L_stAtYesterDayStandTime then //작으면 연장근무시간이 새벽이므로 어제날짜 기준일때 적용 됨
+      begin
+        if stNightTime > L_stAtYesterDayStandTime then
+        begin
+          if (stExtendTime < copy(aTime,9,4)) and (copy(aTime,9,4) < stNightTime) then result := '003' //연장근무
+          else if copy(aTime,9,4) >= stNightTime then result := '004'; //야간근무
+        end else result := '003'; //야간근무 기준이 새벽이면 무조건 연장근무임
+      end;
+    end else  //연장코드 미사용
+    begin
+      if  stNightTime <> '0000' then   //야간코드 미사용이면 그냥 정규퇴근
+      begin
+        if stNightTime > L_stAtYesterDayStandTime then  //야간근무시간이 새벽이 아니면...
+        begin
+          if copy(aTime,9,4) >= stNightTime then result := '004'; //야간근무
+        end;
+      end;
+    end;
+  end else   //새벽에 퇴근이면...
+  begin
+    result := '001'; //정상 퇴근
+    if stExtendTime <> '0000' then //연장근무 사용중이고...
+    begin
+      if stExtendTime < L_stAtYesterDayStandTime then //연장근무시간이 새벽부터이면
+      begin
+        if stExtendTime < copy(aTime,9,4) then
+        begin
+          result := '003'; //연장근무
+          if stNightTime <> '0000' then //야간근무시간 사용중이고...
+          begin
+            if stNightTime < L_stAtYesterDayStandTime then  // 야간 근무가 새벽이면
+            begin
+              if stNightTime < copy(aTime,9,4) then result := '004'; //야간근무
+            end;
+          end;
+        end;
+      end else //연장근무 시간이 저녁 시간이면
+      begin
+        result := '003'; //연장근무
+        if stNightTime <> '0000' then //야간근무시간 사용중이고...
+        begin
+          if stNightTime < L_stAtYesterDayStandTime then //새벽시간부터 시작이면
+          begin
+            if stNightTime < copy(aTime,9,4) then result := '004'; //야간근무
+          end else result := '004';
+        end;
+      end;
+    end else //연장근무 사용 안 하고
+    begin
+      if stNightTime <> '0000' then //야간근무시간 사용중이고...
+      begin
+        if stNightTime < L_stAtYesterDayStandTime then //야간근무시간이 새벽부터이면
+        begin
+          if stNightTime < copy(aTime,9,4) then result := '004'; //야간근무
+        end else result := '004'; //야간근무가 저녁시간부터이면 야간근무
+      end;
+    end;
+  end;
+
+  if L_nATType1 = 1 then  result := '001';  //전사원 정시출퇴근이면 정상퇴근으로 넘김
+end;
+
+function TfmReAtInsert.GetAttendCode(aTime, aCompanyCode, aEMCode: string;
+  nWeekCode: integer): string;
+begin
+  result := '001';
+  if L_nATType = 0 then //고정근무타입이면  첫번째 근태 타입을 넘겨준다.
+  begin
+    if AttendConfigCodeList.Count > 0 then
+      result := AttendConfigCodeList.Strings[0];
+  end else if L_nATType = 1 then
+  begin
+    result := GetEMPLOYEEATCode(aCompanyCode,aEMCode);
+  end else if L_nATType = 2 then
+  begin
+    result := GetChangeATCode(aTime,nWeekCode);
+  end;
+
+end;
+
+function TfmReAtInsert.GetChangeATCode(aTime: string;
+  nWeekCode: integer): string;
+var
+  stSql:string;
+  TempAdoQuery : TADOQuery;
+  stTime : string;
+
+begin
+  result := '000';
+  stTime := copy(aTime,9,4);
+
+
+  stSql := 'select * from TB_ATCODE ';
+  stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  if nWeekCode = 1 then //일요일 데이터에서 찾자
+  begin
+    stSql := stSql + ' AND AT_HINFROMTIME <= ''' + stTime + ''' ';
+    stSql := stSql + ' AND AT_HINTOTIME >= ''' + stTime + ''' ';
+  end else if nWeekCode = 7 then
+  begin
+    stSql := stSql + ' AND AT_SINFROMTIME <= ''' + stTime + ''' ';
+    stSql := stSql + ' AND AT_SINTOTIME >= ''' + stTime + ''' ';
+  end else
+  begin
+    stSql := stSql + ' AND AT_INFROMTIME <= ''' + stTime + ''' ';
+    stSql := stSql + ' AND AT_INTOTIME >= ''' + stTime + ''' ';
+  end;
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.DisableControls;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      //Sql.Clear;
+      Sql.Text := stSql ;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if RecordCount < 1 then
+      begin
+        Exit;
+      end;
+      First;
+      Result := FindField('AT_ATCODE').AsString;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TfmReAtInsert.GetEMPLOYEEATCode(aCompanyCode,
+  aEMCode: string): string;
+var
+  stSql:string;
+  TempAdoQuery : TADOQuery;
+begin
+  result := '000';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.DisableControls;
+
+    stSql := 'select * from TB_EMPLOYEE ';
+    stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
+    stSql := stSql + ' AND CO_COMPANYCODE = ''' + aCompanyCode + ''' ' ;
+    stSql := stSql + ' AND EM_CODE = ''' + aEMCode + ''' ' ;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      //Sql.Clear;
+      Sql.Text := stSql ;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if RecordCount < 1 then
+      begin
+        Exit;
+      end;
+      First;
+      if FindField('AT_ATCODE').IsNull then Result := '000'
+      else if Trim(FindField('AT_ATCODE').AsString) = '' then Result := '000'
+      else Result := FindField('AT_ATCODE').AsString;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TfmReAtInsert.GetEmployeeInfo(aCardNo: string; bPassNo: Boolean;
+  var aCompanyCode, aEMCode: string): Boolean;
+var
+  stSql:string;
+  TempAdoQuery : TADOQuery;
+begin
+  result := False;
+  aCompanyCode := '000';
+  aEMCode := '000';
+
+
+  if Not bPassNo then
+  begin
+    stSql := 'select a.CO_COMPANYCODE,a.EM_CODE,b.CO_JIJUMCODE,b.CO_DEPARTCODE,';
+    stSql := stSql + 'b.EM_NAME from TB_CARD a ';
+    stSql := stSql + ' Left Join TB_EMPLOYEE b ';
+    stSql := stSql + ' ON (a.GROUP_CODE = b.GROUP_CODE ';
+    stSql := stSql + ' AND a.CO_COMPANYCODE = b.CO_COMPANYCODE ';
+    stSql := stSql + ' AND a.EM_CODE = b.EM_CODE) ';
+    stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
+    stSql := stSql + ' AND a.CA_CARDNO = ''' + aCardNo + ''' ' ;
+  end
+  else   //비밀번호인경우
+  begin
+    stSql := 'select CO_COMPANYCODE,EM_CODE,CO_JIJUMCODE,CO_DEPARTCODE,EM_NAME from TB_EMPLOYEE ';
+    stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
+    stSql := stSql + ' AND EM_PASS = ''' + aCardNo + ''' ' ;
+  end;
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.DisableControls;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      //Sql.Clear;
+      Sql.Text := stSql ;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if RecordCount < 1 then
+      begin
+        Exit;
+      end;
+      First;
+      aCompanyCode := FindField('CO_COMPANYCODE').AsString;
+      aEMCode := FindField('EM_CODE').AsString;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+  result := True;
+
+end;
+
+function TfmReAtInsert.GetOutAttendCode(aDate, aCompanyCode,
+  aEMCode: string): string;
+var
+  stSql:string;
+  TempAdoQuery : TADOQuery;
+begin
+  result := '000';
+
+
+  stSql := 'select * from TB_ATEVENT ';
+  stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND AT_DATE = ''' + aDate + ''' ' ;
+  stSql := stSql + ' AND CO_COMPANYCODE = ''' + aCompanyCode + ''' ' ;
+  stSql := stSql + ' AND EM_CODE = ''' + aEMCode + ''' ' ;
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.DisableControls;
+    with TempAdoQuery do
+    begin
+      Close;
+      //Sql.Clear;
+      Sql.Text := stSql ;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if RecordCount < 1 then
+      begin
+        Exit;
+      end;
+      First;
+      if FindField('AT_ATCODE').IsNull then Result := '000'
+      else if Trim(FindField('AT_ATCODE').AsString) = '' then Result := '000'
+      else Result := FindField('AT_ATCODE').AsString;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TfmReAtInsert.GetUpdateAttendType(aTime, aCompanyCode,
+  aEMCode: string; dtYesterDay: TDatetime): string;
+var
+  stDate : string;
+  stVarTime : string;
+begin
+  stDate := copy(aTime,1,8);
+  //기준시간이 새벽에 찍었는가?
+  if copy(aTime,9,4) < L_stAtYesterDayStandTime then
+  begin
+    stDate := FormatDateTime('yyyymmdd',dtYesterDay); //어제날짜.
+  end;
+  
+  if dmAdoQuery.DupCheckTB_ATEVENT_ATInOut(stDate,aCompanyCode,aEMCode,stVarTime) then
+  begin
+    if AnsiCompareStr(aTime,stVarTime) < 0 then result := '1'   //현재 들어온 시간이 입력된 시간 보다 작으면
+    else result := '2'; //퇴근
+  end
+  else result := '1'; //출근
+
+end;
+
+function TfmReAtInsert.InsertATTENDBACKCode(aDate, aTime, aCompanyCode,
+  aEMCode: String; nWeekCode: integer; dtYesterDay: TDatetime): Boolean;
+var
+  bYesterDay : Boolean;
+begin
+  result := False;
+  bYesterDay := False;
+
+  //기준시간이 새벽에 찍었는가?
+  if copy(aTime,9,4) < L_stAtYesterDayStandTime then
+  begin
+    aDate := FormatDateTime('yyyymmdd',dtYesterDay);
+    bYesterDay := True;
+  end;
+
+  if  Not dmAdoQuery.DupCheckTB_AT_EVENT(aDate,aCompanyCode,aEMCode) then //중복 데이터 체크하여 없으면 Insert  있으면 무시
+  begin
+    dmAdoQuery.TB_ATEVENTBACKtimeInsert(aDate,aCompanyCode,aEMCode,inttostr(nWeekCode),aTime);
+  end else dmAdoQuery.TB_ATEVENTBACKtimeUpdate(aDate,aCompanyCode,aEMCode,aTime);
+
+end;
+
+function TfmReAtInsert.InsertATTENDINCode(aDate, aTime, aCompanyCode,
+  aEMCode: String; nWeekCode: integer): Boolean;
+var
+  stAttendCode : string;
+  stATInCode : string;
+  nIndex : integer;
+begin
+  result := False;
+  
+  //근태적용일 오늘 출근하면서 전일자 출근 표시 할일이 있을까? 없을것이다. 고로 오늘날짜가 근태일이다.
+  stAttendCode := GetAttendCode(aTime,aCompanyCode,aEMCode,nWeekCode);
+  nIndex := AttendConfigCodeList.IndexOf(stAttendCode);
+  if nIndex = -1 then //근태코드를 찾지 못한경우
+  begin
+    if  Not dmAdoQuery.DupCheckTB_AT_EVENT(aDate,aCompanyCode,aEMCode) then //중복 데이터 체크하여 없으면 Insert  있으면 무시
+    begin
+      dmAdoQuery.TB_ATEVENTIntimeInsert(aDate,aCompanyCode,aEMCode,stAttendCode,inttostr(nWeekCode),aTime,'000');
+    end else
+    begin
+      dmAdoQuery.TB_ATEVENTIntimeUpdate(aDate,aCompanyCode,aEMCode,stAttendCode,inttostr(nWeekCode),aTime,'000');
+    end;
+    Exit;
+  end;
+  stATInCode := GetATInCode(stAttendCode,aTime,nWeekCode);  //출근타입에 대한 출근코드 가져오자.
+  if  Not dmAdoQuery.DupCheckTB_AT_EVENT(aDate,aCompanyCode,aEMCode) then //중복 데이터 체크하여 없으면 Insert  있으면 무시
+  begin
+    dmAdoQuery.TB_ATEVENTIntimeInsert(aDate,aCompanyCode,aEMCode,stAttendCode,inttostr(nWeekCode),aTime,stATInCode);
+  end else
+  begin
+    dmAdoQuery.TB_ATEVENTIntimeUpdate(aDate,aCompanyCode,aEMCode,stAttendCode,inttostr(nWeekCode),aTime,stATInCode);
+  end;
+  result := True;
+
+end;
+
+function TfmReAtInsert.InsertATTENDLEAVECode(aDate, aTime, aCompanyCode,
+  aEMCode: String; nWeekCode: integer; dtYesterDay: TDatetime): Boolean;
+var
+  bYesterDay : Boolean;
+begin
+  result := False;
+  bYesterDay := False;
+
+  //기준시간이 새벽에 찍었는가?
+  if copy(aTime,9,4) < L_stAtYesterDayStandTime then
+  begin
+    aDate := FormatDateTime('yyyymmdd',dtYesterDay);
+    bYesterDay := True;
+  end;
+
+  if  Not dmAdoQuery.DupCheckTB_AT_EVENT(aDate,aCompanyCode,aEMCode) then //중복 데이터 체크하여 없으면 Insert  있으면 무시
+  begin
+    dmAdoQuery.TB_ATEVENTLEAVEtimeInsert(aDate,aCompanyCode,aEMCode,inttostr(nWeekCode),aTime);
+  end else dmAdoQuery.TB_ATEVENTLEAVEtimeUpdate(aDate,aCompanyCode,aEMCode,aTime);
+
+end;
+
+function TfmReAtInsert.InsertATTENDOutCode(aDate, aTime, aCompanyCode,
+  aEMCode: String; nWeekCode: integer; dtYesterDay: TDatetime): Boolean;
+var
+  bYesterDay : Boolean;
+  stAttendCode : string;
+  stATOutCode : string;
+  nIndex : integer;
+begin
+  result := False;
+  bYesterDay := False;
+
+  //기준시간이 새벽에 찍었는가?
+  if copy(aTime,9,4) < L_stAtYesterDayStandTime then
+  begin
+    aDate := FormatDateTime('yyyymmdd',dtYesterDay);
+    bYesterDay := True;
+  end;
+
+  stAttendCode := GetOutAttendCode(aDate,aCompanyCode,aEMCode); //근태 데이터에서 근태코드를 가져옴.
+  nIndex := AttendConfigCodeList.IndexOf(stAttendCode);
+  if nIndex = -1 then //근태코드를 찾지 못한경우
+  begin
+    if  Not dmAdoQuery.DupCheckTB_AT_EVENT(aDate,aCompanyCode,aEMCode) then //중복 데이터 체크하여 없으면 Insert  있으면 무시
+    begin
+      dmAdoQuery.TB_ATEVENTOuttimeInsert(aDate,aCompanyCode,aEMCode,stAttendCode,inttostr(nWeekCode),aTime,'000');
+    end else dmAdoQuery.TB_ATEVENTOuttimeUpdate(aDate,aCompanyCode,aEMCode,aTime,'000');
+    Exit;
+  end;
+  
+  stATOutCode := GetATOutCode(stAttendCode,aTime,nWeekCode,bYesterDay);  //근태타입에 대한 퇴근코드 가져오자.
+  dmAdoQuery.TB_ATEVENTOuttimeUpdate(aDate,aCompanyCode,aEMCode,aTime,stATOutCode);
+  result := True;
+end;
+
+function TfmReAtInsert.ProcessAttendData1(aTime, aCardNo: String): Boolean;
+var
+  stDate: String;
+  wYear    : word;
+  wMonth   : word;
+  wDay     : word;
+  wHour    : word;
+  wMinute  : word;
+  wSecond  : word;
+  dtPresent: TDatetime;
+  dtYesterDay : TDatetime;
+
+  stAttendCode : string; //출근코드
+  nWeekCode : integer; //1:공휴일,7:토요일
+  stAttendType : string;
+  stEMCode : string;
+  stCompanyCode : string;
+begin
+  if Not GetEmployeeInfo(aCardNo,False,stCompanyCode,stEMCode) then
+  begin
+    ErrorLogSave(ExeFolder + '\..\log\log'+ FormatDateTIme('yyyymmdd',Now)+'.log',
+                 '근태 데이터 사원정보 조회오류',aTime+':'+aCardNo);
+    Exit;
+  end;
+
+  wYear  := StrtoInt(Copy(aTime,1,4));
+  wMonth := StrtoInt(Copy(aTime,5,2));
+  wDay   := StrtoInt(Copy(aTime,7,2));
+  wHour  := StrtoInt(Copy(aTime,9,2));
+  wMinute:= StrtoInt(Copy(aTime,11,2));
+  wSecond:= StrtoInt(Copy(aTime,13,2));
+  dtPresent:= EncodeDatetime(wYear, wMonth, wDay, wHour, wMinute, wSecond,00);
+  dtYesterDay := dtPresent - 1;
+
+  stDate:= Copy(aTime,1,8);
+
+  //오늘이 무슨요일인가? 알자...
+  nWeekCode := DayOfWeek(dtPresent); //1: 일요일,7:토요일
+  if nWeekCode <> 1 then
+    if CheckHolidy(Copy(aTime,1,4),Copy(aTime,5,2),Copy(aTime,7,2)) then nWeekCode := 1; //공휴일이면
+
+  //L_nSaturday //0:휴무,1:반휴일,2:평일
+  if nWeekCode = 7 then //토요일 이면 평일로 쓸건지 여부 체크
+  begin
+    if L_nSaturday = 0 then  nWeekCode := 1      //공휴일 처리
+    else if L_nSaturday = 2 then nWeekCode := 8; //평일 처리
+  end;
+
+  stAttendType := GetUpdateAttendType(aTime,stCompanyCode,stEMCode,dtYesterDay);
+
+  if stAttendType = '1' then //출근
+  begin
+    InsertATTENDINCode(stDate,aTime,stCompanyCode,stEMCode,nWeekCode);
+  end else if stAttendType = '2' then //퇴근
+  begin
+    InsertATTENDOUTCode(stDate,aTime,stCompanyCode,stEMCode,nWeekCode,dtYesterDay);
+  end else
+  begin
+    ErrorLogSave(ExeFolder + '\..\log\log'+ FormatDateTIme('yyyymmdd',Now)+'.log',
+                 '근태 데이터 저장 오류[근태코드]',aTime+':'+stCompanyCode+':'+stEMCode+':'+stAttendType);
+    Exit;
+  end;
+
+end;
+
+function TfmReAtInsert.ProcessAttendData2(aTime, aCardNo,aAttendCode: String): Boolean;
+var
+  stDate: String;
+  wYear    : word;
+  wMonth   : word;
+  wDay     : word;
+  wHour    : word;
+  wMinute  : word;
+  wSecond  : word;
+  dtPresent: TDatetime;
+  dtYesterDay : TDatetime;
+
+  nWeekCode : integer; //1:공휴일,7:토요일
+
+  stEMCode : string;
+  stCompanyCode : string;
+
+begin
+  if Not GetEmployeeInfo(aCardNo,False,stCompanyCode,stEMCode) then
+  begin
+    ErrorLogSave(ExeFolder + '\..\log\log'+ FormatDateTIme('yyyymmdd',Now)+'.log',
+                 '근태 데이터 사원정보 조회오류',aTime+':'+aCardNo+':'+aAttendCode);
+    Exit;
+  end;
+
+  wYear  := StrtoInt(Copy(aTime,1,4));
+  wMonth := StrtoInt(Copy(aTime,5,2));
+  wDay   := StrtoInt(Copy(aTime,7,2));
+  wHour  := StrtoInt(Copy(aTime,9,2));
+  wMinute:= StrtoInt(Copy(aTime,11,2));
+  wSecond:= StrtoInt(Copy(aTime,13,2));
+  dtPresent:= EncodeDatetime(wYear, wMonth, wDay, wHour, wMinute, wSecond,00);
+  dtYesterDay := dtPresent - 1;
+
+  stDate:= Copy(aTime,1,8);
+
+  //오늘이 무슨요일인가? 알자...
+  nWeekCode := DayOfWeek(dtPresent); //1: 일요일,7:토요일
+  if nWeekCode <> 1 then
+    if CheckHolidy(Copy(aTime,1,4),Copy(aTime,5,2),Copy(aTime,7,2)) then nWeekCode := 1; //공휴일이면
+
+    //L_nSaturday //0:휴무,1:반휴일,2:평일
+  if nWeekCode = 7 then //토요일 이면 평일로 쓸건지 여부 체크
+  begin
+    if L_nSaturday = 0 then  nWeekCode := 1      //공휴일 처리
+    else if L_nSaturday = 2 then nWeekCode := 8; //평일 처리
+  end;
+
+  if aAttendCode = '1' then //출근
+  begin
+    InsertATTENDINCode(stDate,aTime,stCompanyCode,stEMCode,nWeekCode);
+  end else if aAttendCode = '2' then //퇴근
+  begin
+    InsertATTENDOUTCode(stDate,aTime,stCompanyCode,stEMCode,nWeekCode,dtYesterDay);
+  end else if aAttendCode = '3' then //외출
+  begin
+    InsertATTENDLEAVECode(stDate,aTime,stCompanyCode,stEMCode,nWeekCode,dtYesterDay);
+    //여기에서 외출시 현재 퇴근이면...
+    if L_nNonBackType = 0 then //미복귀시 현재 시간으로 퇴근 처리
+      InsertATTENDOUTCode(stDate,aTime,stCompanyCode,stEMCode,nWeekCode,dtYesterDay)
+    else if L_nNonBackType = 1 then //미복귀시 정상 퇴근 처리
+    begin
+      dmAdoQuery.TB_ATEVENTOuttimeUpdate(stDate,stCompanyCode,stEMCode,aTime,'001');
+    end;
+  end else if aAttendCode = '4' then //복귀
+  begin
+    InsertATTENDBACKCode(stDate,aTime,stCompanyCode,stEMCode,nWeekCode,dtYesterDay);
+    dmAdoQuery.TB_ATEVENTOuttimeUpdate(stDate,stCompanyCode,stEMCode,'','000'); //퇴근시간 지움
+  end else
+  begin
+    ErrorLogSave(ExeFolder + '\..\log\log'+ FormatDateTIme('yyyymmdd',Now)+'.log',
+                 '근태 데이터 저장 오류[근태코드]',aTime+':'+aCardNo+':'+aAttendCode);
+    Exit;
+  end;
+
+end;
+
+function TfmReAtInsert.CheckHolidy(aYear, aMonth, aDay: string): Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+  stSql := 'select * from TB_HOLIDAY ';
+  stSql := stSql + ' where HO_DAY = ''' + aYear + aMonth + aDay + ''' ';
+  with DataModule1.ADOTmpQuery do
+  begin
+    Close;
+    //Sql.Clear;
+    Sql.Text :=  stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordCount < 1 then Exit;
+  end;
+  result := True;
+end;
+
+procedure TfmReAtInsert.btn_AtReInsertClick(Sender: TObject);
+var
+  stSql : string;
+  TempAdoQuery : TAdoQuery;
+  stFromDate,stToDate : string;
+  stAtType : string;
+  stTimestr : string;
+  stCardNo : string;
+begin
+  stFromDate := FormatdateTime('yyyymmdd',dt_Fromdate.Date);
+  stToDate := FormatdateTime('yyyymmdd',dt_Todate.Date);
+
+  if DBTYPE = 'MDB' then stSql := MDBSql.SelectTB_ACCESSEVENTJOINATDEVICE(stFromDate,stToDate)
+  else if DBTYPE = 'MSSQL' then stSql := MSSql.SelectTB_ACCESSEVENTJOINATDEVICE(stFromDate,stToDate)
+  else if DBTYPE = 'PG' then stSql := PostGresql.SelectTB_ACCESSEVENTJOINATDEVICE(stFromDate,stToDate)
+  else Exit;
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.DisableControls;
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Text := stSql;
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      Gauge1.Visible := True;
+      Gauge1.Progress := 0;
+      Gauge1.MaxValue := recordcount;
+      while Not Eof do
+      begin
+        stTimestr := FindField('AC_DATE').Asstring + FindField('AC_TIME').Asstring;
+        stCardNo := FindField('CA_CARDNO').Asstring;
+        //Process_ATEvent(stTimestr,FillZeroNumber(FindField('AC_NODENO').AsInteger,3),FindField('AC_ECUID').AsString,stCardNo,FindField('DO_DOORNO').AsString[1],FindField('AC_READERNO').AsString[1],FindField('AC_BUTTONNO').AsString[1]);
+        if L_nDeviceType = 0 then
+        begin
+          stAtType := '0';
+          ProcessAttendData1(stTimestr,stCardNo); //찍을때마다 업데이트
+        end else if L_nDeviceType = 1 then
+        begin
+          stAtType := FindField('AC_READERNO').Asstring;
+          ProcessAttendData2(stTimestr,stCardNo,stAtType);  //리더기1번 출근 2번 퇴근 3번 외출 4번 복귀
+        end else if L_nDeviceType = 2 then
+        begin
+          stAtType := FindField('AC_BUTTONNO').Asstring;
+          ProcessAttendData2(stTimestr,stCardNo,stAtType);   //버튼 1 출근 2 퇴근 3번 외출 4번 복귀
+        end; 
+        Gauge1.Progress := Gauge1.Progress +  1;
+        Application.ProcessMessages;
+        Next;
+      end;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+  Gauge1.Visible := False;
+end;
+
+function TfmReAtInsert.Process_ATEvent(aTime, aNodeNo, aECUID, aCardNo,
+  aDoorNo, aReaderNo, aButton: string): Boolean;
+var
+  stDate: String;
+  wYear    : word;
+  wMonth   : word;
+  wDay     : word;
+  wHour    : word;
+  wMinute  : word;
+  wSecond  : word;
+  dtPresent: TDatetime;
+  dtYesterDay : TDatetime;
+
+  stAttendCode : string; //출근코드
+  nWeekCode : integer; //1:공휴일,7:토요일
+  stAttendType : string; //1:출근,2:퇴근
+  stEMCode : string;
+  stCompanyCode : string;
+  stJijumCode : string;
+  stDepartCode : string;
+  stEmName : string;
+
+  nAtOutGubun : integer; //0:출퇴근,1:외출복귀
+  cAtType : char;
+  bYesterDay : Boolean;
+  nATDeviceType : integer;
+  nReaderNo : integer;
+
+  stClientSendData : string;
+  bAtInsert : Boolean;
+begin
+  bYesterDay := False; //기준은 오늘이다.
+
+  if Not GetEmployeeInfo(aCardNo,False,stCompanyCode,stEMCode,stJijumCode,stDepartCode,stEmName) then
+  begin
+    Exit;
+  end;
+
+  if Not IsDigit(aTime) then
+  begin
+    ErrorLogSave(ExeFolder + '\..\log\log'+ FormatDateTIme('yyyymmdd',Now)+'.log',
+                 '근태 시간 오류',aTime+':'+aCardNo);
+    Exit;
+  end;
+  
+  wYear  := StrtoInt(Copy(aTime,1,4));
+  wMonth := StrtoInt(Copy(aTime,5,2));
+  wDay   := StrtoInt(Copy(aTime,7,2));
+  wHour  := StrtoInt(Copy(aTime,9,2));
+  wMinute:= StrtoInt(Copy(aTime,11,2));
+  wSecond:= StrtoInt(Copy(aTime,13,2));
+  dtPresent:= EncodeDatetime(wYear, wMonth, wDay, wHour, wMinute, wSecond,00);
+  dtYesterDay := dtPresent - 1;
+
+  stDate:= Copy(aTime,1,8);  //근태 기준 일자를 잡자.
+  //기준시간이 새벽에 찍었는가?
+  if copy(aTime,9,4) < L_stAtYesterDayStandTime then
+  begin
+    stDate := FormatDateTime('yyyymmdd',dtYesterDay); //어제날짜를 근태일로 잡자.
+    bYesterDay := True; //기준을 어제로 잡자.
+  end;
+
+  if bYesterDay then
+  begin
+    //어제가 무슨요일인가? 알자...
+    nWeekCode := DayOfWeek(dtYesterDay); //1: 일요일,7:토요일
+  end else
+  begin
+    //오늘이 무슨요일인가? 알자...
+    nWeekCode := DayOfWeek(dtPresent); //1: 일요일,7:토요일
+  end;
+  
+  if nWeekCode <> 1 then
+  begin
+    if CheckHolidy(Copy(stDate,1,4),Copy(stDate,5,2),Copy(stDate,7,2)) then nWeekCode := 1; //기준일이 공휴일이면
+  end;
+
+  //L_nSaturday //0:휴무,1:반휴일,2:평일
+  if nWeekCode = 7 then //토요일 이면 평일로 쓸건지 여부 체크
+  begin
+    if L_nSaturday = 0 then  nWeekCode := 1      //공휴일 처리
+    else if L_nSaturday = 2 then nWeekCode := 8; //평일 처리
+  end;
+
+  //여기에서 외출복귀인지 출퇴근인지 구분해 내자.
+
+  nAtOutGubun := 0;
+  if L_nATInOutDeviceType = 1 then  //카드리더 사용
+  begin
+    if (aReaderNo = L_stATWorkInNo)
+    or (aReaderNo = L_stATWorkOutsideNo) then nAtOutGubun := 1;
+  end else if L_nATInOutDeviceType = 2 then //버튼 사용
+  begin
+    if (aButton = L_stATWorkInNo)
+    or (aButton = L_stATWorkOutsideNo) then nAtOutGubun := 1;
+  end;
+
+  cAtType := ' ';
+  if nAtOutGubun = 0 then  //출/퇴근 처리
+  begin
+    nATDeviceType := L_nATDeviceType;
+    if L_stATStartWorkNo = L_stATOffWorkNo then //버튼이 같은 값이면.
+    begin
+      if nATDeviceType = 1 then
+      begin
+        if aReaderNo[1] = L_stATStartWorkNo[1] then nATDeviceType := 0; //리더 값이 들어 오면 업데이트 방식으로 변경
+      end else if nATDeviceType = 2 then
+      begin
+        if aButton[1] = L_stATStartWorkNo[1] then nATDeviceType := 0; //버튼 값이 들어 오면 업데이트 방식으로 변경
+      end;
+    end;
+    bAtInsert := True;
+    stAttendType := dmAdoQuery.GetUpdateAttendType(stDate,aTime,stCompanyCode,stEMCode,bAtInsert);
+    if nATDeviceType = 0 then   //업데이트 방식 출퇴근 처리
+    begin
+      cAtType := '0';
+      Process_UpdateAttendData(stDate,aTime,aCardNo,stCompanyCode,stEMCode,stAttendType,nWeekCode,bYesterDay,bAtInsert);
+    end else if nATDeviceType = 1 then  //카드리더
+    begin
+      cAtType := aReaderNo[1];
+      if cAtType = L_stATStartWorkNo[1] then stAttendType := '1' //출근
+      else if cAtType = L_stATOffWorkNo[1] then stAttendType := '2' //퇴근
+      else stAttendType := '0';
+      Process_UpdateAttendData(stDate,aTime,aCardNo,stCompanyCode,stEMCode,stAttendType,nWeekCode,bYesterDay,bAtInsert);
+    end else if nATDeviceType = 2 then //버튼 타입
+    begin
+      cAtType := aButton[1];
+      if cAtType = L_stATStartWorkNo[1] then stAttendType := '1' //출근
+      else if cAtType = L_stATOffWorkNo[1] then stAttendType := '2' //퇴근
+      else stAttendType := '0';
+      Process_UpdateAttendData(stDate,aTime,aCardNo,stCompanyCode,stEMCode,stAttendType,nWeekCode,bYesterDay,bAtInsert);
+    end;
+  end else if nAtOutGubun = 1 then //외출 복귀 처리
+  begin
+    if L_nATInOutDeviceType = 1 then  //카드리더
+    begin
+      cAtType := aReaderNo[1];
+      if cAtType = L_stATWorkOutsideNo[1] then stAttendType := '1' //외출
+      else if cAtType = L_stATWorkInNo[1] then stAttendType := '2' //복귀
+      else stAttendType := '0';
+      Process_UpdateBussinessInOut(stDate,aTime,aCardNo,stCompanyCode,stEMCode,stAttendType,nWeekCode,bYesterDay);
+    end else if L_nATInOutDeviceType = 2 then  //버튼 타입
+    begin
+      cAtType := aButton[1];
+      if cAtType = L_stATWorkOutsideNo[1] then stAttendType := '1' //외출
+      else if cAtType = L_stATWorkInNo[1] then stAttendType := '2' //복귀
+      else stAttendType := '0';
+      Process_UpdateBussinessInOut(stDate,aTime,aCardNo,stCompanyCode,stEMCode,stAttendType,nWeekCode,bYesterDay);
+    end;
+  end;
+
+
+end;
+
+end.

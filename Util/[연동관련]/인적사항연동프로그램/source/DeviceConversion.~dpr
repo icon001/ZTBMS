@@ -1,0 +1,39 @@
+program DeviceConversion;
+
+uses
+  Forms,
+  uMain in 'fmMain\uMain.pas' {fmMain},
+  uCommonVariable in '..\lib\uCommonVariable.pas',
+  DIMime in '..\lib\DIMime.pas',
+  uLomosUtil in '..\lib\uLomosUtil.pas',
+  uDBModule in '..\lib\uDBModule.pas' {dmDBModule: TDataModule},
+  uDataBaseConfig in '..\lib\DBConnect\uDataBaseConfig.pas' {fmDataBaseConfig},
+  uDevice in '..\lib\uDevice.pas' {dmDevice: TDataModule},
+  uMappingCode in 'fmMappingCode\uMappingCode.pas' {fmMappingCode},
+  uSubForm in '..\lib\uSubForm.pas' {fmASubForm},
+  uConfig in 'fmConfig\uConfig.pas' {fmConfig},
+  uCardRegModule in '..\lib\uCardRegModule.pas' {dmCardReg: TDataModule},
+  uDeviceCurrentState in 'fmDeviceCurrentState\uDeviceCurrentState.pas' {fmDeviceCurrentState},
+  uCardServerModule in '..\lib\uCardServerModule.pas' {dmCardServer: TDataModule},
+  uServerCurrentState in 'fmServerCurrentState\uServerCurrentState.pas' {fmServerCurrentState};
+
+{$R *.res}
+var
+hMutex : LongInt;
+begin
+  hMutex := OpenMutex( MUTEX_ALL_ACCESS, False, pchar('DEVICECHANGE') );
+  If hMutex <> 0 Then
+  Begin
+  CloseHandle( hMutex );
+  Exit;
+  End;
+  hMutex := CreateMutex( Nil, False, pchar('DEVICECHANGE') );
+  Application.Initialize;
+  Application.Title := '기기 변환 시스템';
+  Application.CreateForm(TdmCardServer, dmCardServer);
+  Application.CreateForm(TdmCardReg, dmCardReg);
+  Application.CreateForm(TdmDevice, dmDevice);
+  Application.CreateForm(TdmDBModule, dmDBModule);
+  Application.CreateForm(TfmMain, fmMain);
+  Application.Run;
+end.

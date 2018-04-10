@@ -1,0 +1,2 @@
+CREATE TABLE TB_DAEMONMULTI (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , dm_gubun INTEGER NOT NULL , dm_serverip VARCHAR(30), dm_serverport VARCHAR(30), dm_atport VARCHAR(30), dm_fdport VARCHAR(30), dm_ftpport VARCHAR(30) ); 
+ ALTER TABLE TB_DAEMONMULTI   ADD CONSTRAINT TB_DAEMONMULTI_pkey PRIMARY KEY (group_code, dm_gubun);

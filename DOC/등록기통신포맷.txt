@@ -1,0 +1,4 @@
+카드리더        PC
+
+->  STX[DATA]ETX   : DATA -> 'F'  (포맷요청)
+<-  STX[DATA]ETX   : DATA -> 'C'(범용) 'K'(KT사옥)

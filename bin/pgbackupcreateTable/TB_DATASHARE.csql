@@ -1,0 +1,2 @@
+CREATE TABLE TB_DATASHARE (  pr_programid VARCHAR(10) NOT NULL , group_code VARCHAR(10) NOT NULL , da_detail VARCHAR(30), pr_groupcode VARCHAR(10) ); 
+ ALTER TABLE TB_DATASHARE   ADD CONSTRAINT TB_DATASHARE_pkey PRIMARY KEY (pr_programid, group_code);

@@ -1,0 +1,2 @@
+CREATE TABLE TB_PROGRAMID (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , pr_programid VARCHAR(10) NOT NULL , pr_groupcode VARCHAR(10), pr_programname VARCHAR(30), pr_visible CHAR(1), pr_viewseq INTEGER, co_configcode VARCHAR(10), pr_updatetime VARCHAR(14), pr_updateoperator VARCHAR(10), pr_enable CHAR(1) ); 
+ ALTER TABLE TB_PROGRAMID   ADD CONSTRAINT TB_PROGRAMID_pkey PRIMARY KEY (group_code, pr_programid);

@@ -1,0 +1,507 @@
+unit uDeviceFunctionCode;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons, ExtCtrls, Grids, BaseGrid, AdvGrid, ComCtrls,
+  uSubForm, CommandArray,ADODB,ActiveX,ZConnection,ZAbstractRODataset,
+  ZAbstractDataset, ZDataset, DB, AdvObj;
+
+type
+  TfmDeviceFunctionCode = class(TfmASubForm)
+    StatusBar1: TStatusBar;
+    sg_Code: TAdvStringGrid;
+    Panel12: TPanel;
+    Panel1: TPanel;
+    Label8: TLabel;
+    Label1: TLabel;
+    btn_Delete: TSpeedButton;
+    btn_Save: TSpeedButton;
+    btn_Update: TSpeedButton;
+    btn_Insert: TSpeedButton;
+    btn_Close: TSpeedButton;
+    btn_Cancel: TSpeedButton;
+    ed_Code: TEdit;
+    ed_Name: TEdit;
+    Label6: TLabel;
+    cmb_Group: TComboBox;
+    Panel2: TPanel;
+    cmb_sGroup: TComboBox;
+    Label24: TLabel;
+    TempQuery: TZQuery;
+    ed_GroupCode: TEdit;
+    procedure btn_CloseClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure sg_CodeClick(Sender: TObject);
+    procedure btn_CancelClick(Sender: TObject);
+    procedure btn_InsertClick(Sender: TObject);
+    procedure btn_UpdateClick(Sender: TObject);
+    procedure btn_SaveClick(Sender: TObject);
+    procedure btn_DeleteClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure cmb_sGroupChange(Sender: TObject);
+    procedure cmb_GroupChange(Sender: TObject);
+    procedure cmb_sCompanyChange(Sender: TObject);
+  private
+    State : string;
+    sGroupCodeList :TStringList;
+    GroupCodeList :TStringList;
+    { Private declarations }
+    procedure FormClear;
+    procedure FormEnable(aState:string);
+    procedure ButtonEnable(aState:string);
+    procedure ShowDeviceFunctionCode(aCode:string;aTopRow:integer = 1);
+    Function DeleteTB_DeviceFunctionCode(aGroupCode,aCode:string):Boolean;
+    Function InsertTB_DeviceFunctionCode(aGroupCode,aCode,aName:string):Boolean;
+    Function UpdateTB_DeviceFunctionCode(aGroupCode,aCode,aName:string):Boolean;
+
+    Function GetMaxCode(aGroupCode:string):string;
+    procedure LoadDeviceFunctionGroupCode(cmb_Box:TComboBox;TempList:TStringList;bAll:Boolean = True);
+  public
+    { Public declarations }
+  end;
+
+var
+  fmDeviceFunctionCode: TfmDeviceFunctionCode;
+
+implementation
+uses
+  uDataModule,
+  uLomosUtil;
+
+{$R *.dfm}
+
+procedure TfmDeviceFunctionCode.btn_CloseClick(Sender: TObject);
+begin
+  Close; 
+end;
+
+procedure TfmDeviceFunctionCode.ButtonEnable(aState: string);
+begin
+  if upperCase(aState) = 'INSERT'  then
+  begin
+    btn_Insert.Enabled := False;
+    btn_update.Enabled := false;
+    btn_Save.Enabled := True;
+    btn_delete.Enabled := False;
+    btn_Cancel.Enabled := True;
+  end else if upperCase(aState) = 'SEARCH' then
+  begin
+    btn_Insert.Enabled := True;
+    btn_Update.Enabled := False;
+    btn_Save.Enabled := False;
+    btn_Delete.Enabled := False;
+    btn_Cancel.Enabled := False;
+  end else if upperCase(aState) = 'UPDATE' then
+  begin
+    btn_Insert.Enabled := False;
+    btn_Update.Enabled := False;
+    btn_Save.Enabled := True;
+    btn_Delete.Enabled := False;
+    btn_Cancel.Enabled := True;
+  end else if upperCase(aState) = 'CLICK' then
+  begin
+    btn_Insert.Enabled := True;
+    btn_Update.Enabled := True;
+    btn_Save.Enabled := False;
+    btn_Delete.Enabled := True;
+    btn_Cancel.Enabled := False;
+  end;
+end;
+
+procedure TfmDeviceFunctionCode.FormClear;
+begin
+  cmb_Group.ItemIndex := 0;
+  ed_Code.Text := '';
+  ed_Name.Text := '';
+end;
+
+procedure TfmDeviceFunctionCode.FormEnable(aState: string);
+begin
+  if upperCase(aState) = 'INSERT'  then
+  begin
+    sg_Code.Enabled := False;
+    cmb_Group.Enabled := True;
+    ed_Code.Enabled := true;
+    ed_Name.Enabled  := true;
+  end else if upperCase(aState) = 'SEARCH' then
+  begin
+    sg_Code.Enabled := True;
+    cmb_Group.Enabled := False;
+    ed_Code.Enabled := False;
+    ed_Name.Enabled  := False;
+  end else if upperCase(aState) = 'CLICK' then
+  begin
+    sg_Code.Enabled := True;
+    cmb_Group.Enabled := False;
+    ed_Code.Enabled := False;
+    ed_Name.Enabled  := False;
+  end else if upperCase(aState) = 'UPDATE' then
+  begin
+    sg_Code.Enabled := False;
+    cmb_Group.Enabled := False;
+    ed_Code.Enabled := False;
+    ed_Name.Enabled  := true;
+  end;
+end;
+
+procedure TfmDeviceFunctionCode.FormActivate(Sender: TObject);
+begin
+   ShowDeviceFunctionCode('');  
+end;
+
+
+procedure TfmDeviceFunctionCode.sg_CodeClick(Sender: TObject);
+var
+  nIndex : integer;
+begin
+  State := 'CLICK';
+  FormClear;
+  FormEnable(State);
+  ButtonEnable(State);
+  with (Sender as TStringGrid) do
+  begin
+    if cells[1,Row] = '' then exit;
+    ed_GroupCode.Text := cells[3,Row];
+    nIndex := GroupCodeList.IndexOf(cells[3,Row]);
+    cmb_Group.ItemIndex := nIndex;
+    ed_Code.Text := cells[1,Row];
+    ed_Name.Text := cells[2,Row];
+  end;
+
+end;
+
+procedure TfmDeviceFunctionCode.btn_CancelClick(Sender: TObject);
+begin
+  ShowDeviceFunctionCode(ed_GroupCode.Text + ed_Code.Text);
+
+end;
+
+procedure TfmDeviceFunctionCode.btn_InsertClick(Sender: TObject);
+var
+  stGroupCode : string;
+begin
+  State := 'INSERT';
+  FormClear;
+  FormEnable(State);
+  ButtonEnable(State);
+  with sg_Code do
+  begin
+    if Cells[0,1] <> '' then
+    begin
+      AddRow;
+      SelectRows(RowCount - 1,1);
+      Enabled := True;
+      if RowCount > 10 then TopRow := RowCount - 10;
+      Enabled := False;
+    end;
+  end;
+  stGroupCode := '0';
+  if cmb_sGroup.itemindex = 0 then cmb_sGroup.itemIndex := 1;
+
+  stGroupCode := sGroupCodeList.Strings[cmb_sGroup.itemindex];
+
+  cmb_Group.ItemIndex := GroupCodeList.IndexOf(stGroupCode);
+  
+  ed_Code.Text := GetMaxCode(stGroupCode);
+  ed_Code.SetFocus;
+
+end;
+
+procedure TfmDeviceFunctionCode.btn_UpdateClick(Sender: TObject);
+begin
+  State := 'UPDATE';
+
+  FormEnable(State);
+  ButtonEnable(State);
+  ed_Name.SetFocus;
+
+end;
+
+procedure TfmDeviceFunctionCode.btn_SaveClick(Sender: TObject);
+var
+  bResult : boolean;
+  stGroupCode : string;
+begin
+  stGroupCode := '0';
+  if cmb_Group.ItemIndex > 0 then stGroupCode := GroupCodeList.Strings[cmb_Group.ItemIndex];
+
+  if UpperCase(State) = 'INSERT' then
+    bResult := InsertTB_DeviceFunctionCode(stGroupCode,ed_Code.Text,ed_Name.Text)
+  else if UpperCase(State) = 'UPDATE' then
+    bResult := UpdateTB_DeviceFunctionCode(stGroupCode,ed_Code.Text,ed_Name.Text);
+
+  if bResult then ShowDeviceFunctionCode(stGroupCode + ed_Code.Text,sg_Code.TopRow)
+  else showmessage('저장실패');
+end;
+
+procedure TfmDeviceFunctionCode.btn_DeleteClick(Sender: TObject);
+var
+  bResult : boolean;
+begin
+  if (Application.MessageBox(PChar('데이터를 삭제하시겠습니까?'),'삭제',MB_OKCANCEL) = ID_CANCEL)  then Exit;
+
+  bResult := DeleteTB_DeviceFunctionCode(ed_GroupCode.Text, ed_Code.Text);
+
+  if bResult then ShowDeviceFunctionCode('')
+  else showmessage('삭제실패.');
+
+end;
+
+procedure TfmDeviceFunctionCode.FormCreate(Sender: TObject);
+begin
+  inherited;
+  sGroupCodeList := TStringList.Create;
+  GroupCodeList := TStringList.Create;
+end;
+
+procedure TfmDeviceFunctionCode.FormDestroy(Sender: TObject);
+begin
+  inherited;
+  sGroupCodeList.Free;
+  GroupCodeList.Free;
+end;
+
+function TfmDeviceFunctionCode.GetMaxCode(aGroupCode:string): string;
+var
+  stSql : string;
+  TempAdoQuery : TZQuery;
+begin
+  result := '1';
+
+  stSql := 'select Max(DF_CODE) as DF_CODE from TB_DEVICEFUNCTIONCODE ';
+  stSql := stSql + ' Where DG_GROUPCODE = ' + aGroupCode + ' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TZQuery.Create(nil);
+    TempAdoQuery.Connection := dmDB.ZConnection1;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        TempAdoQuery.Free;
+        CoUninitialize;
+        Exit;
+      End;
+      if RecordCount < 1 then
+      begin
+        Exit;
+      end;
+      if FindField('DF_CODE').IsNull then
+      begin
+        result := '1';
+      end else if isdigit(FindField('DF_CODE').AsString) then
+      begin
+        result := inttostr(FindField('DF_CODE').AsInteger + 1);
+      end;
+    end;
+  Finally
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+procedure TfmDeviceFunctionCode.FormShow(Sender: TObject);
+begin
+  inherited;
+  LoadDeviceFunctionGroupCode(cmb_sGroup,sGroupCodeList);
+
+  LoadDeviceFunctionGroupCode(cmb_Group,GroupCodeList,False);
+
+end;
+
+
+procedure TfmDeviceFunctionCode.cmb_sGroupChange(Sender: TObject);
+begin
+  inherited;
+  ShowDeviceFunctionCode('');
+
+end;
+
+procedure TfmDeviceFunctionCode.cmb_GroupChange(Sender: TObject);
+var
+  stGroupCode : string;
+begin
+  inherited;
+  if State = 'INSERT' then
+  begin
+    stGroupCode := GroupCodeList.Strings[cmb_Group.itemindex];
+    ed_Code.Text := GetMaxCode(stGroupCode);
+  end;
+end;
+
+procedure TfmDeviceFunctionCode.cmb_sCompanyChange(Sender: TObject);
+begin
+  inherited;
+  ShowDeviceFunctionCode('');
+end;
+
+procedure TfmDeviceFunctionCode.ShowDeviceFunctionCode(aCode: string;
+  aTopRow: integer);
+var
+  stSql : string;
+  nRow : integer;
+  i : integer;
+  TempAdoQuery : TZQuery;
+  stWhere : string;
+begin
+  GridInit(sg_Code,3); //스트링그리드 초기화
+
+  State := 'SEARCH';
+  FormClear;
+  FormEnable(State);
+  ButtonEnable(State);
+
+  stSql := 'select a.*,b.DG_NAME from TB_DEVICEFUNCTIONCODE a ';
+  stSql := stSql + ' Left Join TB_DEVICEFUNCTIONGROUP b ';
+  stSql := stSql + ' ON (a.DG_GROUPCODE = b.DG_GROUPCODE) ';
+  stWhere := '';
+  if cmb_sGroup.ItemIndex > 0 then
+  begin
+    if stWhere = '' then stWhere := stWhere + ' Where '
+    else stWhere := stWhere + ' AND ';
+    stWhere := stWhere + ' a.DG_GROUPCODE = ' + sGroupCodeList.Strings[cmb_sGroup.ItemIndex] + ' ';
+  end;
+  stSql := stSql + stWhere;
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TZQuery.Create(nil);
+    TempAdoQuery.Connection := dmDB.ZConnection1;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if RecordCount < 1 then exit;
+
+      with sg_Code do
+      begin
+        RowCount := RecordCount + 1;
+        nRow := 1;
+        while Not Eof do
+        begin
+          cells[0,nRow] := FindField('DG_NAME').AsString;
+          cells[1,nRow] := FindField('DF_CODE').AsString;
+          cells[2,nRow] := FindField('DF_NAME').AsString;
+          cells[3,nRow] := FindField('DG_GROUPCODE').AsString;
+          if FindField('DG_GROUPCODE').AsString + FindField('DF_CODE').AsString  = aCode then
+          begin
+            SelectRows(nRow,1);
+          end;
+
+          nRow := nRow + 1;
+          Next;
+        end;
+        TopRow := aTopRow;
+      end;
+    end;
+  Finally
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+  sg_CodeClick(sg_Code);
+end;
+
+procedure TfmDeviceFunctionCode.LoadDeviceFunctionGroupCode(
+  cmb_Box: TComboBox; TempList: TStringList;
+  bAll: Boolean);
+var
+  stSql : string;
+begin
+  cmb_Box.Clear;
+  TempList.Clear;
+  if bAll then cmb_Box.Items.Add('전체')
+  else cmb_Box.Items.Add('');
+  TempList.Add('0');
+
+  cmb_Box.ItemIndex := 0;
+  stSql := 'select * from TB_DEVICEFUNCTIONGROUP ';
+  stSql := stSql + ' order by DG_GROUPCODE ';
+
+  with TempQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordCount < 0 then Exit;
+    While Not Eof do
+    begin
+      cmb_Box.Items.Add(FindField('DG_NAME').AsString );
+      TempList.Add(FindField('DG_GROOUPCODE').AsString);
+      Next;
+    end;
+  end;
+end;
+
+function TfmDeviceFunctionCode.InsertTB_DeviceFunctionCode(aGroupCode,
+  aCode, aName: string): Boolean;
+var
+  stSql : string;
+begin
+
+  stSql := ' Insert Into TB_DEVICEFUNCTIONCODE( ';
+  stSql := stSql + ' DG_GROUPCODE,';
+  stSql := stSql + ' DF_CODE,';
+  stSql := stSql + ' DF_NAME )' ;
+  stSql := stSql + ' values( ';
+  stSql := stSql + '' + aGroupCode + ',';
+  stSql := stSql + '' + aCode + ',';
+  stSql := stSql + '''' + aName + ''' ';
+  stSql := stSql + ')';
+
+  result := dmDB.ProcessExecSQL(stSql);
+end;
+
+function TfmDeviceFunctionCode.UpdateTB_DeviceFunctionCode(aGroupCode,
+  aCode, aName: string): Boolean;
+var
+  stSql : string;
+begin
+
+  stSql := ' Update TB_DeviceFunctionCode set ';
+  stSql := stSql + ' DF_NAME = ''' + aName + '''  ';
+  stSql := stSql + ' where DG_GROUPCODE =' + aGroupCode + ' ';
+  stSql := stSql + ' AND DF_CODE =''' + aCode + '''';
+
+  result := dmDB.ProcessExecSQL(stSql);
+
+end;
+
+function TfmDeviceFunctionCode.DeleteTB_DeviceFunctionCode(aGroupCode,
+  aCode: string): Boolean;
+var
+  stSql : string;
+begin
+
+  result := False;
+  stSql := 'Delete From TB_DeviceFunctionCode ';
+  stSql := stSql + ' where DG_GROUPCODE = ' + aGroupCode + ' ';
+  stSql := stSql + ' AND DF_CODE = ' + aCode + '';
+
+  result := dmDB.ProcessExecSQL(stSql);
+
+end;
+
+end.

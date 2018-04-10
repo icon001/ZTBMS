@@ -1,0 +1,2 @@
+CREATE TABLE TB_ATEMPEXTRA (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , co_companycode VARCHAR(3) NOT NULL , em_code VARCHAR(20) NOT NULL , ex_type INTEGER, ex_wearlyamt INTEGER, ex_wextendamt INTEGER, ex_wnightamt INTEGER, ex_searlyamt INTEGER, ex_sextendamt INTEGER, ex_snightamt INTEGER, ex_hearlyamt INTEGER, ex_hextendamt INTEGER, ex_hnightamt INTEGER ); 
+ ALTER TABLE TB_ATEMPEXTRA   ADD CONSTRAINT TB_ATEMPEXTRA_pkey PRIMARY KEY (group_code, co_companycode, em_code);

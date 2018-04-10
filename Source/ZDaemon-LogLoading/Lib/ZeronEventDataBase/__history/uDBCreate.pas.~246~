@@ -1,0 +1,5349 @@
+unit uDBCreate;
+
+interface
+
+uses
+  System.SysUtils, System.Classes,Winapi.ActiveX,Data.Win.ADODB;
+
+type
+  TdmDBCreate = class(TDataModule)
+  public
+    { Public declarations }
+    Function AlterTB_ACCESSDEVICE_AREACODE_Change : Boolean;
+    Function AlterTB_ACCESSDEVICE_ArmAreaUse_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_ArmControlRing_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_CARDBYTE_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_CARDTYPE_Change: Boolean;
+    Function AlterTB_ACCESSDEVICE_DaemonGubun_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_DecoderID_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_DeviceCode_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_DeviceType_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_DisArmControlRing_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_Door1Type_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_Door2Type_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_HoSend_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_InDelay_Add: Boolean;
+    Function AlterTB_ACCESSDEVICE_Jaejung_Add: Boolean;
+    Function AlterTB_ACCESSDEVICE_JAVARATYPE_Add: Boolean;
+    Function AlterTB_ACCESSDEVICE_LinkusSystemID_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_LinkusTelNo_Add  : Boolean;
+    Function AlterTB_ACCESSDEVICE_MEMLOAD_ADD : Boolean;
+    Function AlterTB_ACCESSDEVICE_MuxID_Add: Boolean;
+    Function AlterTB_ACCESSDEVICE_Name_Change: Boolean;
+    Function AlterTB_ACCESSDEVICE_OutDelay_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_PowerType_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_ReaderType_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_RegSend_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_SOCKTYPE_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_TIMECODEASYNC_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_TimeCodeSend_Add:Boolean;
+    Function AlterTB_ACCESSDEVICE_TIMETYPE_Add : Boolean;
+    Function AlterTB_ACCESSDEVICE_UPDATE_Add : Boolean;
+    Function AlterTB_ACCESSEVENT_COMPANYCODE_Add : Boolean;
+    Function AlterTB_ACCESSEVENT_DEPARTCODE_Add : Boolean;
+    Function AlterTB_ACCESSEVENT_EMCODE_Add : Boolean;
+    Function AlterTB_ACCESSEVENT_EMCODE_Change : Boolean;
+    Function AlterTB_ACCESSEVENT_EMNAME_Add : Boolean;
+    Function AlterTB_ACCESSEVENT_JIJUMCODE_Add : Boolean;
+    Function AlterTB_ACCESSEVENT_SmallSENDSTATUS_Add : Boolean;
+    Function AlterTB_ADMIN_AreaCode_Add : Boolean;
+    Function AlterTB_ADMIN_BuildingGrade_Add : Boolean;
+    Function AlterTB_ADMIN_DongCode_Add : Boolean;
+    Function AlterTB_ADMIN_FloorCode_Add : Boolean;
+    Function AlterTB_ALARMDEVICE_AREACODE_Change : Boolean;
+    Function AlterTB_ALARMDEVICE_ARMGUBUN_Add : Boolean;
+    Function AlterTB_ALARMDEVICE_memo_Add : Boolean;
+    Function AlterTB_ALARMDEVICE_Name_Change: Boolean;
+    Function AlterTB_ALARMDEVICE_RegSend_Add : Boolean;
+    Function AlterTB_ALARMDEVICE_TelNo_Add : Boolean;
+    Function AlterTB_ALARMDEVICE_UPDATE_Add : Boolean;
+    Function AlterTB_ALARMEVENT_AlarmGRADE_Add : Boolean;
+    Function AlterTB_ALARMEVENT_AlarmSound_Add : Boolean;
+    Function AlterTB_ALARMEVENT_Cardno_Add: Boolean;
+    Function AlterTB_ALARMEVENT_CheckUser_Add : Boolean;
+    Function AlterTB_ALARMEVENT_Code_Change : Boolean;
+    Function AlterTB_ALARMEVENT_COMPANYCODE_Add : Boolean;
+    Function AlterTB_ALARMEVENT_EMCODE_Add : Boolean;
+    Function AlterTB_ALARMEVENT_KTTSENDSTATUS_Add : Boolean;
+    Function AlterTB_ALARMEVENT_Oper_Change : Boolean;
+    Function AlterTB_ALARMEVENT_SmallSENDSTATUS_Add : Boolean;
+    Function AlterTB_ALARMEVENT_STATECODE2_Add : Boolean;
+    Function AlterTB_ALARMSTATUSCODE_ALARMSOUND_Add :Boolean;
+    Function AlterTB_ALARMSTATUSCODE_Code_Change :Boolean;
+    Function AlterTB_ALARMSTATUSCODEColor_Add :Boolean;
+    Function AlterTB_ALARMSTATUSCODE_Gubun_Add:Boolean;
+    Function AlterTB_ARMAREA_AREACODE_Change : Boolean;
+    Function AlterTB_ARMAREA_ARMCODE_Add : Boolean;
+    Function AlterTB_ARMAREA_MEMLOAD_ADD : Boolean;
+    Function AlterTB_ARMAREA_memo_Add : Boolean;
+    Function AlterTB_ARMAREA_TelNo_Add : Boolean;
+    Function AlterTB_ATCODE_ATHOUTRANGE_Add:Boolean;
+    Function AlterTB_ATCODE_ATOUTRANGE_Add:Boolean;
+    Function AlterTB_ATCODE_ATSOUTRANGE_Add:Boolean;
+    Function AlterTB_ATCODE_AWCODE_Add :Boolean;
+    Function AlterTB_ATEVENT_DEPARTCODE_Add : Boolean;
+    Function AlterTB_ATEVENT_EMNAME_Add : Boolean;
+    Function AlterTB_ATEVENT_JIJUMCODE_Add : Boolean;
+    Function AlterTB_ATDAYSUMMARY_DEPARTCODE_Add : Boolean;
+    Function AlterTB_ATDAYSUMMARY_EMNAME_Add : Boolean;
+    Function AlterTB_ATDAYSUMMARY_JIJUMCODE_Add : Boolean;
+    Function AlterTB_ATLISTEVENT_CARDNOChange(aLen: string='20') : Boolean;
+    Function AlterTB_ATMONTHSUMMARY_DEPARTCODE_Add : Boolean;
+    Function AlterTB_ATMONTHSUMMARY_EMNAME_Add : Boolean;
+    Function AlterTB_ATMONTHSUMMARY_JIJUMCODE_Add : Boolean;
+    Function AlterTB_ATWORKTYPE_ATOFFBUTTON_Change(aLen:string='10') : Boolean;
+    Function AlterTB_ATWORKTYPE_ATSTARTBUTTON_Change(aLen:string='10') : Boolean;
+    Function AlterTB_ATWORKTYPE_WORKINBUTTON_Change(aLen:string='10') : Boolean;
+    Function AlterTB_ATWORKTYPE_WORKOUTBUTTON_Change(aLen:string='10') : Boolean;
+    Function AlterTB_CARD_DoorGrade_Add :Boolean;
+    Function AlterTB_CARD_MEMLOAD_Add :Boolean;
+    Function AlterTB_CARD_POSITIONNUM_Add :Boolean;
+    Function AlterTB_COMPANY_DEPARTCODE_Change : Boolean;
+    Function AlterTB_COMPANY_UPDATECHECK_Add : Boolean;
+    Function AlterTB_COMPANY_VIEWSEQ_Add : Boolean;
+    Function AlterTB_CONFIG_Value_Change: Boolean;
+    Function AlterTB_DEVICECARDNO_MEMLOAD_Add:Boolean;
+    Function AlterTB_DEVICECARDNOAlarm0_Add:Boolean;
+    Function AlterTB_DEVICECARDNOAlarm1_Add:Boolean;
+    Function AlterTB_DEVICECARDNOAlarm2_Add:Boolean;
+    Function AlterTB_DEVICECARDNOAlarm3_Add:Boolean;
+    Function AlterTB_DEVICECARDNOAlarm4_Add:Boolean;
+    Function AlterTB_DEVICECARDNOAlarm5_Add:Boolean;
+    Function AlterTB_DEVICECARDNOAlarm6_Add:Boolean;
+    Function AlterTB_DEVICECARDNOAlarm7_Add:Boolean;
+    Function AlterTB_DEVICECARDNOAlarm8_Add:Boolean;
+    Function AlterTB_DEVICECARDNODoor3_Add:Boolean;
+    Function AlterTB_DEVICECARDNODoor4_Add:Boolean;
+    Function AlterTB_DEVICECARDNODoor5_Add:Boolean;
+    Function AlterTB_DEVICECARDNODoor6_Add:Boolean;
+    Function AlterTB_DEVICECARDNODoor7_Add:Boolean;
+    Function AlterTB_DEVICECARDNODoor8_Add:Boolean;
+    Function AlterTB_DEVICECARDNO_HIS_Alarm0_Add : Boolean;
+    Function AlterTB_DEVICECARDNO_HIS_Alarm1_Add : Boolean;
+    Function AlterTB_DEVICECARDNO_HIS_Alarm2_Add : Boolean;
+    Function AlterTB_DEVICECARDNO_HIS_Alarm3_Add : Boolean;
+    Function AlterTB_DEVICECARDNO_HIS_Alarm4_Add : Boolean;
+    Function AlterTB_DEVICECARDNO_HIS_Alarm5_Add : Boolean;
+    Function AlterTB_DEVICECARDNO_HIS_Alarm6_Add : Boolean;
+    Function AlterTB_DEVICECARDNO_HIS_Alarm7_Add : Boolean;
+    Function AlterTB_DEVICECARDNO_HIS_Alarm8_Add : Boolean;
+    Function AlterTB_DEVICECARDNO_HIS_Door3_Add : Boolean;
+    Function AlterTB_DEVICECARDNO_HIS_Door4_Add : Boolean;
+    Function AlterTB_DEVICECARDNO_HIS_Door5_Add : Boolean;
+    Function AlterTB_DEVICECARDNO_HIS_Door6_Add : Boolean;
+    Function AlterTB_DEVICECARDNO_HIS_Door7_Add : Boolean;
+    Function AlterTB_DEVICECARDNO_HIS_Door8_Add : Boolean;
+    Function AlterTB_DEVICECARDNO_PROMISE_Alarm0_Add:Boolean;
+    Function AlterTB_DEVICECARDNO_PROMISE_Alarm1_Add:Boolean;
+    Function AlterTB_DEVICECARDNO_PROMISE_Alarm2_Add:Boolean;
+    Function AlterTB_DEVICECARDNO_PROMISE_Alarm3_Add:Boolean;
+    Function AlterTB_DEVICECARDNO_PROMISE_Alarm4_Add:Boolean;
+    Function AlterTB_DEVICECARDNO_PROMISE_Alarm5_Add:Boolean;
+    Function AlterTB_DEVICECARDNO_PROMISE_Alarm6_Add:Boolean;
+    Function AlterTB_DEVICECARDNO_PROMISE_Alarm7_Add:Boolean;
+    Function AlterTB_DEVICECARDNO_PROMISE_Alarm8_Add:Boolean;
+    Function AlterTB_DEVICECARDNO_PROMISE_Door3_Add:Boolean;
+    Function AlterTB_DEVICECARDNO_PROMISE_Door4_Add:Boolean;
+    Function AlterTB_DEVICECARDNO_PROMISE_Door5_Add:Boolean;
+    Function AlterTB_DEVICECARDNO_PROMISE_Door6_Add:Boolean;
+    Function AlterTB_DEVICECARDNO_PROMISE_Door7_Add:Boolean;
+    Function AlterTB_DEVICECARDNO_PROMISE_Door8_Add:Boolean;
+    Function AlterTB_DEVICECARDNOGROUP_Alarm0_Add : Boolean;
+    Function AlterTB_DEVICECARDNOGROUP_Alarm1_Add : Boolean;
+    Function AlterTB_DEVICECARDNOGROUP_Alarm2_Add : Boolean;
+    Function AlterTB_DEVICECARDNOGROUP_Alarm3_Add : Boolean;
+    Function AlterTB_DEVICECARDNOGROUP_Alarm4_Add : Boolean;
+    Function AlterTB_DEVICECARDNOGROUP_Alarm5_Add : Boolean;
+    Function AlterTB_DEVICECARDNOGROUP_Alarm6_Add : Boolean;
+    Function AlterTB_DEVICECARDNOGROUP_Alarm7_Add : Boolean;
+    Function AlterTB_DEVICECARDNOGROUP_Alarm8_Add : Boolean;
+    Function AlterTB_DEVICECARDNOGROUP_Door3_Add : Boolean;
+    Function AlterTB_DEVICECARDNOGROUP_Door4_Add : Boolean;
+    Function AlterTB_DEVICECARDNOGROUP_Door5_Add : Boolean;
+    Function AlterTB_DEVICECARDNOGROUP_Door6_Add : Boolean;
+    Function AlterTB_DEVICECARDNOGROUP_Door7_Add : Boolean;
+    Function AlterTB_DEVICECARDNOGROUP_Door8_Add : Boolean;
+    Function AlterTB_DOOR_AREACODE_Change : Boolean;
+    Function AlterTB_DOOR_ALARMLONG_Add: Boolean;
+    Function AlterTB_DOOR_AGANTINO_Add : Boolean;
+    Function AlterTB_DOOR_AGCODE_Add : Boolean;
+    Function AlterTB_DOOR_ControlTime_Change: Boolean;
+    Function AlterTB_DOOR_DOGUBUN_Add : Boolean;
+    Function AlterTB_DOOR_TIMECODEUSE_Add : Boolean;
+    Function AlterTB_DOOR_DSOPEN_Add : Boolean;
+    Function AlterTB_DOOR_FDMSID_Add : Boolean;
+    Function AlterTB_DOOR_FDMSRELAY_Add : Boolean;
+    Function AlterTB_DOOR_MEMLOAD_ADD : Boolean;
+    Function AlterTB_DOOR_Name_Change: Boolean;
+    Function AlterTB_DOOR_OPENMONI_Add: Boolean;
+    Function AlterTB_DOOR_RegSend_Add: Boolean;
+    Function AlterTB_DOOR_REMOTEDOOR_Add: Boolean;
+    Function AlterTB_DOOR_SENDDOOR_Add: Boolean;
+    Function AlterTB_DOOR_UPDATE_Add : Boolean;
+    Function AlterTB_EMPHIS_CARDNO_Add : Boolean;
+    Function AlterTB_EMPHIS_CARDTYPE_Add : Boolean;
+    Function AlterTB_EMPHIS_COMPANYNAME_Add : Boolean;
+    Function AlterTB_EMPHIS_DEPARTNAME_Add : Boolean;
+    Function AlterTB_EMPHIS_EMNAME_Add : Boolean;
+    Function AlterTB_EMPHIS_EMNAME_Change(aLength:integer=100) : Boolean;
+    Function AlterTB_EMPHIS_HANDPHONE_Add : Boolean;
+    Function AlterTB_EMPHIS_INSERTTIME_Add : Boolean;
+    Function AlterTB_EMPHIS_JIJUMNAME_Add : Boolean;
+    Function AlterTB_EMPHIS_POSINAME_Add : Boolean;
+    Function AlterTB_EMPHIS_SENDSTATUS2_Add : Boolean;
+    Function AlterTB_EMPLOYEE_AWCODE_Add : Boolean;
+    Function AlterTB_EMPLOYEE_CAGROUP_Add : Boolean;
+    Function AlterTB_EMPLOYEE_COPHONE_Change: Boolean;
+    Function AlterTB_EMPLOYEE_DEPARTCODE_Change : Boolean;
+    Function AlterTB_EMPLOYEE_DGAPPLY_Add: Boolean;
+    Function AlterTB_EMPLOYEE_DGCODE_Add: Boolean;
+    Function AlterTB_EMPLOYEE_EmName_Change(aSize:string='50'): Boolean;
+    Function AlterTB_EMPLOYEE_FDMSID_Add : Boolean;
+    Function AlterTB_EMPLOYEE_FDMSRELAY_Add : Boolean;
+    Function AlterTB_EMPLOYEE_GRADETYPE_Add : Boolean;
+    Function AlterTB_EMPLOYEE_MASTER_Add : Boolean;
+    Function AlterTB_EMPLOYEE_RelayGubun_Add : Boolean;
+    Function AlterTB_EMPLOYEE_TIME1_Add: Boolean;
+    Function AlterTB_EMPLOYEE_TIME2_Add: Boolean;
+    Function AlterTB_EMPLOYEE_TIME3_Add: Boolean;
+    Function AlterTB_EMPLOYEE_TIME4_Add: Boolean;
+    Function AlterTB_EMPLOYEE_TIMECODEUSE_Add : Boolean;
+    Function AlterTB_EMPLOYEE_TIMEGROUP_Add: Boolean;
+    Function AlterTB_EMPLOYEE_WEEKCODE_Add:Boolean;
+    Function AlterTB_EMPLOYEE_WORKCODE_Add : Boolean;
+    Function AlterTB_FOOD_AREACODE_Change : Boolean;
+    Function AlterTB_FOODEVENT_DEPARTCODE_Add:Boolean;
+    Function AlterTB_FOODEVENT_EMNAME_Add:Boolean;
+    Function AlterTB_FOODEVENT_JIJUMCODE_Add:Boolean;
+    Function AlterTB_FOOD_Name_Change: Boolean;
+    Function AlterTB_FTPLIST_RetryCount_Add : Boolean;
+    Function AlterTB_HOLIDAY_ACUSE_Add : Boolean;
+    Function AlterTB_HOLIDAY_ATUSE_Add : Boolean;
+    Function AlterTB_HOLIDAY_State_Add : Boolean;
+    Function AlterTB_INOUTGROUPLIST_EcuID_Add: Boolean;
+    Function AlterTB_INOUTGROUPLIST_NodeNo_Add: Boolean;
+    Function AlterTB_INOUTGROUPLIST_ReaderNo_Add : Boolean;
+    Function AlterTB_INOUTGROUPLIST_Time_Add: Boolean;
+    Function AlterTB_KTCARDISSUE_WriteDate_Add : Boolean;
+    Function AlterTB_KTCARDISSUE_Write_Add : Boolean;
+    Function AlterTB_KTTMAPPINGCODE_SendUse_Add : Boolean;
+    Function AlterTB_LOCATION_AREACODE_Change : Boolean;
+    Function AlterTB_LOCATION_CurX_Add : Boolean;
+    Function AlterTB_LOCATION_CurY_Add : Boolean;
+    Function AlterTB_LOCATION_TotHeight_Add : Boolean;
+    Function AlterTB_LOCATION_TotWidth_Add : Boolean;
+    Function AlterTB_LOCATION_VIEWSEQ_Add : Boolean;
+    Function AlterTB_POSI_UPDATECHECK_Add : Boolean;
+    Function AlterTB_POSI_VIEWSEQ_Add : Boolean;
+    Function AlterTB_READER_BuildPosi_Add : Boolean;
+    Function AlterTB_READER_DoorPosi_Add : Boolean;
+    Function AlterTB_READER_InOutCount_Add : Boolean;
+    Function AlterTB_READER_INOUTGROUPCODE_Add: Boolean;
+    Function AlterTB_READER_PatrolCurX_Add : Boolean;
+    Function AlterTB_READER_PatrolCurY_Add : Boolean;
+    Function AlterTB_READER_PatrolName_Add : Boolean;
+    Function AlterTB_READER_PatrolTotHeight_Add : Boolean;
+    Function AlterTB_READER_PatrolTotWidth_Add : Boolean;
+    Function AlterTB_READER_PatrolUse_Add : Boolean;
+    Function AlterTB_READER_ReaderVer_Add : Boolean;
+    Function AlterTB_READER_RegSend_Add : Boolean;
+    Function AlterTB_TIMECODEDEVICE_EACHCHANGE_Add : Boolean;
+    Function AlterTB_ZONEDEVICE_AREACODE_Change : Boolean;
+    Function AlterTB_ZONEDEVICE_DelayUse_Add: Boolean;
+    Function AlterTB_ZONEDEVICE_Name_Change: Boolean;
+    Function AlterTB_ZONEDEVICE_PortRecovery_Add: Boolean;
+    Function AlterTB_ZONEDEVICE_RegSend_Add: Boolean;
+    Function AlterTB_ZONEDEVICE_UPDATE_Add : Boolean;
+    Function AlterTB_ZONEDEVICE_View_Add : Boolean;
+  public
+    Function CreateTB_ACCESSINPUTTYPE:Boolean;
+    Function CreateTB_ADMINALARMAREA:Boolean;
+    Function CreateTB_ALARMCODEGROUP:Boolean;
+    Function CreateTB_AlarmEvent_Index1:Boolean;
+    Function CreateTB_ALARMGUBUNCODE:Boolean;
+    Function CreateTB_ALARMMODENOTCARD:Boolean;
+    Function CreateTB_ALARMSHOW:Boolean;
+    Function CreateTB_ANTIGROUPCODE:Boolean;
+    Function CreateTB_ARMAREA:Boolean;
+    Function CreateTB_ATLISTEVENT:Boolean;
+    Function CreateTB_ATWORKTYPE:Boolean;
+    Function CreateTB_CARDGROUPCODE : Boolean;
+    Function CreateTB_CARDTYPE:Boolean;
+    Function CreateTB_CLIENTSOCK:Boolean;
+    Function CreateTB_DAEMONMULTI:Boolean;
+    Function CreateTB_DEVICECARDGROUPCODE:Boolean;
+    Function CreateTB_DEVICECARDNOACKINDEX:Boolean;
+    Function CreateTB_DEVICECARDNOEMPLOYEE:Boolean;
+    Function CreateTB_DEVICESETTINGINFO:Boolean;
+    Function CreateTB_DOORGUBUN:Boolean;
+    Function CreateTB_DOORPOSICODE:Boolean;
+    Function CreateTB_EMPLOYEECHANGE:Boolean;
+    Function CreateTB_EMPHIS:Boolean;
+    Function CreateTB_FACECOP:Boolean;
+    Function CreateTB_FIREGROUP:Boolean;
+    Function CreateTB_FIREGUBUN:Boolean;
+    Function CreateTB_FOODCodeCount:Boolean;
+    Function CreateTB_FOODDayCount:Boolean;
+    Function CreateTB_FOODSemesterCount:Boolean;
+    Function CreateTB_FOODWeekCount:Boolean;
+    Function CreateTB_FormName:Boolean;
+    Function CreateTB_FTPLIST : Boolean;
+    Function CreateTB_INOUTCOUNT:Boolean;
+    Function CreateTB_INOUTGROUP:Boolean;
+    Function CreateTB_INOUTGROUPLIST:Boolean;
+    Function CreateTB_INOUTREADERGROUP:Boolean;
+    Function CreateTB_JAVARASCHEDULE:Boolean;
+    Function CreateTB_KTCARDISSUE:Boolean;
+    Function CreateTB_KTTMAPPINGCODE:Boolean;
+    Function CreateTB_MAPLOCATION:Boolean;
+    Function CreateTB_MAPPOSITION:Boolean;
+    Function CreateTB_MAPZONE:Boolean;
+    Function CreateTB_NOTCARDALARMCODE:Boolean;
+    Function CreateTB_PATROLALARMEVENT:Boolean;
+    Function CreateTB_PATROLSTATE : Boolean;
+    Function CreateTB_PatrolTime  : Boolean;
+    Function CreateTB_PERRELAYCONFIG:Boolean;
+    Function CreateTB_RELAYGUBUN:Boolean;
+    Function CreateTB_RELAYUNIVERCITY:Boolean;
+    Function CreateTB_SEMESTER:Boolean;
+    Function CreateTB_SERVERCARDRELAY:Boolean;
+    Function CreateTB_SERVERCARDRELAYHIS:Boolean;
+    Function CreateTB_SMALLSETMAPPING:Boolean;
+    Function CreateTB_SONGHOFDCONFIG:Boolean;
+    Function CreateTB_TIMECODE:Boolean;
+    Function CreateTB_TIMECODEDEVICE:Boolean;
+    Function CreateTB_WORKGUBUN:Boolean;
+    Function CreateTB_WORKLOG:Boolean;
+  public
+    Function CreateVw_SMS_EVENT:Boolean;
+  public
+    Function CreateTB_COMPANY_PrimaryKey:Boolean;
+    Function CreateTB_LOCATION_PrimaryKey:Boolean;
+    Function DropTB_COMPANY_PrimaryKey:Boolean;
+    Function DropTB_LOCATION_PrimaryKey:Boolean;
+  end;
+
+var
+  dmDBCreate: TdmDBCreate;
+
+implementation
+uses
+  uDataBase,
+  uDBVariable,
+  uCommonFunction,
+  uCommonVariable,
+  uFormVariable;
+
+{%CLASSGROUP 'System.Classes.TPersistent'}
+
+{$R *.dfm}
+
+{ TdmDBCreate }
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_AREACODE_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'alter table TB_ACCESSDEVICE alter column  LO_AREACODE TYPE varchar(50) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'ALTER TABLE TB_ACCESSDEVICE ALTER COLUMN LO_AREACODE varchar(50) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_ACCESSDEVICE ALTER LO_AREACODE TYPE varchar(50) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_ACCESSDEVICE alter column  LO_AREACODE text(50) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_ArmAreaUse_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_ARMAREAUSE char(1) DEFAULT ''N'' NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_ArmControlRing_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_ARMRING integer DEFAULT 10 NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_CARDBYTE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_CARDBYTE integer ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_CARDTYPE_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'alter table TB_ACCESSDEVICE alter column  AC_CARDREADERTYPE TYPE varchar(10) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'ALTER TABLE TB_ACCESSDEVICE ALTER COLUMN AC_CARDREADERTYPE varchar(10) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_ACCESSDEVICE ALTER AC_CARDREADERTYPE TYPE varchar(10) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_ACCESSDEVICE alter column  AC_CARDREADERTYPE text(10) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_DaemonGubun_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_DAEMONGUBUN int DEFAULT 1 NOT NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_DecoderID_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_DECODERID varchar(10) DEFAULT ''KTT00'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_DeviceCode_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_DEVICECODE varchar(20) NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_DeviceType_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_DEVICETYPE char(1) DEFAULT ''0'' NULL ';
+   if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_DisArmControlRing_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_DISARMRING integer DEFAULT 10 NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_Door1Type_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_DOOR1TYPE varchar(1) DEFAULT ''2'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_Door2Type_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_DOOR2TYPE varchar(1) DEFAULT ''2'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_HoSend_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD HO_SEND varchar(1) DEFAULT ''N'' NOT NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_InDelay_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_INDELAY integer DEFAULT 10 NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_Jaejung_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_JAEJUNG char(1) DEFAULT ''N'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_JAVARATYPE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_JAVARATYPE varchar(1) DEFAULT ''0''  NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_LinkusSystemID_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_LINKUSID varchar(10) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_LinkusTelNo_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_LINKUSTELNO varchar(14) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_MEMLOAD_ADD: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_MEMLOAD char(1) DEFAULT ''N'' NULL  ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_MuxID_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_MUXID varchar(2) DEFAULT ''00'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_Name_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'alter table TB_ACCESSDEVICE alter column  AC_DEVICENAME TYPE varchar(100) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'ALTER TABLE TB_ACCESSDEVICE ALTER COLUMN AC_DEVICENAME varchar(100) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_ACCESSDEVICE ALTER AC_DEVICENAME TYPE varchar(100) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_ACCESSDEVICE alter column  AC_DEVICENAME text(100) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_OutDelay_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_OUTDELAY integer DEFAULT 10 NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_PowerType_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_POWERTYPE char(1) DEFAULT ''0'' NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_ReaderType_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_READERTYPE varchar(1) DEFAULT ''0'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_RegSend_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD REG_SEND varchar(1) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_SOCKTYPE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD TC_TIMECODEASYNC varchar(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_TIMECODEASYNC_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_SOCKTYPE integer DEFAULT 1 NOT NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_TimeCodeSend_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_TimeCodeSend varchar(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_TIMETYPE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_TIMETYPE char(1) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ACCESSDEVICE_UPDATE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_UPDATE varchar(1) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSEVENT_COMPANYCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSEVENT ADD CO_COMPANYCODE varchar(3) DEFAULT ''000'' NOT NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSEVENT_DEPARTCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSEVENT ADD CO_DEPARTCODE varchar(3) DEFAULT ''000'' NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSEVENT_EMCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSEVENT ADD EM_CODE varchar(20) NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSEVENT_EMCODE_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'alter table TB_ACCESSEVENT alter column  EM_CODE TYPE varchar(50) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'ALTER TABLE TB_ACCESSEVENT ALTER COLUMN EM_CODE varchar(50) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_ACCESSEVENT ALTER EM_CODE TYPE varchar(50) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_ACCESSEVENT alter column  EM_CODE text(50) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSEVENT_EMNAME_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSEVENT ADD EM_NAME varchar(50) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSEVENT_JIJUMCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSEVENT ADD CO_JIJUMCODE varchar(3) DEFAULT ''000'' NOT NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ACCESSEVENT_SmallSENDSTATUS_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ACCESSEVENT ADD AC_SMSENDSTATUS char(1) DEFAULT ''N'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ADMIN_AreaCode_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ADMIN ADD LO_AREACODE varchar(3) DEFAULT ''000'' NOT NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ADMIN_BuildingGrade_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ADMIN ADD AD_BUILDINGGRADE char(1) DEFAULT ''4'' NOT NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ADMIN_DongCode_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ADMIN ADD LO_DONGCODE varchar(3) DEFAULT ''000'' NOT NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ADMIN_FloorCode_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ADMIN ADD LO_FLOORCODE varchar(3) DEFAULT ''000'' NOT NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ALARMDEVICE_AREACODE_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'alter table TB_ALARMDEVICE alter column  LO_AREACODE TYPE varchar(50) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'ALTER TABLE TB_ALARMDEVICE ALTER COLUMN LO_AREACODE varchar(50) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_ALARMDEVICE ALTER LO_AREACODE TYPE varchar(50) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_ALARMDEVICE alter column  LO_AREACODE text(50) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ALARMDEVICE_ARMGUBUN_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ALARMDEVICE ADD AG_ARMCODE varchar(3) DEFAULT ''000'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ALARMDEVICE_memo_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'alter table TB_ALARMDEVICE ADD AL_MEMO varchar(100) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ALARMDEVICE_Name_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'alter table TB_ALARMDEVICE alter column  AL_ZONENAME TYPE varchar(100) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'ALTER TABLE TB_ALARMDEVICE ALTER COLUMN AL_ZONENAME varchar(100) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_ALARMDEVICE ALTER AL_ZONENAME TYPE varchar(100) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_ALARMDEVICE alter column  AL_ZONENAME text(100) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ALARMDEVICE_RegSend_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ALARMDEVICE ADD REG_SEND varchar(1) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ALARMDEVICE_TelNo_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'alter table TB_ALARMDEVICE ADD AL_TELNO varchar(30) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ALARMDEVICE_UPDATE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ALARMDEVICE ADD AL_UPDATE varchar(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ALARMEVENT_AlarmGRADE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ALARMEVENT ADD AL_ALARMGRADE int NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ALARMEVENT_AlarmSound_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ALARMEVENT ADD AL_SOUND char(1) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ALARMEVENT_Cardno_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ALARMEVENT ADD CA_CARDNO varchar(20) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ALARMEVENT_CheckUser_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ALARMEVENT ADD AL_CHECKUSER varchar(30) NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ALARMEVENT_Code_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'ALTER TABLE TB_ALARMEVENT ALTER COLUMN AL_ALARMSTATUSCODE TYPE varchar(5) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'ALTER TABLE TB_ALARMEVENT ALTER COLUMN AL_ALARMSTATUSCODE varchar(5) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_ALARMEVENT ALTER AL_ALARMSTATUSCODE TYPE varchar(5) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_ALARMEVENT alter column  AL_ALARMSTATUSCODE text(5) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ALARMEVENT_COMPANYCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ALARMEVENT ADD CO_COMPANYCODE varchar(3) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ALARMEVENT_EMCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ALARMEVENT ADD EM_CODE varchar(50) NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ALARMEVENT_KTTSENDSTATUS_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ALARMEVENT ADD AL_KTTSENDSTATUS char(1) DEFAULT ''N'' NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ALARMEVENT_Oper_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'ALTER TABLE TB_ALARMEVENT ALTER COLUMN AL_OPERATOR TYPE varchar(30) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'ALTER TABLE TB_ALARMEVENT ALTER COLUMN AL_OPERATOR varchar(30) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_ALARMEVENT ALTER AL_OPERATOR TYPE varchar(30) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_ALARMEVENT alter column  AL_OPERATOR text(30) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ALARMEVENT_SmallSENDSTATUS_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ALARMEVENT ADD AL_SMSENDSTATUS char(1) DEFAULT ''N'' NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ALARMEVENT_STATECODE2_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ALARMEVENT ADD AL_STATUSCODE2 varchar(5) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ALARMSTATUSCODEColor_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ALARMSTATUSCODE ADD AL_COLOR INTEGER  DEFAULT 255 NULL ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ALARMSTATUSCODE_ALARMSOUND_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ALARMSTATUSCODE ADD AL_ALARMSOUND int DEFAULT 0 NOT NULL ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ALARMSTATUSCODE_Code_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'ALTER TABLE TB_ALARMSTATUSCODE ALTER COLUMN AL_ALARMSTATUSCODE TYPE varchar(5) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'ALTER TABLE TB_ALARMSTATUSCODE ALTER COLUMN AL_ALARMSTATUSCODE varchar(5) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_ALARMSTATUSCODE ALTER AL_ALARMSTATUSCODE TYPE varchar(5) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_ALARMSTATUSCODE alter column  AL_ALARMSTATUSCODE text(5) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ALARMSTATUSCODE_Gubun_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ALARMSTATUSCODE ADD AL_GUBUN varchar(3)  NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ARMAREA_AREACODE_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'alter table TB_ARMAREA alter column  LO_AREACODE TYPE varchar(50) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'ALTER TABLE TB_ARMAREA ALTER COLUMN LO_AREACODE varchar(50) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_ARMAREA ALTER LO_AREACODE TYPE varchar(50) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_ARMAREA alter column  LO_AREACODE text(50) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ARMAREA_ARMCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ARMAREA ADD AG_ARMCODE varchar(3) DEFAULT ''000'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ARMAREA_MEMLOAD_ADD: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ARMAREA ADD AR_MEMLOAD char(1) DEFAULT ''N'' NULL  ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ARMAREA_memo_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'alter table TB_ARMAREA ADD AR_MEMO varchar(200) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ARMAREA_TelNo_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'alter table TB_ARMAREA ADD AR_TELNO varchar(30) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ATCODE_ATHOUTRANGE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ATCODE ADD AT_HOUTRANGE varchar(4)  DEFAULT ''0000'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ATCODE_ATOUTRANGE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ATCODE ADD AT_OUTRANGE varchar(4)  DEFAULT ''0000'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ATCODE_ATSOUTRANGE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ATCODE ADD AT_SOUTRANGE varchar(4)  DEFAULT ''0000'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ATCODE_AWCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ATCODE ADD AW_CODE varchar(3)  DEFAULT ''001'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ATDAYSUMMARY_DEPARTCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ATDAYSUMMARY ADD CO_DEPARTCODE varchar(3) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ATDAYSUMMARY_EMNAME_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ATDAYSUMMARY ADD EM_NAME varchar(100) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ATDAYSUMMARY_JIJUMCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ATDAYSUMMARY ADD CO_JIJUMCODE varchar(3) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ATEVENT_DEPARTCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ATEVENT ADD CO_DEPARTCODE varchar(3) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ATEVENT_EMNAME_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ATEVENT ADD EM_NAME varchar(100) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ATEVENT_JIJUMCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ATEVENT ADD CO_JIJUMCODE varchar(3) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ATLISTEVENT_CARDNOChange(aLen: string='20'): Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = MSSQL then stSql := 'alter table TB_ATLISTEVENT alter column  CA_CARDNO varchar('+ aLen + ') '
+  else if G_nDBTYPE = POSTGRESQL then stSql := 'alter table TB_ATLISTEVENT alter column  CA_CARDNO TYPE varchar('+ aLen + ') '
+  else if G_nDBTYPE = FIREBIRD then stSql := 'alter table TB_ATLISTEVENT alter column  CA_CARDNO varchar(' + aLen + ') '
+  else if G_nDBTYPE = MDB then stSql := 'alter table TB_ATLISTEVENT alter column  CA_CARDNO text('+ aLen + ') ' ;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ATMONTHSUMMARY_DEPARTCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ATMONTHSUMMARY ADD CO_DEPARTCODE varchar(3) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ATMONTHSUMMARY_EMNAME_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ATMONTHSUMMARY ADD EM_NAME varchar(100) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ATMONTHSUMMARY_JIJUMCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ATMONTHSUMMARY ADD CO_JIJUMCODE varchar(3) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ATWORKTYPE_ATOFFBUTTON_Change(
+  aLen: string): Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = MSSQL then stSql := 'alter table TB_ATWORKTYPE alter column  AW_ATOFFBUTTON varchar('+ aLen + ') '
+  else if G_nDBTYPE = POSTGRESQL then stSql := 'alter table TB_ATWORKTYPE alter column  AW_ATOFFBUTTON TYPE varchar('+ aLen + ') '
+  else if G_nDBTYPE = FIREBIRD then stSql := 'alter table TB_ATWORKTYPE alter column  AW_ATOFFBUTTON varchar(' + aLen + ') '
+  else if G_nDBTYPE = MDB then stSql := 'alter table TB_ATWORKTYPE alter column  AW_ATOFFBUTTON text('+ aLen + ') ' ;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ATWORKTYPE_ATSTARTBUTTON_Change(aLen:string='10'): Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = MSSQL then stSql := 'alter table TB_ATWORKTYPE alter column  AW_ATSTARTBUTTON varchar('+ aLen + ') '
+  else if G_nDBTYPE = POSTGRESQL then stSql := 'alter table TB_ATWORKTYPE alter column  AW_ATSTARTBUTTON TYPE varchar('+ aLen + ') '
+  else if G_nDBTYPE = FIREBIRD then stSql := 'alter table TB_ATWORKTYPE alter column  AW_ATSTARTBUTTON varchar(' + aLen + ') '
+  else if G_nDBTYPE = MDB then stSql := 'alter table TB_ATWORKTYPE alter column  AW_ATSTARTBUTTON text('+ aLen + ') ' ;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ATWORKTYPE_WORKINBUTTON_Change(
+  aLen: string): Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = MSSQL then stSql := 'alter table TB_ATWORKTYPE alter column  AW_WORKINBUTTON varchar('+ aLen + ') '
+  else if G_nDBTYPE = POSTGRESQL then stSql := 'alter table TB_ATWORKTYPE alter column  AW_WORKINBUTTON TYPE varchar('+ aLen + ') '
+  else if G_nDBTYPE = FIREBIRD then stSql := 'alter table TB_ATWORKTYPE alter column  AW_WORKINBUTTON varchar(' + aLen + ') '
+  else if G_nDBTYPE = MDB then stSql := 'alter table TB_ATWORKTYPE alter column  AW_WORKINBUTTON text('+ aLen + ') ' ;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ATWORKTYPE_WORKOUTBUTTON_Change(
+  aLen: string): Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = MSSQL then stSql := 'alter table TB_ATWORKTYPE alter column  AW_WORKOUTBUTTON varchar('+ aLen + ') '
+  else if G_nDBTYPE = POSTGRESQL then stSql := 'alter table TB_ATWORKTYPE alter column  AW_WORKOUTBUTTON TYPE varchar('+ aLen + ') '
+  else if G_nDBTYPE = FIREBIRD then stSql := 'alter table TB_ATWORKTYPE alter column  AW_WORKOUTBUTTON varchar(' + aLen + ') '
+  else if G_nDBTYPE = MDB then stSql := 'alter table TB_ATWORKTYPE alter column  AW_WORKOUTBUTTON text('+ aLen + ') ' ;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_CARD_DoorGrade_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_CARD ADD CA_DOORGRADE char(1) DEFAULT ''N'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_CARD_MEMLOAD_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_CARD ADD CA_MEMLOAD char(1)  DEFAULT ''N'' NOT NULL';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_CARD_POSITIONNUM_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_CARD ADD POSITIONNUM INTEGER NOT NULL';
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_COMPANY_DEPARTCODE_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'alter table TB_COMPANY alter column  CO_DEPARTCODE TYPE varchar(50) NOT NULL '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'alter table TB_COMPANY alter column  CO_DEPARTCODE varchar(50) NOT NULL '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_COMPANY ALTER CO_DEPARTCODE TYPE varchar(50) NOT NULL '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_COMPANY alter column  CO_DEPARTCODE text(50) NOT NULL ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_COMPANY_UPDATECHECK_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_COMPANY ADD CO_UPDATECHECK char(1) DEFAULT ''N'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_COMPANY_VIEWSEQ_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_COMPANY ADD CO_VIEWSEQ integer DEFAULT 0 NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_CONFIG_Value_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'alter table TB_CONFIG alter column  CO_CONFIGVALUE TYPE varchar(200) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'alter table TB_CONFIG alter column  CO_CONFIGVALUE varchar(200) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_CONFIG ALTER CO_CONFIGVALUE TYPE varchar(200) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_CONFIG alter column  CO_CONFIGVALUE text(200) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOAlarm0_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO ADD DE_ALARM0 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOAlarm1_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO ADD DE_ALARM1 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOAlarm2_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO ADD DE_ALARM2 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOAlarm3_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO ADD DE_ALARM3 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOAlarm4_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO ADD DE_ALARM4 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOAlarm5_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO ADD DE_ALARM5 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOAlarm6_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO ADD DE_ALARM6 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOAlarm7_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO ADD DE_ALARM7 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOAlarm8_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO ADD DE_ALARM8 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNODoor3_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO ADD DE_DOOR3 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNODoor4_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO ADD DE_DOOR4 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNODoor5_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO ADD DE_DOOR5 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNODoor6_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO ADD DE_DOOR6 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNODoor7_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO ADD DE_DOOR7 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNODoor8_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO ADD DE_DOOR8 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOGROUP_Alarm0_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNOGROUP ADD DE_ALARM0 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOGROUP_Alarm1_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNOGROUP ADD DE_ALARM1 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOGROUP_Alarm2_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNOGROUP ADD DE_ALARM2 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOGROUP_Alarm3_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNOGROUP ADD DE_ALARM3 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOGROUP_Alarm4_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNOGROUP ADD DE_ALARM4 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOGROUP_Alarm5_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNOGROUP ADD DE_ALARM5 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOGROUP_Alarm6_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNOGROUP ADD DE_ALARM6 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOGROUP_Alarm7_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNOGROUP ADD DE_ALARM7 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOGROUP_Alarm8_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNOGROUP ADD DE_ALARM8 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOGROUP_Door3_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNOGROUP ADD DE_DOOR3 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOGROUP_Door4_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNOGROUP ADD DE_DOOR4 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOGROUP_Door5_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNOGROUP ADD DE_DOOR5 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOGROUP_Door6_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNOGROUP ADD DE_DOOR6 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOGROUP_Door7_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNOGROUP ADD DE_DOOR7 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNOGROUP_Door8_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNOGROUP ADD DE_DOOR8 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_HIS_Alarm0_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_HIS ADD DE_ALARM0 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_HIS_Alarm1_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_HIS ADD DE_ALARM1 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_HIS_Alarm2_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_HIS ADD DE_ALARM2 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_HIS_Alarm3_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_HIS ADD DE_ALARM3 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_HIS_Alarm4_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_HIS ADD DE_ALARM4 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_HIS_Alarm5_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_HIS ADD DE_ALARM5 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_HIS_Alarm6_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_HIS ADD DE_ALARM6 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_HIS_Alarm7_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_HIS ADD DE_ALARM7 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_HIS_Alarm8_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_HIS ADD DE_ALARM8 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_HIS_Door3_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_HIS ADD DE_DOOR3 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_HIS_Door4_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_HIS ADD DE_DOOR4 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_HIS_Door5_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_HIS ADD DE_DOOR5 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_HIS_Door6_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_HIS ADD DE_DOOR6 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_HIS_Door7_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_HIS ADD DE_DOOR7 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_HIS_Door8_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_HIS ADD DE_DOOR8 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_MEMLOAD_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO ADD DE_MEMLOAD char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_PROMISE_Alarm0_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_PROMISE ADD DE_ALARM0 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_PROMISE_Alarm1_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_PROMISE ADD DE_ALARM1 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_PROMISE_Alarm2_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_PROMISE ADD DE_ALARM2 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_PROMISE_Alarm3_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_PROMISE ADD DE_ALARM3 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_PROMISE_Alarm4_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_PROMISE ADD DE_ALARM4 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_PROMISE_Alarm5_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_PROMISE ADD DE_ALARM5 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_PROMISE_Alarm6_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_PROMISE ADD DE_ALARM6 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_PROMISE_Alarm7_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_PROMISE ADD DE_ALARM7 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_PROMISE_Alarm8_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_PROMISE ADD DE_ALARM8 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_PROMISE_Door3_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_PROMISE ADD DE_DOOR3 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_PROMISE_Door4_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_PROMISE ADD DE_DOOR4 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_PROMISE_Door5_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_PROMISE ADD DE_DOOR5 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_PROMISE_Door6_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_PROMISE ADD DE_DOOR6 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_PROMISE_Door7_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_PROMISE ADD DE_DOOR7 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DEVICECARDNO_PROMISE_Door8_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DEVICECARDNO_PROMISE ADD DE_DOOR8 char(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DOOR_AGANTINO_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DOOR ADD AG_ANTINO INTEGER DEFAULT 0  ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DOOR_AGCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DOOR ADD AG_CODE INTEGER DEFAULT 0 ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DOOR_ALARMLONG_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DOOR ADD DO_ALARMLONG char(1) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_DOOR_AREACODE_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'alter table TB_DOOR alter column  LO_AREACODE TYPE varchar(50) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'ALTER TABLE TB_DOOR ALTER COLUMN LO_AREACODE varchar(50) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_DOOR ALTER LO_AREACODE TYPE varchar(50) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_DOOR alter column  LO_AREACODE text(50) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DOOR_ControlTime_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'alter table TB_DOOR alter column  DO_CONTROLTIME TYPE char(1) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'alter table TB_DOOR alter column  DO_CONTROLTIME char(1) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_DOOR ALTER DO_CONTROLTIME TYPE char(1) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_DOOR alter column  DO_CONTROLTIME text(1) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DOOR_DOGUBUN_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DOOR ADD DO_GUBUN varchar(3) DEFAULT ''000'' NOT NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_DOOR_DSOPEN_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DOOR ADD DO_DSOPEN char(1) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_DOOR_FDMSID_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := ' ALTER TABLE TB_DOOR ADD FDMS_ID int NULL';
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DOOR_FDMSRELAY_Add: Boolean;
+var
+  stSql : string;
+begin
+
+  stSql := ' ALTER TABLE TB_DOOR ADD FDMS_RELAY varchar(1) NULL';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_DOOR_MEMLOAD_ADD: Boolean;
+var
+  stSql : string;
+begin
+
+  stSql := ' ALTER TABLE TB_DOOR ADD DO_MEMLOAD char(1) DEFAULT ''N'' NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_DOOR_Name_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'alter table TB_DOOR alter column  DO_DOORNONAME TYPE varchar(100) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'ALTER TABLE TB_DOOR ALTER COLUMN DO_DOORNONAME varchar(100) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_DOOR ALTER DO_DOORNONAME TYPE varchar(100) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_DOOR alter column  DO_DOORNONAME text(100) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_DOOR_OPENMONI_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DOOR ADD DO_OPENMONI char(1) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_DOOR_RegSend_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DOOR ADD REG_SEND varchar(1) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_DOOR_REMOTEDOOR_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DOOR ADD DO_REMOTEDOOR char(1) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_DOOR_SENDDOOR_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DOOR ADD DO_SENDDOOR char(1) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_DOOR_TIMECODEUSE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DOOR ADD DO_TIMECODEUSE varchar(1) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_DOOR_UPDATE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_DOOR ADD DO_UPDATE varchar(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPHIS_CARDNO_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPHIS ADD CA_CARDNO varchar(20) NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPHIS_CARDTYPE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPHIS ADD CA_CARDTYPE varchar(1) NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPHIS_COMPANYNAME_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPHIS ADD COMPANY_NAME varchar(50) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPHIS_DEPARTNAME_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPHIS ADD DEPART_NAME varchar(50) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPHIS_EMNAME_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPHIS ADD EM_NAME varchar(20) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_EMPHIS_EMNAME_Change(aLength: integer): Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'alter table TB_EMPHIS alter column  EM_NAME TYPE varchar(' + inttostr(aLength) + ')'
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'alter table TB_EMPHIS alter column  EM_NAME varchar(' + inttostr(aLength) + ')'
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_EMPHIS ALTER EM_NAME TYPE varchar(' + inttostr(aLength) + ')'
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_EMPHIS alter column  EM_NAME text(' + inttostr(aLength) + ')';
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPHIS_HANDPHONE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPHIS ADD EM_HANDPHONE varchar(14) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPHIS_INSERTTIME_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPHIS ADD EH_INSERTTIME varchar(14) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_EMPHIS_JIJUMNAME_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPHIS ADD JIJUM_NAME varchar(50) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPHIS_POSINAME_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPHIS ADD PO_NAME varchar(30) NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPHIS_SENDSTATUS2_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPHIS ADD SEND_STATUS2 varchar(1) NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_AWCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPLOYEE ADD AW_CODE varchar(3)  DEFAULT ''001'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_CAGROUP_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPLOYEE ADD CA_GROUP varchar(50)  ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_COPHONE_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'ALTER TABLE TB_EMPLOYEE ALTER COLUMN EM_COPHONE TYPE varchar(100) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'alter table TB_EMPLOYEE alter column  EM_COPHONE varchar(100) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_EMPLOYEE ALTER EM_COPHONE TYPE varchar(100) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_EMPLOYEE alter column  EM_COPHONE text(100) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_DEPARTCODE_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'ALTER TABLE TB_EMPLOYEE ALTER COLUMN CO_DEPARTCODE TYPE varchar(50) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'alter table TB_EMPLOYEE alter column  CO_DEPARTCODE varchar(50) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_EMPLOYEE ALTER CO_DEPARTCODE TYPE varchar(50) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_EMPLOYEE alter column  CO_DEPARTCODE text(50) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_DGAPPLY_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPLOYEE ADD DG_APPLY varchar(1)  DEFAULT ''N'' NOT NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_DGCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPLOYEE ADD DG_CODE varchar(10)';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_EmName_Change(aSize:string='50'): Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'ALTER TABLE TB_EMPLOYEE ALTER COLUMN EM_NAME TYPE varchar(' + aSize + ') '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'alter table TB_EMPLOYEE alter column  EM_NAME varchar(' + aSize + ') '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_EMPLOYEE ALTER EM_NAME TYPE varchar(' + aSize + ') '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_EMPLOYEE alter column  EM_NAME text(' + aSize + ') ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_FDMSID_Add: Boolean;
+var
+  stSql : string;
+begin
+
+  stSql := 'ALTER TABLE TB_EMPLOYEE ADD FDMS_ID int ';
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_FDMSRELAY_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := ' ALTER TABLE TB_EMPLOYEE ADD FDMS_RELAY varchar(1) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_GRADETYPE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPLOYEE ADD EM_GRADETYPE integer  ';  //0.개인별카드권한,1.그룹별카드권한, 2.소속별카드권한
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_MASTER_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPLOYEE ADD EM_MASTER char(1) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_RelayGubun_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPLOYEE ADD RG_CODE varchar(3) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_TIME1_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPLOYEE ADD TC_TIME1 varchar(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_TIME2_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPLOYEE ADD TC_TIME2 varchar(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_TIME3_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPLOYEE ADD TC_TIME3 varchar(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_TIME4_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPLOYEE ADD TC_TIME4 varchar(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_TIMECODEUSE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPLOYEE ADD DE_TIMECODEUSE varchar(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_TIMEGROUP_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPLOYEE ADD TC_GROUP varchar(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_WEEKCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPLOYEE ADD TC_WEEKCODE varchar(7) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_EMPLOYEE_WORKCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPLOYEE ADD WG_CODE integer DEFAULT 1 NOT NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_FOODEVENT_DEPARTCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_FOODEVENT ADD CO_DEPARTCODE varchar(3) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_FOODEVENT_EMNAME_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_FOODEVENT ADD EM_NAME varchar(100) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_FOODEVENT_JIJUMCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_FOODEVENT ADD CO_JIJUMCODE varchar(3) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_FOOD_AREACODE_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'alter table TB_FOOD alter column  LO_AREACODE TYPE varchar(50) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'ALTER TABLE TB_FOOD ALTER COLUMN LO_AREACODE varchar(50) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_FOOD ALTER LO_AREACODE TYPE varchar(50) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_FOOD alter column  LO_AREACODE text(50) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_FOOD_Name_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'alter table TB_FOOD alter column  FO_NAME TYPE varchar(100) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'ALTER TABLE TB_FOOD ALTER COLUMN FO_NAME varchar(100) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_FOOD ALTER FO_NAME TYPE varchar(100) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_FOOD alter column  FO_NAME text(100) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_FTPLIST_RetryCount_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_FTPLIST ADD FL_RETRYCOUNT INTEGER DEFAULT 0 NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_HOLIDAY_ACUSE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_HOLIDAY ADD HO_ACUSE varchar(1) DEFAULT ''1'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_HOLIDAY_ATUSE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_HOLIDAY ADD HO_ATUSE varchar(1) DEFAULT ''1'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_HOLIDAY_State_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_HOLIDAY ADD HO_STATE varchar(1) DEFAULT ''I'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_INOUTGROUPLIST_EcuID_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_INOUTGROUPLIST ADD AC_ECUID varchar(2) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_INOUTGROUPLIST_NodeNo_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_INOUTGROUPLIST ADD AC_NODENO Integer NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_INOUTGROUPLIST_ReaderNo_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_INOUTGROUPLIST ADD RE_READERNO varchar(1)  NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_INOUTGROUPLIST_Time_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_INOUTGROUPLIST ADD IO_TIME varchar(14) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_KTCARDISSUE_WriteDate_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_KTCARDISSUE ADD KI_WRITEDATE varchar(8) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_KTCARDISSUE_Write_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_KTCARDISSUE ADD KI_WRITE char(1) DEFAULT ''N'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_KTTMAPPINGCODE_SendUse_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_KTTMAPPINGCODE ADD senduse varchar DEFAULT ''Y'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_LOCATION_AREACODE_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'alter table TB_LOCATION alter column  LO_AREACODE TYPE varchar(50) NOT NULL'
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'alter table TB_LOCATION alter column  LO_AREACODE varchar(50) NOT NULL'
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_LOCATION ALTER LO_AREACODE TYPE varchar(50) NOT NULL'
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_LOCATION alter column  LO_AREACODE text(50) NOT NULL';
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_LOCATION_CurX_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_LOCATION ADD LO_CURX integer DEFAULT 0 NOT NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_LOCATION_CurY_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_LOCATION ADD LO_CURY integer DEFAULT 0 NOT NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_LOCATION_TotHeight_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_LOCATION ADD LO_TOTHEIGHT integer DEFAULT 0 NOT NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_LOCATION_TotWidth_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_LOCATION ADD LO_TOTWIDTH integer DEFAULT 0 NOT NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_LOCATION_VIEWSEQ_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_LOCATION ADD LO_VIEWSEQ integer DEFAULT 0 NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_POSI_UPDATECHECK_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_POSI ADD PO_UPDATECHECK char(1) DEFAULT ''N'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_POSI_VIEWSEQ_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_POSI ADD PO_VIEWSEQ integer DEFAULT 0 NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_READER_BuildPosi_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_READER ADD DOOR_POSI varchar(1) DEFAULT ''0'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_READER_DoorPosi_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_READER ADD BUILD_POSI varchar(1) DEFAULT ''0'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_READER_InOutCount_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_READER ADD RE_INOUTCOUNT int DEFAULT 0 NOT NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_READER_INOUTGROUPCODE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_READER ADD IO_GROUPCODE varchar(3)  DEFAULT ''000'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_READER_PatrolCurX_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_READER ADD RE_PATROLCURX integer Default 0 ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_READER_PatrolCurY_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_READER ADD RE_PATROLCURY integer Default 0 ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_READER_PatrolName_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_READER ADD RE_PATROLNAME varchar(100)  ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_READER_PatrolTotHeight_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_READER ADD RE_PATROLTOTHEIGHT integer Default 0 ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_READER_PatrolTotWidth_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_READER ADD RE_PATROLTOTWIDTH integer Default 0 ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_READER_PatrolUse_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_READER ADD RE_PATROLUSE char(1)  DEFAULT ''0'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_READER_ReaderVer_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_READER ADD RE_VER varchar(50) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_READER_RegSend_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_READER ADD REG_SEND varchar(1) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_TIMECODEDEVICE_EACHCHANGE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_TIMECODEDEVICE ADD TC_EACHCHANGE varchar(1) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ZONEDEVICE_AREACODE_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'alter table TB_ZONEDEVICE alter column  LO_AREACODE TYPE varchar(50) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'ALTER TABLE TB_ZONEDEVICE ALTER COLUMN LO_AREACODE varchar(50) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_ZONEDEVICE ALTER LO_AREACODE TYPE varchar(50) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_ZONEDEVICE alter column  LO_AREACODE text(50) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ZONEDEVICE_DelayUse_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ZONEDEVICE ADD AL_DELAYUSE varchar(1) DEFAULT ''0'' NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ZONEDEVICE_Name_Change: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = POSTGRESQL then
+    stSql := 'alter table TB_ZONEDEVICE alter column  AL_ZONENAME TYPE varchar(100) '
+  else if G_nDBTYPE = MSSQL then
+    stSql := 'ALTER TABLE TB_ZONEDEVICE ALTER COLUMN AL_ZONENAME varchar(100) '
+  else if G_nDBTYPE = FireBird then
+    stSql := 'alter table TB_ZONEDEVICE ALTER AL_ZONENAME TYPE varchar(100) '
+  else if G_nDBTYPE = MDB then
+    stSql := 'alter table TB_ZONEDEVICE alter column  AL_ZONENAME text(100) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ZONEDEVICE_PortRecovery_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ZONEDEVICE ADD AL_PORTRECOVERY varchar(1) DEFAULT ''0'' NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ZONEDEVICE_RegSend_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ZONEDEVICE ADD REG_SEND varchar(1) NULL ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ZONEDEVICE_UPDATE_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ZONEDEVICE ADD AL_UPDATE varchar(1) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.AlterTB_ZONEDEVICE_View_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ZONEDEVICE ADD AL_VIEW char(1) DEFAULT ''Y'' NOT NULL';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_ACCESSINPUTTYPE: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_ACCESSINPUTTYPE (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' AC_INPUTTYPE char(1) NOT NULL,';
+  stSql := stSql + ' AC_INPUTTYPENAME varchar(50),';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE, AC_INPUTTYPE) ';
+  stSql := stSql + ' ) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_ADMINALARMAREA: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_ADMINALARMAREA (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' AD_USERID varchar(20) NOT NULL,';
+  stSql := stSql + ' AC_NODENO integer NOT NULL,';
+  stSql := stSql + ' AC_ECUID varchar(2) NOT NULL,';
+  stSql := stSql + ' AR_AREANO varchar(2) NOT NULL,';
+  stSql := stSql + ' AD_GUBUN varchar(1) ,';
+  stSql := stSql + ' AD_UPDATETIME varchar(14) ,';
+  stSql := stSql + ' AD_UPDATEOPERATOR varchar(10) ,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE, AD_USERID,AC_NODENO,AC_ECUID,AR_AREANO) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_ALARMCODEGROUP: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_ALARMCODEGROUP (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' AG_CODE varchar(30) NOT NULL,';
+  stSql := stSql + ' AL_ALARMSTATUSCODE varchar(5) NOT NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE, AG_CODE,AL_ALARMSTATUSCODE) ';
+  stSql := stSql + ' ) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_AlarmEvent_Index1: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'CREATE INDEX TB_ALARMEVENT_idx1 ON TB_ALARMEVENT (AL_CHECKOK, AL_DATE) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_ALARMGUBUNCODE: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_ALARMGUBUNCODE (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' AG_ARMCODE varchar(3) NOT NULL,';
+  stSql := stSql + ' AG_ARMNAME varchar(30) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,AG_ARMCODE) ';
+  stSql := stSql + ' ) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_ALARMMODENOTCARD: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_ALARMMODENOTCARD (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' AN_CODE varchar(5) NOT NULL,';
+  stSql := stSql + ' AN_NOTDATA varchar(30) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE, AN_CODE) ';
+  stSql := stSql + ' ) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_ALARMSHOW: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_ALARMSHOW (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' AC_NODENO int NOT NULL,';
+  stSql := stSql + ' AC_ECUID varchar(2) NOT NULL,';
+  stSql := stSql + ' AL_ALARMDEVICETYPECODE varchar(2) NOT NULL,';
+  stSql := stSql + ' AL_SUBADDR varchar(2) NOT NULL,';
+  stSql := stSql + ' AL_ZONECODE varchar(2) NOT NULL,';
+  stSql := stSql + ' AL_ZONENO varchar(2) NOT NULL,';
+  stSql := stSql + ' AL_ALARMSTATUSCODE varchar(2) NOT NULL,';
+  stSql := stSql + ' AL_ISALARM varchar(1) NULL,';
+  stSql := stSql + ' AL_ALARMMODECODE varchar(1) NULL,';
+  stSql := stSql + ' AL_DATE varchar(8) NULL,';
+  stSql := stSql + ' AL_TIME varchar(6) NULL,';
+  stSql := stSql + ' AL_MSGNO varchar(1) NULL,';
+  stSql := stSql + ' AL_ZONESTATE varchar(1) NULL,';
+  stSql := stSql + ' AL_OPERATOR varchar(10) NULL,';
+  stSql := stSql + ' AL_CHECKOK varchar(1) NULL,';
+  stSql := stSql + ' AL_CHECKCODE varchar(3) NULL,';
+  stSql := stSql + ' AL_CHECKMSG varchar(100) NULL,';
+  stSql := stSql + ' AL_UPDATETIME varchar(14) NULL,';
+  stSql := stSql + ' AL_UPDATEOPERATOR varchar(10) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE, AC_NODENO,';
+  stSql := stSql + ' AC_ECUID,AL_ALARMDEVICETYPECODE,AL_SUBADDR,';
+  stSql := stSql + ' AL_ZONECODE,AL_ZONENO,AL_ALARMSTATUSCODE) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_ANTIGROUPCODE: Boolean;
+var
+  stSql : string;
+begin
+  //안티패스 그룹 코드 생성
+  stSql := 'Create Table TB_ANTIGROUPCODE (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' AG_CODE integer NOT NULL,';
+  stSql := stSql + ' AG_NAME varchar(50),';
+  stSql := stSql + ' AG_ANTINO integer ,';          //출입문에 설정되는 AntipassNo
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,AG_CODE) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_ARMAREA: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_ARMAREA (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' AC_NODENO INTEGER NOT NULL,';
+  stSql := stSql + ' AC_ECUID varchar(2) NOT NULL,';
+  stSql := stSql + ' AR_AREANO varchar(2) NOT NULL,';
+  stSql := stSql + ' AR_NAME varchar(100) NULL,';
+  stSql := stSql + ' AR_USE varchar(1) DEFAULT ''N'' NULL,';
+  stSql := stSql + ' AR_LASTMODE varchar(1),';
+  stSql := stSql + ' AR_VIEWSEQ integer,';
+  stSql := stSql + ' AR_LOCATEUSE varchar(1),';
+  stSql := stSql + ' AR_TOTWIDTH integer,';
+  stSql := stSql + ' AR_TOTHEIGHT integer,';
+  stSql := stSql + ' AR_CURX integer,';
+  stSql := stSql + ' AR_CURY integer,';
+  stSql := stSql + ' LO_DONGCODE varchar(3) DEFAULT ''000'' NULL,';
+  stSql := stSql + ' LO_FLOORCODE varchar(3) DEFAULT ''000'' NULL,';
+  stSql := stSql + ' LO_AREACODE varchar(3) DEFAULT ''000'' NULL,';
+  stSql := stSql + ' AR_UPDATE varchar(1) DEFAULT ''N'' NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,AC_NODENO,AC_ECUID,AR_AREANO) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_ATLISTEVENT: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_ATLISTEVENT (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' AC_DATE varchar(8) NOT NULL,'; //찍은날짜
+  stSql := stSql + ' AC_TIME varchar(6) NOT NULL,';
+  stSql := stSql + ' CO_COMPANYCODE varchar(3) NOT NULL,';
+  stSql := stSql + ' EM_CODE varchar(100) NOT NULL,';
+  stSql := stSql + ' AC_NODENO int NOT NULL,';
+  stSql := stSql + ' AC_ECUID varchar(2) NOT NULL,';
+  stSql := stSql + ' AT_ATCODE varchar(3) NOT NULL,';
+  stSql := stSql + ' AT_ATTYPE varchar(1) NOT NULL,'; //'1:출근,2:퇴근,3:외출,4:복귀'
+  stSql := stSql + ' CA_CARDNO varchar(10) NULL,';
+  stSql := stSql + ' DO_DOORNO char(1) NULL,';
+  stSql := stSql + ' AC_READERNO char(1) NULL,';
+  stSql := stSql + ' AC_BUTTONNO char(1) NULL,';
+  stSql := stSql + ' AT_DATE varchar(8) NULL,'; //근태날짜
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE, AC_DATE,';
+  stSql := stSql + ' AC_TIME,CO_COMPANYCODE,EM_CODE,';
+  stSql := stSql + ' AC_NODENO,AC_ECUID,AT_ATCODE,AT_ATTYPE) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_ATWORKTYPE: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_ATWORKTYPE (';
+  stSql := stSql + ' AW_CODE varchar(3) NOT NULL,'; //근무자타입코드
+  stSql := stSql + ' AW_NAME varchar(100),';        //근무자타입명칭
+  stSql := stSql + ' AW_YESTERDAYTIME varchar(4),'; //어제날짜기준시간
+  stSql := stSql + ' AW_SATURDAYTYPE char(1),';     //토요일근무타입 0:공휴일,1:반휴일,2:평일
+  stSql := stSql + ' AW_DEVICETYPE char(1),';       //0:업데이트,1:카드리더,2:버튼방식
+  stSql := stSql + ' AW_FIXATTYPE char(1),';        //0:정상,1:전직원 정상 출퇴근
+  stSql := stSql + ' AW_NOTBACKUPTYPE char(1),';    //0:미복귀시조퇴처리,1:미복귀시정상퇴근
+  stSql := stSql + ' AW_ATSTARTBUTTON char(1),';    //출근조작버튼
+  stSql := stSql + ' AW_ATOFFBUTTON char(1),';      //퇴근조작버튼
+  stSql := stSql + ' AW_INOUTDEVICETYPE char(1),';  //외출-0:사용안함,1:리더,2:버튼
+  stSql := stSql + ' AW_WORKOUTBUTTON char(1),';    //외출조작버튼
+  stSql := stSql + ' AW_WORKINBUTTON char(1),';     //복귀조작버튼
+  stSql := stSql + ' PRIMARY KEY (AW_CODE) ';
+  stSql := stSql + ' ) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_CARDGROUPCODE: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_CARDGROUPCODE(';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' CA_GROUP varchar(50) NOT NULL,';
+  stSql := stSql + ' CA_GROUPNAME nvarchar(100),';
+  stSql := stSql + ' CA_DEEPSEQ integer,';
+  stSql := stSql + ' CA_CODEUSE char(1),';
+  stSql := stSql + ' CA_VIEWSEQ integer,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,CA_GROUP) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'image','OLEObject',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'int IDENTITY','COUNTER',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end else if G_nDBTYPE = POSTGRESQL then
+  begin
+    stSql := StringReplace(stSql,'image','oid',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'int IDENTITY','serial',[rfReplaceAll]);
+  end else if G_nDBTYPE = FireBird then
+  begin
+    stSql := StringReplace(stSql,'image','BLOB',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'varbinary(MAX)','BLOB',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'int IDENTITY','integer',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_CARDTYPE: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_CARDTYPE (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' CT_CODE varchar(1) NOT NULL,';
+  stSql := stSql + ' CT_NAME varchar(30) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE, CT_CODE) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_CLIENTSOCK: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_CLIENTSOCK (';
+  stSql := stSql + ' SEQ int IDENTITY NOT NULL,';
+  stSql := stSql + ' CSDATA varchar(1024),';
+  stSql := stSql + ' PRIMARY KEY (SEQ) ';
+  stSql := stSql + ' ) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'image','OLEObject',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'int IDENTITY','AUTOINCREMENT',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end else if G_nDBTYPE = POSTGRESQL then
+  begin
+    stSql := StringReplace(stSql,'image','oid',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'int IDENTITY','serial',[rfReplaceAll]);
+  end else if G_nDBTYPE = FireBird then
+  begin
+    stSql := StringReplace(stSql,'int IDENTITY','integer',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_COMPANY_PrimaryKey: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_COMPANY ADD CONSTRAINT TB_COMPANY_PKIndex1 PRIMARY KEY ( GROUP_CODE,CO_COMPANYCODE,CO_JIJUMCODE,CO_DEPARTCODE ) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_DAEMONMULTI: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_DAEMONMULTI (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' DM_GUBUN integer NOT NULL,';
+  stSql := stSql + ' DM_SERVERIP varchar(30) NULL,';
+  stSql := stSql + ' DM_SERVERPORT varchar(30) NULL,';
+  stSql := stSql + ' DM_ATPORT varchar(30) NULL,';
+  stSql := stSql + ' DM_FDPORT varchar(30) NULL,';
+  stSql := stSql + ' DM_FTPPORT varchar(30) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,DM_GUBUN) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_DEVICECARDGROUPCODE: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_DEVICECARDGROUPCODE (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' DG_CODE varchar(10) NOT NULL,';
+  stSql := stSql + ' DG_NAME varchar(100),';
+  stSql := stSql + ' DG_APPLY varchar(1),';
+  stSql := stSql + ' DG_USE varchar(1),';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,DG_CODE) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_DEVICECARDNOACKINDEX: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_EMPHIS ADD CA_CARDTYPE varchar(1) NULL ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_DEVICECARDNOEMPLOYEE: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'CREATE TABLE TB_DEVICECARDNOEMPLOYEE( ';
+	stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+	stSql := stSql + ' CO_COMPANYCODE varchar(3) NOT NULL,';
+	stSql := stSql + ' EM_CODE varchar(50) NOT NULL,';
+	stSql := stSql + ' AC_NODENO integer NOT NULL, ';
+	stSql := stSql + ' AC_ECUID varchar(2) NOT NULL,';
+	stSql := stSql + ' DE_DOOR1 char(1) NULL,';
+	stSql := stSql + ' DE_DOOR2 char(1) NULL,';
+	stSql := stSql + ' DE_DOOR3 char(1) NULL,';
+	stSql := stSql + ' DE_DOOR4 char(1) NULL,';
+	stSql := stSql + ' DE_DOOR5 char(1) NULL,';
+	stSql := stSql + ' DE_DOOR6 char(1) NULL,';
+	stSql := stSql + ' DE_DOOR7 char(1) NULL,';
+	stSql := stSql + ' DE_DOOR8 char(1) NULL,';
+	stSql := stSql + ' DE_USEACCESS char(1) NULL,';
+	stSql := stSql + ' DE_USEALARM char(1) NULL,';
+	stSql := stSql + ' DE_TIMECODE char(1) NULL,';
+	stSql := stSql + ' DE_PERMIT char(1) NULL,';
+	stSql := stSql + ' DE_RCVACK char(1) NULL,';
+	stSql := stSql + ' DE_UPDATETIME varchar(14) NULL,';
+	stSql := stSql + ' DE_UPDATEOPERATOR varchar(10) NULL,';
+	stSql := stSql + ' AC_MCUID varchar(7) NULL,';
+	stSql := stSql + ' DE_ALARM0 varchar(1) NULL,';
+	stSql := stSql + ' DE_ALARM1 varchar(1) NULL,';
+	stSql := stSql + ' DE_ALARM2 varchar(1) NULL,';
+	stSql := stSql + ' DE_ALARM3 varchar(1) NULL,';
+	stSql := stSql + ' DE_ALARM4 varchar(1) NULL,';
+	stSql := stSql + ' DE_ALARM5 varchar(1) NULL,';
+	stSql := stSql + ' DE_ALARM6 varchar(1) NULL,';
+	stSql := stSql + ' DE_ALARM7 varchar(1) NULL,';
+	stSql := stSql + ' DE_ALARM8 varchar(1) NULL, ';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,CO_COMPANYCODE,EM_CODE,AC_NODENO,AC_ECUID) ';
+  stSql := stSql + ' ) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_DEVICESETTINGINFO: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_DEVICESETTINGINFO (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' AC_NODENO integer NOT NULL,';
+  stSql := stSql + ' AC_ECUID varchar(2) NOT NULL,';
+  stSql := stSql + ' DS_COMMAND varchar(30) NOT NULL,';
+  stSql := stSql + ' DS_RCVACK varchar(1) DEFAULT ''N'' NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,AC_NODENO,AC_ECUID,DS_COMMAND) ';
+  stSql := stSql + ' ) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_DOORGUBUN: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_DOORGUBUN (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' DG_CODE varchar(3) NOT NULL,';
+  stSql := stSql + ' DG_NAME varchar(30) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,DG_CODE) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_DOORPOSICODE: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_DOORPOSICODE (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' AC_DOORPOSI char(1) NOT NULL,';
+  stSql := stSql + ' AC_DOORPOSINAME varchar(50),';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,AC_DOORPOSI) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_EMPHIS: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_EMPHIS (';
+  if G_nDBTYPE = MSSQL then stSql := stSql + ' SEQ int IDENTITY NOT NULL,'
+  else if G_nDBTYPE = PostGresql then stSql := stSql + ' SEQ serial NOT NULL ,'
+  else if G_nDBTYPE = FireBird then stSql := stSql + ' SEQ integer NOT NULL ,'
+  else if G_nDBTYPE = MDB then stSql := stSql + ' SEQ COUNTER NOT NULL,';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' CO_COMPANYCODE varchar(3) NOT NULL,';
+  stSql := stSql + ' EM_CODE varchar(20) NULL,';
+  stSql := stSql + ' FDMS_ID INTEGER NULL,';
+  stSql := stSql + ' MODE char(1) NULL,';
+  stSql := stSql + ' SEND_STATUS char(1) NULL,';
+  stSql := stSql + ' PRIMARY KEY (SEQ) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'image','OLEObject',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'int IDENTITY','AUTOINCREMENT',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end else if G_nDBTYPE = POSTGRESQL then
+  begin
+    stSql := StringReplace(stSql,'image','oid',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'int IDENTITY','serial',[rfReplaceAll]);
+  end else if G_nDBTYPE = FireBird then
+  begin
+    stSql := StringReplace(stSql,'int IDENTITY','integer',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+  if G_nDBTYPE = FireBird then
+  begin
+    stSql := 'CREATE SEQUENCE GEN_TB_EMPHIS_ID ';
+    dmDataBase.ProcessExecSQL(stSql);
+
+    stSql := 'CREATE OR ALTER TRIGGER TB_EMPHIS_BI FOR TB_EMPHIS ';
+    stSql := stSql + ' ACTIVE BEFORE INSERT POSITION 0 ';
+    stSql := stSql + ' AS ';
+    stSql := stSql + ' BEGIN ';
+    stSql := stSql + '   IF (NEW.SEQ IS NULL) THEN ';
+    stSql := stSql + '     NEW.SEQ = GEN_ID(GEN_TB_EMPHIS_ID,1); ';
+    stSql := stSql + ' END ';
+    dmDataBase.ProcessExecSQL(stSql);
+  end;
+
+end;
+
+function TdmDBCreate.CreateTB_EMPLOYEECHANGE: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_EMPLOYEECHANGE (';
+  stSql := stSql + ' SEQ int IDENTITY NOT NULL,';
+  stSql := stSql + ' CO_COMPANYCODE varchar(3) NOT NULL,';
+  stSql := stSql + ' EM_CODE varchar(50) NULL,';
+  stSql := stSql + ' CA_CARDNO varchar(50) NULL,';
+  stSql := stSql + ' EC_CLIENTIP varchar(50) NULL,';
+  stSql := stSql + ' EC_OPERATOR varchar(50) NULL,';
+  stSql := stSql + ' EC_INSERTTIME varchar(17) NULL,';
+  stSql := stSql + ' EC_FORMNAME varchar(50) NULL,';
+  stSql := stSql + ' EC_WORKTYPE char(1) NULL,';
+  stSql := stSql + ' PRIMARY KEY (SEQ) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'image','OLEObject',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'int IDENTITY','AUTOINCREMENT',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end else if G_nDBTYPE = POSTGRESQL then
+  begin
+    stSql := StringReplace(stSql,'image','oid',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'int IDENTITY','serial',[rfReplaceAll]);
+  end else if G_nDBTYPE = FireBird then
+  begin
+    stSql := StringReplace(stSql,'int IDENTITY','integer',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_FACECOP: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_FACECOP (';
+  stSql := stSql + ' SEQ serial NOT NULL,';
+  stSql := stSql + ' FA_EMCODE varchar(20) DEFAULT ''0'' NOT NULL,';
+  stSql := stSql + ' FA_REGTYPE varchar(1) DEFAULT ''1'' NOT NULL,';
+  stSql := stSql + ' FA_CARDNO  varchar(16) NULL,';
+  stSql := stSql + ' FA_EMNAME  varchar(100) NULL,';
+  stSql := stSql + ' FA_JIJUMNAME  varchar(100) NULL,';
+  stSql := stSql + ' FA_DEPARTNAME  varchar(100) NULL,';
+  stSql := stSql + ' FA_DUTYNAME  varchar(100) NULL,';
+  stSql := stSql + ' FA_HANDPHONE  varchar(14) NULL,';
+  stSql := stSql + ' FA_PHONE  varchar(14) NULL,';
+  stSql := stSql + ' FA_JOINDATE  varchar(8) NULL,';
+  stSql := stSql + ' FA_UPDATE  varchar(1) NULL,';
+  if G_nDBTYPE = MDB then stSql := stSql + ' FA_INSERTTIME  DATETIME NOT NULL,'
+  else if G_nDBTYPE = MSSQL then stSql := stSql + ' FA_INSERTTIME  DATETIME DEFAULT getdate() NOT NULL,'
+  else if G_nDBTYPE = POSTGRESQL then stSql := stSql + ' FA_INSERTTIME  TIMESTAMP DEFAULT NOW() NOT NULL,'
+  else if G_nDBTYPE = FIREBIRD then stSql := stSql + ' FA_INSERTTIME  TIMESTAMP DEFAULT NOW() NOT NULL,';
+  stSql := stSql + ' PRIMARY KEY (SEQ) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_FIREGROUP: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_FIREGROUP (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' AC_NODENO integer NOT NULL,';
+  stSql := stSql + ' FG_CODE varchar(3) DEFAULT ''001'' NOT NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE, AC_NODENO) ';
+  stSql := stSql + ' ) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_FIREGUBUN: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_FIREGUBUN (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' FG_CODE varchar(3) NOT NULL,';
+  stSql := stSql + ' FG_NAME varchar(30) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE, FG_CODE) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_FOODCodeCount: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_FOODCODECount (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' FC_DATE varchar(8) NOT NULL,';
+  stSql := stSql + ' FO_FOODCODE varchar(3) NOT NULL,';
+  stSql := stSql + ' CO_COMPANYCODE varchar(10) NOT NULL,';
+  stSql := stSql + ' EM_CODE varchar(50) NOT NULL,';
+  stSql := stSql + ' FD_COUNT integer,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,FC_DATE,FO_FOODCODE,CO_COMPANYCODE,EM_CODE) ';
+  stSql := stSql + ' ) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_FOODDayCount: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_FOODDayCount (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' FD_DATE varchar(8) NOT NULL,';
+  stSql := stSql + ' CO_COMPANYCODE varchar(10) NOT NULL,';
+  stSql := stSql + ' EM_CODE varchar(50) NOT NULL,';
+  stSql := stSql + ' FD_COUNT integer,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,FD_DATE,CO_COMPANYCODE,EM_CODE) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_FOODSemesterCount: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_FOODSemesterCount (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' FS_YEAR varchar(4) NOT NULL,';
+  stSql := stSql + ' SE_CODE integer NOT NULL,';
+  stSql := stSql + ' CO_COMPANYCODE varchar(10) NOT NULL,';
+  stSql := stSql + ' EM_CODE varchar(50) NOT NULL,';
+  stSql := stSql + ' FS_COUNT integer,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,FS_YEAR,SE_CODE,CO_COMPANYCODE,EM_CODE) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_FOODWeekCount: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_FOODWeekCount (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' FW_YEAR varchar(8) NOT NULL,';
+  stSql := stSql + ' FW_WEEKDAY integer NOT NULL,';
+  stSql := stSql + ' CO_COMPANYCODE varchar(10) NOT NULL,';
+  stSql := stSql + ' EM_CODE varchar(50) NOT NULL,';
+  stSql := stSql + ' FW_COUNT integer,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,FW_YEAR,FW_WEEKDAY,CO_COMPANYCODE,EM_CODE) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_FormName: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_FORMNAME (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' FM_CODE varchar(3) NOT NULL,';
+  stSql := stSql + ' FM_NAME varchar(30) NULL,';
+  stSql := stSql + ' FM_USE varchar(1) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE, FM_CODE) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_FTPLIST: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_FTPLIST (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' AC_NODENO INTEGER NOT NULL,';
+  stSql := stSql + ' AC_ECUID varchar(2) NOT NULL,';
+  stSql := stSql + ' FL_FILENAME varchar(50) NOT NULL,';
+  stSql := stSql + ' FL_SENDPROGRASS varchar(3) NULL,';
+  stSql := stSql + ' FL_SENDSTATE varchar(1) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,AC_NODENO,AC_ECUID) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_INOUTCOUNT: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_INOUTCOUNT (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' IO_DATE varchar(8) NOT NULL,';
+  stSql := stSql + ' AC_NODENO INTEGER NOT NULL,';
+  stSql := stSql + ' AC_ECUID varchar(2) NOT NULL,';
+  stSql := stSql + ' DO_DOORNO varchar(1) NOT NULL,';
+  stSql := stSql + ' IO_COUNT INTEGER DEFAULT 0 NOT NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,IO_DATE,AC_NODENO,AC_ECUID,DO_DOORNO) ';
+  stSql := stSql + ' ) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_INOUTGROUP: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_INOUTGROUP (';
+  stSql := stSql + ' GROUP_CODE VARCHAR(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' IO_GROUPNAME VARCHAR(30) NOT NULL,';
+  stSql := stSql + ' AC_NODENO INTEGER NOT NULL,';
+  stSql := stSql + ' AC_ECUID VARCHAR(2) NOT NULL,';
+  stSql := stSql + ' DO_DOORNO VARCHAR(1) NOT NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,IO_GROUPNAME,AC_NODENO,AC_ECUID,DO_DOORNO) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_INOUTGROUPLIST: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_INOUTGROUPLIST (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' IO_GROUPCODE varchar(3) NOT NULL,';
+  stSql := stSql + ' CA_CARDNO varchar(20) NOT NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,IO_GROUPCODE,CA_CARDNO) ';
+  stSql := stSql + ' ) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_INOUTREADERGROUP: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_INOUTREADERGROUP (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' IO_GROUPCODE varchar(3) NOT NULL,';
+  stSql := stSql + ' IO_GROUPNAME varchar(100) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,IO_GROUPCODE) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_JAVARASCHEDULE: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_JAVARASCHEDULE (';
+  stSql := stSql + ' GROUP_CODE VARCHAR(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' AC_NODENO INTEGER NOT NULL,';
+  stSql := stSql + ' AC_ECUID VARCHAR(2) NOT NULL,';
+  stSql := stSql + ' DO_DOORNO VARCHAR(2) NOT NULL,';
+  stSql := stSql + ' SchUse VARCHAR(1) DEFAULT ''0'' NULL,';
+  stSql := stSql + ' WeekStartTime varchar(4),';
+  stSql := stSql + ' WeekEndTime varchar(4),';
+  stSql := stSql + ' SaturdayStartTime varchar(4),';
+  stSql := stSql + ' SaturdayEndTime varchar(4),';
+  stSql := stSql + ' SundayStartTime varchar(4),';
+  stSql := stSql + ' SundayEndTime varchar(4),';
+  stSql := stSql + ' HolidayStartTime varchar(4),';
+  stSql := stSql + ' HolidayEndTime varchar(4),';
+  stSql := stSql + ' SendState VARCHAR(1) DEFAULT ''N'' NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,AC_NODENO,AC_ECUID,DO_DOORNO) ';
+  stSql := stSql + ' ) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_KTCARDISSUE: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_KTCARDISSUE (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' EM_CODE varchar(20) NOT NULL,';
+  stSql := stSql + ' CARD_SEQ Integer NOT NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,EM_CODE) ';
+  stSql := stSql + ' ) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_KTTMAPPINGCODE: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_KTTMAPPINGCODE (';
+  stSql := stSql + ' AL_ALARMDEVICETYPECODE varchar(2) NOT NULL,';
+  stSql := stSql + ' AL_ALARMMODECODE varchar(1) NOT NULL,';
+  stSql := stSql + ' AL_ALARMSTATUSCODE2 varchar(5) NOT NULL,';
+  stSql := stSql + ' KTTFUNCODE varchar(2) NOT NULL,';
+  stSql := stSql + ' KTTEVENTCODE varchar(10) NOT NULL,';
+  stSql := stSql + ' KTTCODE varchar(30),';
+  stSql := stSql + ' PRIMARY KEY (AL_ALARMDEVICETYPECODE,AL_ALARMMODECODE,AL_ALARMSTATUSCODE2) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_LOCATION_PrimaryKey: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_LOCATION ADD CONSTRAINT TB_LOCATION_PKIndex1 PRIMARY KEY ( GROUP_CODE,LO_DONGCODE,LO_FLOORCODE,LO_AREACODE ) ';
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_MAPLOCATION: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_MAPLOCATION (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' ML_COUNTRY varchar(3) NOT NULL,';
+  stSql := stSql + ' ML_BUILDING varchar(3) NOT NULL,';
+  stSql := stSql + ' ML_FLOOR varchar(3) NOT NULL,';
+  stSql := stSql + ' ML_AREA varchar(3) NOT NULL,';
+  stSql := stSql + ' ML_GUBUN varchar(1) NOT NULL,';
+  stSql := stSql + ' ML_NAME varchar(50) ,';
+  stSql := stSql + ' ML_IMAGE varchar(100) ,';
+  stSql := stSql + ' ML_IMAGEUSE varchar(1) ,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,ML_COUNTRY, ML_BUILDING,ML_FLOOR,ML_AREA,ML_GUBUN) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_MAPPOSITION: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_MAPPOSITION (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' MP_SEQ integer NOT NULL,';
+  stSql := stSql + ' MP_TYPE varchar(1) NULL,';
+  stSql := stSql + ' MP_LEFT integer NULL,';
+  stSql := stSql + ' MP_TOP integer NULL,';
+  stSql := stSql + ' MP_TOTW integer NULL,';
+  stSql := stSql + ' MP_TOTH integer NULL,';
+  stSql := stSql + ' MP_WIDTH integer NULL,';
+  stSql := stSql + ' MP_HEIGHT integer NULL,';
+  stSql := stSql + ' MP_NORMALCOLOR varchar(10) NULL,';
+  stSql := stSql + ' MP_NORMALFILLCOLOR varchar(10) NULL,';
+  stSql := stSql + ' MP_ALERTCOLOR varchar(10) NULL,';
+  stSql := stSql + ' MP_ALERTFILLCOLOR varchar(10) NULL,';
+  stSql := stSql + ' ML_COUNTRY varchar(3) NULL,';
+  stSql := stSql + ' ML_BUILDING varchar(3) NULL,';
+  stSql := stSql + ' ML_FLOOR varchar(3) NULL,';
+  stSql := stSql + ' ML_AREA varchar(3) NULL,';
+  stSql := stSql + ' ML_GUBUN varchar(1) NULL,';
+  stSql := stSql + ' LO_DONGCODE varchar(3) NULL,';
+  stSql := stSql + ' LO_FLOORCODE varchar(3) NULL,';
+  stSql := stSql + ' LO_AREACODE varchar(3) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,MP_SEQ) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_MAPZONE: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_MAPZONE (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' AC_NODENO integer NOT NULL,';
+  stSql := stSql + ' AC_ECUID varchar(2) NOT NULL,';
+  stSql := stSql + ' MZ_PORTNUM varchar(2) NOT NULL,';
+  stSql := stSql + ' MZ_PORTSEQ varchar(2) NOT NULL,';
+  stSql := stSql + ' MZ_TYPE varchar(1) NULL,';
+  stSql := stSql + ' MZ_LEFT integer NULL,';
+  stSql := stSql + ' MZ_TOP integer NULL,';
+  stSql := stSql + ' MZ_TOTW integer NULL,';
+  stSql := stSql + ' MZ_TOTH integer NULL,';
+  stSql := stSql + ' MZ_WIDTH integer NULL,';
+  stSql := stSql + ' MZ_HEIGHT integer NULL,';
+  stSql := stSql + ' MZ_NORMALCOLOR varchar(10) NULL,';
+  stSql := stSql + ' MZ_ALARMCOLOR varchar(10) NULL,';
+  stSql := stSql + ' MZ_ALERTCOLOR varchar(10) NULL,';
+  stSql := stSql + ' MZ_NORMALIMAGE image NULL,';
+  stSql := stSql + ' MZ_ALARMIMAGE image NULL,';
+  stSql := stSql + ' MZ_ALERTIMAGE image NULL,';
+  stSql := stSql + ' ML_COUNTRY varchar(3) NULL,';
+  stSql := stSql + ' ML_BUILDING varchar(3) NULL,';
+  stSql := stSql + ' ML_FLOOR varchar(3) NULL,';
+  stSql := stSql + ' ML_AREA varchar(3) NULL,';
+  stSql := stSql + ' ML_GUBUN varchar(1) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,AC_NODENO,AC_ECUID,MZ_PORTNUM,MZ_PORTSEQ) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_NOTCARDALARMCODE: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_NOTCARDALARMCODE (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' AN_CODE varchar(5) NOT NULL,';
+  stSql := stSql + ' AN_MODE varchar(2) NOT NULL,';
+  stSql := stSql + ' AL_STATUSCODE2 varchar(5) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,AN_CODE, AN_MODE) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_PATROLALARMEVENT: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_PATROLALARMEVENT (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' PE_DATE varchar(8) NOT NULL,';
+  stSql := stSql + ' AC_NODENO integer NOT NULL,';
+  stSql := stSql + ' AC_ECUID varchar(2) NOT NULL,';
+  stSql := stSql + ' RE_READERNO varchar(1) NOT NULL,';
+  stSql := stSql + ' PT_SEQ integer NOT NULL,';
+  stSql := stSql + ' PE_TIME varchar(6) NULL,';
+  stSql := stSql + ' PE_EVENTNAME varchar(100) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,PE_DATE,AC_NODENO,AC_ECUID,RE_READERNO,PT_SEQ) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_PATROLSTATE: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_PATROLSTATE (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' PS_DATE varchar(8) NOT NULL,';
+  stSql := stSql + ' AC_NODENO integer NOT NULL,';
+  stSql := stSql + ' AC_ECUID varchar(2) NOT NULL,';
+  stSql := stSql + ' RE_READERNO char(1) NOT NULL,';
+  stSql := stSql + ' PT_SEQ Integer NOT NULL,';
+  stSql := stSql + ' PS_STATE char(1) NULL,';
+  stSql := stSql + ' PS_UPDATETIME varchar(17) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,PS_DATE,AC_NODENO,AC_ECUID,RE_READERNO,PT_SEQ) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_PatrolTime: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_PATROLTIME (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' PT_SEQ integer NOT NULL,';
+  stSql := stSql + ' PT_NAME varchar(100) NULL,';
+  stSql := stSql + ' PT_STRARTTIME varchar(4) NULL,';
+  stSql := stSql + ' PT_ENDTIME varchar(4) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,PT_SEQ) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_PERRELAYCONFIG: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_PERRELAYCONFIG (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' PC_CONFIGCODE varchar(30) NOT NULL,';
+  stSql := stSql + ' PC_CONFIGVALUE varchar(100) NULL,';
+  stSql := stSql + ' PC_CONFIGDETAIL varchar(50) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,PC_CONFIGCODE) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_RELAYGUBUN: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_RELAYGUBUN (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890'' NOT NULL,';
+  stSql := stSql + ' RG_CODE varchar(3) NOT NULL,';
+  stSql := stSql + ' RG_NAME varchar(30) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,RG_CODE) ';
+  stSql := stSql + ' ) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_RELAYUNIVERCITY: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_RELAYUNIVERCITY (';
+  stSql := stSql + ' SEQ int IDENTITY NOT NULL,';
+  stSql := stSql + ' COLLEGECODE varchar(100),';
+  stSql := stSql + ' COLLEGENAME varchar(100),';
+  stSql := stSql + ' DEPARTCODE varchar(100),';
+  stSql := stSql + ' DEPARTNAME varchar(100),';
+  stSql := stSql + ' POSICODE varchar(100),';
+  stSql := stSql + ' POSINAME varchar(100),';
+  stSql := stSql + ' EMNAME varchar(100),';
+  stSql := stSql + ' EMCODE varchar(100),';
+  stSql := stSql + ' DEGREE varchar(100),';
+  stSql := stSql + ' CARDNO varchar(100),';
+  stSql := stSql + ' CARDSTATECODE varchar(100),';
+  stSql := stSql + ' CARDSTATENAME varchar(100),';
+  stSql := stSql + ' INSERTTIME datetime,';
+  stSql := stSql + ' CHANGE char(1) DEFAULT ''N''  NOT NULL,';
+  stSql := stSql + ' PRIMARY KEY (SEQ) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'image','OLEObject',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'int IDENTITY','AUTOINCREMENT',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end else if G_nDBTYPE = POSTGRESQL then
+  begin
+    stSql := StringReplace(stSql,'image','oid',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'int IDENTITY','serial',[rfReplaceAll]);
+  end else if G_nDBTYPE = FireBird then
+  begin
+    stSql := StringReplace(stSql,'int IDENTITY','integer',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_SEMESTER: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_SEMESTER (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' SE_CODE integer NOT NULL,';
+  stSql := stSql + ' SE_USE char(1),';
+  stSql := stSql + ' SE_STARTDATE varchar(4),';
+  stSql := stSql + ' SE_ENDDATE varchar(4),';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,SE_CODE) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_SERVERCARDRELAY: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_SERVERCARDRELAY (';
+  stSql := stSql + ' GROUP_CODE VARCHAR(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' SR_RELAYNO INTEGER NOT NULL,';
+  stSql := stSql + ' AC_NODENO INTEGER NULL,';
+  stSql := stSql + ' AC_ECUID VARCHAR(2) NULL,';
+  stSql := stSql + ' RE_READERNO VARCHAR(1) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,SR_RELAYNO) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_SERVERCARDRELAYHIS: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_SERVERCARDRELAYHIS (';
+  stSql := stSql + ' GROUP_CODE VARCHAR(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' SR_DATETIME VARCHAR(14) NOT NULL,';
+  stSql := stSql + ' SR_RELAYNO INTEGER NOT NULL,';
+  stSql := stSql + ' SR_CARDDATA VARCHAR(20) NULL,';
+  stSql := stSql + ' SR_CLIENTIP VARCHAR(30) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,SR_DATETIME,SR_RELAYNO) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_SMALLSETMAPPING: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_SMALLSETMAPPING (';
+  stSql := stSql + ' GROUP_CODE VARCHAR(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' AL_ALARMDEVICETYPECODE varchar(2) NOT NULL,';
+  stSql := stSql + ' AL_ALARMMODECODE varchar(1) NOT NULL,';
+  stSql := stSql + ' AL_ALARMSTATUSCODE2 varchar(5) NOT NULL,';
+  stSql := stSql + ' SM_EVENTCODE varchar(10) NULL,';
+  stSql := stSql + ' SM_EXTCODE varchar(10) NULL,';
+  stSql := stSql + ' SM_SENDUSE char(1) NULL,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,AL_ALARMDEVICETYPECODE,AL_ALARMMODECODE,AL_ALARMSTATUSCODE2) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateTB_SONGHOFDCONFIG: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_SONGHOFDCONFIG (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' SF_CODE varchar(20) NOT NULL,';
+  stSql := stSql + ' SF_USE char(1),';
+  stSql := stSql + ' SF_COUNT integer,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,SF_CODE) ';
+  stSql := stSql + ' ) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_TIMECODE: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_TIMECODE (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' TC_GROUP varchar(1) NOT NULL,';
+  stSql := stSql + ' TC_TIME1 varchar(8) ,';
+  stSql := stSql + ' TC_TIME2 varchar(8) ,';
+  stSql := stSql + ' TC_TIME3 varchar(8) ,';
+  stSql := stSql + ' TC_TIME4 varchar(8) ,';
+  stSql := stSql + ' TC_CHANGE varchar(1) ,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,TC_GROUP) ';
+  stSql := stSql + ' ) ';
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_TIMECODEDEVICE: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_TIMECODEDEVICE (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' AC_NODENO integer NOT NULL,';
+  stSql := stSql + ' AC_ECUID varchar(2) NOT NULL,';
+  stSql := stSql + ' TC_GROUP varchar(1) NOT NULL,';
+  stSql := stSql + ' TC_TIME1 varchar(8) ,';
+  stSql := stSql + ' TC_TIME2 varchar(8) ,';
+  stSql := stSql + ' TC_TIME3 varchar(8) ,';
+  stSql := stSql + ' TC_TIME4 varchar(8) ,';
+  stSql := stSql + ' TC_SEND varchar(1) ,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,AC_NODENO,AC_ECUID,TC_GROUP) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_WORKGUBUN: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_WORKGUBUN (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' WG_CODE integer NOT NULL,';
+  stSql := stSql + ' WG_TYPE varchar(1) ,';
+  stSql := stSql + ' WG_NAME varchar(100) ,';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,WG_CODE) ';
+  stSql := stSql + ' ) ';
+
+  result := dmDataBase.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_WORKLOG: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_WORKLOG (';
+  stSql := stSql + ' WO_CODE varchar(30) NOT NULL,';
+  stSql := stSql + ' WO_COMMAND varchar(30) NOT NULL,';
+  stSql := stSql + ' WO_DATA varchar(300),';
+  stSql := stSql + ' WO_TIME varchar(14) NOT NULL,';
+  stSql := stSql + ' WO_OPERATOR varchar(30) ';
+  stSql := stSql + ' ) ';
+
+  if G_nDBTYPE = MDB then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.CreateVw_SMS_EVENT: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'CREATE VIEW Vw_SMS_EVENT AS ';
+  stSql := stSql + 'select b.AL_ZONENAME as v_DEVICE_NAME, ' ;
+  stSql := stSql + ' c.AL_ZONENAME as v_ZONE_NAME, ' ;
+  stSql := stSql + ' a.AL_ALARMSTATUSCODE as v_EVENT_CODE, ' ;
+  stSql := stSql + ' a.AL_ZONESTATE as v_ZONE_STATE, ' ;
+  stSql := stSql + ' d.AL_ALARMNAME as v_EVENT_NAME, ' ;
+  stSql := stSql + ' a.AL_DATE + a.AL_TIME  as v_EVENT_TIME, ' ;
+  stSql := stSql + ' a.AL_INPUTTIME  as v_INSERT_TIME,';
+  stSql := stSql + ' a.AL_MSGNO as v_MSG_ID ' ;
+  stSql := stSql + ' FROM TB_ALARMEVENT a  ' ;
+  stSql := stSql + ' Left Join TB_ALARMDEVICE b  ' ;
+  stSql := stSql + ' ON(a.GROUP_CODE = b.GROUP_CODE ';
+  stSql := stSql + ' AND a.AC_NODENO = b.AC_NODENO ';
+  stSql := stSql + ' AND a.AC_ECUID = b.AC_ECUID) ';
+  stSql := stSql + ' Left Join TB_ZONEDEVICE c  ' ;
+  stSql := stSql + ' ON(a.GROUP_CODE = c.GROUP_CODE ';
+  stSql := stSql + ' AND a.AC_NODENO = c.AC_NODENO ';
+  stSql := stSql + ' AND a.AC_ECUID = c.AC_ECUID ';
+  stSql := stSql + ' AND a.AL_ZONENO = ''0'' + c.AL_ZONENUM )';
+  stSql := stSql + ' Left Join TB_ALARMSTATUSCODE d  ' ;
+  stSql := stSql + ' ON(a.GROUP_CODE = d.GROUP_CODE ';
+  stSql := stSql + ' AND a.AL_ALARMSTATUSCODE = d.AL_ALARMSTATUSCODE )';
+
+  dmDataBase.ProcessExecSQL(stSql);
+
+  stSql := 'CREATE LOGIN [sms] WITH PASSWORD=N''smspass'', DEFAULT_DATABASE=[zmos], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF';
+  dmDataBase.ProcessExecSQL(stSql);
+  stSql := 'CREATE USER [sms] FOR LOGIN [sms]';
+  dmDataBase.ProcessExecSQL(stSql);
+  stSql := 'ALTER LOGIN [sms] WITH PASSWORD=N''smspass''';
+  dmDataBase.ProcessExecSQL(stSql);
+  stSql := 'EXEC sp_addrolemember ''db_datareader'', ''sms''';
+  dmDataBase.ProcessExecSQL(stSql);
+  stSql := 'EXEC sp_addrolemember ''db_accessadmin'', ''sms''';
+  dmDataBase.ProcessExecSQL(stSql);
+  stSql := 'GRANT SELECT ON [dbo].[Vw_SMS_EVENT] TO [sms] ' ;
+  dmDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBCreate.DropTB_COMPANY_PrimaryKey: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'sp_helpindex TB_COMPANY ';
+
+  with dmDataBase.ADOTempQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+
+    if recordCount < 1 then Exit;
+    stSql := 'ALTER TABLE TB_COMPANY DROP ' + FieldByName('index_name').AsString;
+    dmDataBase.ProcessExecSQL(stSql);
+  end;
+
+end;
+
+function TdmDBCreate.DropTB_LOCATION_PrimaryKey: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'sp_helpindex TB_LOCATION ';
+
+  with dmDataBase.ADOTempQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+
+    if recordCount < 1 then Exit;
+    stSql := 'ALTER TABLE TB_LOCATION DROP ' + FieldByName('index_name').AsString;
+    dmDataBase.ProcessExecSQL(stSql);
+  end;
+end;
+
+end.

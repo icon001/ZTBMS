@@ -1,0 +1,40 @@
+unit uDataBaseConfig;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, AdvPanel,
+  W7Classes, W7Buttons, Vcl.ImgList,System.iniFiles,Data.DB,Data.Win.ADODB,JclMime;
+
+
+type
+  TForm1 = class(TForm)
+    btn_Save: TW7SpeedButton;
+    btn_Close: TW7SpeedButton;
+    AdvPanel1: TAdvPanel;
+    Label5: TLabel;
+    Label4: TLabel;
+    Label3: TLabel;
+    Label2: TLabel;
+    Label1: TLabel;
+    edPasswd: TEdit;
+    edDataBaseName: TEdit;
+    edUserid: TEdit;
+    edServerPort: TEdit;
+    edServerIP: TEdit;
+    rg_DBType: TRadioGroup;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+end.

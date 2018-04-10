@@ -1,0 +1,494 @@
+object fmConfig: TfmConfig
+  Left = 667
+  Top = 355
+  Width = 466
+  Height = 340
+  Caption = #54872#44221#49444#51221
+  Color = clBtnFace
+  Font.Charset = HANGEUL_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = #44404#47548#52404
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 12
+  object sbSave: TSpeedButton
+    Left = 80
+    Top = 232
+    Width = 89
+    Height = 25
+    Caption = #51201#50857
+    Glyph.Data = {
+      76010000424D7601000000000000760000002800000020000000100000000100
+      04000000000000010000120B0000120B00001000000000000000000000000000
+      800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00555555555555
+      555555555555555555555555555555555555555555FF55555555555559055555
+      55555555577FF5555555555599905555555555557777F5555555555599905555
+      555555557777FF5555555559999905555555555777777F555555559999990555
+      5555557777777FF5555557990599905555555777757777F55555790555599055
+      55557775555777FF5555555555599905555555555557777F5555555555559905
+      555555555555777FF5555555555559905555555555555777FF55555555555579
+      05555555555555777FF5555555555557905555555555555777FF555555555555
+      5990555555555555577755555555555555555555555555555555}
+    NumGlyphs = 2
+    OnClick = sbSaveClick
+  end
+  object sbCancel: TSpeedButton
+    Left = 240
+    Top = 232
+    Width = 89
+    Height = 25
+    Caption = #52712#49548
+    Glyph.Data = {
+      76010000424D7601000000000000760000002800000020000000100000000100
+      04000000000000010000130B0000130B00001000000000000000000000000000
+      800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+      3333333333FFFFF3333333333999993333333333F77777FFF333333999999999
+      3333333777333777FF3333993333339993333377FF3333377FF3399993333339
+      993337777FF3333377F3393999333333993337F777FF333337FF993399933333
+      399377F3777FF333377F993339993333399377F33777FF33377F993333999333
+      399377F333777FF3377F993333399933399377F3333777FF377F993333339993
+      399377FF3333777FF7733993333339993933373FF3333777F7F3399933333399
+      99333773FF3333777733339993333339933333773FFFFFF77333333999999999
+      3333333777333777333333333999993333333333377777333333}
+    NumGlyphs = 2
+    OnClick = sbCancelClick
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 272
+    Width = 458
+    Height = 34
+    Panels = <
+      item
+        Width = 300
+      end>
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Top = 0
+    Width = 458
+    Height = 217
+    ActivePage = TabSheet2
+    Align = alTop
+    TabOrder = 1
+    object TabSheet1: TTabSheet
+      Caption = #51217#49549#54872#44221'1'
+      object Label2: TLabel
+        Left = 16
+        Top = 20
+        Width = 96
+        Height = 12
+        Caption = #45936#51060#53552#48288#51060#49828#53440#51077
+      end
+      object Label3: TLabel
+        Left = 16
+        Top = 44
+        Width = 84
+        Height = 12
+        Caption = #45936#51060#53552#48288#51060#49828'IP'
+      end
+      object Label4: TLabel
+        Left = 16
+        Top = 68
+        Width = 96
+        Height = 12
+        Caption = #45936#51060#53552#48288#51060#49828'PORT'
+      end
+      object Label6: TLabel
+        Left = 16
+        Top = 92
+        Width = 36
+        Height = 12
+        Caption = #44228#51221'ID'
+      end
+      object Label8: TLabel
+        Left = 16
+        Top = 116
+        Width = 60
+        Height = 12
+        Caption = #44228#51221'PASSWD'
+      end
+      object Label5: TLabel
+        Left = 16
+        Top = 140
+        Width = 84
+        Height = 12
+        Caption = #45936#51060#53552#48288#51060#49828#47749
+      end
+      object btn_ConnectTest: TSpeedButton
+        Left = 16
+        Top = 167
+        Width = 97
+        Height = 17
+        Caption = #51217#49549#53580#49828#53944
+        OnClick = btn_ConnectTestClick
+      end
+      object btn_QueryTest1: TSpeedButton
+        Tag = 1
+        Left = 336
+        Top = 167
+        Width = 97
+        Height = 17
+        Caption = #53244#47532#53580#49828#53944
+        Enabled = False
+        OnClick = btn_QueryTest1Click
+      end
+      object cmb_DBType: TComboBox
+        Left = 128
+        Top = 16
+        Width = 201
+        Height = 20
+        Style = csDropDownList
+        ImeName = 'Microsoft Office IME 2007'
+        ItemHeight = 12
+        ItemIndex = 0
+        TabOrder = 0
+        Text = '1.MSSQL'
+        Items.Strings = (
+          '1.MSSQL'
+          '2.POSTGRESQL'
+          '3.ORACLE'
+          '4.MDB'
+          '5.ORACLE(oraOleDB)'
+          '6.ODBC')
+      end
+      object ed_dbip: TEdit
+        Left = 128
+        Top = 40
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        TabOrder = 1
+      end
+      object ed_dbport: TEdit
+        Left = 128
+        Top = 64
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        TabOrder = 2
+      end
+      object ed_dbuserid: TEdit
+        Left = 128
+        Top = 88
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        TabOrder = 3
+      end
+      object ed_dbpw: TEdit
+        Left = 128
+        Top = 112
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        TabOrder = 4
+      end
+      object ed_dbname: TEdit
+        Left = 128
+        Top = 136
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        TabOrder = 5
+      end
+      object ed_ConnectedTest: TEdit
+        Left = 128
+        Top = 166
+        Width = 201
+        Height = 18
+        BevelInner = bvNone
+        BevelOuter = bvNone
+        Ctl3D = False
+        ImeName = 'Microsoft Office IME 2007'
+        ParentCtl3D = False
+        ReadOnly = True
+        TabOrder = 6
+      end
+    end
+    object TabSheet4: TTabSheet
+      Caption = #51217#49549#54872#44221'2'
+      ImageIndex = 3
+      object Label11: TLabel
+        Left = 16
+        Top = 20
+        Width = 96
+        Height = 12
+        Caption = #45936#51060#53552#48288#51060#49828#53440#51077
+      end
+      object Label12: TLabel
+        Left = 16
+        Top = 44
+        Width = 84
+        Height = 12
+        Caption = #45936#51060#53552#48288#51060#49828'IP'
+      end
+      object Label13: TLabel
+        Left = 16
+        Top = 68
+        Width = 96
+        Height = 12
+        Caption = #45936#51060#53552#48288#51060#49828'PORT'
+      end
+      object Label14: TLabel
+        Left = 16
+        Top = 92
+        Width = 36
+        Height = 12
+        Caption = #44228#51221'ID'
+      end
+      object Label15: TLabel
+        Left = 16
+        Top = 116
+        Width = 60
+        Height = 12
+        Caption = #44228#51221'PASSWD'
+      end
+      object Label16: TLabel
+        Left = 16
+        Top = 140
+        Width = 84
+        Height = 12
+        Caption = #45936#51060#53552#48288#51060#49828#47749
+      end
+      object btn_ConnectTest2: TSpeedButton
+        Left = 16
+        Top = 167
+        Width = 97
+        Height = 17
+        Caption = #51217#49549#53580#49828#53944
+        OnClick = btn_ConnectTest2Click
+      end
+      object btn_QueryTest2: TSpeedButton
+        Tag = 2
+        Left = 336
+        Top = 167
+        Width = 97
+        Height = 17
+        Caption = #53244#47532#53580#49828#53944
+        Enabled = False
+        OnClick = btn_QueryTest1Click
+      end
+      object cmb_DBType2: TComboBox
+        Left = 128
+        Top = 16
+        Width = 201
+        Height = 20
+        Style = csDropDownList
+        ImeName = 'Microsoft Office IME 2007'
+        ItemHeight = 12
+        ItemIndex = 0
+        TabOrder = 0
+        Text = '1.MSSQL'
+        Items.Strings = (
+          '1.MSSQL'
+          '2.POSTGRESQL'
+          '3.ORACLE'
+          '4.MDB'
+          '5.ORACLE(oraOleDB)'
+          '6.ODBC')
+      end
+      object ed_dbip2: TEdit
+        Left = 128
+        Top = 40
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        TabOrder = 1
+      end
+      object ed_dbport2: TEdit
+        Left = 128
+        Top = 64
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        TabOrder = 2
+      end
+      object ed_dbuserid2: TEdit
+        Left = 128
+        Top = 88
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        TabOrder = 3
+      end
+      object ed_dbpw2: TEdit
+        Left = 128
+        Top = 112
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        TabOrder = 4
+      end
+      object ed_dbname2: TEdit
+        Left = 128
+        Top = 136
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        TabOrder = 5
+      end
+      object ed_ConnectedTest2: TEdit
+        Left = 128
+        Top = 166
+        Width = 201
+        Height = 18
+        BevelInner = bvNone
+        BevelOuter = bvNone
+        Ctl3D = False
+        ImeName = 'Microsoft Office IME 2007'
+        ParentCtl3D = False
+        ReadOnly = True
+        TabOrder = 6
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = #54532#47196#44536#47016
+      ImageIndex = 1
+      object Label1: TLabel
+        Left = 16
+        Top = 12
+        Width = 72
+        Height = 12
+        Caption = #54532#47196#44536#47016#53440#51077
+      end
+      object Label7: TLabel
+        Left = 16
+        Top = 36
+        Width = 48
+        Height = 12
+        Caption = #50672#46041#51452#44592
+      end
+      object Label9: TLabel
+        Left = 232
+        Top = 36
+        Width = 12
+        Height = 12
+        Caption = #48516
+      end
+      object lb_companyCode: TLabel
+        Left = 16
+        Top = 60
+        Width = 48
+        Height = 12
+        Caption = #54924#49324#53076#46300
+      end
+      object Label10: TLabel
+        Left = 16
+        Top = 84
+        Width = 48
+        Height = 12
+        Caption = #51648#51216#53076#46300
+      end
+      object Label17: TLabel
+        Left = 16
+        Top = 108
+        Width = 72
+        Height = 12
+        Caption = #44592#48376#51649#50948#53076#46300
+      end
+      object cmb_ProgramType: TComboBox
+        Left = 128
+        Top = 8
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        ItemHeight = 12
+        TabOrder = 0
+        Text = '1.'#50500#51452#45824#54617#44368
+        OnChange = cmb_ProgramTypeChange
+        Items.Strings = (
+          '1.'#50500#51452#45824#54617#44368
+          '2.'#51204#45224#45824#48337#50896
+          '3.KT'#49436#52488#49324#50725
+          '4.'#51312#49440#45824#54617#44368
+          '5.KT'#50864#47732#46041
+          '6.'#49933#50857#51221#48372#53685#49888
+          '7.'#50672#49464#45824#54617#44368
+          '8.'#54616#51060#51592#54637#44277
+          '9.'#49436#50872#45824#54617#44368
+          '10.STX'#52285#50896
+          '11.'#46041#50577#45824#48513#49436#50872#52896#54140#49828)
+      end
+      object ed_RelayTime: TEdit
+        Left = 128
+        Top = 32
+        Width = 97
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        TabOrder = 1
+        Text = '30'
+      end
+      object ed_companyCode: TEdit
+        Left = 128
+        Top = 56
+        Width = 97
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        MaxLength = 3
+        TabOrder = 2
+        Text = '099'
+      end
+      object ed_JijumCode: TEdit
+        Left = 128
+        Top = 80
+        Width = 97
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        MaxLength = 3
+        TabOrder = 3
+        Text = '000'
+      end
+      object ed_BasicPosiCode: TEdit
+        Left = 128
+        Top = 104
+        Width = 97
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        MaxLength = 3
+        TabOrder = 4
+        Text = '000'
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'TEST'
+      ImageIndex = 2
+      object SpeedButton1: TSpeedButton
+        Left = 16
+        Top = 168
+        Width = 97
+        Height = 17
+        Caption = #51217#49549#53580#49828#53944
+        OnClick = SpeedButton1Click
+      end
+      object Memo1: TMemo
+        Left = 16
+        Top = 16
+        Width = 369
+        Height = 137
+        ImeName = 'Microsoft IME 2010'
+        ScrollBars = ssBoth
+        TabOrder = 0
+      end
+      object Edit1: TEdit
+        Left = 128
+        Top = 166
+        Width = 201
+        Height = 18
+        BevelInner = bvNone
+        BevelOuter = bvNone
+        Ctl3D = False
+        ImeName = 'Microsoft Office IME 2007'
+        ParentCtl3D = False
+        ReadOnly = True
+        TabOrder = 1
+      end
+    end
+  end
+end

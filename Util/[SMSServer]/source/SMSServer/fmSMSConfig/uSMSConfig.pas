@@ -1,0 +1,289 @@
+unit uSMSConfig;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls, Buttons, ADODB,ActiveX, ComCtrls;
+
+type
+  TfmSMSConfig = class(TForm)
+    btn_Setting: TSpeedButton;
+    btn_Cancel: TSpeedButton;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    gb_smsSeverConfig: TGroupBox;
+    Panel1: TPanel;
+    Label1: TLabel;
+    cmb_ServerType: TComboBox;
+    Panel2: TPanel;
+    lb_ServerIP: TLabel;
+    lb_ServerPort: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label9: TLabel;
+    ed_SMSServerIP: TEdit;
+    ed_SMSServerPort: TEdit;
+    ed_SMSUserID: TEdit;
+    ed_SMSUserPW: TEdit;
+    ed_DBName: TEdit;
+    gb_smsSendConfig: TGroupBox;
+    Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    ed_smsid: TEdit;
+    ed_callbacknum: TEdit;
+    ed_Sendername: TEdit;
+    TabSheet2: TTabSheet;
+    Label2: TLabel;
+    ed_smsMessage: TRichEdit;
+    TabSheet3: TTabSheet;
+    rg_SMSNumGubun: TRadioGroup;
+    rg_areagubun: TRadioGroup;
+    rg_SMSUse: TRadioGroup;
+    Label3: TLabel;
+    cmb_DBType: TComboBox;
+    btn_Test: TButton;
+    procedure FormCreate(Sender: TObject);
+    procedure rg_SMSUseClick(Sender: TObject);
+    procedure btn_CancelClick(Sender: TObject);
+    procedure btn_SettingClick(Sender: TObject);
+    procedure cmb_ServerTypeChange(Sender: TObject);
+    procedure btn_TestClick(Sender: TObject);
+  private
+    { Private declarations }
+    procedure FormInitialize;
+    procedure GetSMSConfig;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmSMSConfig: TfmSMSConfig;
+
+implementation
+
+uses
+  uDataModule1,
+  uCommonSql,
+  uSMSModule;
+
+{$R *.dfm}
+
+{ TfmSMSConfig }
+
+procedure TfmSMSConfig.GetSMSConfig;
+var
+  TempAdoQuery : TADOQuery;
+  stSql : string;
+begin
+  FormInitialize;
+  Try
+    Try
+      CoInitialize(nil);
+      TempAdoQuery := TADOQuery.Create(nil);
+      TempAdoQuery.Connection := DataModule1.ADOConnection;
+      with  TempAdoQuery  do
+      begin
+        stSql := 'Select * from TB_CONFIG ';
+        stSql := stSql + ' where CO_CONFIGGROUP = ''SMS'' ';
+        Close;
+        SQL.Text := stSql;
+
+        Try
+          Open;
+        Except
+           showmessage('Select Error!!');
+           Exit;
+        End;
+        if RecordCount < 1 then
+        begin
+          Exit;
+        end;
+        While Not Eof do
+        begin
+          if UpperCase(FindField('CO_CONFIGCODE').AsString) = 'SMSUSE' then
+          begin
+            rg_SMSUse.ItemIndex := strtoint(FindField('CO_CONFIGVALUE').AsString);
+          end;
+          if UpperCase(FindField('CO_CONFIGCODE').AsString) = 'AREAGUBUN' then
+          begin
+            rg_areagubun.ItemIndex := strtoint(FindField('CO_CONFIGVALUE').AsString);
+          end;
+          if UpperCase(FindField('CO_CONFIGCODE').AsString) = 'SMSNUMTYPE' then
+          begin
+            rg_SMSNumGubun.ItemIndex := strtoint(FindField('CO_CONFIGVALUE').AsString);
+          end;
+          if UpperCase(FindField('CO_CONFIGCODE').AsString) = 'SERVERTYPE' then
+          begin
+            cmb_ServerType.ItemIndex := strtoint(FindField('CO_CONFIGVALUE').AsString);
+          end;
+          if UpperCase(FindField('CO_CONFIGCODE').AsString) = 'SERVERIP' then
+          begin
+            ed_SMSServerIP.Text := FindField('CO_CONFIGVALUE').AsString;
+          end;
+          if UpperCase(FindField('CO_CONFIGCODE').AsString) = 'DBNAME' then
+          begin
+            ed_DBName.Text := FindField('CO_CONFIGVALUE').AsString;
+          end;
+          if UpperCase(FindField('CO_CONFIGCODE').AsString) = 'DBTYPE' then
+          begin
+            cmb_DBType.Text := FindField('CO_CONFIGVALUE').AsString;
+          end;
+
+          if UpperCase(FindField('CO_CONFIGCODE').AsString) = 'SERVERPORT' then
+          begin
+            ed_SMSServerPort.Text := FindField('CO_CONFIGVALUE').AsString;
+          end;
+          if UpperCase(FindField('CO_CONFIGCODE').AsString) = 'USERID' then
+          begin
+            ed_SMSUserID.Text := FindField('CO_CONFIGVALUE').AsString;
+          end;
+          if UpperCase(FindField('CO_CONFIGCODE').AsString) = 'USERPW' then
+          begin
+            ed_SMSUserPW.Text := FindField('CO_CONFIGVALUE').AsString;
+          end;
+          if UpperCase(FindField('CO_CONFIGCODE').AsString) = 'SMSUSERID' then
+          begin
+            ed_smsid.Text := FindField('CO_CONFIGVALUE').AsString;
+          end;
+          if UpperCase(FindField('CO_CONFIGCODE').AsString) = 'BACKNUM' then
+          begin
+            ed_callbacknum.Text := FindField('CO_CONFIGVALUE').AsString;
+          end;
+          if UpperCase(FindField('CO_CONFIGCODE').AsString) = 'SENDERNAME' then
+          begin
+            ed_Sendername.Text := FindField('CO_CONFIGVALUE').AsString;
+          end;
+          if UpperCase(FindField('CO_CONFIGCODE').AsString) = 'MESSAGE' then
+          begin
+            ed_smsMessage.Text := FindField('CO_CONFIGVALUE').AsString;
+          end;
+
+          Next;
+        end;
+        rg_SMSUseClick(self);
+      end;
+    Finally
+      TempAdoQuery.Free;
+      CoUninitialize;
+    End;
+  Except
+    Exit;
+  End;
+end;
+
+procedure TfmSMSConfig.FormCreate(Sender: TObject);
+begin
+  GetSMSConfig;
+end;
+
+procedure TfmSMSConfig.FormInitialize;
+begin
+  rg_SMSUse.ItemIndex := 0;
+  rg_areagubun.ItemIndex := 0;
+  rg_SMSNumGubun.ItemIndex := 0;
+  cmb_ServerType.ItemIndex := 0;
+  ed_SMSServerIP.Text := '127.0.0.1';
+  ed_SMSServerPort.Text := '1433';
+  ed_SMSUserID.Text := 'sa';
+  ed_SMSUserPW.Text := 'sapasswd';   
+end;
+
+procedure TfmSMSConfig.rg_SMSUseClick(Sender: TObject);
+begin
+  if rg_SMSUse.ItemIndex = 0 then
+  begin
+    gb_smsSeverConfig.Visible := False;
+    gb_smsSendConfig.Visible := False;
+  end else
+  begin
+    gb_smsSeverConfig.Visible := True;
+    gb_smsSendConfig.Visible := True;
+  end;
+end;
+
+procedure TfmSMSConfig.btn_CancelClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmSMSConfig.btn_SettingClick(Sender: TObject);
+var
+  stSql : string;
+begin
+  stSql := CommonSql.UpdateTB_CONFIG('SMS','SMSUSE',inttostr(rg_SMSUse.ItemIndex));
+  DataModule1.ProcessExecSQL(stSql);
+
+  stSql := CommonSql.UpdateTB_CONFIG('SMS','AREAGUBUN',inttostr(rg_areagubun.ItemIndex));
+  DataModule1.ProcessExecSQL(stSql);
+
+  stSql := CommonSql.UpdateTB_CONFIG('SMS','SMSNUMTYPE',inttostr(rg_SMSNumGubun.ItemIndex));
+  DataModule1.ProcessExecSQL(stSql);
+
+  stSql := CommonSql.UpdateTB_CONFIG('SMS','SERVERTYPE',inttostr(cmb_ServerType.ItemIndex));
+  DataModule1.ProcessExecSQL(stSql);
+
+  stSql := CommonSql.UpdateTB_CONFIG('SMS','SERVERIP',ed_SMSServerIP.Text);
+  DataModule1.ProcessExecSQL(stSql);
+
+  stSql := CommonSql.UpdateTB_CONFIG('SMS','SERVERPORT',ed_SMSServerPort.Text);
+  DataModule1.ProcessExecSQL(stSql);
+
+  stSql := CommonSql.UpdateTB_CONFIG('SMS','DBNAME',ed_DBName.Text);
+  DataModule1.ProcessExecSQL(stSql);
+
+  stSql := CommonSql.UpdateTB_CONFIG('SMS','DBTYPE',cmb_DBType.Text);
+  DataModule1.ProcessExecSQL(stSql);
+
+  stSql := CommonSql.UpdateTB_CONFIG('SMS','USERID',ed_SMSUserID.Text);
+  DataModule1.ProcessExecSQL(stSql);
+
+  stSql := CommonSql.UpdateTB_CONFIG('SMS','USERPW',ed_SMSUserPW.Text);
+  DataModule1.ProcessExecSQL(stSql);
+
+  stSql := CommonSql.UpdateTB_CONFIG('SMS','SMSUSERID',ed_smsid.Text);
+  DataModule1.ProcessExecSQL(stSql);
+
+  stSql := CommonSql.UpdateTB_CONFIG('SMS','BACKNUM',ed_callbacknum.Text);
+  DataModule1.ProcessExecSQL(stSql);
+
+  stSql := CommonSql.UpdateTB_CONFIG('SMS','SENDERNAME',ed_Sendername.Text);
+  DataModule1.ProcessExecSQL(stSql);
+
+  stSql := CommonSql.UpdateTB_CONFIG('SMS','MESSAGE',ed_smsMessage.Text);
+  DataModule1.ProcessExecSQL(stSql);
+
+  Close;
+
+end;
+
+procedure TfmSMSConfig.cmb_ServerTypeChange(Sender: TObject);
+begin
+  if cmb_ServerType.ItemIndex = 0 then
+  begin
+    lb_ServerIP.Caption := '서버 IP';
+    lb_ServerPort.Caption := '서버 Port';
+  end else if cmb_ServerType.ItemIndex = 1 then
+  begin
+
+  end;
+end;
+
+procedure TfmSMSConfig.btn_TestClick(Sender: TObject);
+begin
+    dmSMSModule.DataBaseType := UpperCase(cmb_DBType.Text);
+    dmSMSModule.DataBaseIP := ed_SMSServerIP.Text;
+    dmSMSModule.DataBasePort := strtoint(ed_SMSServerPort.Text);
+    dmSMSModule.UserID := ed_SMSUserID.Text;
+    dmSMSModule.UserPW := ed_SMSUserPW.Text;
+    dmSMSModule.DataBaseName := ed_DBName.Text;
+    dmSMSModule.DataBaseConnect(True);
+    if dmSMSModule.DBConnected then
+    begin
+      showmessage('접속 성공');
+    end;
+
+end;
+
+end.

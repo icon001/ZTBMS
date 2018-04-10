@@ -1,0 +1,3981 @@
+unit uZeronEventDataBaseConfig;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics,
+  Controls, Forms, Dialogs, StdCtrls, ExtCtrls, AdvPanel,
+  W7Classes, W7Buttons, ImgList,iniFiles,DB,ADODB,
+  ActiveX;
+
+type
+  TZeronEventDataBaseConfig = class(TComponent)
+  private
+    FCancel: Boolean;
+    FDBConnected: Boolean;
+    class function FindSelf:TComponent;
+    procedure SetCancel(const Value: Boolean);
+    procedure SetDBConnected(const Value: Boolean);
+  public
+    { Public declarations }
+    Procedure ShowDataBaseConfig;
+    Function DataBaseConnect(aMessage:Boolean=True):Boolean;
+  public
+    Function SmallSetTableVersionCheck : Boolean;
+    Function GetSmallSetTableVersion:integer;
+    function SmallsetTable001VersionMake: Boolean;
+    function SmallsetTable002VersionMake: Boolean;
+    function SmallsetTable003VersionMake: Boolean;
+    function SmallsetTable004VersionMake: Boolean;
+    function SmallsetTable005VersionMake: Boolean;
+  public
+    Function PatrolTableVersionCheck : Boolean;
+    Function GetPatrolTableVersion:integer;
+    function PatrolTable001VersionMake: Boolean;
+    function PatrolTable002VersionMake: Boolean;
+    function PatrolTable003VersionMake: Boolean;
+    function PatrolTable004VersionMake: Boolean;
+    function PatrolTable005VersionMake: Boolean;
+  public
+    Function TableVersionCheck:Boolean;
+    Function GetTableVersion:integer;
+    function Table001VersionMake: Boolean;
+    function Table002VersionMake: Boolean;
+    function Table003VersionMake: Boolean;
+    function Table004VersionMake: Boolean;
+    function Table005VersionMake: Boolean;
+    function Table006VersionMake: Boolean;
+    function Table007VersionMake: Boolean;
+    function Table008VersionMake: Boolean;
+    function Table009VersionMake: Boolean;
+    function Table010VersionMake: Boolean;
+    function Table011VersionMake: Boolean;
+    function Table012VersionMake: Boolean;
+    function Table013VersionMake: Boolean;
+    function Table014VersionMake: Boolean;
+    function Table015VersionMake: Boolean;
+    function Table016VersionMake: Boolean;
+    function Table017VersionMake: Boolean;
+    function Table018VersionMake: Boolean;
+    function Table019VersionMake: Boolean;
+    function Table020VersionMake: Boolean;
+    function Table021VersionMake: Boolean;
+    function Table022VersionMake: Boolean;
+    function Table023VersionMake: Boolean;
+    function Table024VersionMake: Boolean;
+    function Table025VersionMake: Boolean;
+    function Table026VersionMake: Boolean;
+    function Table027VersionMake: Boolean;
+    function Table028VersionMake: Boolean;
+    function Table029VersionMake: Boolean;
+    function Table030VersionMake: Boolean;
+    function Table031VersionMake: Boolean;
+    function Table032VersionMake: Boolean;
+    function Table033VersionMake: Boolean;
+    function Table034VersionMake: Boolean;
+    function Table035VersionMake: Boolean;
+    function Table036VersionMake: Boolean;
+    function Table037VersionMake: Boolean;
+    function Table038VersionMake: Boolean;
+    function Table039VersionMake: Boolean;
+    function Table040VersionMake: Boolean;
+    function Table041VersionMake: Boolean;
+    function Table042VersionMake: Boolean;
+    function Table043VersionMake: Boolean;
+    function Table044VersionMake: Boolean;
+    function Table045VersionMake: Boolean;
+    function Table046VersionMake: Boolean;
+    function Table047VersionMake: Boolean;
+    function Table048VersionMake: Boolean;
+    function Table049VersionMake: Boolean;
+    function Table050VersionMake: Boolean;
+    function Table051VersionMake: Boolean;
+    function Table052VersionMake: Boolean;
+    function Table053VersionMake: Boolean;
+    function Table054VersionMake: Boolean;
+    function Table055VersionMake: Boolean;
+    function Table056VersionMake: Boolean;
+    function Table057VersionMake: Boolean;
+    function Table058VersionMake: Boolean;
+    function Table059VersionMake: Boolean;
+    function Table060VersionMake: Boolean;
+    function Table061VersionMake: Boolean;
+    function Table062VersionMake: Boolean;
+    function Table063VersionMake: Boolean;
+    function Table064VersionMake: Boolean;
+    function Table065VersionMake: Boolean;
+    function Table066VersionMake: Boolean;
+    function Table067VersionMake: Boolean;
+    function Table068VersionMake: Boolean;
+    function Table069VersionMake: Boolean;
+    function Table070VersionMake: Boolean;
+    function Table071VersionMake: Boolean;
+    function Table072VersionMake: Boolean;
+    function Table073VersionMake: Boolean;
+    function Table074VersionMake: Boolean;
+    function Table075VersionMake: Boolean;
+    function Table076VersionMake: Boolean;
+    function Table077VersionMake: Boolean;
+    function Table078VersionMake: Boolean;
+    function Table079VersionMake: Boolean;
+    function Table080VersionMake: Boolean;
+    function Table081VersionMake: Boolean;
+    function Table082VersionMake: Boolean;
+    function Table083VersionMake: Boolean;
+    function Table084VersionMake: Boolean;
+    function Table085VersionMake: Boolean;  //KTT관제 연동
+    function Table086VersionMake: Boolean;
+    function Table087VersionMake: Boolean;
+    function Table088VersionMake: Boolean;
+    function Table089VersionMake: Boolean;
+    function Table090VersionMake: Boolean;  //KTT관제 연동
+    function Table091VersionMake: Boolean;  //KTT관제 연동
+    function Table092VersionMake: Boolean;  //KTT관제 연동
+    function Table093VersionMake: Boolean;
+    function Table094VersionMake: Boolean;
+    function Table095VersionMake: Boolean;
+    function Table096VersionMake: Boolean;
+    function Table097VersionMake: Boolean;
+    function Table098VersionMake: Boolean;
+    function Table099VersionMake: Boolean;
+    function Table100VersionMake: Boolean;
+    function Table101VersionMake: Boolean;
+    function Table102VersionMake: Boolean;
+    function Table103VersionMake: Boolean;
+    function Table104VersionMake: Boolean;
+    function Table105VersionMake: Boolean;
+    function Table106VersionMake: Boolean;
+    function Table107VersionMake: Boolean;
+    function Table108VersionMake: Boolean;
+    function Table109VersionMake: Boolean;
+    function Table110VersionMake: Boolean;
+    function Table111VersionMake: Boolean;
+    function Table112VersionMake: Boolean;
+    function Table113VersionMake: Boolean;
+    function Table114VersionMake: Boolean;
+    function Table115VersionMake: Boolean;
+    function Table116VersionMake: Boolean;
+    function Table117VersionMake: Boolean;
+    function Table118VersionMake: Boolean;
+    function Table119VersionMake: Boolean;
+    function Table120VersionMake: Boolean;
+    function Table121VersionMake: Boolean;
+    function Table122VersionMake: Boolean;
+    function Table123VersionMake: Boolean;
+    function Table124VersionMake: Boolean;
+    function Table125VersionMake: Boolean;
+    function Table126VersionMake: Boolean;
+    function Table127VersionMake: Boolean;
+    function Table128VersionMake: Boolean;
+    function Table129VersionMake: Boolean;
+    function Table130VersionMake: Boolean;
+    function Table131VersionMake: Boolean;
+    function Table132VersionMake: Boolean;
+    function Table133VersionMake: Boolean;
+    function Table134VersionMake: Boolean;
+    function Table135VersionMake: Boolean;
+    function Table136VersionMake: Boolean;
+    function Table137VersionMake: Boolean;
+    function Table138VersionMake: Boolean;
+    function Table139VersionMake: Boolean;
+    function Table140VersionMake: Boolean;
+    function Table141VersionMake: Boolean;
+    function Table142VersionMake: Boolean;
+    function Table143VersionMake: Boolean;
+    function Table144VersionMake: Boolean;
+    function Table146VersionMake: Boolean;
+    function Table147VersionMake: Boolean;
+    function Table148VersionMake: Boolean;
+    function Table149VersionMake: Boolean;
+    function Table150VersionMake: Boolean;
+    function Table151VersionMake: Boolean;
+    function Table152VersionMake: Boolean;
+    function Table153VersionMake: Boolean;
+    function Table154VersionMake: Boolean;
+    function Table155VersionMake: Boolean;
+    function Table156VersionMake: Boolean;
+    function Table157VersionMake: Boolean;
+    function Table158VersionMake: Boolean;
+    function Table159VersionMake: Boolean;
+    function Table160VersionMake: Boolean;
+    function Table161VersionMake: Boolean;
+    function Table162VersionMake: Boolean;
+    function Table163VersionMake: Boolean;
+    function Table164VersionMake: Boolean;
+    function Table165VersionMake: Boolean;
+    function Table166VersionMake: Boolean;
+    function Table167VersionMake: Boolean;
+    function Table168VersionMake: Boolean;
+    function Table169VersionMake: Boolean;
+    function Table170VersionMake: Boolean;
+    function Table171VersionMake: Boolean;
+    function Table172VersionMake: Boolean;
+    function Table173VersionMake: Boolean;
+    function Table174VersionMake: Boolean;
+    function Table175VersionMake: Boolean;
+    function Table176VersionMake: Boolean;
+    function Table177VersionMake: Boolean;
+    function Table178VersionMake: Boolean;
+    function Table179VersionMake: Boolean;
+    function Table180VersionMake: Boolean;
+    function Table181VersionMake: Boolean;
+    function Table182VersionMake: Boolean;
+    function Table183VersionMake: Boolean;
+    function Table184VersionMake: Boolean;
+    function Table185VersionMake: Boolean;
+  private
+    function PositionNumberValueSetting:Boolean;
+    function CheckPersonRelay : string;
+    function CheckSamyuk : Boolean;
+    function CheckFdms : Boolean;
+    function NotGradePermitDelete:Boolean;
+  public
+    class Function GetObject:TZeronEventDataBaseConfig;   //자기자신을 찾는것  class 는 폼생성전에도 사용가능
+  Published
+    { Published declarations }
+    Property Cancel:Boolean read FCancel write SetCancel;
+    Property DBConnected : Boolean read FDBConnected write SetDBConnected;
+  end;
+
+  TfmZeronEventDataBaseConfig = class(TForm)
+    rg_DBType: TRadioGroup;
+    AdvPanel1: TAdvPanel;
+    edPasswd: TEdit;
+    edDataBaseName: TEdit;
+    Label5: TLabel;
+    Label4: TLabel;
+    edUserid: TEdit;
+    Label3: TLabel;
+    Label2: TLabel;
+    edServerPort: TEdit;
+    edServerIP: TEdit;
+    Label1: TLabel;
+    btn_Save: TW7SpeedButton;
+    btn_Close: TW7SpeedButton;
+    procedure FormCreate(Sender: TObject);
+    procedure btn_SaveClick(Sender: TObject);
+    procedure btn_CloseClick(Sender: TObject);
+    procedure rg_DBTypeClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmZeronEventDataBaseConfig: TfmZeronEventDataBaseConfig;
+
+implementation
+uses
+  DIMime,
+  uLomosUtil,
+  uCommonVariable,
+  uZeronEventDataBase,
+  uDBVariable,
+  uZeronEventDBCreate,
+  uZeronEventDBFunction;
+
+{$R *.dfm}
+
+{ TZeronEventDataBaseConfig }
+
+function TZeronEventDataBaseConfig.CheckFdms: Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+  stSql := 'select * from TB_CONFIG ';
+  stSql := stSql + ' where CO_CONFIGGROUP = ''RELAY'' ';
+  stSql := stSql + ' AND CO_CONFIGCODE = ''fdmsUSE'' ';
+  with dmZeronEventDataBase.ADOTempQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordCount < 1 then Exit;
+    Try
+      if UpperCase(FindField('CO_CONFIGVALUE').AsString) = 'TRUE' then result := True;
+    Except
+      Exit;
+    End;
+  end;
+end;
+
+function TZeronEventDataBaseConfig.CheckPersonRelay: string;
+var
+  stSql : string;
+begin
+  result := '0';
+  stSql := 'select * from TB_CONFIG ';
+  stSql := stSql + ' where CO_CONFIGGROUP = ''RELAY'' ';
+  stSql := stSql + ' AND CO_CONFIGCODE = ''PER_RELAY'' ';
+  with dmZeronEventDataBase.ADOTempQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordCount < 1 then Exit;
+    Try
+      result := FindField('CO_CONFIGVALUE').AsString;
+    Except
+      Exit;
+    End;
+  end;
+end;
+
+function TZeronEventDataBaseConfig.CheckSamyuk: Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+  if CheckPersonRelay = '1' then result := True;  //삼육대연동이면 True
+
+end;
+
+function TZeronEventDataBaseConfig.DataBaseConnect(aMessage: Boolean): Boolean;
+var
+  ini_fun : TiniFile;
+  stDBHost : string;
+  stDBPort : string;
+  stDBUserID : string;
+  stDBUserPw : string;
+  stDBName : string;
+  stConnectString : string;
+  stConnectString1 : string;
+  stDBType : string;
+begin
+  if DBConnected then Exit;
+  result := False;
+  CanCel := False;
+  G_stExeFolder  := ExtractFileDir(Application.ExeName);
+  Try
+    ini_fun := TiniFile.Create(G_stExeFolder + '\Zmos.INI');
+
+    stDBHost  := ini_fun.ReadString('DBConfig','Host','127.0.0.1');
+    stDBPort := ini_fun.ReadString('DBConfig','Port','1433');
+    stDBUserID := ini_fun.ReadString('DBConfig','UserID','sa');
+    stDBUserPw := MimeDecodeString(ini_fun.ReadString('DBConfig','UserPW',''));  //saPasswd
+    stDBName := lowerCase(ini_fun.ReadString('DBConfig','DBNAME',''));
+    G_stGroupCode := ini_fun.ReadString('COMPANY','GROUPCODE','1234567890');
+    stDBType := UpperCase(ini_fun.ReadString('DBConfig','TYPE','MSSQL'));
+
+    if UpperCase(stDBType) = 'MSSQL' then G_nDBType := MSSQL
+    else if UpperCase(stDBType) = 'PG' then G_nDBType := POSTGRESQL
+    else if UpperCase(stDBType) = 'FB' then G_nDBType := FIREBIRD
+    else if UpperCase(stDBType) = 'MDB' then G_nDBType := MDB;
+
+    G_nBuildingCodeLength := ini_fun.ReadInteger('COMPANY','BUILDINGCODELENGTH',3);
+    G_nMaxComPort := ini_fun.ReadInteger('RS232','MAXPORT',40);
+    G_nCardRegisterPort := ini_fun.ReadInteger('FORM','CardRegisterPort',0);
+
+    if G_nDBType = MSSQL then
+    begin
+      stConnectString := stConnectString + 'Provider=SQLOLEDB.1;';
+      stConnectString := stConnectString + 'Password=' + stDBUserPw + ';';
+      stConnectString := stConnectString + 'Persist Security Info=True;';
+      stConnectString := stConnectString + 'User ID=' + stDBUserID + ';';
+      stConnectString := stConnectString + 'Initial Catalog=' + stDBName + ';';
+      stConnectString := stConnectString + 'Data Source=' + stDBHost  + ',' + stDBPort;
+    end else if G_nDBType = POSTGRESQL then
+    begin
+      stConnectString := 'Provider=PostgreSQL OLE DB Provider;';
+      stConnectString := stConnectString + 'Data Source=' + stDBHost + ';'   ;
+      stConnectString := stConnectString + 'location=' + stDBName + ';';
+      stConnectString := stConnectString + 'User Id='+ stDBUserID + ';';
+      stConnectString := stConnectString + 'password=' + stDBUserPw;
+    end else if G_nDBType = FIREBIRD then
+    begin
+      stConnectString := 'Provider=ZStyle IBOLE Provider;';
+      stConnectString := stConnectString + 'Data Source=' + stDBHost + ':' + stDBName + ';';
+      stConnectString := stConnectString + 'UID='+ stDBUserID + ';';
+      stConnectString := stConnectString + 'Password=' + stDBUserPw + ';';
+      stConnectString := stConnectString + 'DIALECT=3;';
+      //IBOLE.dll 파일을 등록 할것
+    end else //디폴트로 MDB로 인식하자
+    begin
+      stConnectString := 'Provider=Microsoft.Jet.OLEDB.4.0;';
+      stConnectString := stConnectString + 'Data Source=' + G_stExeFolder + '\BMS.mdb' + ';';
+      stConnectString := stConnectString + 'Persist Security Info=True;';
+      stConnectString := stConnectString + 'Jet OLEDB:Database ';
+    end;
+
+    if G_nDBType <> MDB then
+    begin
+      stConnectString1 := stConnectString;
+    end else
+    begin
+      //MDB 에서는 이벤트 DB 와 정보 DB를 구분하기 위함
+      stConnectString1 := 'Provider=Microsoft.Jet.OLEDB.4.0;';
+      stConnectString1 := stConnectString1 + 'Data Source=' + G_stExeFolder + '\BMS.mdb' + ';';
+      stConnectString1 := stConnectString1 + 'Persist Security Info=True;';
+      stConnectString1 := stConnectString1 + 'Jet OLEDB:Database ';
+    end;
+
+    with dmZeronEventDataBase.ADOConnection do
+    begin
+      Connected := False;
+      Try
+        ConnectionString := stConnectString;
+        LoginPrompt:= false ;
+        Connected := True;
+      Except
+        on E : EDatabaseError do
+          begin
+            // ERROR MESSAGE-BOX DISPLAY
+            if aMessage then
+              ShowMessage(stConnectString + E.Message );
+            Exit;
+          end;
+        else
+          begin
+            if aMessage then
+              ShowMessage('데이터베이스 접속 에러' );
+            Exit;
+          end;
+      End;
+      CursorLocation := clUseServer;
+      //CursorLocation := clUseClient;
+    end;
+
+    with dmZeronEventDataBase.ADOEventConnection do
+    begin
+      Connected := False;
+      Try
+        ConnectionString := stConnectString1;
+        LoginPrompt:= false ;
+        Connected := True;
+      Except
+        on E : EDatabaseError do
+          begin
+            // ERROR MESSAGE-BOX DISPLAY
+            if aMessage then
+              ShowMessage(E.Message );
+            Exit;
+          end;
+        else
+          begin
+            if aMessage then
+              ShowMessage('데이터베이스 접속 에러' );
+            Exit;
+          end;
+      End;
+      CursorLocation := clUseServer;
+      //CursorLocation := clUseClient;
+    end;
+    if Not TableVersionCheck then Exit;
+    DBConnected := True;
+    result := True;
+
+    PatrolTableVersionCheck;
+    SmallSetTableVersionCheck;
+  Finally
+    ini_fun.Free;
+  End;
+
+end;
+
+class function TZeronEventDataBaseConfig.FindSelf: TComponent;
+var
+  Loop:Integer;
+begin
+  Result:=Nil;
+  for Loop:=0 to Application.ComponentCount-1 do begin
+      if Application.Components[Loop] is TZeronEventDataBaseConfig then begin
+          Result:= Application.Components[Loop];
+          Break;
+      end;
+  end;
+end;
+
+class function TZeronEventDataBaseConfig.GetObject: TZeronEventDataBaseConfig;
+begin
+   If FindSelf = Nil then TZeronEventDataBaseConfig.Create(Application);
+   Result := TZeronEventDataBaseConfig(FindSelf);
+end;
+
+function TZeronEventDataBaseConfig.GetPatrolTableVersion: integer;
+var
+  stSql : string;
+begin
+  result := 0;
+  stSql := 'select * from TB_CONFIG ';
+  stSql := stSql + ' where CO_CONFIGGROUP = ''PATROL'' ';
+  stSql := stSql + ' AND CO_CONFIGCODE = ''TABLE_VER'' ';
+  with dmZeronEventDataBase.ADOTempQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordCount < 1 then Exit;
+    Try
+      result := strtoint(FindField('CO_CONFIGVALUE').AsString);
+    Except
+      Exit;
+    End;
+  end;
+end;
+
+function TZeronEventDataBaseConfig.GetSmallSetTableVersion: integer;
+var
+  stSql : string;
+begin
+  result := 0;
+  stSql := 'select * from TB_CONFIG ';
+  stSql := stSql + ' where CO_CONFIGGROUP = ''SMALLSET'' ';
+  stSql := stSql + ' AND CO_CONFIGCODE = ''TABLE_VER'' ';
+  with dmZeronEventDataBase.ADOTempQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordCount < 1 then Exit;
+    Try
+      result := strtoint(FindField('CO_CONFIGVALUE').AsString);
+    Except
+      Exit;
+    End;
+  end;
+end;
+
+function TZeronEventDataBaseConfig.GetTableVersion: integer;
+var
+  stSql : string;
+begin
+  result := 0;
+  stSql := 'select * from TB_CONFIG ';
+  stSql := stSql + ' where CO_CONFIGGROUP = ''COMMON'' ';
+  stSql := stSql + ' AND CO_CONFIGCODE = ''TABLE_VER'' ';
+  with dmZeronEventDataBase.ADOTempQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordCount < 1 then Exit;
+    Try
+      result := strtoint(FindField('CO_CONFIGVALUE').AsString);
+    Except
+      Exit;
+    End;
+  end;
+end;
+
+function TZeronEventDataBaseConfig.NotGradePermitDelete: Boolean;
+var
+  stSql :string;
+begin
+  stSql := ' Update TB_DEVICECARDNO set DE_PERMIT = ''N'',DE_RCVACK = ''N'' ';
+  stSql := stSql + ' Where DE_DOOR1 = ''N'' ';
+  stSql := stSql + ' AND DE_DOOR2 = ''N'' ';
+  stSql := stSql + ' AND DE_USEALARM = ''N'' ';
+  stSql := stSql + ' AND DE_PERMIT = ''L'' ';
+  result := dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  stSql := ' Update TB_DEVICECARDNO set DE_PERMIT = ''N'',DE_RCVACK = ''N'' ';
+  stSql := stSql + ' Where DE_DOOR1 is null ';
+  stSql := stSql + ' AND DE_DOOR2 = ''N'' ';
+  stSql := stSql + ' AND DE_USEALARM = ''N'' ';
+  stSql := stSql + ' AND DE_PERMIT = ''L'' ';
+  result := dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  stSql := ' Update TB_DEVICECARDNO set DE_PERMIT = ''N'',DE_RCVACK = ''N'' ';
+  stSql := stSql + ' Where DE_DOOR1 is null ';
+  stSql := stSql + ' AND DE_DOOR2 is null ';
+  stSql := stSql + ' AND DE_USEALARM = ''N'' ';
+  stSql := stSql + ' AND DE_PERMIT = ''L'' ';
+  result := dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  stSql := ' Update TB_DEVICECARDNO set DE_PERMIT = ''N'',DE_RCVACK = ''N'' ';
+  stSql := stSql + ' Where DE_DOOR1 is null ';
+  stSql := stSql + ' AND DE_DOOR2 = ''N'' ';
+  stSql := stSql + ' AND DE_USEALARM is null ';
+  stSql := stSql + ' AND DE_PERMIT = ''L'' ';
+  result := dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  stSql := ' Update TB_DEVICECARDNO set DE_PERMIT = ''N'',DE_RCVACK = ''N'' ';
+  stSql := stSql + ' Where DE_DOOR1 is null ';
+  stSql := stSql + ' AND DE_DOOR2 is null ';
+  stSql := stSql + ' AND DE_USEALARM is null ';
+  stSql := stSql + ' AND DE_PERMIT = ''L'' ';
+  result := dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  stSql := ' Update TB_DEVICECARDNO set DE_PERMIT = ''N'',DE_RCVACK = ''N'' ';
+  stSql := stSql + ' Where DE_DOOR1 = ''N'' ';
+  stSql := stSql + ' AND DE_DOOR2 is null ';
+  stSql := stSql + ' AND DE_USEALARM = ''N'' ';
+  stSql := stSql + ' AND DE_PERMIT = ''L'' ';
+  result := dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  stSql := ' Update TB_DEVICECARDNO set DE_PERMIT = ''N'',DE_RCVACK = ''N'' ';
+  stSql := stSql + ' Where DE_DOOR1 = ''N'' ';
+  stSql := stSql + ' AND DE_DOOR2 is null ';
+  stSql := stSql + ' AND DE_USEALARM is null ';
+  stSql := stSql + ' AND DE_PERMIT = ''L'' ';
+  result := dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  stSql := ' Update TB_DEVICECARDNO set DE_PERMIT = ''N'',DE_RCVACK = ''N'' ';
+  stSql := stSql + ' Where DE_DOOR1 = ''N'' ';
+  stSql := stSql + ' AND DE_DOOR2 = ''N'' ';
+  stSql := stSql + ' AND DE_USEALARM is null ';
+  stSql := stSql + ' AND DE_PERMIT = ''L'' ';
+  result := dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+end;
+
+function TZeronEventDataBaseConfig.PatrolTable001VersionMake: Boolean;
+begin
+  result := dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('PATROL','TABLE_VER','1');
+end;
+
+function TZeronEventDataBaseConfig.PatrolTable002VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_READER_PatrolUse_Add;
+  dmZeronEventDBCreate.AlterTB_READER_PatrolName_Add;
+  dmZeronEventDBCreate.AlterTB_READER_PatrolTotWidth_Add;
+  dmZeronEventDBCreate.AlterTB_READER_PatrolTotHeight_Add;
+  dmZeronEventDBCreate.AlterTB_READER_PatrolCurX_Add;
+  dmZeronEventDBCreate.AlterTB_READER_PatrolCury_Add;
+  dmZeronEventDBCreate.CreateTB_PatrolTime;
+  dmZeronEventDBFunction.InsertIntoTB_PATROLTIME('1','순찰1','0000','2400');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('PATROL','TABLE_VER','2');
+end;
+
+function TZeronEventDataBaseConfig.PatrolTable003VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_PATROLALARMEVENT;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('PATROL','TABLE_VER','3');
+end;
+
+function TZeronEventDataBaseConfig.PatrolTable004VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CARDTYPE_Value('4','순찰카드');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('PATROL','TABLE_VER','4');
+end;
+
+function TZeronEventDataBaseConfig.PatrolTable005VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_PATROLSTATE;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('PATROL','TABLE_VER','5');
+
+end;
+
+function TZeronEventDataBaseConfig.PatrolTableVersionCheck: Boolean;
+var
+  nTableVersion : integer;
+begin
+  result := False;
+  nTableVersion := GetPatrolTableVersion;
+  if nTableVersion < 1 then PatrolTable001VersionMake;
+  if nTableVersion < 2 then PatrolTable002VersionMake;
+  if nTableVersion < 3 then PatrolTable003VersionMake;
+  if nTableVersion < 4 then PatrolTable004VersionMake;
+  if nTableVersion < 5 then PatrolTable005VersionMake;
+
+  result := True;
+end;
+
+function TZeronEventDataBaseConfig.PositionNumberValueSetting: Boolean;
+var
+  stSql : string;
+  nPositionNumber : integer;
+begin
+  stSql := 'Select * from TB_CARD ';
+  nPositionNumber := 1;
+
+  with dmZeronEventDataBase.ADOTempQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordCount < 1 then Exit;
+    While Not Eof do
+    begin
+      dmZeronEventDBFunction.UpdateTB_CARD_PoitionNum(FindField('CA_CARDNO').AsString,nPositionNumber);
+      inc(nPositionNumber);
+      Next;
+    end;
+  end;
+end;
+
+procedure TZeronEventDataBaseConfig.SetCancel(const Value: Boolean);
+begin
+  FCancel := Value;
+end;
+
+procedure TZeronEventDataBaseConfig.SetDBConnected(const Value: Boolean);
+begin
+  FDBConnected := Value;
+end;
+
+procedure TZeronEventDataBaseConfig.ShowDataBaseConfig;
+begin
+  FDBConnected := False;
+
+  fmZeronEventDataBaseConfig:=TfmZeronEventDataBaseConfig.Create(Nil);
+  Try
+    fmZeronEventDataBaseConfig.ShowModal;
+  Finally
+    fmZeronEventDataBaseConfig.Free;
+  End;
+end;
+
+function TZeronEventDataBaseConfig.SmallsetTable001VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('3MP','IP','220.90.216.90');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('3MP','PORT','10020');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('3MP','GATEWAYID','');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('3MP','DEVICEID','');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('3MP','DEVICEPW','');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('SMALLSET','DBTYPE','0');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('SMALLSET','DBIP','127.0.0.1');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('SMALLSET','DBPORT','1433');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('SMALLSET','USERID','sa');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('SMALLSET','USERPW','sapasswd');
+  result := dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('SMALLSET','TABLE_VER','1');
+end;
+
+function TZeronEventDataBaseConfig.SmallsetTable002VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('SMALLSET','DBNAME','zmos');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('SMALLSET','TABLE_VER','2');
+end;
+
+function TZeronEventDataBaseConfig.SmallsetTable003VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBCreate.AlterTB_ALARMEVENT_SmallSENDSTATUS_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSEVENT_SmallSENDSTATUS_Add;
+  dmZeronEventDBCreate.CreateTB_SMALLSETMAPPING;
+
+  stSql := ' Update TB_ACCESSEVENT set AC_SMSENDSTATUS = ''Y'' ';
+  dmZeronEventDataBase.ProcessEventExecSQL(stSql);
+
+  stSql := ' Update TB_ALARMEVENT set AL_SMSENDSTATUS = ''Y'' ';
+  dmZeronEventDataBase.ProcessEventExecSQL(stSql);
+
+  (*
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','AF','EY08','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','AF','EY08','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','AF','EY08','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','AF','EY08','00','Y');
+
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','R1','EY09','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','R1','EY09','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','R2','EY09','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','R2','EY09','00','Y');
+
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','DL','EY14','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','DL','EY14','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','DL','EY14','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','DL','EY14','00','Y');
+
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','23','EY16','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','23','EY16','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','23','EY16','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','23','EY16','00','Y');
+
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','23','EY16','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','23','EY16','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','23','EY16','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','23','EY16','00','Y');
+
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','LT','ELOP','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','LT','ELOP','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','LT','ELOP','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','LT','ELOP','00','Y');
+  *)
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('SMALLSET','TABLE_VER','3');
+end;
+
+function TZeronEventDataBaseConfig.SmallsetTable004VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','A1','E400','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','A1','E400','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','C1','R400','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','C1','R400','00','Y');
+
+  //침입
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','ZS','E130','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','ZS','E130','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','ZP','E130','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','ZP','E130','00','Y');
+
+  //DC 단선
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','DL','E302','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','DL','E302','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','N','DL','E302','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','DL','E302','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','DL','E302','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','N','DL','E302','00','Y');
+  //DC 복구
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','DR','R302','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','DR','R302','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','N','DR','R302','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','DR','R302','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','DR','R302','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','N','DR','R302','00','Y');
+  //AC 단선
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','AF','E301','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','AF','E301','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','N','AF','E301','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','AF','E301','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','AF','E301','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','N','AF','E301','00','Y');
+  //AC 복구
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','AN','R301','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','AN','R301','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','N','AN','R301','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','AN','R301','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','AN','R301','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','N','AN','R301','00','Y');
+  //전원리셋
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','R1','E305','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','R2','E305','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','N','R2','E305','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','R1','E305','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','R2','E305','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','N','R2','E305','00','Y');
+  //카드리더 단선
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','A','31','E138','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','D','31','E138','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','N','31','E138','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','A','NF','E138','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','D','NF','E138','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','N','NF','E138','00','Y');
+  //카드리더 복구
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','A','32','R138','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','D','32','R138','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','N','32','R138','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','A','NR','R138','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','D','NR','R138','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','N','NR','R138','00','Y');
+  //카드리더 열림
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','A','33','E136','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','D','33','E136','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','N','33','E136','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','A','CO','E136','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','D','CO','E136','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','N','CO','E136','00','Y');
+  //카드리더 닫힘
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','A','34','R136','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','D','34','R136','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','N','34','R136','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','A','CC','R136','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','D','CC','R136','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('CD','N','CC','R136','00','Y');
+
+  //원격경계
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','A2','E610','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','A2','E610','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','A3','E610','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','A3','E610','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','A4','E610','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','A4','E610','00','Y');
+
+  //원격해제
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','C2','R610','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','C2','R610','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','C3','R610','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','C3','R610','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','C4','R610','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','C4','R610','00','Y');
+
+  //프로그램댐퍼
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','EM','E306','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','EM','E306','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','N','EM','E306','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','EM','E306','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','EM','E306','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','N','EM','E306','00','Y');
+
+  //가입자확장기 열림
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','23','E137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','23','E137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','N','23','E137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','CO','E137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','CO','E137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','N','CO','E137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','23','E137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','23','E137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','N','23','E137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','CO','E137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','CO','E137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','N','CO','E137','00','Y');
+  //가입자확장기 닫힘
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','24','R137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','24','R137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','N','24','R137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','CC','R137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','CC','R137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','N','CC','R137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','24','R137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','24','R137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','N','24','R137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','CC','R137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','CC','R137','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','N','CC','R137','00','Y');
+
+  //가입자확장기 단선
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','21','E701','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','21','E701','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','N','21','E701','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','NF','E701','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','NF','E701','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','N','NF','E701','00','Y');
+  //가입자확장기 복구
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','22','R701','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','22','R701','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','N','22','R701','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','NR','R701','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','NR','R701','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','N','NR','R701','00','Y');
+  //TF단말확인
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','PF','E139','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','PF','E139','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','N','PF','E139','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','PF','E139','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','PF','E139','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','N','PF','E139','00','Y');
+
+  //비상스위치발생
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','E1','E124','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','E1','E124','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','N','E1','E124','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','E1','E124','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','E1','E124','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','N','E1','E124','00','Y');
+  //비상스위치복구
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','A','E2','R124','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','D','E2','R124','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('MN','N','E2','R124','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','A','E2','R124','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','D','E2','R124','00','Y');
+  dmZeronEventDBFunction.InsertIntoTB_SMALLSETMAPPING_Value('EX','N','E2','R124','00','Y');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('SMALLSET','TABLE_VER','4');
+end;
+
+function TZeronEventDataBaseConfig.SmallsetTable005VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('SMALLSET','DBPOLLING','30');
+  dmZeronEventDBCreate.CreateTB_ACCESSEVENT_IndexSMSENDSTATUS;
+  dmZeronEventDBCreate.CreateTB_ALARMEVENT_IndexSMSENDSTATUS;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('SMALLSET','TABLE_VER','5');
+end;
+
+function TZeronEventDataBaseConfig.SmallSetTableVersionCheck: Boolean;
+var
+  nTableVersion : integer;
+begin
+  result := False;
+  nTableVersion := GetSmallSetTableVersion;
+  if nTableVersion < 1 then SmallSetTable001VersionMake;
+  if nTableVersion < 2 then SmallSetTable002VersionMake;
+  if nTableVersion < 3 then SmallSetTable003VersionMake;
+  if nTableVersion < 4 then SmallSetTable004VersionMake;
+  if nTableVersion < 5 then SmallSetTable005VersionMake;
+
+  result := True;
+end;
+
+function TZeronEventDataBaseConfig.Table001VersionMake: Boolean;
+begin
+  G_stGroupCode := '1234567890';
+  dmZeronEventDBCreate.CreateTB_ATPASS;
+  dmZeronEventDBCreate.CreateTB_ATCARD;
+  dmZeronEventDBCreate.CreateTB_ATEMPEXTRA;
+  dmZeronEventDBCreate.CreateTB_ATMONTHEXTRA;
+  dmZeronEventDBCreate.CreateTB_ATMONTHSUMMARY;
+  dmZeronEventDBCreate.CreateTB_ATDAYSUMMARY;
+  dmZeronEventDBCreate.CreateTB_ATVACATION;
+  dmZeronEventDBCreate.CreateTB_ATVACODE;
+  dmZeronEventDBCreate.CreateTB_BASEPAY;
+  dmZeronEventDBCreate.CreateTB_SENSOREVENT;
+  dmZeronEventDBCreate.CreateTB_ZONESCHEDULE;
+  dmZeronEventDBCreate.CreateTB_FOODGRADE;
+  dmZeronEventDBCreate.CreateTB_ACCESSDEVICE;
+  dmZeronEventDBCreate.CreateTB_ACCESSEVENT;
+  dmZeronEventDBCreate.CreateTB_ADMIN;
+  dmZeronEventDBCreate.CreateTB_ADMINALARMDEVICE;
+  dmZeronEventDBCreate.CreateTB_ADMINCOMPANY;
+  dmZeronEventDBCreate.CreateTB_ADMINDOOR;
+  dmZeronEventDBCreate.CreateTB_ADMINFOOD;
+  dmZeronEventDBCreate.CreateTB_ALARMCHECKCODE;
+  dmZeronEventDBCreate.CreateTB_ALARMDEVICE;
+  dmZeronEventDBCreate.CreateTB_ALARMDEVICETYPECODE;
+  dmZeronEventDBCreate.CreateTB_ALARMEVENT;
+  dmZeronEventDBCreate.CreateTB_ALARMMODECODE;
+  dmZeronEventDBCreate.CreateTB_ALARMSTATUSCODE ;
+  dmZeronEventDBCreate.CreateTB_ATCODE ;
+  dmZeronEventDBCreate.CreateTB_ATEVENT ;
+  dmZeronEventDBCreate.CreateTB_ATINCODE ;
+  dmZeronEventDBCreate.CreateTB_ATOUTCODE ;
+  dmZeronEventDBCreate.CreateTB_CARD ;
+  dmZeronEventDBCreate.CreateTB_COMPANY ;
+  dmZeronEventDBCreate.CreateTB_CONFIG ;
+  dmZeronEventDBCreate.CreateTB_CURRENTDAEMON ;
+  dmZeronEventDBCreate.CreateTB_DATASHARE ;
+  dmZeronEventDBCreate.CreateTB_DEVICECARDNO ;
+  dmZeronEventDBCreate.CreateTB_DEVICECARDNO_HIS ;
+  dmZeronEventDBCreate.CreateTB_DEVICECARDNO_PROMISE ;
+  dmZeronEventDBCreate.CreateTB_DEVICECARDNOGROUP ;
+  dmZeronEventDBCreate.CreateTB_DEVICESCHEDULE ;
+  dmZeronEventDBCreate.CreateTB_DEVICETYPE ;
+  dmZeronEventDBCreate.CreateTB_DOOR ;
+  dmZeronEventDBCreate.CreateTB_EMPLOYEE ;
+  dmZeronEventDBCreate.CreateTB_FOOD ;
+  dmZeronEventDBCreate.CreateTB_FOODCODE ;
+  dmZeronEventDBCreate.CreateTB_FOODEVENT ;
+  dmZeronEventDBCreate.CreateTB_GRADE ;
+  dmZeronEventDBCreate.CreateTB_GRADEPROGRAM ;
+  dmZeronEventDBCreate.CreateTB_HOLIDAY ;
+  dmZeronEventDBCreate.CreateTB_LOCATION ;
+  dmZeronEventDBCreate.CreateTB_LOWDATA ;
+  dmZeronEventDBCreate.CreateTB_MONTHAT ;
+  dmZeronEventDBCreate.CreateTB_PERMITCODE ;
+  dmZeronEventDBCreate.CreateTB_POSI ;
+  dmZeronEventDBCreate.CreateTB_PROGRAMGROUP ;
+  dmZeronEventDBCreate.CreateTB_PROGRAMID ;
+  dmZeronEventDBCreate.CreateTB_READER ;
+  dmZeronEventDBCreate.CreateTB_SYSTEMLOG ;
+  dmZeronEventDBCreate.CreateTB_USERCONFIG ;
+  dmZeronEventDBCreate.CreateTB_ZIPCODE ;
+  dmZeronEventDBCreate.CreateTB_ZONEDEVICE ;
+
+  dmZeronEventDBCreate.AlterTB_ADMIN_AreaCode_Add;
+  dmZeronEventDBCreate.AlterTB_ADMIN_BuildingGrade_Add;
+  dmZeronEventDBCreate.AlterTB_ADMIN_DongCode_Add;
+  dmZeronEventDBCreate.AlterTB_ADMIN_FloorCode_Add;
+  dmZeronEventDBCreate.AlterTB_ALARMSTATUSCODE_ALARMSOUND_Add;
+  dmZeronEventDBCreate.AlterTB_ALARMSTATUSCODE_Code_Change;
+  dmZeronEventDBCreate.AlterTB_ALARMSTATUSCODEColor_Add;
+  dmZeronEventDBCreate.AlterTB_ALARMSTATUSCODE_Gubun_Add;
+
+  dmZeronEventDBFunction.InsertIntoTB_GRADEPROGRAM_Value('001', 'ATBASECODE','ATA00',  '2');
+  dmZeronEventDBFunction.InsertIntoTB_GRADEPROGRAM_Value('001', 'ATBASECODE','ATA01i', '1');
+  dmZeronEventDBFunction.InsertIntoTB_GRADEPROGRAM_Value('001', 'ATBASECODE','ATA02i', '1');
+  dmZeronEventDBFunction.InsertIntoTB_GRADEPROGRAM_Value('001', 'ATBASECODE','ATA03i', '1');
+  dmZeronEventDBFunction.InsertIntoTB_GRADEPROGRAM_Value('001', 'ATBASECODE','ATA04i', '1');
+  dmZeronEventDBFunction.InsertIntoTB_GRADEPROGRAM_Value('001', 'ATBASECODE','ATA05i', '1');
+  dmZeronEventDBFunction.InsertIntoTB_GRADEPROGRAM_Value('001', 'ATBASECODE','ATA06i', '1');
+//  dmZeronEventDBFunction.InsertIntoTB_GRADEPROGRAM_Value('001', 'ATBASECODE','ATB00', '2');
+  dmZeronEventDBFunction.InsertIntoTB_GRADEPROGRAM_Value('001', 'ATMANAGE','ATB00', '2');
+  dmZeronEventDBFunction.InsertIntoTB_GRADEPROGRAM_Value('001', 'ATMANAGE','ATB01s', '1');
+  dmZeronEventDBFunction.InsertIntoTB_GRADEPROGRAM_Value('001', 'ATMANAGE','ATB02i', '1');
+  dmZeronEventDBFunction.InsertIntoTB_GRADEPROGRAM_Value('001', 'ATREPORT','ATC00', '2');
+  dmZeronEventDBFunction.InsertIntoTB_GRADEPROGRAM_Value('001', 'ATREPORT','ATC01i', '1');
+  dmZeronEventDBFunction.InsertIntoTB_GRADEPROGRAM_Value('001', 'ATREPORT','ATC02r', '1');
+  dmZeronEventDBFunction.InsertIntoTB_GRADEPROGRAM_Value('001', 'ATREPORT','ATC03r', '1');
+
+  dmZeronEventDBFunction.InsertIntoTB_ADMIN_Value( '1234', '초기관리자','1234', '001', 'Y','000','000','000','0','000','000','000');
+
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCHECKCODE_Value('001', '방범요원출동');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCHECKCODE_Value('002', '기기점검');
+
+  dmZeronEventDBFunction.InsertIntoTB_ALARMDEVICETYPECODE_Value('**', '해당없음');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMDEVICETYPECODE_Value('AD', '알람표시기');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMDEVICETYPECODE_Value('CD', '카드리더');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMDEVICETYPECODE_Value('DP', 'Display(출결용)');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMDEVICETYPECODE_Value('DT', '전화기능단말기');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMDEVICETYPECODE_Value('EX', '확장기');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMDEVICETYPECODE_Value('JP', '조작표시기');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMDEVICETYPECODE_Value('MN', '주장치');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMDEVICETYPECODE_Value('PC', '국선체크');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMDEVICETYPECODE_Value('PR', '프린터');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMDEVICETYPECODE_Value('PT', '포인터');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMDEVICETYPECODE_Value('WR', '무선중계기');
+
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( '00', ' 00 모드변경', '0', '0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'AF', 'AC 단선', '1', '1','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'AN', 'AC 복구', '0', '0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'BF', ' BF  Data Full', '1', '1','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'CC', '기계닫힘', '0', '0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'CO', '기계열림', '1', '1','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'CR', ' CR ColdReset', '1', '1','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'DF', 'DC전원불량', '1', '1','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'DL', 'DC 단선', '1', '1','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'DR', 'DC 복구', '0', '0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'E1', '비상알람', '1', '3','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'F1', '화재알람', '1', '3','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'G1', '가스알람', '1', '3','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'NF', '통신단선', '1', '1','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'NR', '통신복구', '0', '0','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'Q1', '설비알람', '1', '1','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'S1', '침입1', '1', '1','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'S2', '침입2', '1', '1','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'S3', '침입3', '1', '1','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'S4', '침입4', '1', '1','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'S5', '침입5', '1', '1','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'S6', '침입6', '1', '1','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'S7', '침입7', '1', '1','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'S8', '침입8', '1', '1','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'SS', '존감지', '1', '1','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value( 'WR', ' WR WarmReset', '1', '1','1');
+
+  dmZeronEventDBFunction.InsertIntoTB_ATCODE_Value('001', '1교대', '0800', '1700', '0500', '2000', '');
+
+  dmZeronEventDBFunction.InsertIntoTB_ATVACODE_Value('001', '유급휴가', '1', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_ATVACODE_Value('002', '무급휴가', '2', 'Y');
+
+  dmZeronEventDBFunction.InsertIntoTB_ATINCODE_Value('001', '출근', '1', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_ATINCODE_Value('002', '지각', '2', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_ATINCODE_Value('003', '결근', '3', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_ATINCODE_Value('004', '조기출근', '4', 'Y');
+
+  dmZeronEventDBFunction.InsertIntoTB_ATOUTCODE_Value('001', '퇴근', '1', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_ATOUTCODE_Value('002', '조퇴', '2', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_ATOUTCODE_Value('003', '연장근무', '3', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_ATOUTCODE_Value('004', '야근', '4', 'Y');
+
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'ATTEND', 'ATTYPE', '1', '1:사원별,2:교대근무,3:고정근무');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'ATTEND', 'CARDTYPE', '1', '1:출입+방범+근태,2:근태전용');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'ATTEND', 'CHANGECNT', '1', '교대근무수');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'ATTEND', 'SATURDAY', '0', '0:휴무,1:반휴일,2:평일');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'ATTEND', 'NONPAYHOLI', '0', '0:미사용,1:사용');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'ATTEND', 'DEVICETYPE', '0', '0:UPDATE,1:카드리더,2:버튼방식');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'ATTEND', 'OUTTIME', '0', '0:미복귀시퇴근처리,1:미복귀시정상퇴근');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'ATTEND', 'YTIME', '0400', '근태퇴근시 어제날짜 기준시간');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'ATTEND', 'TTIME', '0400', '근태출근시 오늘날짜 기준시간');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'PAY', 'WEEKTIME', '40', '주간기준시간');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'PAY', 'OVERTIME', '4', '월초과근무시간');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'PAY', 'EARLYADD', '0', '평일조기가산금액');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'PAY', 'EXTENDADD', '25', '평일야간금액');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'PAY', 'NIGHTADD', '50', '평일심야금액');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'PAY', 'SEARLYADD', '0', '토요일조기가산금액');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'PAY', 'SEXTENDADD', '25', '토요일야간금액');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'PAY', 'SNIGHTADD', '50', '토요일심야금액');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'PAY', 'HEARLYADD', '0', '공휴일조기가산금액');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'PAY', 'HNORMALADD', '0', '공휴일기본가산금액');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'PAY', 'HEXTENDADD', '25', '공휴일야간금액');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'PAY', 'HNIGHTADD', '50', '공휴일심야금액');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'PAY', 'JIGAK', '0', '지각자처리방안');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'PAY', 'JOTAE', '0', '조퇴자처리방안');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'PAY', 'ATTYPEPAY', '0', '근태타입에따라급여계산여부');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'PAY', 'ABSENCE', '0', '결근자처리방안');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'PAY', 'MONTHLAST', '31', '수당 분리일');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'DAEMON', 'CLIENTCNT', '100', '접속클라이언트수');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'DAEMON', 'IP', '127.0.0.1', '데몬서버아이피');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'DAEMON', 'PORT', '1024', '데몬서버포트');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'DAEMON', 'ATPORT', '3433', '근태서버포트');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'DAEMON', 'NETTYPE', 'TCPIP', '통신방식');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'DAEMONLOG', 'DELETDAY', '3', '로그보관일');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'DAEMONLOG', 'FULLLOG', 'N', 'ACK 데이터 로그 유무');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'DATABASE', 'AC_DELETE', '180', '출입이벤트보관일');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'DATABASE', 'AT_DELETE', '180', '근태이벤트보관일');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'DATABASE', 'AUTO', 'TRUE', '자동백업여부');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'DATABASE', 'BACKCYCLE', '10', '데이터베이스백업주기');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'DATABASE', 'BACKDIR', 'c:\Backup', '데이터베이스백업디렉토리');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'DATABASE', 'BACKTIME', '0100', '백업시작 시간');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'DATABASE', 'FD_DELETE', '180', '식수이벤트보관일');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'DATABASE', 'PT_DELETE', '180', '방범이벤트보관일');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'MCUCOMM', 'CARDAUTO', 'FALSE', '카드데이터자동다운로드');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'MOSTYPE', 'ACCESS', 'Y', '출입사용');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'MOSTYPE', 'ALARM', 'Y', '방범사용');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'MOSTYPE', 'ATTEND', 'Y', '근태사용');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'MOSTYPE', 'SENSOR', 'N', '센서사용');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'MOSTYPE', 'MONITORING', 'Y', '모니터링사용');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'MOSTYPE', 'ATTENDTYPE', 'UPDATE', 'BUTTON/UPDATE/READER');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'MOSTYPE', 'COMMON', 'Y', '공통사용');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'MOSTYPE', 'FOOD', 'Y', '식수사용');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'MOSTYPE', 'FOODDEVICE', 'READER', 'READER/DOOR');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'MOSTYPE', 'MASTERID', '1234', '마스터아이디');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'MOSTYPE', 'FOODGRADE', '0', '식수권한점검 0:기기,1:서버');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'MOSTYPE', 'FILEIP', '127.0.0.1', '파일서버IP');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All( 'MOSTYPE', 'FILEDIR', '', '파일서버디렉토리');
+
+  dmZeronEventDBFunction.InsertIntoTB_FOODCODE_Value( '001', '조식', '0600', '1059', '5000');
+  dmZeronEventDBFunction.InsertIntoTB_FOODCODE_Value( '002', '중식', '1100', '1559', '5000');
+  dmZeronEventDBFunction.InsertIntoTB_FOODCODE_Value( '003', '석식', '1600', '1959', '5000');
+  dmZeronEventDBFunction.InsertIntoTB_FOODCODE_Value( '004', '야식', '2000', '2359', '5000');
+
+  dmZeronEventDBFunction.InsertIntoTB_CURRENTDAEMON_Value( 'LASTBACKUP', '20081219');
+  dmZeronEventDBFunction.InsertIntoTB_CURRENTDAEMON_Value( 'Password', 'MTIzNDU2');
+
+  dmZeronEventDBFunction.InsertIntoTB_GRADE_Value( '001', '시스템관리자');
+  dmZeronEventDBFunction.InsertIntoTB_GRADE_Value( '002', '팀장');
+  dmZeronEventDBFunction.InsertIntoTB_GRADE_Value( '003', '방범관리자');
+
+  dmZeronEventDBFunction.InsertIntoTB_PERMITCODE_Value('0', '해당없음');
+  dmZeronEventDBFunction.InsertIntoTB_PERMITCODE_Value('1', '출입카드승인');
+  dmZeronEventDBFunction.InsertIntoTB_PERMITCODE_Value('2', '방범카드승인');
+  dmZeronEventDBFunction.InsertIntoTB_PERMITCODE_Value('A', '미등록카드');
+  dmZeronEventDBFunction.InsertIntoTB_PERMITCODE_Value('B', '출입카드권한불가');
+  dmZeronEventDBFunction.InsertIntoTB_PERMITCODE_Value('C', '방범카드권한불가');
+  dmZeronEventDBFunction.InsertIntoTB_PERMITCODE_Value('D', '경계모드출입불가');
+  dmZeronEventDBFunction.InsertIntoTB_PERMITCODE_Value('E', '출입제한시간');
+
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMGROUP_Value('ATBASECODE', '근태-코드관리', 'Y', 'ATTEND');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMGROUP_Value('ATMANAGE', '근태-운영관리', 'Y', 'ATTEND');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMGROUP_Value('ATREPORT', '근태-근태보고서', 'Y', 'ATTEND');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMGROUP_Value('ATSYSTEM', '근태-시스템운영자관리', 'Y', 'ATTEND');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMGROUP_Value('MOBASECODE', '관제-코드관리', 'Y', 'MONITORING');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMGROUP_Value('MOMANAGE', '관제-운영관리', 'Y', 'MONITORING');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMGROUP_Value('MOMONITOR', '관제-모니터링', 'Y', 'MONITORING');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMGROUP_Value('MOREPORT', '관제-시스템보고서', 'Y', 'MONITORING');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMGROUP_Value('MOSYSTEM', '관제-시스템운영자관리', 'Y', 'MONITORING');
+
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('ATA00', 'ATBASECODE', '등록', 'D', '1', 'ATTEND','Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('ATA01i', 'ATBASECODE', '조직도등록', 'Y', '1', 'ATTEND', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('ATA02i', 'ATBASECODE', '근태환경등록', 'Y', '2', 'ATTEND', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('ATA03i', 'ATBASECODE', '개인등록', 'Y', '3', 'ATTEND', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('ATA04i', 'ATBASECODE', '일괄등록', 'Y', '4', 'ATTEND', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('ATA05i', 'ATBASECODE', '공휴일관리', 'Y', '5', 'ATTEMD', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('ATA06i', 'ATBASECODE', '시스템운영자관리', 'Y', '6', 'ATTEND', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('ATB00', 'ATMANAGE', '운영관리', 'D', '10', 'ATTEND', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('ATB01s', 'ATMANAGE', '근태모니터링', 'Y', '11', 'ATTEND', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('ATB02i', 'ATMANAGE', '근태관리', 'Y', '12', 'ATTEND', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('ATC00', 'ATREPORT', '근태보고서', 'D', '20', 'ATTEND', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('ATC01i', 'ATREPORT', '근태집계', 'Y', '20', 'ATTEND', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('ATC02r', 'ATREPORT', '기간별근태보고서', 'Y', '21', 'ATTEND', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('ATC03r', 'ATREPORT', '월별근태보고서', 'Y', '22', 'ATTEND', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOA00', 'MOBASECODE', '코드관리', 'D', '0', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOA01i', 'MOBASECODE', '기본코드관리', 'Y', '1', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOA03i', 'MOBASECODE', '센서스케줄관리', 'Y', '3', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOA04i', 'MOBASECODE', '공휴일관리', 'Y', '4', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOB00', 'MOMANAGE', '운영관리', 'D', '10', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOB01i', 'MOMANAGE', '사원관리', 'Y', '11', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOB02i', 'MOMANAGE', '카드권한관리', 'Y', '12', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOB03i', 'MOMANAGE', '그룹별코드관리', 'Y', '13', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOB04c', 'MOMANAGE', '카드권한다운로드', 'Y', '14', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOC00', 'MOMONITOR', '모니터링', 'D', '20', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOC01s', 'MOMONITOR', '관제시스템', 'Y', '21', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOC02c', 'MOMONITOR', '상태확인', 'Y', '22', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOC03c', 'MOMONITOR', '출입문제어', 'Y', '23', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOC04c', 'MOMONITOR', '방범제어', 'Y', '24', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOC05s', 'MOMONITOR', '통신상태확인', 'Y', '25', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOD00', 'MOSYSTEM', '시스템운영자관리', 'D', '30', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOD01i', 'MOSYSTEM', '권한등급관리', 'Y', '31', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOD02i', 'MOSYSTEM', '시스템운영자관리', 'Y', '32', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOE00', 'MOREPORT', '시스템보고서', 'D', '40', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOE01r', 'MOREPORT', '출입이력보고서', 'Y', '41', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOE02r', 'MOREPORT', '경보이력보고서', 'Y', '42', 'MONITORING', 'Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOE03r', 'MOREPORT', '시스템운영보고서', 'Y', '43', 'MONITORING', 'Y');
+
+  result := dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('COMMON','TABLE_VER','1');
+end;
+
+function TZeronEventDataBaseConfig.Table002VersionMake: Boolean;
+begin
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','2');
+end;
+
+function TZeronEventDataBaseConfig.Table003VersionMake: Boolean;
+var
+  stPath : string;
+begin
+  stPath := 'C:\Program Files\ACServer\ACCESS.mdb';
+  if G_nDBTYPE = POSTGRESQL then stPath := 'C:\\Program Files\\ACServer\\ACCESS.mdb';
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','fdmsUSE','FALSE');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','fdmsPath',stPath);
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','fdmsPW','fdmsamho');
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_FDMSID_Add;
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_FDMSRELAY_Add;
+  dmZeronEventDBCreate.AlterTB_DOOR_FDMSID_Add;
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','3');
+end;
+
+function TZeronEventDataBaseConfig.Table004VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_FormName;
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('001','회사코드','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('002','회사명','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('011','지점코드','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('012','지점명','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('021','부서코드','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('022','부서명','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('031','직위코드','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('032','직위명','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('101','사번','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('102','이름','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('103','사내전화번호','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('104','입사일','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('105','퇴사일','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('106','사원','Y');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','4');
+
+end;
+
+function TZeronEventDataBaseConfig.Table005VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_ATINCODE_Value('101','정상출근','1','N');
+  dmZeronEventDBFunction.InsertIntoTB_ATINCODE_Value('102','외근후출근','1','N');
+  dmZeronEventDBFunction.InsertIntoTB_ATINCODE_Value('103','지각','2','N');
+  dmZeronEventDBFunction.InsertIntoTB_ATINCODE_Value('104','조기출근','4','N');
+  dmZeronEventDBFunction.InsertIntoTB_ATINCODE_Value('105','결근','3','N');
+  dmZeronEventDBFunction.InsertIntoTB_ATOUTCODE_Value('101','정상퇴근','1','N');
+  dmZeronEventDBFunction.InsertIntoTB_ATOUTCODE_Value('102','외근후퇴근','1','N');
+  dmZeronEventDBFunction.InsertIntoTB_ATOUTCODE_Value('103','조퇴','2','N');
+  dmZeronEventDBFunction.InsertIntoTB_ATOUTCODE_Value('104','연장근무','3','N');
+  dmZeronEventDBFunction.InsertIntoTB_ATOUTCODE_Value('105','야간근무','4','N');
+
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOE02r','MOREPORT','경보이력보고서','Y','42','MONITORING','Y');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','5');
+
+end;
+
+function TZeronEventDataBaseConfig.Table006VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','LOGINTYPE','TRUE');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('MOSTYPE','ALARMVIEW','REAL');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','fdmsType','0');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','6');
+
+end;
+
+function TZeronEventDataBaseConfig.Table007VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_ALARMSHOW;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','7');
+
+end;
+
+function TZeronEventDataBaseConfig.Table008VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_EMPHIS;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','8');
+
+end;
+
+function TZeronEventDataBaseConfig.Table009VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_SERVERCARDRELAY;
+  dmZeronEventDBCreate.CreateTB_SERVERCARDRELAYHIS;
+  dmZeronEventDBCreate.CreateTB_PERRELAYCONFIG;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','9');
+end;
+
+function TZeronEventDataBaseConfig.Table010VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_DEVICECARDNOACKINDEX;
+  dmZeronEventDBCreate.AlterTB_EMPHIS_CARDNO_Add;
+  dmZeronEventDBCreate.AlterTB_EMPHIS_CARDTYPE_Add;
+  dmZeronEventDBCreate.AlterTB_EMPHIS_SENDSTATUS2_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','10');
+end;
+
+function TZeronEventDataBaseConfig.Table011VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_WORKLOG;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','11');
+end;
+
+function TZeronEventDataBaseConfig.Table012VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.UpdateTB_CONFIG_Value('MOSTYPE','FOODDEVICE','DOOR');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','12');
+end;
+
+function TZeronEventDataBaseConfig.Table013VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_CARD_POSITIONNUM_Add;
+
+  PositionNumberValueSetting;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','13');
+end;
+
+function TZeronEventDataBaseConfig.Table014VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('ATC04r','ATREPORT','실시간근태보고서','Y','23','ATTEND','Y');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','14');
+end;
+
+function TZeronEventDataBaseConfig.Table015VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_READER_InOutCount_Add;
+  dmZeronEventDBCreate.CreateTB_INOUTCOUNT;
+  dmZeronEventDBCreate.CreateTB_INOUTGROUP;
+
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('MOSTYPE','INOUTCOUNT','N');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','15');
+end;
+
+function TZeronEventDataBaseConfig.Table016VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','DEVICESVER','0');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','DTOSPORT1','3000');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','DTOSPORT2','3001');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','DTOSPORT3','3002');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','16');
+
+end;
+
+function TZeronEventDataBaseConfig.Table017VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_FTPLIST;
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','FTPPORT','3100');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','17');
+end;
+
+function TZeronEventDataBaseConfig.Table018VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ALARMSTATUSCODE_ALARMSOUND_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','18');
+end;
+
+function TZeronEventDataBaseConfig.Table019VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('COMMON','SPECIALCD','0');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','19');
+end;
+
+function TZeronEventDataBaseConfig.Table020VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_KTCARDISSUE;
+  dmZeronEventDBCreate.AlterTB_EMPHIS_INSERTTIME_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','20');
+end;
+
+function TZeronEventDataBaseConfig.Table021VersionMake: Boolean;
+begin
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','21');
+end;
+
+function TZeronEventDataBaseConfig.Table022VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOB06i','MOMANAGE','KT카드발급','Y','11','MONITORING','Y');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','22');
+end;
+
+function TZeronEventDataBaseConfig.Table023VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_RELAYGUBUN;
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_RelayGubun_Add;
+  dmZeronEventDBFunction.UpdateTB_EMPLOYEE_RGCODEisNull;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','23');
+
+end;
+
+function TZeronEventDataBaseConfig.Table024VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('040','직원구분','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('041','직원코드','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('042','직원코드명칭','Y');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','24');
+
+end;
+
+function TZeronEventDataBaseConfig.Table025VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_RELAYGUBUN_Value('001','정직원');
+  dmZeronEventDBFunction.InsertIntoTB_RELAYGUBUN_Value('002','외부인');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','25');
+end;
+
+function TZeronEventDataBaseConfig.Table026VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_COMPANY_UPDATECHECK_Add;
+  dmZeronEventDBCreate.AlterTB_POSI_UPDATECHECK_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','26');
+
+end;
+
+function TZeronEventDataBaseConfig.Table027VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ADMIN_BuildingGrade_Add;
+  dmZeronEventDBCreate.AlterTB_ADMIN_DongCode_Add;
+  dmZeronEventDBCreate.AlterTB_ADMIN_FloorCode_Add;
+  dmZeronEventDBCreate.AlterTB_ADMIN_AreaCode_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_DaemonGubun_Add;
+  dmZeronEventDBFunction.UpdateTB_ACCESSDEVICE_DaemonGubunAll('1');
+
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('901','빌딩코드','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('902','빌딩명칭','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('903','빌딩권한','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('911','층코드','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('912','층명칭','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('913','층권한','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('921','구역코드','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('922','구역명칭','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('923','구역권한','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('933','출입문권한','Y');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','27');
+
+end;
+
+function TZeronEventDataBaseConfig.Table028VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMGROUP_Value('MODEVICE','관제-기기관리','Y','MONITORING');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOF00','MODEVICE','기기관리','D','50','MONITORING','Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOF01i','MODEVICE','위치정보관리','Y','51','MONITORING','Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOF02i','MODEVICE','컨트롤러관리','Y','52','MONITORING','Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOF03i','MODEVICE','출입문관리','Y','53','MONITORING','Y');
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOF04i','MODEVICE','방범구역관리','Y','54','MONITORING','Y');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','28');
+end;
+
+function TZeronEventDataBaseConfig.Table029VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','FTPUSE','0');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','MULTI','0');
+
+  dmZeronEventDBCreate.CreateTB_DAEMONMULTI;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','29');
+
+end;
+
+function TZeronEventDataBaseConfig.Table030VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_CARD_DoorGrade_Add;
+  dmZeronEventDBFunction.UpdateTB_CARD_DOORGRADEInitialize('Y');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','30');
+end;
+
+function TZeronEventDataBaseConfig.Table031VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOF05i','MODEVICE','출입문스케줄관리','Y','55','MONITORING','Y');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','31');
+end;
+
+function TZeronEventDataBaseConfig.Table032VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_DOORGUBUN;
+  dmZeronEventDBCreate.AlterTB_DOOR_DOGUBUN_Add;
+
+  dmZeronEventDBFunction.InsertIntoTB_DOORGUBUN_Value('001','구분1');
+  dmZeronEventDBFunction.InsertIntoTB_DOORGUBUN_Value('002','구분2');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','32');
+
+end;
+
+function TZeronEventDataBaseConfig.Table033VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_PROGRAMID_Value('MOE04r','MOREPORT','출입통계보고서','Y','44','MONITORING','Y');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','33');
+end;
+
+function TZeronEventDataBaseConfig.Table034VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','KHUADDDAY','','경희대입력연동날짜');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','KHUDELDAY','','경희대삭제연동날짜');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','34');
+end;
+
+function TZeronEventDataBaseConfig.Table035VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','MAXPROCESS','10');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','35');
+end;
+
+function TZeronEventDataBaseConfig.Table036VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','FDMSNO','4');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','36');
+end;
+
+function TZeronEventDataBaseConfig.Table037VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_EMPHIS_EMNAME_Add;
+  dmZeronEventDBCreate.AlterTB_EMPHIS_HANDPHONE_Add;
+  dmZeronEventDBCreate.AlterTB_EMPHIS_COMPANYNAME_Add;
+  dmZeronEventDBCreate.AlterTB_EMPHIS_JIJUMNAME_Add;
+  dmZeronEventDBCreate.AlterTB_EMPHIS_DEPARTNAME_Add;
+  dmZeronEventDBCreate.AlterTB_EMPHIS_POSINAME_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','37');
+end;
+
+function TZeronEventDataBaseConfig.Table038VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','CARDADDDAY','','경희대카드연동날짜');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','CARDDELDAY','','경희대카드삭제연동날짜');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','38');
+end;
+
+function TZeronEventDataBaseConfig.Table039VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_PERMITCODE_Value('F','유효기간만료');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','39');
+end;
+
+function TZeronEventDataBaseConfig.Table040VersionMake: Boolean;
+var
+  stCardLen : string;
+begin
+  stCardLen := '24'; //성현지문카드길이
+
+  if CheckPersonRelay = '3' then stCardLen := '32'; //경희대 성현지문카드길이 = 32자리
+
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','FDMSCARDLN',stCardLen,'성현지문카드길이');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','40');
+end;
+
+function TZeronEventDataBaseConfig.Table041VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('CARD','CARDFIXED','FALSE','카드길이고정유무');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('CARD','FIXEDLEN','11','카드길이');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('CARD','FILLPOSI','0','채움문자위치 0:앞,1:뒤');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('CARD','FILLCHAR','0','채움문자');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','41');
+end;
+
+function TZeronEventDataBaseConfig.Table042VersionMake: Boolean;
+var
+  stCode1Name,stCode2Name : string;
+begin
+  dmZeronEventDBCreate.CreateTB_CARDTYPE;
+
+  stCode1Name := '일반카드';
+  stCode2Name := '기타카드';
+  if CheckSamyuk then  //삼육대인경우
+  begin
+    stCode1Name := '일반카드';
+    stCode2Name := '모바일카드';
+  end else if CheckFdms then  //지문연동인 경우
+  begin
+    stCode1Name := '지문연동카드';
+    stCode2Name := '일반카드';
+  end;
+
+  dmZeronEventDBFunction.InsertIntoTB_CARDTYPE_Value('1',stCode1Name);
+  dmZeronEventDBFunction.InsertIntoTB_CARDTYPE_Value('2',stCode2Name);
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','42');
+end;
+
+function TZeronEventDataBaseConfig.Table043VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CURRENTDAEMON_Value('FIREORIGIN','FALSE');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','43');
+end;
+
+function TZeronEventDataBaseConfig.Table044VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_HOLIDAY_State_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','44');
+end;
+
+function TZeronEventDataBaseConfig.Table045VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_HoSend_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','45');
+
+end;
+
+function TZeronEventDataBaseConfig.Table046VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CURRENTDAEMON_Value('SEND_HOYY','');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','46');
+
+end;
+
+function TZeronEventDataBaseConfig.Table047VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('FI','FI 화재알람','1','3','1');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','47');
+end;
+
+function TZeronEventDataBaseConfig.Table048VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('R1','RESET(경계모드)','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('R2','RESET(해제모드)','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('A1','경계모드변경(카드)','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('A2','경계모드변경(관제)','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('A3','경계모드변경(연동)','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('A4','경계모드변경(서버)','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('C1','해제모드변경(카드)','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('C2','해제모드변경(관제)','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('C3','해제모드변경(연동)','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('C4','해제모드변경(서버)','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('R3','복구버튼','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('ZS','알람발생(쇼트)','1','3','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('ZP','알람발생(단선)','1','3','1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('ZN','알람복구','1','0','0');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','48');
+
+end;
+
+function TZeronEventDataBaseConfig.Table049VersionMake: Boolean;
+begin
+  //tb_employee 이름 사이즈 변경
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_EmName_Change;
+  //알람상태코드 사이즈 변경
+  dmZeronEventDBCreate.AlterTB_ALARMSTATUSCODE_Code_Change;
+  //알람 이벤트 상태코드 사이즈 변경
+  dmZeronEventDBCreate.AlterTB_ALARMEVENT_Code_Change;
+  //알람 이벤트 oper 사이즈 변경
+  dmZeronEventDBCreate.AlterTB_ALARMEVENT_Oper_Change;
+  //알람 이벤트 재정의 상태코드 생성
+  dmZeronEventDBCreate.AlterTB_ALARMEVENT_STATECODE2_Add;
+  //알람상태 그룹 테이블 생성
+  dmZeronEventDBCreate.CreateTB_ALARMCODEGROUP;
+  //알람 모드변경 제외 그룹 테이블 생성
+  dmZeronEventDBCreate.CreateTB_ALARMMODENOTCARD;
+  //알람 모드변경 제외 데이터 인서트
+  dmZeronEventDBFunction.InsertIntoTB_ALARMMODENOTCARD_Value('001','***RESET**');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMMODENOTCARD_Value('002','.KTLinkUs.');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMMODENOTCARD_Value('003','ForceRelay');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMMODENOTCARD_Value('004','0000000000');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMMODENOTCARD_Value('005','RecoveryOK');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('ET','기타','0','0','0');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','49');
+
+end;
+
+function TZeronEventDataBaseConfig.Table050VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('COMMON','DAEMON_VER','0','데몬버젼');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','50');
+end;
+
+function TZeronEventDataBaseConfig.Table051VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_NOTCARDALARMCODE;
+
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('RESET','R1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('RESET','R2');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('RESET','WR');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('RESET','CR');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('모드변경','A1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('모드변경','A2');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('모드변경','A3');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('모드변경','A4');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('모드변경','C1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('모드변경','C2');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('모드변경','C3');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('모드변경','C4');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('Alarm','ZS');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('Alarm','ZP');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('Alarm','ZN');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('Alarm','E1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('Alarm','F1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('Alarm','FI');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('Alarm','G1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('Alarm','Q1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('Network','NF');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('Network','NR');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('AC전원','AF');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('AC전원','AN');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('Data','BF');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('기기관련','CC');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('기기관련','CO');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('밧데리','DF');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('밧데리','DL');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('밧데리','DR');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('기타','ET');
+
+  dmZeronEventDBFunction.InsertIntoTB_NOTCARDALARMCODE_Value('001','a','R1');
+  dmZeronEventDBFunction.InsertIntoTB_NOTCARDALARMCODE_Value('001','d','R2');
+  dmZeronEventDBFunction.InsertIntoTB_NOTCARDALARMCODE_Value('002','a','A2');
+  dmZeronEventDBFunction.InsertIntoTB_NOTCARDALARMCODE_Value('002','d','C2');
+  dmZeronEventDBFunction.InsertIntoTB_NOTCARDALARMCODE_Value('003','a','A3');
+  dmZeronEventDBFunction.InsertIntoTB_NOTCARDALARMCODE_Value('003','d','C3');
+  dmZeronEventDBFunction.InsertIntoTB_NOTCARDALARMCODE_Value('004','a','A4');
+  dmZeronEventDBFunction.InsertIntoTB_NOTCARDALARMCODE_Value('004','d','C4');
+  dmZeronEventDBFunction.InsertIntoTB_NOTCARDALARMCODE_Value('005','a','R3');
+  dmZeronEventDBFunction.InsertIntoTB_NOTCARDALARMCODE_Value('005','d','R3');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','51');
+end;
+
+function TZeronEventDataBaseConfig.Table052VersionMake: Boolean;
+begin
+  //카드발급테이블에 여기서 발급했는지 여부
+  dmZeronEventDBCreate.AlterTB_KTCARDISSUE_Write_Add;
+
+  //카드발급테이블에 발급일자
+  dmZeronEventDBCreate.AlterTB_KTCARDISSUE_WriteDate_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSEVENT_COMPANYCODE_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSEVENT_EMCODE_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSEVENT_JIJUMCODE_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSEVENT_DEPARTCODE_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSEVENT_EMNAME_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','52');
+end;
+
+function TZeronEventDataBaseConfig.Table053VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('ATTEND','EMPLOYEE','0','0:사원별,1:카드별');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','53');
+end;
+
+function TZeronEventDataBaseConfig.Table054VersionMake: Boolean;
+begin
+
+  dmZeronEventDBCreate.CreateTB_MAPLOCATION;
+  dmZeronEventDBCreate.CreateTB_MAPPOSITION;
+  dmZeronEventDBCreate.CreateTB_MAPZONE;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','54');
+
+end;
+
+function TZeronEventDataBaseConfig.Table055VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_UPDATE_Add;
+  dmZeronEventDBCreate.AlterTB_DOOR_UPDATE_Add;
+  dmZeronEventDBCreate.AlterTB_ALARMDEVICE_UPDATE_Add;
+  dmZeronEventDBCreate.AlterTB_ZONEDEVICE_UPDATE_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','55');
+
+end;
+
+function TZeronEventDataBaseConfig.Table056VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_FTPLIST_RetryCount_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','56');
+
+end;
+
+function TZeronEventDataBaseConfig.Table057VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_DOOR_OPENMONI_Add;
+  dmZeronEventDBCreate.AlterTB_DOOR_SENDDOOR_Add;
+  dmZeronEventDBCreate.AlterTB_DOOR_ALARMLONG_Add;
+  dmZeronEventDBCreate.AlterTB_DOOR_DSOPEN_Add;
+  dmZeronEventDBCreate.AlterTB_DOOR_REMOTEDOOR_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','57');
+
+end;
+
+function TZeronEventDataBaseConfig.Table058VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('ATTEND','ATTYPE1','0','1:전사원정상출퇴근고정'); //전사원 교대타입에 따른 출퇴근처리
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','58');
+end;
+
+function TZeronEventDataBaseConfig.Table059VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_DOOR_ControlTime_Change;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','59');
+end;
+
+function TZeronEventDataBaseConfig.Table060VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.UpdateTB_FTPLIST_RETRYCOUNTInitialize;
+  dmZeronEventDBFunction.UpdateTB_ACCESSDEVICE_SENDACKAll('Y');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','60');
+
+end;
+
+function TZeronEventDataBaseConfig.Table061VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','cardServer','0','카드서버연동유무');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','PER_RELAY','0','사원정보연동유무');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','PER_SRELAY','0','보내는사원정보연동유무');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','SENT_RELAY','0','전문연동유무');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('COMMON','CARDNOTYPE','0','카드번호Type(고정/가변)');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('COMMON','CARDNUM','0','카드숫자인식Type');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('COMMON','CAPOSINUM','0','카드위치사용유무');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('COMMON','DUPCARD','0','1인당카드중복여부');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('FIRE','FIRERECUSE','1','화재복구사용유무');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('FIRE','FIREOPEN','0','화재감지시전체개방');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('FIRE','FIRESTATUS','FI','화재감지시상태값');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('COMMON','ACEVENT','1','0.전체이력,1.카드이벤트만');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','CONTRLPORT','10001','제어포트');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','STATEPORT','10011','상태포트');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','EVENTPORT','10021','이벤트포트');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','MULTISOCK','0','멀티소켓');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','61');
+
+end;
+
+function TZeronEventDataBaseConfig.Table062VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ALARMEVENT_AlarmSound_Add;
+  dmZeronEventDBCreate.AlterTB_ALARMEVENT_AlarmGRADE_Add;
+  dmZeronEventDBCreate.AlterTB_ALARMEVENT_CheckUser_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','62');
+
+end;
+
+function TZeronEventDataBaseConfig.Table063VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','USEARMLEN','FALSE');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','ALARMLEN','10');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','63');
+
+end;
+
+function TZeronEventDataBaseConfig.Table064VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ACCESSEVENT_EMCODE_Change;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','64');
+
+end;
+
+function TZeronEventDataBaseConfig.Table065VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  G_nDaemonServerVersion := dmZeronEventDBFunction.GetDaemonVersion;
+  if (G_nDaemonServerVersion > 0) and (G_nDaemonServerVersion < 4) then
+  begin
+    dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','SCHASYNC','0');
+  end else
+  begin
+    dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','SCHASYNC','1');
+  end;
+
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','SCHDEVICE','0');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','65');
+
+end;
+
+function TZeronEventDataBaseConfig.Table066VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','COMMLOG','0');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','CARDLOG','0');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','66');
+
+end;
+
+function TZeronEventDataBaseConfig.Table067VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_DeviceCode_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_RegSend_Add;
+  dmZeronEventDBCreate.AlterTB_ALARMDEVICE_RegSend_Add;
+  dmZeronEventDBCreate.AlterTB_DOOR_RegSend_Add;
+  dmZeronEventDBCreate.AlterTB_READER_DoorPosi_Add;
+  dmZeronEventDBCreate.AlterTB_READER_BuildPosi_Add;
+  dmZeronEventDBCreate.AlterTB_READER_RegSend_Add;
+  dmZeronEventDBCreate.AlterTB_ZONEDEVICE_DelayUse_Add;
+  dmZeronEventDBCreate.AlterTB_ZONEDEVICE_PortRecovery_Add;
+  dmZeronEventDBCreate.AlterTB_ZONEDEVICE_RegSend_Add;
+
+  dmZeronEventDBFunction.InsertIntoTB_CURRENTDAEMON_Value('REGPW',MimeEncodeString('1234'));
+
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','67');
+
+end;
+
+function TZeronEventDataBaseConfig.Table068VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ALARMEVENT_Cardno_Add;
+  dmZeronEventDBCreate.AlterTB_ALARMDEVICE_TelNo_Add;
+  dmZeronEventDBCreate.AlterTB_ALARMDEVICE_memo_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','68');
+end;
+
+function TZeronEventDataBaseConfig.Table069VersionMake: Boolean;
+begin
+
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_LinkusSystemID_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_LinkusTelNo_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_ArmControlRing_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_DisArmControlRing_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_DeviceType_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_PowerType_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_OutDelay_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_InDelay_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_Jaejung_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_Door1Type_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_Door2Type_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_ReaderType_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','69');
+
+end;
+
+function TZeronEventDataBaseConfig.Table070VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'update TB_DOOR set DO_UPDATE = ''Y'' ';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  stSql := 'update TB_ALARMDEVICE set AL_UPDATE = ''Y'' ';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  stSql := 'update TB_ACCESSDEVICE set AC_PTTYPE = ''1'' ';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','70');
+end;
+
+function TZeronEventDataBaseConfig.Table071VersionMake: Boolean;
+begin
+
+  dmZeronEventDBFunction.InsertIntoTB_CURRENTDAEMON_Value('DEVICESORT','00000000');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','71');
+
+end;
+
+function TZeronEventDataBaseConfig.Table072VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_READER_ReaderVer_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','72');
+
+end;
+
+function TZeronEventDataBaseConfig.Table073VersionMake: Boolean;
+begin
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','73');
+
+end;
+
+function TZeronEventDataBaseConfig.Table074VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','fdmsEMCODE','FALSE'); //RUC 센터 때문에 추가 했는데... RUC 특화로 사용 안함
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','74');
+end;
+
+function TZeronEventDataBaseConfig.Table075VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_DEVICESETTINGINFO;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','75');
+
+end;
+
+function TZeronEventDataBaseConfig.Table076VersionMake: Boolean;
+begin
+
+  dmZeronEventDBFunction.InsertIntoTB_PERRELAYCONFIG_Value('GETDATETIME','00000000000000','최종가져온시간');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','76');
+end;
+
+function TZeronEventDataBaseConfig.Table077VersionMake: Boolean;
+begin
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','77');
+
+end;
+
+function TZeronEventDataBaseConfig.Table078VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','PCSERVERTM','1','PCServerDelayTime');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','78');
+
+end;
+
+function TZeronEventDataBaseConfig.Table079VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','C_INTERVAL','5','ClientSendInterval(ms)');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','79');
+end;
+
+function TZeronEventDataBaseConfig.Table080VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('ATTEND','INOUTTYPE','0','외출-0:사용안함,1:리더,2:버튼');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('ATTEND','STARTWKNO','1','출근리더(버튼)번호');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('ATTEND','OFFWKNO','2','퇴근리더(버튼)번호');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('ATTEND','WKOUTNO','3','외출리더(버튼)번호');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('ATTEND','WKINNO','4','복귀리더(버튼)번호');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','80');
+
+end;
+
+function TZeronEventDataBaseConfig.Table081VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Delete From TB_ALARMSTATUSCODE ';
+  stSql := stSql + ' Where AL_ALARMSTATUSCODE = ''F1'' ';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','81');
+
+end;
+
+function TZeronEventDataBaseConfig.Table082VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('ATTEND','ATPRSERVER','FALSE','근태전용서버');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','82');
+
+end;
+
+function TZeronEventDataBaseConfig.Table083VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','FDMSDBTYPE','0');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','FDMSDBIP','127.0.0.1');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','FDMSDBPORT','1433');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','FDMSUSER','sa');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','FDMSDBNAME','sh_fpsystem');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','83');
+end;
+
+function TZeronEventDataBaseConfig.Table084VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_ALARMGUBUNCODE;
+
+  dmZeronEventDBFunction.InsertIntoTB_ALARMGUBUNCODE_Value('001','구분1');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMGUBUNCODE_Value('002','구분2');
+
+  dmZeronEventDBCreate.AlterTB_ALARMDEVICE_ARMGUBUN_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','84');
+end;
+
+function TZeronEventDataBaseConfig.Table085VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('KTT','KTTSUSES','0');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('KTT','KTTSIP','121.170.197.175');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('KTT','KTTSPORT','7001');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('KTT','KTTCPORT','4101');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','85');
+
+end;
+
+function TZeronEventDataBaseConfig.Table086VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_ALARMMODENOTCARD_Value('006','CtrlCenter');
+  dmZeronEventDBFunction.InsertIntoTB_NOTCARDALARMCODE_Value('006','a','R3');
+  dmZeronEventDBFunction.InsertIntoTB_NOTCARDALARMCODE_Value('006','d','R3');
+
+  stSql := ' Update TB_ALARMEVENT set al_operator = ''CtrlCenter'' ';
+  if G_nDBTYPE = PostGresql then stSql := stsql + ' Where substr(al_operator,1,10) = ''.KTLinkUs.'' '
+  else if G_nDBTYPE = MSSQL then stSql := stsql + ' Where substring(al_operator,1,10) = ''.KTLinkUs.'' '
+  else Exit;
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','86');
+
+end;
+
+function TZeronEventDataBaseConfig.Table087VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','CLIENTSEQ','N');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','CLIENTTIME','5');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','87');
+
+end;
+
+function TZeronEventDataBaseConfig.Table088VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','FDMSNOAUTO','Y','지문번호자동생성유무');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','88');
+end;
+
+function TZeronEventDataBaseConfig.Table089VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_CONFIG_Value_Change;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','89');
+
+end;
+
+function TZeronEventDataBaseConfig.Table090VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_PERMITCODE_Value('3','방범경계승인');
+  dmZeronEventDBFunction.InsertIntoTB_PERMITCODE_Value('4','방범해제승인');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','90');
+end;
+
+function TZeronEventDataBaseConfig.Table091VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  //기기 테이블에 MUXID 추가
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_MuxID_Add;
+
+  stSql := 'Update TB_ACCESSDEVICE set AC_MUXID = ''00'' ';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  //기기 테이블에 데코더아이디 추가
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_DecoderID_Add;
+
+  stSql := 'Update TB_ACCESSDEVICE set AC_DECODERID = ''KTT00'' ';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  //알람 이벤트신호 Count
+  dmZeronEventDBFunction.InsertIntoTB_CURRENTDAEMON_Value('KTALARMSEQ','0');
+
+  //PAM Cycle Time - Pre Alive Manager  회선체크
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('KTT','KTTPCYCLE','30');
+
+  //관제이벤트 매핑 코드 테이블 생성
+  dmZeronEventDBCreate.CreateTB_KTTMAPPINGCODE;
+
+  //가입자확장기 단선
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','21','11','E701');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','21','11','E701');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','N','21','11','E701');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','NF','11','E701');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','NF','11','E701');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','N','NF','11','E701');
+  //가입자확장기 복구
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','22','11','R701');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','22','11','R701');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','N','22','11','R701');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','NR','11','R701');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','NR','11','R701');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','N','NR','11','R701');
+  //가입자확장기 열림
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','23','11','E137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','23','11','E137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','N','23','11','E137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','CO','11','E137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','CO','11','E137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','N','CO','11','E137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','23','11','E137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','23','11','E137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','N','23','11','E137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','CO','11','E137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','CO','11','E137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','N','CO','11','E137');
+  //가입자확장기 닫힘
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','24','11','R137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','24','11','R137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','N','24','11','R137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','CC','11','R137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','CC','11','R137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','N','CC','11','R137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','24','11','R137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','24','11','R137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','N','24','11','R137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','CC','11','R137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','CC','11','R137');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','N','CC','11','R137');
+  //카드리더 단선
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','A','31','11','E138');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','D','31','11','E138');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','N','31','11','E138');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','A','NF','11','E138');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','D','NF','11','E138');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','N','NF','11','E138');
+  //카드리더 복구
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','A','32','11','R138');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','D','32','11','R138');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','N','32','11','R138');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','A','NR','11','R138');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','D','NR','11','R138');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','N','NR','11','R138');
+  //카드리더 열림
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','A','33','11','E136');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','D','33','11','E136');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','N','33','11','E136');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','A','CO','11','E136');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','D','CO','11','E136');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','N','CO','11','E136');
+  //카드리더 닫힘
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','A','34','11','R136');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','D','34','11','R136');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','N','34','11','R136');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','A','CC','11','R136');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','D','CC','11','R136');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('CD','N','CC','11','R136');
+  //AC 단선
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','AF','11','E301');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','AF','11','E301');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','N','AF','11','E301');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','AF','11','E301');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','AF','11','E301');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','N','AF','11','E301');
+  //AC 복구
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','AN','11','R301');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','AN','11','R301');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','N','AN','11','R301');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','AN','11','R301');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','AN','11','R301');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','N','AN','11','R301');
+  //카드경계모드변경
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','A1','11','E400');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','A1','11','E400');
+  //카드해제모드변경
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','C1','11','R400');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','C1','11','R400');
+  //강제경계모드변경
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','A3','11','E300');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','A3','11','E300');
+  //강제해제모드변경
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','C3','11','R300');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','C3','11','R300');
+  //PC경계모드변경
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','A4','11','E620');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','A4','11','E620');
+  //PC해제모드변경
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','C4','11','R620');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','C4','11','R620');
+  //관제경계모드변경
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','A2','11','E610');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','A2','11','E610');
+  //관제해제모드변경
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','C2','11','R610');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','C2','11','R610');
+  //전원리셋
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','R1','01','E305');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','R2','01','E305');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','N','R2','01','E305');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','R1','01','E305');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','R2','01','E305');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','N','R2','01','E305');
+  //국선체크
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','PC','11','E600');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','PC','11','E600');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','N','PC','11','E600');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','PC','11','E600');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','PC','11','E600');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','N','PC','11','E600');
+  //프로그램댐퍼
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','EM','11','E306');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','EM','11','E306');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','N','EM','11','E306');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','EM','11','E306');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','EM','11','E306');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','N','EM','11','E306');
+  //TF단말확인
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','PF','11','E139');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','PF','11','E139');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','N','PF','11','E139');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','PF','11','E139');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','PF','11','E139');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','N','PF','11','E139');
+  //DC 단선
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','DL','11','E302');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','DL','11','E302');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','N','DL','11','E302');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','DL','11','E302');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','DL','11','E302');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','N','DL','11','E302');
+  //DC 복구
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','DR','11','R302');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','DR','11','R302');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','N','DR','11','R302');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','DR','11','R302');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','DR','11','R302');
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','N','DR','11','R302');
+  //침입
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','ZP','11','E130');  //오픈
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','ZS','11','E130');  //쇼트
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','ZP','11','E130');  //오픈
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','ZS','11','E130');  //쇼트
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','FI','11','E130');  //화재
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','E1','11','E130');  //비상
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','G1','11','E130');  //가스
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','Q1','11','E130');  //설비
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','FI','11','E130');  //화재
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','E1','11','E130');  //비상
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','G1','11','E130');  //가스
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','Q1','11','E130');  //설비
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','ZP','11','E130');  //오픈
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','ZS','11','E130');  //쇼트
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','ZP','11','E130');  //오픈
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','ZS','11','E130');  //쇼트
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','FI','11','E130');  //화재
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','E1','11','E130');  //비상
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','G1','11','E130');  //가스
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','Q1','11','E130');  //설비
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','FI','11','E130');  //화재
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','E1','11','E130');  //비상
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','G1','11','E130');  //가스
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','Q1','11','E130');  //설비
+  //침입복구
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','ZN','11','R130');  //정상
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','ZN','11','R130');  //정상
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','F2','11','R130');  //화재
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','E2','11','R130');  //비상
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','G2','11','R130');  //가스
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','A','Q2','11','R130');  //설비
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','F2','11','R130');  //화재
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','E2','11','R130');  //비상
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','G2','11','R130');  //가스
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('MN','D','Q2','11','R130');  //설비
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','ZN','11','R130');  //정상
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','ZN','11','R130');  //정상
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','F2','11','R130');  //화재
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','E2','11','R130');  //비상
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','G2','11','R130');  //가스
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','A','Q2','11','R130');  //설비
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','F2','11','R130');  //화재
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','E2','11','R130');  //비상
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','G2','11','R130');  //가스
+  dmZeronEventDBFunction.InsertIntoTB_KTTMAPPINGCODE_Value('EX','D','Q2','11','R130');  //설비
+
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('21','가입자확장기단선','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('22','가입자확장기복구','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('31','카드리더단선','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('32','카드리더복구','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('41','감지기확장기단선','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('42','감지기확장기복구','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('23','기계열림','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('24','기계닫힘','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('33','카드리더열림','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('34','카드리더닫힘','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('43','감지기확장기열림','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('44','감지기확장기닫힘','0','0','0');
+
+  stSql := 'Update TB_ALARMSTATUSCODE set AL_ALARMNAME = ''화재알람'' where AL_ALARMSTATUSCODE = ''FI'' ';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('F2','화재존복구','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('E2','비상존복구','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('G2','가스존복구','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('Q2','설비존복구','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('EM','프로그램댐퍼','0','0','0');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMSTATUSCODE_Value('PF','TF단말확인','0','0','0');
+
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('Network','21');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('Network','22');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('Network','31');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('Network','32');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('Network','41');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('Network','42');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('기기관련','23');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('기기관련','24');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('기기관련','33');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('기기관련','34');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('기기관련','43');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMCODEGROUP_Value('기기관련','44');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','91');
+end;
+
+function TZeronEventDataBaseConfig.Table092VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('KTT','DDNSUSES','0');
+  //DDNS Server IP
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('KTT','DDNS_SIP','121.170.197.180');
+  //DDNS Server PORT
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('KTT','DDNS_SPORT','9300');
+  //DDNS Query Server IP
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('KTT','DDNS_QIP','121.170.197.180');
+  //DDNS Query Server PORT
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('KTT','DDNS_QPORT','9301');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','92');
+
+end;
+
+function TZeronEventDataBaseConfig.Table093VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('FIRE','RELAYUSE','0');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('FIRE','RELAYNO','6');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('FIRE','RELAYTIME','2');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','93');
+end;
+
+function TZeronEventDataBaseConfig.Table094VersionMake: Boolean;
+begin
+  //TB_ALARMDEVIC 이름 사이즈 변경
+  dmZeronEventDBCreate.AlterTB_ALARMDEVICE_Name_Change;
+  //TB_ACCESSDEVIC 이름 사이즈 변경
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_Name_Change;
+  //TB_DOOR 이름 사이즈 변경
+  dmZeronEventDBCreate.AlterTB_DOOR_Name_Change;
+  //TB_FOOD 이름 사이즈 변경
+  dmZeronEventDBCreate.AlterTB_FOOD_Name_Change;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','94');
+
+end;
+
+function TZeronEventDataBaseConfig.Table095VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('FOOD','DUPEVENT','0');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','95');
+
+end;
+
+function TZeronEventDataBaseConfig.Table096VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_RELAYUNIVERCITY;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','96');
+end;
+
+function TZeronEventDataBaseConfig.Table097VersionMake: Boolean;
+begin
+  NotGradePermitDelete;
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','97');
+end;
+
+function TZeronEventDataBaseConfig.Table098VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBCreate.AlterTB_KTTMAPPINGCODE_SendUse_Add;
+
+  stSql := ' update TB_KTTMAPPINGCODE set senduse = ''Y'' ';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','98');
+
+end;
+
+function TZeronEventDataBaseConfig.Table099VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','DELCARDUSE','N');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','DCARDSTART','11');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','DELCARDLEN','3');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','99');
+end;
+
+function TZeronEventDataBaseConfig.Table100VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_ATWORKTYPE;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','100');
+end;
+
+function TZeronEventDataBaseConfig.Table101VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ZONEDEVICE_Name_Change;
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','101');
+end;
+
+function TZeronEventDataBaseConfig.Table102VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','AUTOFCARD','N');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','102');
+end;
+
+function TZeronEventDataBaseConfig.Table103VersionMake: Boolean;
+var
+  stSql : string;
+  stTemp : string;
+  stAW_YESTERDAYTIME : string; //어제 날짜 기준 시간
+  stAW_SATURDAYTYPE : string; //토요일근무타입 0:공휴일,1:반휴일,2:평일
+  stAW_DEVICETYPE : string; //0:업데이트,1:카드리더,2:버튼방식
+  stAW_FIXATTYPE : string; //0:정상,1:전직원 정상 출퇴근
+  stAW_NOTBACKUPTYPE : string; //0:미복귀시조퇴처리,1:미복귀시정상퇴근
+  stAW_ATSTARTBUTTON : string; //출근조작버튼
+  stAW_ATOFFBUTTON : string; //퇴근조작버튼
+  stAW_INOUTDEVICETYPE : string; //외출-0:사용안함,1:리더,2:버튼
+  stAW_WORKOUTBUTTON : string; //외출조작버튼
+  stAW_WORKINBUTTON : string; //복귀조작버튼
+begin
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','103');
+
+  stSql := 'select * from TB_CONFIG ';
+  stSql := stSql + ' where CO_CONFIGGROUP = ''ATTEND'' ';
+
+  with dmZeronEventDataBase.ADOTempQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+
+    While Not Eof do
+    begin
+      if FindField('CO_CONFIGCODE').AsString = 'ATTYPE1' then stAW_FIXATTYPE := FindField('CO_CONFIGVALUE').AsString
+      else if FindField('CO_CONFIGCODE').AsString = 'DEVICETYPE' then stAW_DEVICETYPE := FindField('CO_CONFIGVALUE').AsString
+      else if FindField('CO_CONFIGCODE').AsString = 'INOUTTYPE' then stAW_INOUTDEVICETYPE := FindField('CO_CONFIGVALUE').AsString
+      else if FindField('CO_CONFIGCODE').AsString = 'OFFWKNO' then stAW_ATOFFBUTTON := FindField('CO_CONFIGVALUE').AsString
+      else if FindField('CO_CONFIGCODE').AsString = 'OUTTIME' then stAW_NOTBACKUPTYPE := FindField('CO_CONFIGVALUE').AsString
+      else if FindField('CO_CONFIGCODE').AsString = 'SATURDAY' then stAW_SATURDAYTYPE := FindField('CO_CONFIGVALUE').AsString
+      else if FindField('CO_CONFIGCODE').AsString = 'STARTWKNO' then stAW_ATSTARTBUTTON := FindField('CO_CONFIGVALUE').AsString
+      else if FindField('CO_CONFIGCODE').AsString = 'WKINNO' then stAW_WORKINBUTTON := FindField('CO_CONFIGVALUE').AsString
+      else if FindField('CO_CONFIGCODE').AsString = 'WKOUTNO' then stAW_WORKOUTBUTTON := FindField('CO_CONFIGVALUE').AsString
+      else if FindField('CO_CONFIGCODE').AsString = 'YTIME' then stAW_YESTERDAYTIME := FindField('CO_CONFIGVALUE').AsString ;
+
+      Next;
+    end;
+    stTemp := 'Insert Into TB_ATWORKTYPE(';
+    stTemp := stTemp + 'AW_CODE,';
+    stTemp := stTemp + 'AW_NAME,';
+    stTemp := stTemp + 'AW_YESTERDAYTIME,';
+    stTemp := stTemp + 'AW_SATURDAYTYPE,';
+    stTemp := stTemp + 'AW_DEVICETYPE,';
+    stTemp := stTemp + 'AW_FIXATTYPE,';
+    stTemp := stTemp + 'AW_NOTBACKUPTYPE,';
+    stTemp := stTemp + 'AW_ATSTARTBUTTON,';
+    stTemp := stTemp + 'AW_ATOFFBUTTON,';
+    stTemp := stTemp + 'AW_INOUTDEVICETYPE,';
+    stTemp := stTemp + 'AW_WORKOUTBUTTON,';
+    stTemp := stTemp + 'AW_WORKINBUTTON) ';
+    stTemp := stTemp + ' Values( ';
+    stTemp := stTemp + '''001'',';
+    stTemp := stTemp + '''상시근무자'',';
+    stTemp := stTemp + '''' + stAW_YESTERDAYTIME + ''',';
+    stTemp := stTemp + '''' + stAW_SATURDAYTYPE + ''',';
+    stTemp := stTemp + '''' + stAW_DEVICETYPE + ''',';
+    stTemp := stTemp + '''' + stAW_FIXATTYPE + ''',';
+    stTemp := stTemp + '''' + stAW_NOTBACKUPTYPE + ''',';
+    stTemp := stTemp + '''' + stAW_ATSTARTBUTTON + ''',';
+    stTemp := stTemp + '''' + stAW_ATOFFBUTTON + ''',';
+    stTemp := stTemp + '''' + stAW_INOUTDEVICETYPE + ''',';
+    stTemp := stTemp + '''' + stAW_WORKOUTBUTTON + ''',';
+    stTemp := stTemp + '''' + stAW_WORKINBUTTON + ''') ';
+
+    dmZeronEventDataBase.ProcessExecSQL(stTemp);
+  end;
+end;
+
+function TZeronEventDataBaseConfig.Table104VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBCreate.AlterTB_ATCODE_AWCODE_Add;
+
+  stSql := 'Update TB_ATCODE set AW_CODE = ''001'' ';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','104');
+end;
+
+function TZeronEventDataBaseConfig.Table105VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_AWCODE_Add;
+
+  stSql := 'Update TB_EMPLOYEE set AW_CODE = ''001'' ';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','105');
+
+end;
+
+function TZeronEventDataBaseConfig.Table106VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBCreate.AlterTB_ALARMSTATUSCODE_Gubun_Add;
+  dmZeronEventDBCreate.AlterTB_ALARMSTATUSCODEColor_Add;
+
+  stSql := ' Update TB_ALARMSTATUSCODE set AL_COLOR = 255 ';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  stSql := ' Update TB_ALARMSTATUSCODE set AL_GUBUN = ''001'' ';
+  stSql := stSql + ' Where AL_ALARMSTATUSCODE = ''00'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''AF'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''AN'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''BF'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''CC'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''CO'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''CR'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''DF'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''DL'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''DR'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''E1'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''EM'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''FI'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''G1'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''NF'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''NR'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''PF'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''Q1'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''S1'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''S2'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''S3'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''S4'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''S5'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''S6'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''S7'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''S8'' ';
+  stSql := stSql + ' OR AL_ALARMSTATUSCODE = ''WR'' ';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  stSql := ' Update TB_ALARMSTATUSCODE set AL_GUBUN = ''002'' ';
+  stSql := stSql + ' Where AL_GUBUN IS NULL ';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','106');
+end;
+
+function TZeronEventDataBaseConfig.Table107VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CURRENTDAEMON_Value('FDMSCARD','30');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','107');
+end;
+
+function TZeronEventDataBaseConfig.Table108VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBCreate.CreateTB_FIREGUBUN;
+  dmZeronEventDBFunction.InsertIntoTB_FIREGUBUN_Value('001','전체');
+  dmZeronEventDBCreate.CreateTB_FIREGROUP;
+
+  stSql := ' Insert into TB_FIREGROUP select ''1234567890'',AC_NODENO,''001'' from TB_ACCESSDEVICE where AC_ECUID = ''00'' ';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','108');
+
+end;
+
+function TZeronEventDataBaseConfig.Table109VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ATCODE_ATOUTRANGE_Add;
+  dmZeronEventDBCreate.AlterTB_ATCODE_ATSOUTRANGE_Add;
+  dmZeronEventDBCreate.AlterTB_ATCODE_ATHOUTRANGE_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','109');
+end;
+
+function TZeronEventDataBaseConfig.Table110VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_ATLISTEVENT;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','110');
+
+end;
+
+function TZeronEventDataBaseConfig.Table111VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_CLIENTSOCK;
+
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','CSOCKTYPE','0');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','111');
+end;
+
+function TZeronEventDataBaseConfig.Table112VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_JAVARATYPE_Add;
+
+  stSql := 'Update TB_ACCESSDEVICE set AC_JAVARATYPE = ''0'' ';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','112');
+end;
+
+function TZeronEventDataBaseConfig.Table113VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBFunction.UpdateTB_NOTCARDALARMCODE_Statuscode2('006','a','A2');
+  dmZeronEventDBFunction.UpdateTB_NOTCARDALARMCODE_Statuscode2('006','d','C2');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','113');
+end;
+
+function TZeronEventDataBaseConfig.Table114VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_JAVARASCHEDULE;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','114');
+end;
+
+function TZeronEventDataBaseConfig.Table115VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_CARDTYPE_Change;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','115');
+end;
+
+function TZeronEventDataBaseConfig.Table116VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_COPHONE_Change;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','116');
+end;
+
+function TZeronEventDataBaseConfig.Table117VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','LONGTIMECD','');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','117');
+end;
+
+function TZeronEventDataBaseConfig.Table118VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_INOUTREADERGROUP;
+  dmZeronEventDBCreate.AlterTB_READER_INOUTGROUPCODE_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','118');
+end;
+
+function TZeronEventDataBaseConfig.Table119VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_INOUTGROUPLIST;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','119');
+end;
+
+function TZeronEventDataBaseConfig.Table120VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_INOUTGROUPLIST_NodeNo_Add;
+  dmZeronEventDBCreate.AlterTB_INOUTGROUPLIST_EcuID_Add;
+  dmZeronEventDBCreate.AlterTB_INOUTGROUPLIST_ReaderNo_Add;
+  dmZeronEventDBCreate.AlterTB_INOUTGROUPLIST_Time_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','120');
+end;
+
+function TZeronEventDataBaseConfig.Table121VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','ASCIITOHEX','Y');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','121');
+
+end;
+
+function TZeronEventDataBaseConfig.Table122VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_DEVICECARDGROUPCODE;
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_DGCODE_Add;
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_DGAPPLY_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','122');
+end;
+
+function TZeronEventDataBaseConfig.Table123VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_PERMITCODE_Value('G','근태');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','123');
+
+end;
+
+function TZeronEventDataBaseConfig.Table124VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_ACCESSINPUTTYPE;
+  dmZeronEventDBFunction.InsertIntoTB_ACCESSINPUTTYPE_Value('R','원격제어');
+  dmZeronEventDBFunction.InsertIntoTB_ACCESSINPUTTYPE_Value('P','전화');
+  dmZeronEventDBFunction.InsertIntoTB_ACCESSINPUTTYPE_Value('B','퇴실버튼');
+  dmZeronEventDBFunction.InsertIntoTB_ACCESSINPUTTYPE_Value('S','스케줄');
+  dmZeronEventDBFunction.InsertIntoTB_ACCESSINPUTTYPE_Value('F','화재발생');
+  dmZeronEventDBFunction.InsertIntoTB_ACCESSINPUTTYPE_Value('f','원격화재');
+  dmZeronEventDBFunction.InsertIntoTB_ACCESSINPUTTYPE_Value('C','카드');
+
+  dmZeronEventDBCreate.CreateTB_DOORPOSICODE;
+  dmZeronEventDBFunction.InsertIntoTB_DOORPOSICODE_Value('0','내부');
+  dmZeronEventDBFunction.InsertIntoTB_DOORPOSICODE_Value('1','외부');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','124');
+
+end;
+
+function TZeronEventDataBaseConfig.Table125VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ALARMEVENT_COMPANYCODE_Add;
+  dmZeronEventDBCreate.AlterTB_ALARMEVENT_EMCODE_Add;
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','125');
+end;
+
+function TZeronEventDataBaseConfig.Table126VersionMake: Boolean;
+begin
+  Exit;
+  ///현재 DEVICETYPE은 미사용 ==> TB_ALARMDEVICETYPE 테이블을 사용중
+  dmZeronEventDBFunction.InsertIntoTB_DEVICETYPE_Value('MN','메인컨트롤러');
+  dmZeronEventDBFunction.InsertIntoTB_DEVICETYPE_Value('EX','로컬컨트롤러');
+  dmZeronEventDBFunction.InsertIntoTB_DEVICETYPE_Value('JP','조작표시기');
+  dmZeronEventDBFunction.InsertIntoTB_DEVICETYPE_Value('PT','포인터');
+  dmZeronEventDBFunction.InsertIntoTB_DEVICETYPE_Value('PR','프린터');
+  dmZeronEventDBFunction.InsertIntoTB_DEVICETYPE_Value('PC','PC');
+  dmZeronEventDBFunction.InsertIntoTB_DEVICETYPE_Value('AD','알람표시기');
+  dmZeronEventDBFunction.InsertIntoTB_DEVICETYPE_Value('WR','무선중계기');
+  dmZeronEventDBFunction.InsertIntoTB_DEVICETYPE_Value('CD','카드리더');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','126');
+end;
+
+function TZeronEventDataBaseConfig.Table127VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_ALARMMODECODE_Value('a','경계모드');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMMODECODE_Value('d','해제모드');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMMODECODE_Value('A','경계모드');
+  dmZeronEventDBFunction.InsertIntoTB_ALARMMODECODE_Value('D','해제모드');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','127');
+end;
+
+function TZeronEventDataBaseConfig.Table128VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_LOCATION_TotWidth_Add;
+  dmZeronEventDBCreate.AlterTB_LOCATION_TotHeight_Add;
+  dmZeronEventDBCreate.AlterTB_LOCATION_CurX_Add;
+  dmZeronEventDBCreate.AlterTB_LOCATION_CurY_Add;
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','128');
+end;
+
+function TZeronEventDataBaseConfig.Table129VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_EmName_Change('100');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','129');
+end;
+
+function TZeronEventDataBaseConfig.Table130VersionMake: Boolean;
+begin
+  result := dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('CARD','READERTYPE','0','0.일반,1.스마트원');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','130');
+end;
+
+function TZeronEventDataBaseConfig.Table131VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_EMPHIS_EMNAME_Change(100);
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','131');
+end;
+
+function TZeronEventDataBaseConfig.Table132VersionMake: Boolean;
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+begin
+  stSql := 'update tb_alarmdevice set al_zonenum = ''00'' '; //AL_ZONENUM 에 데이터 값을 입력 한다
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+  stSql := 'update TB_ALARMEVENT set AL_ZONECODE = ''00'' where AL_ZONECODE is null '; //AL_ZONECODE 에 데이터 값을 입력 한다
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+  if G_nDBType = MDB then
+  begin
+    stSql := 'alter table tb_alarmdevice alter column al_zonenum  text(2) NOT NULL ';
+    dmZeronEventDataBase.ProcessExecSQL(stSql);
+  end else if G_nDBType = POSTGRESQL then
+  begin
+    stSql := 'ALTER TABLE tb_alarmdevice ALTER COLUMN al_zonenum SET DEFAULT ''00'' ';
+    dmZeronEventDataBase.ProcessExecSQL(stSql);
+    stSql := 'ALTER TABLE tb_alarmdevice ALTER COLUMN al_zonenum SET NOT NULL ';
+    dmZeronEventDataBase.ProcessExecSQL(stSql);
+    stSql := 'alter table tb_alarmdevice drop constraint tb_alarmdevice_pkey ';
+    dmZeronEventDataBase.ProcessExecSQL(stSql);
+    stSql := 'alter table tb_alarmdevice add primary key (GROUP_CODE,AC_NODENO,AC_ECUID,AL_ZONENUM)';
+    dmZeronEventDataBase.ProcessExecSQL(stSql);
+    stSql := 'ALTER TABLE TB_ALARMEVENT ALTER COLUMN AL_ZONECODE SET DEFAULT ''00'' ';
+    dmZeronEventDataBase.ProcessExecSQL(stSql);
+    stSql := 'ALTER TABLE TB_ALARMEVENT ALTER COLUMN AL_ZONECODE SET NOT NULL ';
+    dmZeronEventDataBase.ProcessExecSQL(stSql);
+    stSql := 'alter table TB_ALARMEVENT drop constraint tb_alarmevent_pkey ';
+    dmZeronEventDataBase.ProcessExecSQL(stSql);
+    stSql := 'alter table TB_ALARMEVENT add primary key (group_code, al_date, al_time, ac_nodeno, ac_ecuid, al_msgno,AL_ZONECODE)';
+    dmZeronEventDataBase.ProcessExecSQL(stSql);
+  end else if G_nDBType = MSSQL then
+  begin
+    stSql := 'alter table tb_alarmdevice alter column al_zonenum varchar(2) NOT NULL ';
+    dmZeronEventDataBase.ProcessExecSQL(stSql);
+    stSql := ' ALTER TABLE TB_ALARMDEVICE ADD DEFAULT ''00'' FOR AL_ZONENUM ';
+    dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+    stSql := 'alter table TB_ALARMEVENT alter column AL_ZONECODE varchar(2) NOT NULL ';
+    dmZeronEventDataBase.ProcessExecSQL(stSql);
+    stSql := ' ALTER TABLE TB_ALARMEVENT ADD DEFAULT ''00'' FOR AL_ZONECODE ';
+    dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+    Try
+      CoInitialize(nil);
+      TempAdoQuery := TADOQuery.Create(nil);
+      TempAdoQuery.Connection := dmZeronEventDataBase.ADOConnection;
+      TempAdoQuery.DisableControls;
+      with TempAdoQuery do
+      begin
+        Close;
+        //sql.Clear;
+        stSql := 'select name from sysobjects where xtype= ''PK'' and parent_obj=(select id from sysobjects where name = ''tb_alarmdevice'')';
+        sql.Text := stSql;
+        Try
+          Open;
+        Except
+          //에러처리
+          Exit;
+        End;
+        if recordcount > 0 then
+        begin
+          stSql := 'ALTER TABLE tb_alarmdevice DROP ' + FindField('name').AsString ;
+          dmZeronEventDataBase.ProcessExecSQL(stSql);
+        end;
+        Close;
+        //sql.Clear;
+        stSql := 'select name from sysobjects where xtype= ''PK'' and parent_obj=(select id from sysobjects where name = ''tb_alarmevent'')';
+        sql.Text := stSql;
+        Try
+          Open;
+        Except
+          //에러처리
+          Exit;
+        End;
+        if recordcount > 0 then
+        begin
+          stSql := 'ALTER TABLE tb_alarmevent DROP ' + FindField('name').AsString ;
+          dmZeronEventDataBase.ProcessExecSQL(stSql);
+        end;
+      End;
+    Finally
+      TempAdoQuery.EnableControls;
+      TempAdoQuery.Free;
+      CoUninitialize;
+    End;
+    stSql := 'alter table tb_alarmdevice add constraint PK_alarmdevice PRIMARY KEY (GROUP_CODE,AC_NODENO,AC_ECUID,AL_ZONENUM)';
+    dmZeronEventDataBase.ProcessExecSQL(stSql);
+    stSql := 'alter table tb_alarmevent add constraint PK_alarmevent PRIMARY KEY (group_code, al_date, al_time, ac_nodeno, ac_ecuid, al_msgno,AL_ZONECODE)';
+    dmZeronEventDataBase.ProcessExecSQL(stSql);
+  end else if G_nDBType = FIREBIRD then
+  begin
+    stSql := 'alter table tb_alarmdevice alter column  al_zonenum varchar(2) DEFAULT ''00''  NOT NULL ';
+    dmZeronEventDataBase.ProcessExecSQL(stSql);
+  end else Exit;
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','132');
+
+end;
+
+function TZeronEventDataBaseConfig.Table133VersionMake: Boolean;
+begin
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','133');
+
+end;
+
+function TZeronEventDataBaseConfig.Table134VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_TIMECODE;
+  dmZeronEventDBCreate.CreateTB_TIMECODEDEVICE;
+  dmZeronEventDBCreate.AlterTB_DOOR_TIMECODEUSE_Add;
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_TIMECODEUSE_Add;
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_TIMEGROUP_Add;
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_TIME1_Add;
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_TIME2_Add;
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_TIME3_Add;
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_TIME4_Add;
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_WEEKCODE_Add;
+
+  result := dmZeronEventDBFunction.InsertIntoTB_TIMECODE_Value('1','00000000','00000000','00000000','00000000','Y');
+  result := dmZeronEventDBFunction.InsertIntoTB_TIMECODE_Value('2','00000000','00000000','00000000','00000000','Y');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','134');
+
+end;
+
+function TZeronEventDataBaseConfig.Table135VersionMake: Boolean;
+begin
+  //dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_TimeCodeSend_Add;
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_TIMECODEASYNC_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','135');
+end;
+
+function TZeronEventDataBaseConfig.Table136VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','TIMEUSE','FALSE','타임코드 사용유무');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','136');
+end;
+
+function TZeronEventDataBaseConfig.Table137VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','FDMSDEPART','FALSE','부서코드연동유무');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','137');
+end;
+
+function TZeronEventDataBaseConfig.Table138VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNODoor3_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNODoor4_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNODoor5_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNODoor6_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNODoor7_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNODoor8_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOAlarm0_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOAlarm1_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOAlarm2_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOAlarm3_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOAlarm4_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOAlarm5_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOAlarm6_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOAlarm7_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOAlarm8_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','138');
+end;
+
+function TZeronEventDataBaseConfig.Table139VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ATEVENT_JIJUMCODE_Add;
+  dmZeronEventDBCreate.AlterTB_ATEVENT_DEPARTCODE_Add;
+  dmZeronEventDBCreate.AlterTB_ATEVENT_EMNAME_Add;
+  dmZeronEventDBCreate.AlterTB_FOODEVENT_JIJUMCODE_Add;
+  dmZeronEventDBCreate.AlterTB_FOODEVENT_DEPARTCODE_Add;
+  dmZeronEventDBCreate.AlterTB_FOODEVENT_EMNAME_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','139');
+end;
+
+function TZeronEventDataBaseConfig.Table140VersionMake: Boolean;
+begin
+  result := dmZeronEventDBFunction.UpdateTB_ATEVENT_EmInfoInit;
+  result := dmZeronEventDBFunction.UpdateTB_FOODEVENT_EmInfoInit;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','140');
+end;
+
+function TZeronEventDataBaseConfig.Table141VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('ATTEND','COMPANYCD','1','0:회사코드미사용,1:회사코드사용');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','141');
+end;
+
+function TZeronEventDataBaseConfig.Table142VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ATDAYSUMMARY_JIJUMCODE_Add;
+  dmZeronEventDBCreate.AlterTB_ATDAYSUMMARY_DEPARTCODE_Add;
+  dmZeronEventDBCreate.AlterTB_ATDAYSUMMARY_EMNAME_Add;
+  dmZeronEventDBCreate.AlterTB_ATMONTHSUMMARY_JIJUMCODE_Add;
+  dmZeronEventDBCreate.AlterTB_ATMONTHSUMMARY_DEPARTCODE_Add;
+  dmZeronEventDBCreate.AlterTB_ATMONTHSUMMARY_EMNAME_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','142');
+end;
+
+function TZeronEventDataBaseConfig.Table143VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_TIMECODEDEVICE_EACHCHANGE_Add;
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','143');
+end;
+
+function TZeronEventDataBaseConfig.Table144VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = MSSQL then
+  begin
+    dmZeronEventDBCreate.CreateVw_SMS_EVENT;
+  end;
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','144');
+end;
+
+function TZeronEventDataBaseConfig.Table146VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','FACECOP','0','FACECOP연동유무');
+
+  stSql := ' Insert Into TB_CARDTYPE(CT_CODE,CT_NAME) ';
+  stSql := stSql + ' VALUES(''3'',''FACECOP'')';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  dmZeronEventDBCreate.CreateTB_FACECOP;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','146');
+end;
+
+function TZeronEventDataBaseConfig.Table147VersionMake: Boolean;
+begin
+
+  dmZeronEventDBCreate.AlterTB_ATLISTEVENT_CARDNOChange;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','147');
+
+end;
+
+function TZeronEventDataBaseConfig.Table148VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_TIMETYPE_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','148');
+
+end;
+
+function TZeronEventDataBaseConfig.Table149VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('ATTEND','REALREPORT','0','');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','149');
+end;
+
+function TZeronEventDataBaseConfig.Table150VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('107','핸드폰','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('108','주소1','Y');
+  dmZeronEventDBFunction.InsertIntoTB_FORMNAME_Value('109','주소2','Y');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','150');
+end;
+
+function TZeronEventDataBaseConfig.Table151VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','FDMSDELETE','FALSE','');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','151');
+end;
+
+function TZeronEventDataBaseConfig.Table152VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('FOOD','YSDAYTIME','0400','');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','152');
+end;
+
+function TZeronEventDataBaseConfig.Table153VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','EVENTDB','0','');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','153');
+end;
+
+function TZeronEventDataBaseConfig.Table154VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBCreate.AlterTB_ZONEDEVICE_View_Add;
+  stSql := 'Update TB_ZONEDEVICE set AL_VIEW =''Y'' ';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','154');
+end;
+
+function TZeronEventDataBaseConfig.Table155VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('COMMON','EVENTSTART','0000','');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('COMMON','EVENTEND','2459','');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','155');
+
+end;
+
+function TZeronEventDataBaseConfig.Table156VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBCreate.AlterTB_CARD_MEMLOAD_Add;
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','156');
+end;
+
+function TZeronEventDataBaseConfig.Table157VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('MOSTYPE','PWLENUSE','FALSE','');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('MOSTYPE','PWLENGTH','8','');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('MOSTYPE','PWCHAR','FALSE','');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('MOSTYPE','PWCHANGE','30','');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','157');
+end;
+
+function TZeronEventDataBaseConfig.Table158VersionMake: Boolean;
+var
+  stSql : string;
+  i  : integer;
+  stArmAreaUse : string;
+  stArmAreaName : string;
+begin
+
+  dmZeronEventDBCreate.CreateTB_ARMAREA;
+
+
+
+  stSql := 'select * from tb_alarmdevice ';
+  with dmZeronEventDataBase.ADOTempQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordCount < 1 then Exit;
+    While Not Eof do
+    begin
+      for i := 0 to 8 do
+      begin
+        if i = 0 then
+        begin
+          stArmAreaUse := 'Y';
+          stArmAreaName := FindField('AL_ZONENAME').AsString;
+        end else
+        begin
+          stArmAreaUse := 'N';
+          stArmAreaName := FindField('AL_ZONENAME').AsString + '_' + inttostr(i) + '구역';
+        end;
+
+        dmZeronEventDBFunction.InsertIntoTB_ARMAREA(inttostr(FindField('AC_NODENO').AsInteger),
+                             FindField('AC_ECUID').AsString,
+                             inttostr(i),
+                             stArmAreaName,
+                             stArmAreaUse,
+                             '',
+                             inttostr(FindField('AL_VIEWSEQ').AsInteger),
+                             FindField('AL_LOCATEUSE').AsString,
+                             inttostr(FindField('AL_TOTWIDTH').AsInteger),
+                             inttostr(FindField('AL_TOTHEIGHT').AsInteger),
+                             inttostr(FindField('AL_CURX').AsInteger),
+                             inttostr(FindField('AL_CURY').AsInteger),
+                             FindField('LO_DONGCODE').AsString,
+                             FindField('LO_FLOORCODE').AsString,
+                             FindField('LO_AREACODE').AsString);
+      end;
+      Next;
+    end;
+  end;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','158');
+end;
+
+function TZeronEventDataBaseConfig.Table159VersionMake: Boolean;
+var
+  stSql : string;
+  i  : integer;
+begin
+
+  dmZeronEventDBCreate.CreateTB_ADMINALARMAREA;
+
+
+  stSql := 'select * from TB_ADMINALARMDEVICE ';
+  with dmZeronEventDataBase.ADOTempQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+//    if recordCount < 1 then Exit;
+    While Not Eof do
+    begin
+      for i := 0 to 8 do
+      begin
+        dmZeronEventDBFunction.InsertIntoTB_ADMINALARMAREA(FindField('AD_USERID').AsString,FindField('AC_NODENO').asstring,
+                             FindField('AC_ECUID').AsString,
+                             FillZeroNumber(i,2),
+                             FindField('AD_GUBUN').AsString,
+                             '',
+                             '');
+      end;
+      Next;
+    end;
+  end;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','159');
+end;
+
+function TZeronEventDataBaseConfig.Table160VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBCreate.AlterTB_ARMAREA_TelNo_Add;
+  dmZeronEventDBCreate.AlterTB_ARMAREA_memo_Add;
+  dmZeronEventDBCreate.AlterTB_ARMAREA_ARMCODE_Add;
+  dmZeronEventDBCreate.AlterTB_ARMAREA_ARMCODE_Add;
+  dmZeronEventDBFunction.UpdateTB_ARMAREA_FromAlarmDeviceMemo;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','160');
+end;
+
+function TZeronEventDataBaseConfig.Table161VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_PROMISE_Door3_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_PROMISE_Door4_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_PROMISE_Door5_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_PROMISE_Door6_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_PROMISE_Door7_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_PROMISE_Door8_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_PROMISE_Alarm0_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_PROMISE_Alarm1_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_PROMISE_Alarm2_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_PROMISE_Alarm3_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_PROMISE_Alarm4_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_PROMISE_Alarm5_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_PROMISE_Alarm6_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_PROMISE_Alarm7_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_PROMISE_Alarm8_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOGROUP_Door3_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOGROUP_Door4_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOGROUP_Door5_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOGROUP_Door6_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOGROUP_Door7_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOGROUP_Door8_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOGROUP_Alarm0_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOGROUP_Alarm1_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOGROUP_Alarm2_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOGROUP_Alarm3_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOGROUP_Alarm4_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOGROUP_Alarm5_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOGROUP_Alarm6_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOGROUP_Alarm7_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNOGROUP_Alarm8_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_HIS_Door3_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_HIS_Door4_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_HIS_Door5_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_HIS_Door6_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_HIS_Door7_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_HIS_Door8_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_HIS_Alarm0_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_HIS_Alarm1_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_HIS_Alarm2_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_HIS_Alarm3_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_HIS_Alarm4_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_HIS_Alarm5_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_HIS_Alarm6_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_HIS_Alarm7_Add;
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_HIS_Alarm8_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','161');
+end;
+
+function TZeronEventDataBaseConfig.Table162VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_CARDBYTE_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','162');
+end;
+
+function TZeronEventDataBaseConfig.Table163VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_SOCKTYPE_Add;
+  dmZeronEventDBFunction.UpdateTB_ACCESSDEVICE_Field_IntValue('','','AC_SOCKTYPE','1');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','163');
+end;
+
+function TZeronEventDataBaseConfig.Table164VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBCreate.AlterTB_DEVICECARDNO_MEMLOAD_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','164');
+end;
+
+function TZeronEventDataBaseConfig.Table165VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_AlarmEvent_Index1;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','165');
+end;
+
+function TZeronEventDataBaseConfig.Table166VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','CARDMEMORY','0','카드메모리로딩유무');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','GLANTIUSE','0','글로벌 안티패스사용유무');
+  dmZeronEventDBCreate.CreateTB_ANTIGROUPCODE;
+  dmZeronEventDBCreate.AlterTB_DOOR_AGCODE_Add;
+  dmZeronEventDBCreate.AlterTB_DOOR_AGANTINO_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','166');
+end;
+
+function TZeronEventDataBaseConfig.Table167VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_PERMITCODE_Value('H','폐쇄모드출입불가');
+  dmZeronEventDBFunction.InsertIntoTB_PERMITCODE_Value('I','방범구역다름');
+  dmZeronEventDBFunction.InsertIntoTB_PERMITCODE_Value('J','안티패스출입불가');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','167');
+end;
+
+function TZeronEventDataBaseConfig.Table168VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','ARMAREAUSE','0','구역경계사용유무');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','168');
+end;
+
+function TZeronEventDataBaseConfig.Table169VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','FACECOPIP','127.0.0.1','FACECOP IP');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','169');
+end;
+
+function TZeronEventDataBaseConfig.Table170VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','FALASTTIME','','최종가져온시간');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','170');
+end;
+
+function TZeronEventDataBaseConfig.Table171VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('RELAY','FA_RETIME','1','연동시간');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','171');
+end;
+
+function TZeronEventDataBaseConfig.Table172VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','GLINITUSE','0','글로벌초기화사용유무');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','GLINITTIME','10','글로벌초기화시간');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','172');
+end;
+
+function TZeronEventDataBaseConfig.Table173VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','GLINITSTM','0000','글로벌초기화시작시간');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','GLINITETM','2400','글로벌초기화종료시간');
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','173');
+end;
+
+function TZeronEventDataBaseConfig.Table174VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_MASTER_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','174');
+end;
+
+function TZeronEventDataBaseConfig.Table175VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_PERMITCODE_Value('K','DS열림출입불가');
+  dmZeronEventDBFunction.InsertIntoTB_PERMITCODE_Value('L','마스터모드출입불가');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','175');
+end;
+
+function TZeronEventDataBaseConfig.Table176VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_SONGHOFDCONFIG;
+  dmZeronEventDBCreate.CreateTB_SEMESTER;
+  dmZeronEventDBCreate.CreateTB_FOODCodeCount;
+  dmZeronEventDBCreate.CreateTB_FOODDayCount;
+  dmZeronEventDBCreate.CreateTB_FOODWeekCount;
+  dmZeronEventDBCreate.CreateTB_FOODSemesterCount;
+
+  dmZeronEventDBFunction.InsertIntoTB_SONGHOFDCONFIG('DAY','Y','2');
+  dmZeronEventDBFunction.InsertIntoTB_SONGHOFDCONFIG('WEEK','Y','10');
+  dmZeronEventDBFunction.InsertIntoTB_SONGHOFDCONFIG('SEMESTER','Y','150');
+
+  dmZeronEventDBFunction.InsertIntoTB_SEMESTER('1','Y','0301','0614');
+  dmZeronEventDBFunction.InsertIntoTB_SEMESTER('2','Y','0817','1129');
+  dmZeronEventDBFunction.InsertIntoTB_SEMESTER('3','N','0101','0101');
+  dmZeronEventDBFunction.InsertIntoTB_SEMESTER('4','N','1231','1231');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','176');
+end;
+
+function TZeronEventDataBaseConfig.Table177VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_PERMITCODE_Value('Z','횟수초과');
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','FOODPORT','3432','식수포트');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','177');
+end;
+
+function TZeronEventDataBaseConfig.Table178VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_WORKGUBUN;
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_WORKCODE_Add;
+
+  dmZeronEventDBFunction.InsertIntoTB_WORKGUBUN_Value('1','1','재직');
+  dmZeronEventDBFunction.InsertIntoTB_WORKGUBUN_Value('2','2','휴직');
+  dmZeronEventDBFunction.InsertIntoTB_WORKGUBUN_Value('3','3','퇴직');
+  dmZeronEventDBFunction.UpdateTB_EMPLOYEE_NULLWGCODE('1');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','178');
+end;
+
+function TZeronEventDataBaseConfig.Table179VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.CreateTB_EMPLOYEECHANGE;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','179');
+end;
+
+function TZeronEventDataBaseConfig.Table180VersionMake: Boolean;
+begin
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('DAEMON','MODBUSPORT','502','모드버스포트');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','180');
+end;
+
+function TZeronEventDataBaseConfig.Table181VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ALARMEVENT_KTTSENDSTATUS_Add;
+  dmZeronEventDBFunction.InsertIntoTB_CONFIG_All('KTT','KTTSENDSER','0','이벤트 송신 전용서버 사용유무');
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','181');
+end;
+
+function TZeronEventDataBaseConfig.Table182VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  if G_nDBTYPE = MSSQL then dmZeronEventDBCreate.DropTB_COMPANY_PrimaryKey;
+  dmZeronEventDBCreate.AlterTB_COMPANY_DEPARTCODE_Change;
+  if G_nDBTYPE = MSSQL then dmZeronEventDBCreate.CreateTB_COMPANY_PrimaryKey;
+
+  if G_nDBTYPE = MSSQL then dmZeronEventDBCreate.DropTB_LOCATION_PrimaryKey;
+  dmZeronEventDBCreate.AlterTB_LOCATION_AREACODE_Change;
+  if G_nDBTYPE = MSSQL then dmZeronEventDBCreate.CreateTB_LOCATION_PrimaryKey;
+
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_DEPARTCODE_Change;
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_AREACODE_Change;
+  dmZeronEventDBCreate.AlterTB_ALARMDEVICE_AREACODE_Change;
+  dmZeronEventDBCreate.AlterTB_ARMAREA_AREACODE_Change;
+  dmZeronEventDBCreate.AlterTB_DOOR_AREACODE_Change;
+  dmZeronEventDBCreate.AlterTB_FOOD_AREACODE_Change;
+  dmZeronEventDBCreate.AlterTB_ZONEDEVICE_AREACODE_Change;
+
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_ArmAreaUse_Add;
+  stSql := ' Update TB_ACCESSDEVICE set AC_ARMAREAUSE = ''N'' ';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+  dmZeronEventDBCreate.AlterTB_HOLIDAY_ACUSE_Add;
+  dmZeronEventDBCreate.AlterTB_HOLIDAY_ATUSE_Add;
+  stSql := ' Update TB_HOLIDAY set HO_ACUSE = ''1'',HO_ATUSE = ''1'' ';
+  dmZeronEventDataBase.ProcessExecSQL(stSql);
+  dmZeronEventDBCreate.AlterTB_COMPANY_VIEWSEQ_Add;
+  dmZeronEventDBCreate.AlterTB_LOCATION_VIEWSEQ_Add;
+  dmZeronEventDBCreate.AlterTB_POSI_VIEWSEQ_Add;
+
+
+  if dmZeronEventDBFunction.CheckTB_COMPANY_Blank <> 1 then
+  begin
+    dmZeronEventDBFunction.InsertIntoTB_COMPANY_CompanyName('001','기본회사');
+  end;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','182');
+end;
+
+function TZeronEventDataBaseConfig.Table183VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  dmZeronEventDBCreate.CreateTB_CARDGROUPCODE;       //권한그룹 테이블 생성
+  dmZeronEventDBFunction.InsertIntoTB_CARDGROUPCODE_All('0','Group','0','1','1'); //최초그룹코드는 조회 없이 초기 권한 부분때문에 임의로 생성함
+
+  dmZeronEventDBCreate.CreateTB_DEVICECARDNOEMPLOYEE;
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_CAGROUP_Add;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','183');
+end;
+
+function TZeronEventDataBaseConfig.Table184VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ATWORKTYPE_ATSTARTBUTTON_Change;
+  dmZeronEventDBCreate.AlterTB_ATWORKTYPE_ATOFFBUTTON_Change;
+  dmZeronEventDBCreate.AlterTB_ATWORKTYPE_WORKOUTBUTTON_Change;
+  dmZeronEventDBCreate.AlterTB_ATWORKTYPE_WORKINBUTTON_Change;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','184');
+end;
+
+function TZeronEventDataBaseConfig.Table185VersionMake: Boolean;
+begin
+  dmZeronEventDBCreate.AlterTB_ACCESSDEVICE_MEMLOAD_ADD;
+  dmZeronEventDBCreate.AlterTB_DOOR_MEMLOAD_ADD;
+  dmZeronEventDBCreate.AlterTB_ARMAREA_MEMLOAD_ADD;
+  dmZeronEventDBCreate.AlterTB_EMPLOYEE_EXPIREUSE_ADD;
+  dmZeronEventDBCreate.CreateTB_EMPLOYEEEXPIRECHANGE;
+  dmZeronEventDBCreate.CreateTB_EMPLOYEEEXPIRE_Trigger;
+
+  result := dmZeronEventDBFunction.UpdateTB_CONFIG_Value('COMMON','TABLE_VER','185');
+
+end;
+
+Function TZeronEventDataBaseConfig.TableVersionCheck:Boolean;
+var
+  nTableVersion : integer;
+begin
+  result := False;
+  nTableVersion := GetTableVersion;
+
+  if nTableVersion < 1 then Table001VersionMake;
+  if nTableVersion < 2 then Table002VersionMake;
+  if nTableVersion < 3 then Table003VersionMake;
+  if nTableVersion < 4 then Table004VersionMake;
+  if nTableVersion < 5 then Table005VersionMake;
+  if nTableVersion < 6 then Table006VersionMake;
+  if nTableVersion < 7 then Table007VersionMake;
+  if nTableVersion < 8 then Table008VersionMake;
+  if nTableVersion < 9 then Table009VersionMake;
+  if nTableVersion < 10 then Table010VersionMake;
+  if nTableVersion < 11 then Table011VersionMake;
+  if nTableVersion < 12 then Table012VersionMake;
+  if nTableVersion < 13 then Table013VersionMake;
+  if nTableVersion < 14 then Table014VersionMake;
+  if nTableVersion < 15 then Table015VersionMake;
+  if nTableVersion < 16 then Table016VersionMake;
+  if nTableVersion < 17 then Table017VersionMake;
+  if nTableVersion < 18 then Table018VersionMake;
+  if nTableVersion < 19 then Table019VersionMake;
+  if nTableVersion < 20 then Table020VersionMake;
+  if nTableVersion < 21 then Table021VersionMake;
+  if nTableVersion < 22 then Table022VersionMake;
+  if nTableVersion < 23 then Table023VersionMake;
+  if nTableVersion < 24 then Table024VersionMake;
+  if nTableVersion < 25 then Table025VersionMake;
+  if nTableVersion < 26 then Table026VersionMake;
+  if nTableVersion < 27 then Table027VersionMake;
+  if nTableVersion < 28 then Table028VersionMake;
+  if nTableVersion < 29 then Table029VersionMake;
+  if nTableVersion < 30 then Table030VersionMake;
+  if nTableVersion < 31 then Table031VersionMake;
+  if nTableVersion < 32 then Table032VersionMake;
+  if nTableVersion < 33 then Table033VersionMake;
+  if nTableVersion < 34 then Table034VersionMake;
+  if nTableVersion < 35 then Table035VersionMake;
+  if nTableVersion < 36 then Table036VersionMake;
+  if nTableVersion < 37 then Table037VersionMake;
+  if nTableVersion < 38 then Table038VersionMake;
+  if nTableVersion < 39 then Table039VersionMake;
+  if nTableVersion < 40 then Table040VersionMake;
+  if nTableVersion < 41 then Table041VersionMake;
+  if nTableVersion < 42 then Table042VersionMake;
+  if nTableVersion < 43 then Table043VersionMake;
+  if nTableVersion < 44 then Table044VersionMake;
+  if nTableVersion < 45 then Table045VersionMake;
+  if nTableVersion < 46 then Table046VersionMake;
+  if nTableVersion < 47 then Table047VersionMake;
+  if nTableVersion < 48 then Table048VersionMake;
+  if nTableVersion < 49 then Table049VersionMake;
+  if nTableVersion < 50 then Table050VersionMake;
+  if nTableVersion < 51 then Table051VersionMake;
+  if nTableVersion < 52 then Table052VersionMake;
+  if nTableVersion < 53 then Table053VersionMake;
+  if nTableVersion < 54 then Table054VersionMake;
+  if nTableVersion < 55 then Table055VersionMake;
+  if nTableVersion < 56 then Table056VersionMake;
+  if nTableVersion < 57 then Table057VersionMake;
+  if nTableVersion < 58 then Table058VersionMake;
+  if nTableVersion < 59 then Table059VersionMake;
+  if nTableVersion < 60 then Table060VersionMake;
+  if nTableVersion < 61 then Table061VersionMake;
+  if nTableVersion < 62 then Table062VersionMake;
+  if nTableVersion < 63 then Table063VersionMake;
+//  if nTableVersion < 64 then Table64VersionMake; ==>EM_CODE 는 20자리만 가져가도 문제 없을듯
+  if nTableVersion < 65 then Table065VersionMake;
+  if nTableVersion < 66 then Table066VersionMake;
+  if nTableVersion < 67 then Table067VersionMake;
+  if nTableVersion < 68 then Table068VersionMake;
+  if nTableVersion < 69 then Table069VersionMake;
+  if nTableVersion < 70 then Table070VersionMake;
+  if nTableVersion < 71 then Table071VersionMake;
+  if nTableVersion < 72 then Table072VersionMake;
+  if nTableVersion < 73 then Table073VersionMake;
+  if nTableVersion < 74 then Table074VersionMake;
+  if nTableVersion < 75 then Table075VersionMake;
+  if nTableVersion < 76 then Table076VersionMake;
+  //if nTableVersion < 77 then Table77VersionMake;
+  if nTableVersion < 78 then Table078VersionMake;
+  if nTableVersion < 79 then Table079VersionMake;
+  if nTableVersion < 80 then Table080VersionMake;
+  if nTableVersion < 81 then Table081VersionMake;
+  if nTableVersion < 82 then Table082VersionMake;
+  if nTableVersion < 83 then Table083VersionMake;
+  if nTableVersion < 84 then Table084VersionMake;
+  if nTableVersion < 85 then Table085VersionMake;
+  if nTableVersion < 86 then Table086VersionMake;
+  if nTableVersion < 87 then Table087VersionMake;
+  if nTableVersion < 88 then Table088VersionMake;
+  if nTableVersion < 89 then Table089VersionMake;
+  if nTableVersion < 90 then Table090VersionMake;
+  if nTableVersion < 91 then Table091VersionMake;
+  if nTableVersion < 92 then Table092VersionMake;
+  if nTableVersion < 93 then Table093VersionMake;
+  if nTableVersion < 94 then Table094VersionMake;
+  if nTableVersion < 95 then Table095VersionMake;
+  if nTableVersion < 96 then Table096VersionMake;
+  if nTableVersion < 97 then Table097VersionMake;
+  if nTableVersion < 98 then Table098VersionMake;
+  if nTableVersion < 99 then Table099VersionMake;
+  if nTableVersion < 100 then Table100VersionMake;
+  if nTableVersion < 101 then Table101VersionMake;
+  if nTableVersion < 102 then Table102VersionMake;
+  if nTableVersion < 103 then Table103VersionMake;
+  if nTableVersion < 104 then Table104VersionMake;
+  if nTableVersion < 105 then Table105VersionMake;
+  if nTableVersion < 106 then Table106VersionMake;
+  if nTableVersion < 107 then Table107VersionMake;
+  if nTableVersion < 108 then Table108VersionMake;
+  if nTableVersion < 109 then Table109VersionMake;
+  if nTableVersion < 110 then Table110VersionMake;
+  if nTableVersion < 111 then Table111VersionMake;
+  if nTableVersion < 112 then Table112VersionMake;
+  if nTableVersion < 113 then Table113VersionMake;
+  if nTableVersion < 114 then Table114VersionMake;
+  if nTableVersion < 115 then Table115VersionMake;
+  if nTableVersion < 116 then Table116VersionMake;
+  if nTableVersion < 117 then Table117VersionMake;
+  if nTableVersion < 118 then Table118VersionMake;
+  if nTableVersion < 119 then Table119VersionMake;
+  if nTableVersion < 120 then Table120VersionMake;
+  if nTableVersion < 121 then Table121VersionMake;
+  if nTableVersion < 122 then Table122VersionMake;
+  if nTableVersion < 123 then Table123VersionMake;
+  if nTableVersion < 124 then Table124VersionMake;
+  if nTableVersion < 125 then Table125VersionMake;
+  if nTableVersion < 126 then Table126VersionMake;
+  if nTableVersion < 127 then Table127VersionMake;
+  if nTableVersion < 128 then Table128VersionMake;
+  if nTableVersion < 129 then Table129VersionMake;
+  if nTableVersion < 130 then Table130VersionMake;
+  if nTableVersion < 131 then Table131VersionMake;
+  if nTableVersion < 132 then Table132VersionMake;
+  if nTableVersion < 133 then Table133VersionMake;
+  if nTableVersion < 134 then Table134VersionMake;
+  if nTableVersion < 135 then Table135VersionMake;
+  if nTableVersion < 136 then Table136VersionMake;
+  if nTableVersion < 137 then Table137VersionMake;
+  if nTableVersion < 138 then Table138VersionMake;
+  if nTableVersion < 139 then Table139VersionMake;
+  if nTableVersion < 140 then Table140VersionMake;
+  if nTableVersion < 141 then Table141VersionMake;
+  if nTableVersion < 142 then Table142VersionMake;
+  if nTableVersion < 143 then Table143VersionMake;
+  if nTableVersion < 144 then Table144VersionMake;
+  if nTableVersion < 146 then Table146VersionMake;
+  if nTableVersion < 147 then Table147VersionMake;
+  if nTableVersion < 148 then Table148VersionMake;
+  if nTableVersion < 149 then Table149VersionMake;
+  if nTableVersion < 150 then Table150VersionMake;
+  if nTableVersion < 151 then Table151VersionMake;
+  if nTableVersion < 152 then Table152VersionMake;
+  if nTableVersion < 153 then Table153VersionMake;
+  if nTableVersion < 154 then Table154VersionMake;
+  if nTableVersion < 155 then Table155VersionMake;
+  if nTableVersion < 156 then Table156VersionMake;
+  if nTableVersion < 157 then Table157VersionMake;
+  if nTableVersion < 158 then Table158VersionMake;
+  if nTableVersion < 159 then Table159VersionMake;
+  if nTableVersion < 160 then Table160VersionMake;
+  if nTableVersion < 161 then Table161VersionMake;
+  if nTableVersion < 162 then Table162VersionMake;
+  if nTableVersion < 163 then Table163VersionMake;
+  if nTableVersion < 164 then Table164VersionMake;
+  if nTableVersion < 165 then Table165VersionMake;
+  if nTableVersion < 166 then Table166VersionMake;
+  if nTableVersion < 167 then Table167VersionMake;
+  if nTableVersion < 168 then Table168VersionMake;
+  if nTableVersion < 169 then Table169VersionMake;
+  if nTableVersion < 170 then Table170VersionMake;
+  if nTableVersion < 171 then Table171VersionMake;
+  if nTableVersion < 172 then Table172VersionMake;
+  if nTableVersion < 173 then Table173VersionMake;
+  if nTableVersion < 174 then Table174VersionMake;
+  if nTableVersion < 175 then Table175VersionMake;
+  if nTableVersion < 176 then Table176VersionMake;
+  if nTableVersion < 177 then Table177VersionMake;
+  if nTableVersion < 178 then Table178VersionMake;
+  if nTableVersion < 179 then Table179VersionMake;
+  if nTableVersion < 180 then Table180VersionMake;
+  if nTableVersion < 181 then Table181VersionMake;
+  if nTableVersion < 182 then Table182VersionMake;
+  if nTableVersion < 183 then Table183VersionMake;
+  if nTableVersion < 184 then Table184VersionMake;
+  if nTableVersion < 185 then Table185VersionMake;
+
+  result := True;
+end;
+
+procedure TfmZeronEventDataBaseConfig.FormCreate(Sender: TObject);
+var
+  ini_fun : TiniFile;
+  stDBType : string;
+begin
+  Try
+    if G_stExeFolder = '' then G_stExeFolder := ExtractFileDir(Application.ExeName);
+    ini_fun := TiniFile.Create(G_stExeFolder + '\Zmos.ini');
+
+    stDBType := UpperCase(ini_fun.ReadString('DBConfig','TYPE','MSSQL'));
+    if UpperCase(stDBType) = 'MSSQL' then G_nDBType := MSSQL
+    else if UpperCase(stDBType) = 'PG' then G_nDBType := POSTGRESQL
+    else if UpperCase(stDBType) = 'FB' then G_nDBType := FIREBIRD
+    else if UpperCase(stDBType) = 'MDB' then G_nDBType := MDB;
+
+    rg_DBType.ItemIndex := G_nDBType;
+
+    edServerIP.Text  := ini_fun.ReadString('DBConfig','Host','127.0.0.1');
+    edServerPort.Text := ini_fun.ReadString('DBConfig','Port','1433');
+    edUserid.Text := ini_fun.ReadString('DBConfig','UserID','sa');
+    edPasswd.Text := MimeDecodeString(ini_fun.ReadString('DBConfig','UserPW',MimeEncodeString('sapasswd')));  //saPasswd
+    edDataBaseName.Text := lowerCase(ini_fun.ReadString('DBConfig','DBNAME','zmos'));
+  Finally
+    ini_fun.Free;
+  End;
+  rg_DBTypeClick(sender);
+end;
+
+procedure TfmZeronEventDataBaseConfig.rg_DBTypeClick(Sender: TObject);
+begin
+  if rg_DBType.ItemIndex = MDB then AdvPanel1.Visible := False
+  else AdvPanel1.Visible := True;
+
+end;
+
+procedure TfmZeronEventDataBaseConfig.btn_CloseClick(Sender: TObject);
+begin
+  TZeronEventDataBaseConfig.GetObject.Cancel := True;
+  Close;
+end;
+
+procedure TfmZeronEventDataBaseConfig.btn_SaveClick(Sender: TObject);
+var
+  ini_fun : TiniFile;
+begin
+  Try
+    if G_stExeFolder = '' then G_stExeFolder := ExtractFileDir(Application.ExeName);
+    ini_fun := TiniFile.Create(G_stExeFolder + '\Zmos.INI');
+
+    if rg_DBType.ItemIndex = 0 then ini_fun.WriteString('DBConfig','TYPE','MSSQL')
+    else if rg_DBType.ItemIndex = 1 then ini_fun.WriteString('DBConfig','TYPE','PG')
+    else if rg_DBType.ItemIndex = 1 then ini_fun.WriteString('DBConfig','TYPE','MDB')
+    else if rg_DBType.ItemIndex = 1 then ini_fun.WriteString('DBConfig','TYPE','FB');
+
+    ini_fun.WriteString('DBConfig','Host',Trim(edServerIP.Text));
+    ini_fun.WriteString('DBConfig','Port',Trim(edServerPort.Text));
+    ini_fun.WriteString('DBConfig','UserID',Trim(edUserid.Text));
+    ini_fun.WriteString('DBConfig','UserPW',MimeEncodeString(Trim(edPasswd.Text)));
+    ini_fun.WriteString('DBConfig','DBNAME',Trim(edDataBaseName.Text));
+
+  Finally
+    ini_fun.Free;
+  End;
+
+  TZeronEventDataBaseConfig.GetObject.DataBaseConnect;
+  Close;
+
+end;
+
+end.

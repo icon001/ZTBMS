@@ -1,0 +1,134 @@
+object fmPWChange: TfmPWChange
+  Left = 337
+  Top = 220
+  BorderStyle = bsNone
+  Caption = 'fmPWChange'
+  ClientHeight = 188
+  ClientWidth = 493
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = #47569#51008' '#44256#46357
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 15
+  object PageControl1: TPageControl
+    Left = 0
+    Top = 0
+    Width = 493
+    Height = 188
+    ActivePage = Tab_PWChange
+    Align = alClient
+    TabOrder = 0
+    object Tab_Message: TTabSheet
+      Caption = #44221#44256
+      object btn_PWChange: TSpeedButton
+        Left = 48
+        Top = 112
+        Width = 145
+        Height = 25
+        Caption = #48708#48128#48264#54840#48320#44221
+        OnClick = btn_PWChangeClick
+      end
+      object btn_Cancel: TSpeedButton
+        Left = 280
+        Top = 112
+        Width = 145
+        Height = 25
+        Caption = #52712#49548
+        OnClick = btn_CancelClick
+      end
+      object chk_Update: TCheckBox
+        Left = 0
+        Top = 80
+        Width = 185
+        Height = 17
+        Caption = '7'#51068#44036' '#47700#49884#51648' '#54364#49884#54616#51648' '#50506#51020
+        TabOrder = 0
+      end
+      object Panel2: TPanel
+        Left = 0
+        Top = 0
+        Width = 485
+        Height = 73
+        Align = alTop
+        BevelInner = bvLowered
+        BevelOuter = bvNone
+        Caption = #48708#48128#48264#54840#47484' '#48320#44221' '#54980' 30'#51068#51060' '#51648#45228#49845#45768#45796'.'#48708#48128#48264#54840#47484' '#48320#44221' '#54616#50668' '#51452#49901#49884#50836'.'
+        TabOrder = 1
+      end
+    end
+    object Tab_PWChange: TTabSheet
+      Caption = #48708#48128#48264#54840#48320#44221
+      ImageIndex = 1
+      object SpeedButton2: TSpeedButton
+        Left = 280
+        Top = 112
+        Width = 145
+        Height = 25
+        Caption = #52712#49548
+        OnClick = btn_CancelClick
+      end
+      object btn_Save: TSpeedButton
+        Left = 48
+        Top = 112
+        Width = 145
+        Height = 25
+        Caption = #51200#51109
+        OnClick = btn_SaveClick
+      end
+      object Panel1: TPanel
+        Left = 0
+        Top = 0
+        Width = 485
+        Height = 89
+        Align = alTop
+        BevelInner = bvLowered
+        BevelOuter = bvNone
+        TabOrder = 0
+        object StaticText1: TStaticText
+          Left = 32
+          Top = 16
+          Width = 76
+          Height = 19
+          Caption = #49888#44508#48708#48128#48264#54840
+          TabOrder = 0
+        end
+        object StaticText2: TStaticText
+          Left = 32
+          Top = 48
+          Width = 100
+          Height = 19
+          Caption = #49888#44508#48708#48128#48264#54840#54869#51064
+          TabOrder = 1
+        end
+        object ed_PW1: TEdit
+          Left = 144
+          Top = 14
+          Width = 305
+          Height = 21
+          Ctl3D = False
+          ImeName = 'Microsoft IME 2010'
+          ParentCtl3D = False
+          PasswordChar = '*'
+          TabOrder = 2
+        end
+        object ed_PW2: TEdit
+          Left = 144
+          Top = 46
+          Width = 305
+          Height = 21
+          Ctl3D = False
+          ImeName = 'Microsoft IME 2010'
+          ParentCtl3D = False
+          PasswordChar = '*'
+          TabOrder = 3
+        end
+      end
+    end
+  end
+end

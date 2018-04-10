@@ -1,0 +1,2 @@
+CREATE TABLE TB_ATOUTCODE (  group_code VARCHAR(10) NOT NULL , at_outcode VARCHAR(3) NOT NULL , at_outname VARCHAR(30), at_outtype CHAR(1), at_outresult CHAR(1), at_system CHAR(1) ); 
+ ALTER TABLE TB_ATOUTCODE   ADD CONSTRAINT TB_ATOUTCODE_pkey PRIMARY KEY (group_code, at_outcode);
