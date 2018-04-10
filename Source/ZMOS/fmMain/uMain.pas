@@ -4117,6 +4117,8 @@ begin
 
   if LMDIniCtrl1.ReadString('환경설정','개방모드열림상태','N') = 'Y' then OpenModeDoorOpen := True
   else OpenModeDoorOpen := False;
+  if LMDIniCtrl1.ReadString('환경설정','사번수정','N') = 'Y' then G_bUpdateEmCode := True
+  else G_bUpdateEmCode := False;
   if LMDIniCtrl1.ReadString('환경설정','알람발생','N') = 'Y' then ACAlarmUse := True
   else ACAlarmUse := False;
   if LMDIniCtrl1.ReadString('환경설정','장시간열림알람발생','N') = 'Y' then LongDoorOpenAlarmUse := True

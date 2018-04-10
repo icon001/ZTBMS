@@ -306,7 +306,7 @@ begin
   else stNodeNo := ed_nodeno.Text;
   stFoodAmt := '0';
   if ed_FoodAmt.Text <> '' then stFoodAmt := ed_FoodAmt.Text;
-  if cmb_FoodArea.ItemIndex < 1 then
+  if cmb_FoodArea.ItemIndex < 0 then
   begin
     showmessage('식수구역을 선택해 주셔야 합니다.');
     Exit;
@@ -411,8 +411,8 @@ end;
 procedure TfmFoodAdmin.btn_InsertClick(Sender: TObject);
 begin
   State := 'INSERT';
-  ed_FoodTime.Text := '';
-  ed_FoodAmt.Text := '';
+  //ed_FoodTime.Text := '';
+  //ed_FoodAmt.Text := '';
   ed_nodeno.Text := '0';
   ed_readerno.Text := '0';
   ed_mcuid.Text := '0000000';

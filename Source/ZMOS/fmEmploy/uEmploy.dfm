@@ -1138,6 +1138,24 @@ inherited fmEmploy: TfmEmploy
         TabOrder = 23
         OnKeyUp = ed_CardNumberKeyUp
       end
+      object ed_SelectEmCode: TEdit
+        Left = 264
+        Top = 24
+        Width = 73
+        Height = 20
+        ImeName = 'Microsoft IME 2003'
+        TabOrder = 24
+        Visible = False
+      end
+      object ed_SelectCompanyCode: TEdit
+        Left = 264
+        Top = 0
+        Width = 73
+        Height = 20
+        ImeName = 'Microsoft IME 2003'
+        TabOrder = 25
+        Visible = False
+      end
     end
   end
   object Panel2: TPanel [1]

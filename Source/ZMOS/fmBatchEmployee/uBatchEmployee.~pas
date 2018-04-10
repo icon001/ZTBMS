@@ -1538,6 +1538,7 @@ begin
         Cells[13,nRow] := FindField('EM_JOINDATE').AsString;
         Cells[14,nRow] := FindField('EM_RETIREDATE').AsString;
         Cells[15,nRow] := FindField('EM_IMAGE').AsString;
+        Cells[15,nRow] := stringReplace(Cells[15,nRow],'\\','\',[rfReplaceAll]);
       end;
       inc(nRow);
       Next;

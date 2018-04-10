@@ -1,7 +1,7 @@
 inherited fmFoodAdmin: TfmFoodAdmin
   Left = 187
   Top = 113
-  Width = 1024
+  Width = 1056
   Height = 696
   Caption = #44060#51064#48324#49885#49688#44288#47532
   Font.Charset = HANGEUL_CHARSET
@@ -19,7 +19,7 @@ inherited fmFoodAdmin: TfmFoodAdmin
   object GroupBox1: TGroupBox [0]
     Left = 0
     Top = 0
-    Width = 1016
+    Width = 1048
     Height = 97
     Align = alTop
     TabOrder = 0
@@ -297,7 +297,7 @@ inherited fmFoodAdmin: TfmFoodAdmin
   object GroupBox2: TGroupBox [1]
     Left = 0
     Top = 392
-    Width = 1016
+    Width = 1048
     Height = 196
     Align = alBottom
     TabOrder = 1
@@ -609,14 +609,14 @@ inherited fmFoodAdmin: TfmFoodAdmin
   object GroupBox3: TGroupBox [2]
     Left = 0
     Top = 97
-    Width = 1016
+    Width = 1048
     Height = 295
     Align = alClient
     TabOrder = 2
     object sg_report: TAdvStringGrid
       Left = 2
       Top = 14
-      Width = 1012
+      Width = 1044
       Height = 279
       Cursor = crDefault
       Align = alClient
@@ -746,7 +746,7 @@ inherited fmFoodAdmin: TfmFoodAdmin
   object GroupBox4: TGroupBox [3]
     Left = 0
     Top = 588
-    Width = 1016
+    Width = 1048
     Height = 74
     Align = alBottom
     TabOrder = 3

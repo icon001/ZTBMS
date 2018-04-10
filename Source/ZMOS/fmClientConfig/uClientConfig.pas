@@ -155,6 +155,7 @@ type
     ed_AlarmCnt: TEdit;
     chk_AlarmMap: TCheckBox;
     chk_ZoneMap: TCheckBox;
+    chk_UpdateEmCode: TCheckBox;
     procedure btn_CloseClick(Sender: TObject);
     procedure btWav1Click(Sender: TObject);
     procedure btn_SaveClick(Sender: TObject);
@@ -264,6 +265,14 @@ begin
   end else
   begin
     LMDIniCtrl1.WriteString('환경설정','개방모드열림상태','N');
+  end;
+
+  if chk_UpdateEmCode.Checked then
+  begin
+    LMDIniCtrl1.WriteString('환경설정','사번수정','Y');
+  end else
+  begin
+    LMDIniCtrl1.WriteString('환경설정','사번수정','N');
   end;
 
   if isDigit(ed_AlarmCnt.Text) then
@@ -508,6 +517,7 @@ begin
   else AlarmTab.TabVisible := False;
 
   chk_OpenModeDoorOpen.Checked := OpenModeDoorOpen;
+  chk_UpdateEmCode.Checked := G_bUpdateEmCode;
   chk_Alarm.Checked := ACAlarmUse;
   chk_longOpen.Checked := LongDoorOpenAlarmUse;
   chk_ACAlarmEvnet.Checked := ACAlarmEventUse;

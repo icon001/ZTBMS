@@ -720,14 +720,16 @@ begin
            //UpdateTB_ATEVENTCompanyCode(Trim(sg_Employ.Cells[0,i]),sg_Employ.Cells[1,i],stCompanycode);     //이력이 바뀌면 안됨
            //UpdateTB_FOODEVENTCompanyCode(Trim(sg_Employ.Cells[0,i]),sg_Employ.Cells[1,i],stCompanycode);   //이력이 바뀌면 안됨
         end;
-        {if rg_WorkGubun.ItemIndex = 1 then
+        {
+        if rg_WorkGubun.ItemIndex = 1 then
         begin
           if cmb_Company.ItemIndex = 1 then  //회사코드 미분류 인 경우
           begin
             if Trim(stCompanycode) <> '' then
               UpdateTB_CARDCompanyCode(Trim(sg_Employ.Cells[0,i]),sg_Employ.Cells[1,i],stCompanycode);
           end;
-        end; }
+        end;
+        }
       end;
     end;
   end;

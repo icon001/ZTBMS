@@ -1,8 +1,8 @@
 inherited fmMain: TfmMain
   Left = 440
   Top = 123
-  Width = 1024
-  Height = 768
+  Width = 1353
+  Height = 850
   Caption = #52636#51077#44288#47532#49884#49828#53596
   Font.Charset = HANGEUL_CHARSET
   Font.Height = -12
@@ -90,8 +90,8 @@ inherited fmMain: TfmMain
   object Image1: TImage [0]
     Left = 0
     Top = 57
-    Width = 1016
-    Height = 602
+    Width = 1345
+    Height = 684
     Align = alClient
     Stretch = True
   end
@@ -107,7 +107,7 @@ inherited fmMain: TfmMain
   object ToolBar1: TToolBar [2]
     Left = 0
     Top = 0
-    Width = 1016
+    Width = 1345
     Height = 57
     ButtonHeight = 51
     ButtonWidth = 91
@@ -174,8 +174,8 @@ inherited fmMain: TfmMain
   end
   object StatusBar1: TStatusBar [3]
     Left = 0
-    Top = 684
-    Width = 1016
+    Top = 766
+    Width = 1345
     Height = 30
     Panels = <
       item
@@ -282,8 +282,8 @@ inherited fmMain: TfmMain
   end
   object pan_DaemonReceve: TPanel [7]
     Left = 0
-    Top = 659
-    Width = 1016
+    Top = 741
+    Width = 1345
     Height = 25
     Align = alBottom
     Caption = #53685#49888#45936#47788#44284' '#53685#49888#51060' '#50896#54876#54616#51648' '#50506#49845#45768#45796'. '#53685#49888#45936#47788#51032' '#49345#53468#47484' '#54869#51064#54616#50668' '#51452#49464#50836'...'

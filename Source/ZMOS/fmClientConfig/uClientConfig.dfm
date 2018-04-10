@@ -101,7 +101,7 @@ inherited fmClientConfig: TfmClientConfig
     Top = 0
     Width = 486
     Height = 313
-    ActivePage = MonitoringTab
+    ActivePage = TabSheet2
     Align = alTop
     MultiLine = True
     TabOrder = 0
@@ -974,7 +974,7 @@ inherited fmClientConfig: TfmClientConfig
           Height = 20
           Style = csDropDownList
           ImeName = 'Microsoft IME 2003'
-          ItemHeight = 0
+          ItemHeight = 12
           TabOrder = 0
         end
       end
@@ -1038,6 +1038,14 @@ inherited fmClientConfig: TfmClientConfig
           Items.Strings = (
             #48276#50857
             #53944#47532#44396#51312)
+        end
+        object chk_UpdateEmCode: TCheckBox
+          Left = 288
+          Top = 24
+          Width = 137
+          Height = 17
+          Caption = #49324#48264#49688#51221#44032#45733
+          TabOrder = 1
         end
       end
       object GroupBox10: TGroupBox

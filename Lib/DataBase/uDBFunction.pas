@@ -9,11 +9,29 @@ type
   TdmDBFunction = class(TDataModule)
     { Private declarations }
   public
+    function ChangeEmCode(aOldCompanyCode,aOldEmCode,aNewCompanyCode,aNewEmCode:string):Boolean;
+    function ChangeTB_ATDAYSUMMARY_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
+    function ChangeTB_ATEMPEXTRA_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
+    function ChangeTB_ATEVENT_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
+    function ChangeTB_ATLISTEVENT_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
+    function ChangeTB_ATMONTHEXTRA_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
+    function ChangeTB_ATMONTHSUMMARY_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
+    function ChangeTB_ATVACATION_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
+    function ChangeTB_BASEPAY_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
+    function ChangeTB_CARD_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
+    function ChangeTB_EMPLOYEE_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
+    function ChangeTB_FOODCODECount_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
+    function ChangeTB_FOODDayCount_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
+    function ChangeTB_FOODEVENT_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
+    function ChangeTB_FOODGRADE_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
+    function ChangeTB_FOODSemesterCount_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
+    function ChangeTB_FOODWeekCount_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
     function DeleteTB_FIREGROUP_NodeNo(aNodeNo:string):Boolean;
     function DeleteTB_RELAYCONTROLDOOR_Key(aNodeNo,aEcuID,aDoorNo:string):Boolean;
     Function DupCheckCardNo(aCardNo:string):Boolean;
     Function DupCheckTB_ACCESSDEVICE_MCUID(aMcuID:string):Boolean;
     Function DupCheckTB_ACCESSDEVICE_MCUIP(aMcuIp,aMcuPort:string):Boolean;
+    Function DupCheckTB_EMPLOYEE_EMCODE(aCompanyCode,aEmCode:string):integer;
     Function InsertTB_ACCESSDEVICE(aNodeNo,aMcuID,aEcuID,aMcuIp,aMcuPort,aName,aBuildingCode,
                                    aFloorCode,aAreaCode,aRegState,aTotWidth,aTotHeight,
                                    aCurX,aCurY,aMcuAC,aMcuFd,aMcuPt,aMcuAt,aJavara,aSendAck,
@@ -77,11 +95,262 @@ var
 implementation
 uses
   uDataModule1,
+  uCommonSql,
   uLomosUtil;
 
 {$R *.dfm}
 
 { TdmDBFunction }
+
+function TdmDBFunction.ChangeEmCode(aOldCompanyCode, aOldEmCode,
+  aNewCompanyCode, aNewEmCode: string): Boolean;
+var
+  stSql : string;
+begin
+  ChangeTB_ATDAYSUMMARY_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
+  ChangeTB_ATEMPEXTRA_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
+  ChangeTB_ATEVENT_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
+  ChangeTB_ATLISTEVENT_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
+  ChangeTB_ATMONTHEXTRA_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
+  ChangeTB_ATMONTHSUMMARY_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
+  ChangeTB_ATVACATION_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
+  ChangeTB_BASEPAY_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
+  ChangeTB_CARD_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
+  ChangeTB_EMPLOYEE_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
+  ChangeTB_FOODCODECount_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
+  ChangeTB_FOODDayCount_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
+  ChangeTB_FOODEVENT_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
+  ChangeTB_FOODGRADE_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
+  ChangeTB_FOODSemesterCount_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
+  ChangeTB_FOODWeekCount_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
+  stSql := CommonSql.InsertIntoTB_EMPHIS(aNewCompanyCode,aNewEmCode,'0','2','','1',
+           aOldEmCode,'',aOldCompanyCode,'','','사번변경');//수정
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.ChangeTB_ATDAYSUMMARY_EmCode(aOldCompanyCode,
+  aOldEmCode, aNewCompanyCode, aNewEmCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update TB_ATDAYSUMMARY set ';
+  stSql := stSql + 'CO_COMPANYCODE = ''' + aNewCompanyCode + ''', ';
+  stSql := stSql + 'EM_CODE = ''' + aNewEmCode + ''' ';
+  stSql := stSql + ' WHERE CO_COMPANYCODE = ''' + aOldCompanyCode + ''' ' ;
+  stSql := stSql + ' AND EM_CODE = ''' + aOldEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.ChangeTB_ATEMPEXTRA_EmCode(aOldCompanyCode,
+  aOldEmCode, aNewCompanyCode, aNewEmCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update TB_ATEMPEXTRA set ';
+  stSql := stSql + 'CO_COMPANYCODE = ''' + aNewCompanyCode + ''', ';
+  stSql := stSql + 'EM_CODE = ''' + aNewEmCode + ''' ';
+  stSql := stSql + ' WHERE CO_COMPANYCODE = ''' + aOldCompanyCode + ''' ' ;
+  stSql := stSql + ' AND EM_CODE = ''' + aOldEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.ChangeTB_ATEVENT_EmCode(aOldCompanyCode, aOldEmCode,
+  aNewCompanyCode, aNewEmCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update TB_ATEVENT set ';
+  stSql := stSql + 'CO_COMPANYCODE = ''' + aNewCompanyCode + ''', ';
+  stSql := stSql + 'EM_CODE = ''' + aNewEmCode + ''' ';
+  stSql := stSql + ' WHERE CO_COMPANYCODE = ''' + aOldCompanyCode + ''' ' ;
+  stSql := stSql + ' AND EM_CODE = ''' + aOldEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.ChangeTB_ATLISTEVENT_EmCode(aOldCompanyCode,
+  aOldEmCode, aNewCompanyCode, aNewEmCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update TB_ATLISTEVENT set ';
+  stSql := stSql + 'CO_COMPANYCODE = ''' + aNewCompanyCode + ''', ';
+  stSql := stSql + 'EM_CODE = ''' + aNewEmCode + ''' ';
+  stSql := stSql + ' WHERE CO_COMPANYCODE = ''' + aOldCompanyCode + ''' ' ;
+  stSql := stSql + ' AND EM_CODE = ''' + aOldEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.ChangeTB_ATMONTHEXTRA_EmCode(aOldCompanyCode,
+  aOldEmCode, aNewCompanyCode, aNewEmCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update TB_ATMONTHEXTRA set ';
+  stSql := stSql + 'CO_COMPANYCODE = ''' + aNewCompanyCode + ''', ';
+  stSql := stSql + 'EM_CODE = ''' + aNewEmCode + ''' ';
+  stSql := stSql + ' WHERE CO_COMPANYCODE = ''' + aOldCompanyCode + ''' ' ;
+  stSql := stSql + ' AND EM_CODE = ''' + aOldEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.ChangeTB_ATMONTHSUMMARY_EmCode(aOldCompanyCode,
+  aOldEmCode, aNewCompanyCode, aNewEmCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update TB_ATMONTHSUMMARY set ';
+  stSql := stSql + 'CO_COMPANYCODE = ''' + aNewCompanyCode + ''', ';
+  stSql := stSql + 'EM_CODE = ''' + aNewEmCode + ''' ';
+  stSql := stSql + ' WHERE CO_COMPANYCODE = ''' + aOldCompanyCode + ''' ' ;
+  stSql := stSql + ' AND EM_CODE = ''' + aOldEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.ChangeTB_ATVACATION_EmCode(aOldCompanyCode,
+  aOldEmCode, aNewCompanyCode, aNewEmCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update TB_ATVACATION set ';
+  stSql := stSql + 'CO_COMPANYCODE = ''' + aNewCompanyCode + ''', ';
+  stSql := stSql + 'EM_CODE = ''' + aNewEmCode + ''' ';
+  stSql := stSql + ' WHERE CO_COMPANYCODE = ''' + aOldCompanyCode + ''' ' ;
+  stSql := stSql + ' AND EM_CODE = ''' + aOldEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.ChangeTB_BASEPAY_EmCode(aOldCompanyCode, aOldEmCode,
+  aNewCompanyCode, aNewEmCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update TB_BASEPAY set ';
+  stSql := stSql + 'CO_COMPANYCODE = ''' + aNewCompanyCode + ''', ';
+  stSql := stSql + 'EM_CODE = ''' + aNewEmCode + ''' ';
+  stSql := stSql + ' WHERE CO_COMPANYCODE = ''' + aOldCompanyCode + ''' ' ;
+  stSql := stSql + ' AND EM_CODE = ''' + aOldEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.ChangeTB_CARD_EmCode(aOldCompanyCode, aOldEmCode,
+  aNewCompanyCode, aNewEmCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update TB_CARD set ';
+  stSql := stSql + 'CO_COMPANYCODE = ''' + aNewCompanyCode + ''', ';
+  stSql := stSql + 'EM_CODE = ''' + aNewEmCode + ''' ';
+  stSql := stSql + ' WHERE CO_COMPANYCODE = ''' + aOldCompanyCode + ''' ' ;
+  stSql := stSql + ' AND EM_CODE = ''' + aOldEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.ChangeTB_EMPLOYEE_EmCode(aOldCompanyCode,
+  aOldEmCode, aNewCompanyCode, aNewEmCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update TB_EMPLOYEE set ';
+  stSql := stSql + 'CO_COMPANYCODE = ''' + aNewCompanyCode + ''', ';
+  stSql := stSql + 'EM_CODE = ''' + aNewEmCode + ''' ';
+  stSql := stSql + ' WHERE CO_COMPANYCODE = ''' + aOldCompanyCode + ''' ' ;
+  stSql := stSql + ' AND EM_CODE = ''' + aOldEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.ChangeTB_FOODCODECount_EmCode(aOldCompanyCode,
+  aOldEmCode, aNewCompanyCode, aNewEmCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update TB_FOODCODECount set ';
+  stSql := stSql + 'CO_COMPANYCODE = ''' + aNewCompanyCode + ''', ';
+  stSql := stSql + 'EM_CODE = ''' + aNewEmCode + ''' ';
+  stSql := stSql + ' WHERE CO_COMPANYCODE = ''' + aOldCompanyCode + ''' ' ;
+  stSql := stSql + ' AND EM_CODE = ''' + aOldEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.ChangeTB_FOODDayCount_EmCode(aOldCompanyCode,
+  aOldEmCode, aNewCompanyCode, aNewEmCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update TB_FOODDayCount set ';
+  stSql := stSql + 'CO_COMPANYCODE = ''' + aNewCompanyCode + ''', ';
+  stSql := stSql + 'EM_CODE = ''' + aNewEmCode + ''' ';
+  stSql := stSql + ' WHERE CO_COMPANYCODE = ''' + aOldCompanyCode + ''' ' ;
+  stSql := stSql + ' AND EM_CODE = ''' + aOldEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.ChangeTB_FOODEVENT_EmCode(aOldCompanyCode,
+  aOldEmCode, aNewCompanyCode, aNewEmCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update TB_FOODEVENT set ';
+  stSql := stSql + 'CO_COMPANYCODE = ''' + aNewCompanyCode + ''', ';
+  stSql := stSql + 'EM_CODE = ''' + aNewEmCode + ''' ';
+  stSql := stSql + ' WHERE CO_COMPANYCODE = ''' + aOldCompanyCode + ''' ' ;
+  stSql := stSql + ' AND EM_CODE = ''' + aOldEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.ChangeTB_FOODGRADE_EmCode(aOldCompanyCode,
+  aOldEmCode, aNewCompanyCode, aNewEmCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update TB_FOODGRADE set ';
+  stSql := stSql + 'CO_COMPANYCODE = ''' + aNewCompanyCode + ''', ';
+  stSql := stSql + 'EM_CODE = ''' + aNewEmCode + ''' ';
+  stSql := stSql + ' WHERE CO_COMPANYCODE = ''' + aOldCompanyCode + ''' ' ;
+  stSql := stSql + ' AND EM_CODE = ''' + aOldEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.ChangeTB_FOODSemesterCount_EmCode(aOldCompanyCode,
+  aOldEmCode, aNewCompanyCode, aNewEmCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update TB_FOODSemesterCount set ';
+  stSql := stSql + 'CO_COMPANYCODE = ''' + aNewCompanyCode + ''', ';
+  stSql := stSql + 'EM_CODE = ''' + aNewEmCode + ''' ';
+  stSql := stSql + ' WHERE CO_COMPANYCODE = ''' + aOldCompanyCode + ''' ' ;
+  stSql := stSql + ' AND EM_CODE = ''' + aOldEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.ChangeTB_FOODWeekCount_EmCode(aOldCompanyCode,
+  aOldEmCode, aNewCompanyCode, aNewEmCode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Update TB_FOODWeekCount set ';
+  stSql := stSql + 'CO_COMPANYCODE = ''' + aNewCompanyCode + ''', ';
+  stSql := stSql + 'EM_CODE = ''' + aNewEmCode + ''' ';
+  stSql := stSql + ' WHERE CO_COMPANYCODE = ''' + aOldCompanyCode + ''' ' ;
+  stSql := stSql + ' AND EM_CODE = ''' + aOldEmCode + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
 
 function TdmDBFunction.DeleteTB_FIREGROUP_NodeNo(aNodeNo: string): Boolean;
 var
@@ -212,6 +481,43 @@ begin
     TempAdoQuery.Free;
     CoUninitialize;
   End;
+end;
+
+function TdmDBFunction.DupCheckTB_EMPLOYEE_EMCODE(aCompanyCode,
+  aEmCode: string): integer;
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+begin
+  result := -1;
+  stSql := 'select * from TB_EMPLOYEE   ';
+  stSql := stSql + ' where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND EM_CODE = ''' + aEmCode + ''' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      result := 0;
+      if recordcount < 1 then Exit;
+      result := 1;
+    end;
+  Finally
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+
 end;
 
 function TdmDBFunction.GetArmAreaName(aNodeNo, aEcuID,

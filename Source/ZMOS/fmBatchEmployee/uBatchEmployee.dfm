@@ -1,6 +1,8 @@
 inherited fmBatchEmployee: TfmBatchEmployee
   Left = 903
   Top = 313
+  Width = 716
+  Height = 620
   BorderIcons = [biSystemMenu]
   Caption = #49324#50896' '#51068#44292' '#46321#47197
   Font.Height = -12
@@ -15,15 +17,15 @@ inherited fmBatchEmployee: TfmBatchEmployee
   object Panel1: TPanel [0]
     Left = 0
     Top = 33
-    Width = 630
-    Height = 352
+    Width = 708
+    Height = 524
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
     object GroupBox3: TGroupBox
       Left = 0
       Top = 0
-      Width = 630
+      Width = 708
       Height = 121
       Align = alTop
       TabOrder = 0
@@ -330,8 +332,8 @@ inherited fmBatchEmployee: TfmBatchEmployee
     object sg_Employ: TAdvStringGrid
       Left = 0
       Top = 121
-      Width = 630
-      Height = 231
+      Width = 708
+      Height = 403
       Cursor = crDefault
       Align = alClient
       ColCount = 15
@@ -462,8 +464,8 @@ inherited fmBatchEmployee: TfmBatchEmployee
   end
   object StatusBar1: TStatusBar [1]
     Left = 0
-    Top = 385
-    Width = 630
+    Top = 557
+    Width = 708
     Height = 29
     Panels = <
       item
@@ -473,7 +475,7 @@ inherited fmBatchEmployee: TfmBatchEmployee
   object Panel6: TPanel [2]
     Left = 0
     Top = 0
-    Width = 630
+    Width = 708
     Height = 33
     Align = alTop
     Caption = #49324#50896' '#51068#44292' '#46321#47197

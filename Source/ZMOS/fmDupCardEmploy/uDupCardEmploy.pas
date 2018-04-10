@@ -279,6 +279,7 @@ var
 implementation
 
 uses uDataModule1,
+     uDBFunction,
      uZipCode,
      uLomosUtil,
      uCompanyCodeLoad,
@@ -1078,6 +1079,7 @@ var
   stWorkCode : string;
   stCophone : string;
   stSql : string;
+  bEmCodeChange : Boolean;
 begin
   if Trim(ed_sEmpNo.Text) = '' then
   begin
@@ -1153,6 +1155,8 @@ begin
   end  else if UpperCase(State) = 'UPDATE' then
   begin
     stFdmsId := ed_fdmsNo.Text;
+    if(stCompanyCode <> ed_SelectCompanyCode.Text) or(ed_sEmpNo.Text <> ed_SelectEmCode.Text) then bEmCodeChange := True;
+
     if Not fdmsNoAuto then
     begin
       if Trim(L_stSelectFdmsID) <> Trim(ed_fdmsNo.Text) then   //선택된 지문번호가 수정 되었으면
@@ -1160,8 +1164,18 @@ begin
         if CheckFdmsID(ed_fdmsNo.Text) then
         begin
           showmessage('중복된 지문번호가 존재 합니다.');
+          Exit;
         end;
       end;
+    end;
+    if bEmCodeChange then
+    begin
+      if dmDBFunction.DupCheckTB_EMPLOYEE_EMCODE(stCompanyCode,ed_sEmpNo.Text) = 1 then
+      begin
+        showmessage('중복된 ' + FM101 + '이 존재합니다.');
+        Exit;
+      end;
+      dmDBFunction.ChangeEmCode(ed_SelectCompanyCode.Text,ed_SelectEmCode.Text,stCompanyCode,ed_sEmpNo.Text);
     end;
     bResult := UpdateTB_EMPLOYEE(ed_sEmpNo.Text,ed_sEmpNM.Text,stCompanyCode,stJijumCode,
                                  stDepartCode,stPosiCode,stCophone,
@@ -2075,28 +2089,15 @@ var
   i:integer;
   nIndex : integer;
 begin
-  stSql := 'select * from TB_EMPLOYEE   ';
-  stSql := stSql + ' where GROUP_CODE = ''' + GROUPCODE + ''' ';
-  stSql := stSql + ' AND EM_CODE = ''' + ed_sEmpNo.text + ''' ';
-
+  if State = 'UPDATE' then Exit;
   if cmb_sCompany.ItemIndex < 1 then Exit;
-  stSql := stSql + ' AND CO_COMPANYCODE = ''' + sCompanyCodeList.Strings[cmb_sCompany.ItemIndex] + ''' ';
-
-  with AdoQuery do
+  if dmDBFunction.DupCheckTB_EMPLOYEE_EMCODE(sCompanyCodeList.Strings[cmb_sCompany.ItemIndex],ed_sEmpNo.text) = 1 then
   begin
-    Close;
-    Sql.Clear;
-    Sql.Text := stSql;
-    Try
-      Open;
-    Except
-      Exit;
-    End;
-    if recordcount < 1 then Exit;
     ed_sEmpNo.Text := '';
     ed_sEmpNo.SetFocus;
     showmessage('중복된 ' + FM101 + '이 존재합니다.');
   end;
+
 
 end;
 
@@ -2217,6 +2218,8 @@ var
 begin
   L_bValidateUpdate := False;
   ed_sEmpNo.Text := '';
+  ed_SelectEmCode.Text := '';
+  ed_SelectEmCode.Text := '';
   ed_sEmpNM.Text := '';
   cmb_sCompany.ItemIndex := 0 ;
   cmb_sJijum.Clear;
@@ -2349,10 +2352,10 @@ begin
   end else if upperCase(aState) = 'UPDATE' then
   begin
     sg_Employ.Enabled := False;
-    ed_sEmpNo.Enabled := True;
+    ed_sEmpNo.Enabled := G_bUpdateEmCode;
     chk_AutoSabun.Enabled := True;
     ed_sEmpNM.Enabled := True;
-    cmb_sCompany.Enabled := True;
+    cmb_sCompany.Enabled := G_bUpdateEmCode;
     if (Not IsMaster) and ( strtoint(CompanyGrade) > 2) then cmb_sJijum.Enabled := False
     else cmb_sJijum.Enabled := True;
     cmb_sDepart.Enabled := True;

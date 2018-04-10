@@ -126,6 +126,8 @@ type
     btn_Finger: TSpeedButton;
     lb_FingerCaption: TLabel;
     lb_FingerState: TLabel;
+    ed_SelectEmCode: TEdit;
+    ed_SelectCompanyCode: TEdit;
     procedure btn_CloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -510,9 +512,11 @@ begin
     if cells[1,Row] = '' then exit;    //사번
 
     ed_sEmpNo.Text := cells[1,Row];
+    ed_SelectEmCode.Text := cells[1,Row];
     ed_sEmpNM.Text := cells[2,Row];
     nIndex := sCompanyCodeList.IndexOf(cells[6,Row]);
     if nIndex > -1 then  cmb_sCompany.ItemIndex := nIndex;
+    ed_SelectCompanyCode.Text := cells[6,Row];
 
     if cmb_sCompany.ItemIndex > 0 then
     begin
@@ -586,6 +590,8 @@ begin
             end else
             begin
               stImage := FindField('EM_IMAGE').AsString;
+              stImage := stringReplace(stImage,'\\','\',[rfReplaceAll]);
+
               if FileExists(stImage) then
                 Image1.Picture.LoadFromFile(stImage);
             end;
@@ -943,6 +949,8 @@ begin
   if RzOpenDialog1.Execute then
   begin
     ed_EmpImg.Text :=  RzOpenDialog1.FileName;
+    ed_EmpImg.Text := stringReplace(ed_EmpImg.Text,'\\','\',[rfReplaceAll]);
+
     if FileExists(ed_EmpImg.Text) then
     Image1.Picture.LoadFromFile(ed_EmpImg.Text);
   end;
@@ -1128,6 +1136,7 @@ var
   stWorkCode : string;
   stCophone : string;
   stSql : string;
+  bEmCodeChange : Boolean;
 begin
   if Trim(ed_sEmpNo.Text) = '' then
   begin
@@ -1257,6 +1266,7 @@ begin
   end  else if UpperCase(State) = 'UPDATE' then
   begin
     stFdmsId := ed_fdmsNo.Text;
+    if(stCompanyCode <> ed_SelectCompanyCode.Text) or(ed_sEmpNo.Text <> ed_SelectEmCode.Text) then bEmCodeChange := True;
     if Not fdmsNoAuto then
     begin
       if Trim(L_stOldFdmsNo) <> Trim(ed_fdmsNo.Text) then   //선택된 지문번호가 수정 되었으면
@@ -1267,6 +1277,15 @@ begin
           Exit;
         end;
       end;
+    end;
+    if bEmCodeChange then
+    begin
+      if dmDBFunction.DupCheckTB_EMPLOYEE_EMCODE(stCompanyCode,ed_sEmpNo.Text) = 1 then
+      begin
+        showmessage('중복된 ' + FM101 + '이 존재합니다.');
+        Exit;
+      end;
+      dmDBFunction.ChangeEmCode(ed_SelectCompanyCode.Text,ed_SelectEmCode.Text,stCompanyCode,ed_sEmpNo.Text);
     end;
 (*  아래에서 카드번호 변경 되면 적용한다.
     if DataModule1.DupCheckTB_CARDFINGER(L_stOldFdmsNo) then   //만약 지문 데이터가 있으면 다시 한번 현재 카드로 변경 해 주자
@@ -2486,10 +2505,10 @@ begin
   end else if upperCase(aState) = 'UPDATE' then
   begin
     sg_Employ.Enabled := False;
-    ed_sEmpNo.Enabled := False;
+    ed_sEmpNo.Enabled := G_bUpdateEmCode;
     chk_AutoSabun.Enabled := False;
     ed_sEmpNM.Enabled := True;
-    cmb_sCompany.Enabled := False;
+    cmb_sCompany.Enabled := G_bUpdateEmCode;
     if (Not IsMaster) and ( strtoint(CompanyGrade) > 2) then cmb_sJijum.Enabled := False
     else cmb_sJijum.Enabled := True;
     cmb_sDepart.Enabled := True;
