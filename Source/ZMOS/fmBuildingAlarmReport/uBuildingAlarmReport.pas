@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Grids, BaseGrid, AdvGrid, StdCtrls, ComCtrls, Buttons, FR_DSet,
   FR_DBSet, FR_Class, DB, ADODB, uSubForm, CommandArray, Menus,iniFiles,ComObj,
-  Gauges, ExtCtrls,ActiveX, AdvObj;
+  Gauges, ExtCtrls,ActiveX, AdvObj, RzCmboBx;
 
 type
   TfmBuildingAlarmReport = class(TfmASubForm)
@@ -26,7 +26,6 @@ type
     dt_ToDate: TDateTimePicker;
     GroupBox3: TGroupBox;
     Label3: TLabel;
-    cmb_Position: TComboBox;
     Label4: TLabel;
     cmb_AlarmType: TComboBox;
     GroupBox4: TGroupBox;
@@ -48,6 +47,7 @@ type
     lb_AreaCode: TLabel;
     AlarmList: TListBox;
     chk_PCtime: TCheckBox;
+    cmb_Position: TRzComboBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure btn_CloseClick(Sender: TObject);
@@ -588,7 +588,7 @@ begin
   LoadBuildingCode(cmb_Building);
   LoadFloorCode('',cmb_Floor);
   LoadAreaCode('','',cmb_Area);
-  GetAlarmName('','','',cmb_Position);
+  GetAlarmName('','','',TComboBox(cmb_Position));
 
   FormNameSet;
 
@@ -998,7 +998,7 @@ begin
   stAreaCode := '';
   if cmb_Area.ItemIndex > 0 then stAreaCode := AreaCodeList.Strings[cmb_Area.itemIndex];
 
-  GetAlarmName(stBuildingCode,stFloorCode,stAreaCode,cmb_Position);
+  GetAlarmName(stBuildingCode,stFloorCode,stAreaCode,TComboBox(cmb_Position));
 end;
 
 procedure TfmBuildingAlarmReport.cmb_FloorChange(Sender: TObject);
@@ -1016,7 +1016,7 @@ begin
 
   if cmb_Area.ItemIndex > 0 then stAreaCode := AreaCodeList.Strings[cmb_Area.itemIndex];
 
-  GetAlarmName(stBuildingCode,stFloorCode,stAreaCode,cmb_Position);
+  GetAlarmName(stBuildingCode,stFloorCode,stAreaCode,TComboBox(cmb_Position));
 
 end;
 
@@ -1030,7 +1030,7 @@ begin
   stAreaCode := '';
   if cmb_Area.ItemIndex > 0 then stAreaCode := AreaCodeList.Strings[cmb_Area.itemIndex];
 
-  GetAlarmName(stBuildingCode,stFloorCode,stAreaCode,cmb_Position);
+  GetAlarmName(stBuildingCode,stFloorCode,stAreaCode,TComboBox(cmb_Position));
 
 end;
 

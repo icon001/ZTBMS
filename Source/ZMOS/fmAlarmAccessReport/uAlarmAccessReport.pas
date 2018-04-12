@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs,  StdCtrls, FR_DSet, FR_DBSet, FR_Class, DB,
   ADODB, Grids, BaseGrid, AdvGrid, Buttons, ComCtrls, uSubForm,
-  CommandArray, ExtCtrls,iniFiles, Gauges,ComObj,ActiveX, AdvObj;
+  CommandArray, ExtCtrls,iniFiles, Gauges,ComObj,ActiveX, AdvObj, RzCmboBx;
 
 type
   TfmAlarmAccessReport = class(TfmASubForm)
@@ -35,7 +35,6 @@ type
     dt_FromDate: TDateTimePicker;
     dt_ToDate: TDateTimePicker;
     lb_AlarmName: TLabel;
-    cmb_AlarmName: TComboBox;
     Label4: TLabel;
     cmb_AccessPermit: TComboBox;
     SaveDialog1: TSaveDialog;
@@ -52,6 +51,7 @@ type
     cmb_ArmGubun: TComboBox;
     Label5: TLabel;
     AlarmList: TListBox;
+    cmb_AlarmName: TRzComboBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure btn_SearchClick(Sender: TObject);
@@ -570,20 +570,20 @@ procedure TfmAlarmAccessReport.cmb_BuildingChange(Sender: TObject);
 begin
   LoadFloorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList,cmb_Floor);
   LoadAreaCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList,cmb_Area);
-  LoadAlarmCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList.Strings[cmb_Area.ItemIndex],DeviceCodeList,cmb_AlarmName);
+  LoadAlarmCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList.Strings[cmb_Area.ItemIndex],DeviceCodeList,TComboBox(cmb_AlarmName));
   if G_nSearchIndex = 0 then btn_SearchClick(btn_Search);
 end;
 
 procedure TfmAlarmAccessReport.cmb_FloorChange(Sender: TObject);
 begin
   LoadAreaCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList,cmb_Area);
-  LoadAlarmCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList.Strings[cmb_Area.ItemIndex],DeviceCodeList,cmb_AlarmName);
+  LoadAlarmCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList.Strings[cmb_Area.ItemIndex],DeviceCodeList,TComboBox(cmb_AlarmName));
   if G_nSearchIndex = 0 then btn_SearchClick(Self);
 end;
 
 procedure TfmAlarmAccessReport.cmb_AreaChange(Sender: TObject);
 begin
-  LoadAlarmCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList.Strings[cmb_Area.ItemIndex],DeviceCodeList,cmb_AlarmName);
+  LoadAlarmCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList.Strings[cmb_Area.ItemIndex],DeviceCodeList,TComboBox(cmb_AlarmName));
   if G_nSearchIndex = 0 then btn_SearchClick(Self);
 
 end;
@@ -773,7 +773,7 @@ begin
     end;
   end;
 
-  LoadAlarmCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.itemIndex],AreaCodeList.Strings[cmb_Area.itemIndex],DeviceCodeList,cmb_AlarmName);
+  LoadAlarmCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.itemIndex],AreaCodeList.Strings[cmb_Area.itemIndex],DeviceCodeList,TComboBox(cmb_AlarmName));
 
   GetAccessPermit(cmb_AccessPermit);
   LoadType;

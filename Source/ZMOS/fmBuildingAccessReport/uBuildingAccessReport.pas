@@ -35,7 +35,6 @@ type
     dt_FromDate: TDateTimePicker;
     dt_ToDate: TDateTimePicker;
     lb_AlarmName: TLabel;
-    cmb_DoorName: TComboBox;
     Label4: TLabel;
     cmb_AccessPermit: TComboBox;
     SaveDialog1: TSaveDialog;
@@ -56,6 +55,7 @@ type
     cmb_Jijum: TRzComboBox;
     lb_DepartName: TLabel;
     cmb_Depart: TRzComboBox;
+    cmb_DoorName: TRzComboBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure btn_SearchClick(Sender: TObject);
@@ -76,8 +76,6 @@ type
     procedure cmb_TypeChange(Sender: TObject);
     procedure cmb_DoorNameEnter(Sender: TObject);
     procedure cmb_DoorNameExit(Sender: TObject);
-    procedure cmb_DoorNameKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure cmb_DoorNameKeyPress(Sender: TObject; var Key: Char);
     procedure DoorListDblClick(Sender: TObject);
     procedure DoorListExit(Sender: TObject);
@@ -88,6 +86,8 @@ type
     procedure cmb_DepartChange(Sender: TObject);
     procedure CommandArrayCommandsTCloseExecute(Command: TCommand;
       Params: TStringList);
+    procedure cmb_DoorNameKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     CompanyCodeList : TStringList;
     JijumCodeList : TStringList;
@@ -605,20 +605,20 @@ procedure TfmBuildingAccessReport.cmb_BuildingChange(Sender: TObject);
 begin
   LoadFloorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList,cmb_Floor);
   LoadAreaCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList,cmb_Area);
-  LoadDoorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList.Strings[cmb_Area.ItemIndex],DoorCodeList,cmb_DoorName);
+  LoadDoorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList.Strings[cmb_Area.ItemIndex],DoorCodeList,TComboBox(cmb_DoorName));
   if G_nSearchIndex = 0 then btn_SearchClick(btn_Search);
 end;
 
 procedure TfmBuildingAccessReport.cmb_FloorChange(Sender: TObject);
 begin
   LoadAreaCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList,cmb_Area);
-  LoadDoorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList.Strings[cmb_Area.ItemIndex],DoorCodeList,cmb_DoorName);
+  LoadDoorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList.Strings[cmb_Area.ItemIndex],DoorCodeList,TComboBox(cmb_DoorName));
   if G_nSearchIndex = 0 then btn_SearchClick(Self);
 end;
 
 procedure TfmBuildingAccessReport.cmb_AreaChange(Sender: TObject);
 begin
-  LoadDoorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList.Strings[cmb_Area.ItemIndex],DoorCodeList,cmb_DoorName);
+  LoadDoorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList.Strings[cmb_Area.ItemIndex],DoorCodeList,TComboBox(cmb_DoorName));
   if G_nSearchIndex = 0 then btn_SearchClick(Self);
 
 end;
@@ -808,7 +808,7 @@ begin
     end;
   end;
 
-  LoadDoorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.itemIndex],AreaCodeList.Strings[cmb_Area.itemIndex],DoorCodeList,cmb_DoorName);
+  LoadDoorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.itemIndex],AreaCodeList.Strings[cmb_Area.itemIndex],DoorCodeList,TComboBox(cmb_DoorName));
 
   GetAccessPermit(cmb_AccessPermit);
   LoadType;
@@ -1065,18 +1065,6 @@ begin
 
 end;
 
-procedure TfmBuildingAccessReport.cmb_DoorNameKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
-begin
-  inherited;
-  if Key = 13 then
-  begin
-    if L_bKeyPress then SearchDoorNameList(cmb_DoorName.Text);
-    if DoorList.Visible then DoorList.SetFocus;
-  end;
-
-end;
-
 procedure TfmBuildingAccessReport.cmb_DoorNameKeyPress(Sender: TObject;
   var Key: Char);
 begin
@@ -1186,6 +1174,18 @@ procedure TfmBuildingAccessReport.CommandArrayCommandsTCloseExecute(
 begin
   inherited;
   Close;
+end;
+
+procedure TfmBuildingAccessReport.cmb_DoorNameKeyUp(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  inherited;
+  if Key = 13 then
+  begin
+    if L_bKeyPress then SearchDoorNameList(cmb_DoorName.Text);
+    if DoorList.Visible then DoorList.SetFocus;
+  end;
+
 end;
 
 initialization

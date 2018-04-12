@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Grids, BaseGrid, AdvGrid, StdCtrls, ComCtrls, Buttons, uSubForm,
-  CommandArray, DB, ADODB, FR_DSet, FR_DBSet, FR_Class, AdvObj;
+  CommandArray, DB, ADODB, FR_DSet, FR_DBSet, FR_Class, AdvObj, RzCmboBx;
 
 type
   TfmDoorAdminReport = class(TfmASubForm)
@@ -19,12 +19,12 @@ type
     btn_Close: TSpeedButton;
     dt_FromDate: TDateTimePicker;
     dt_ToDate: TDateTimePicker;
-    cmb_Door: TComboBox;
     sg_DoorReport: TAdvStringGrid;
     AdoQuery: TADOQuery;
     SaveDialog1: TSaveDialog;
     frReport1: TfrReport;
     frDBDataSet1: TfrDBDataSet;
+    cmb_Door: TRzComboBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -77,7 +77,7 @@ procedure TfmDoorAdminReport.FormShow(Sender: TObject);
 begin
   dt_FromDate.Date := Now;
   dt_ToDate.Date := Now;
-  GetDoorName(cmb_Door);
+  GetDoorName(TComboBox(cmb_Door));
   GridInitialize(sg_DoorReport);
 
   self.FindSubForm('Main').FindCommand('FORMSHOW').Params.Values['VALUE'] := 'DoorAdminReport';

@@ -226,13 +226,19 @@ inherited fmAlarmAdminReport: TfmAlarmAdminReport
       ImeName = 'Microsoft IME 2003'
       TabOrder = 1
     end
-    object cmb_Alaram: TComboBox
-      Left = 392
+    object cmb_Alarm: TRzComboBox
+      Tag = 1
+      Left = 391
       Top = 26
-      Width = 121
+      Width = 122
       Height = 20
+      Ctl3D = False
+      DropDownWidth = 400
+      FlatButtons = True
+      FrameVisible = True
       ImeName = 'Microsoft IME 2003'
       ItemHeight = 12
+      ParentCtl3D = False
       TabOrder = 2
     end
   end
@@ -478,7 +484,7 @@ inherited fmAlarmAdminReport: TfmAlarmAdminReport
       00FA030000000000000100080002000000000000000000FFFFFF002E02000000
       0000000000000000FFFF0000000000020000000100000000FEFEFF0000000000
       00000000000000FC000000000000000000000000000000005800E9E41F70F5B9
-      E240363CBDAA6EE3E440}
+      E2401390F5FF4D18E540}
   end
   object frDBDataSet1: TfrDBDataSet
     DataSet = AdoQuery

@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs,  StdCtrls, FR_DSet, FR_DBSet, FR_Class, DB,
   ADODB, Grids, BaseGrid, AdvGrid, Buttons, ComCtrls, uSubForm,
-  CommandArray, ExtCtrls,iniFiles, Gauges,ComObj, AdvObj;
+  CommandArray, ExtCtrls,iniFiles, Gauges,ComObj, AdvObj, RzCmboBx;
 
 type
   TfmChangeAccessReport = class(TfmASubForm)
@@ -35,7 +35,6 @@ type
     dt_FromDate: TDateTimePicker;
     dt_ToDate: TDateTimePicker;
     lb_Position: TLabel;
-    cmb_Position: TComboBox;
     Label4: TLabel;
     cmb_AccessPermit: TComboBox;
     SaveDialog1: TSaveDialog;
@@ -45,6 +44,7 @@ type
     lb_emType: TLabel;
     cmb_Type: TComboBox;
     rg_Gubun: TRadioGroup;
+    cmb_Position: TRzComboBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure btn_SearchClick(Sender: TObject);
@@ -66,6 +66,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure cmb_TypeChange(Sender: TObject);
     procedure rg_GubunClick(Sender: TObject);
+    procedure CommandArrayCommandsTCloseExecute(Command: TCommand;
+      Params: TStringList);
   private
     CompanyCodeList : TStringList;
     JijumCodeList : TStringList;
@@ -650,7 +652,7 @@ var
 begin
   dt_FromDate.Date := Now;
   dt_ToDate.Date := Now;
-  GetDoorName(cmb_Position);
+  GetDoorName(TComboBox(cmb_Position));
   GetAccessPermit(cmb_AccessPermit);
   LoadCompanyCode(CompanyCodeList,cmb_Company);
   LoadJijumCode(CompanyCodeList.Strings[cmb_Company.ItemIndex],JijumCodeList,cmb_Jijum);
@@ -710,12 +712,12 @@ procedure TfmChangeAccessReport.rg_GubunClick(Sender: TObject);
 begin
   if rg_Gubun.ItemIndex = 0 then
   begin
-    GetDoorName(cmb_Position);
+    GetDoorName(TComboBox(cmb_Position));
     lb_Position.Caption := '출입문명칭';
     sg_AccessReport.Cells[0,0] := '출입문명칭';
   end else
   begin
-    LoadDoorGubun(cmb_Position);
+    LoadDoorGubun(TComboBox(cmb_Position));
     lb_Position.Caption := '출입문구분';
     sg_AccessReport.Cells[0,0] := '출입문구분';
   end;
@@ -756,6 +758,13 @@ begin
     end;
   end;
 
+end;
+
+procedure TfmChangeAccessReport.CommandArrayCommandsTCloseExecute(
+  Command: TCommand; Params: TStringList);
+begin
+  inherited;
+  Close;
 end;
 
 initialization

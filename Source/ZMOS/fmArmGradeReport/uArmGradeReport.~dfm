@@ -1,6 +1,6 @@
 inherited fmArmGradeReport: TfmArmGradeReport
-  Left = 258
-  Top = 151
+  Left = 404
+  Top = 363
   Width = 1021
   Height = 640
   Caption = #48169#48276#44396#50669#48324#44428#54620#51312#54924
@@ -438,17 +438,6 @@ inherited fmArmGradeReport: TfmArmGradeReport
         ImeName = 'Microsoft IME 2003'
         TabOrder = 3
       end
-      object cmb_AlarmName: TComboBox
-        Left = 240
-        Top = 50
-        Width = 120
-        Height = 20
-        Style = csDropDownList
-        ImeName = 'Microsoft IME 2003'
-        ItemHeight = 12
-        TabOrder = 4
-        OnChange = cmb_AlarmNameChange
-      end
       object cmb_Type: TComboBox
         Left = 432
         Top = 26
@@ -456,7 +445,7 @@ inherited fmArmGradeReport: TfmArmGradeReport
         Height = 20
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
-        TabOrder = 5
+        TabOrder = 4
         OnChange = cmb_TypeChange
       end
       object cmb_EmType: TComboBox
@@ -466,8 +455,25 @@ inherited fmArmGradeReport: TfmArmGradeReport
         Height = 20
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
-        TabOrder = 6
+        TabOrder = 5
         Visible = False
+      end
+      object cmb_AlarmName: TRzComboBox
+        Tag = 1
+        Left = 240
+        Top = 50
+        Width = 116
+        Height = 20
+        Style = csDropDownList
+        Ctl3D = False
+        DropDownWidth = 400
+        FlatButtons = True
+        FrameVisible = True
+        ImeName = 'Microsoft IME 2003'
+        ItemHeight = 12
+        ParentCtl3D = False
+        TabOrder = 6
+        OnChange = cmb_AlarmNameChange
       end
     end
   end

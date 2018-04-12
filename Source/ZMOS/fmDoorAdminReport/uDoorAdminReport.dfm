@@ -226,13 +226,19 @@ inherited fmDoorAdminReport: TfmDoorAdminReport
       ImeName = 'Microsoft IME 2003'
       TabOrder = 1
     end
-    object cmb_Door: TComboBox
-      Left = 392
+    object cmb_Door: TRzComboBox
+      Tag = 1
+      Left = 391
       Top = 26
-      Width = 121
+      Width = 122
       Height = 20
+      Ctl3D = False
+      DropDownWidth = 400
+      FlatButtons = True
+      FrameVisible = True
       ImeName = 'Microsoft IME 2003'
       ItemHeight = 12
+      ParentCtl3D = False
       TabOrder = 2
     end
   end
@@ -488,7 +494,7 @@ inherited fmDoorAdminReport: TfmDoorAdminReport
       0000FA030000000000000100080002000000000000000000FFFFFF002E020000
       000000000000000000FFFF0000000000020000000100000000FEFEFF00000000
       0000000000000000FC000000000000000000000000000000005800E9E41F70F5
-      B9E24004DF20EA58D8E440}
+      B9E240E8B562EE4D18E540}
   end
   object frDBDataSet1: TfrDBDataSet
     DataSet = AdoQuery

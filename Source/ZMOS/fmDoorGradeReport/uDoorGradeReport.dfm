@@ -438,17 +438,6 @@ inherited fmDoorGradeReport: TfmDoorGradeReport
         ImeName = 'Microsoft IME 2003'
         TabOrder = 3
       end
-      object cmb_DoorName: TComboBox
-        Left = 240
-        Top = 50
-        Width = 120
-        Height = 20
-        Style = csDropDownList
-        ImeName = 'Microsoft IME 2003'
-        ItemHeight = 12
-        TabOrder = 4
-        OnChange = cmb_DoorNameChange
-      end
       object cmb_Type: TComboBox
         Left = 432
         Top = 26
@@ -456,7 +445,7 @@ inherited fmDoorGradeReport: TfmDoorGradeReport
         Height = 20
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
-        TabOrder = 5
+        TabOrder = 4
         OnChange = cmb_TypeChange
       end
       object cmb_EmType: TComboBox
@@ -466,8 +455,25 @@ inherited fmDoorGradeReport: TfmDoorGradeReport
         Height = 20
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
-        TabOrder = 6
+        TabOrder = 5
         Visible = False
+      end
+      object cmb_DoorName: TRzComboBox
+        Tag = 1
+        Left = 240
+        Top = 50
+        Width = 116
+        Height = 20
+        Style = csDropDownList
+        Ctl3D = False
+        DropDownWidth = 400
+        FlatButtons = True
+        FrameVisible = True
+        ImeName = 'Microsoft IME 2003'
+        ItemHeight = 12
+        ParentCtl3D = False
+        TabOrder = 6
+        OnChange = cmb_DoorNameChange
       end
     end
   end

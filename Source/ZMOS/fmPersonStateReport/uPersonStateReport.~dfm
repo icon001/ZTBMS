@@ -473,16 +473,6 @@ inherited fmPersonStateReport: TfmPersonStateReport
         ImeName = 'Microsoft IME 2003'
         TabOrder = 5
       end
-      object cmb_Position: TComboBox
-        Left = 496
-        Top = 50
-        Width = 97
-        Height = 20
-        ImeName = 'Microsoft IME 2003'
-        ItemHeight = 12
-        TabOrder = 6
-        OnChange = cmb_PositionChange
-      end
       object rg_Gubun: TRadioGroup
         Left = 432
         Top = 16
@@ -493,8 +483,24 @@ inherited fmPersonStateReport: TfmPersonStateReport
         Items.Strings = (
           #52636#51077#47928
           #52636#51077#47928#44396#48516)
-        TabOrder = 7
+        TabOrder = 6
         OnClick = rg_GubunClick
+      end
+      object cmb_Position: TRzComboBox
+        Tag = 1
+        Left = 501
+        Top = 50
+        Width = 92
+        Height = 20
+        Style = csDropDownList
+        Ctl3D = False
+        DropDownWidth = 400
+        FlatButtons = True
+        FrameVisible = True
+        ImeName = 'Microsoft IME 2003'
+        ItemHeight = 12
+        ParentCtl3D = False
+        TabOrder = 7
       end
     end
     object GroupBox2: TGroupBox
@@ -713,7 +719,7 @@ inherited fmPersonStateReport: TfmPersonStateReport
       45524D49544E414D45225D00000000FFFF000000000002000000010000000004
       00B1BCB8B20009000000000000000000080000000000020000000000FFFFFF00
       0000000200000000000000FEFEFF000000000000000000000000FC0000000000
-      00000000000000000000005800E9E41F70F5B9E24097DE9B05D203E540}
+      00000000000000000000005800E9E41F70F5B9E24034F530684D18E540}
   end
   object frDBDataSet1: TfrDBDataSet
     DataSet = AdoQuery

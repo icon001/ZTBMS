@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Grids, BaseGrid, AdvGrid, StdCtrls, ComCtrls, Buttons, uSubForm,
-  CommandArray, FR_DSet, FR_DBSet, FR_Class, DB, ADODB, AdvObj;
+  CommandArray, FR_DSet, FR_DBSet, FR_Class, DB, ADODB, AdvObj, RzCmboBx;
 
 type
   TfmAlarmAdminReport = class(TfmASubForm)
@@ -19,12 +19,12 @@ type
     btn_Close: TSpeedButton;
     dt_FromDate: TDateTimePicker;
     dt_ToDate: TDateTimePicker;
-    cmb_Alaram: TComboBox;
     sg_AlarmReport: TAdvStringGrid;
     AdoQuery: TADOQuery;
     frReport1: TfrReport;
     frDBDataSet1: TfrDBDataSet;
     SaveDialog1: TSaveDialog;
+    cmb_Alaram: TRzComboBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btn_CloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -153,7 +153,7 @@ procedure TfmAlarmAdminReport.FormShow(Sender: TObject);
 begin
   dt_FromDate.Date := Now;
   dt_ToDate.Date := Now;
-  GetAlarmName(cmb_Alaram);
+  GetAlarmName(TComboBox(cmb_Alaram));
 
   self.FindSubForm('Main').FindCommand('FORMSHOW').Params.Values['VALUE'] := 'AlarmAdminReport';
   self.FindSubForm('Main').FindCommand('FORMSHOW').Params.Values['SHOW'] := 'TRUE';

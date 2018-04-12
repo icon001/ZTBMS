@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, StdCtrls, Buttons, Gauges, ExtCtrls, Grids, BaseGrid,
-  AdvGrid, uSubForm, CommandArray,ComObj, DB, ADODB,iniFiles, AdvObj;
+  AdvGrid, uSubForm, CommandArray,ComObj, DB, ADODB,iniFiles, AdvObj,
+  RzCmboBx;
 
 type
   TfmTimeAccessReport = class(TfmASubForm)
@@ -33,7 +34,6 @@ type
     cmb_Depart: TComboBox;
     cmb_Posi: TComboBox;
     ed_name: TEdit;
-    cmb_Position: TComboBox;
     cmb_AccessPermit: TComboBox;
     cmb_Type: TComboBox;
     cmb_EmType: TComboBox;
@@ -48,6 +48,7 @@ type
     SaveDialog1: TSaveDialog;
     rg_Gubun: TRadioGroup;
     dt_ToDate: TDateTimePicker;
+    cmb_Position: TRzComboBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure btn_SearchClick(Sender: TObject);
@@ -535,7 +536,7 @@ begin
   begin
     SaveDialog1.DefaultExt := 'csv';
     SaveDialog1.Filter := 'CSV File(*.csv)|*.csv';
-  else
+  end else
   begin
     SaveDialog1.DefaultExt := 'xls';
     SaveDialog1.Filter := 'EXCEL File(*.xls)|*.xls';
@@ -669,7 +670,7 @@ begin
   dt_ToDate.Date := Now;
   ed_startTime.Text := '0000';
   ed_endTime.Text := '2400';
-  GetDoorName(cmb_Position);
+  GetDoorName(TComboBox(cmb_Position));
   GetAccessPermit(cmb_AccessPermit);
   LoadCompanyCode(CompanyCodeList,cmb_Company);
   LoadJijumCode(CompanyCodeList.Strings[cmb_Company.ItemIndex],JijumCodeList,cmb_Jijum);
@@ -729,12 +730,12 @@ procedure TfmTimeAccessReport.rg_GubunClick(Sender: TObject);
 begin
   if rg_Gubun.ItemIndex = 0 then
   begin
-    GetDoorName(cmb_Position);
+    GetDoorName(TComboBox(cmb_Position));
     lb_Position.Caption := '출입문명칭';
     sg_AccessReport.Cells[0,0] := '출입문명칭';
   end else
   begin
-    LoadDoorGubun(cmb_Position);
+    LoadDoorGubun(TComboBox(cmb_Position));
     lb_Position.Caption := '출입문구분';
     sg_AccessReport.Cells[0,0] := '출입문구분';
   end;

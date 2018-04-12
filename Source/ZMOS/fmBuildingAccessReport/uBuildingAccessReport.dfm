@@ -491,20 +491,6 @@ inherited fmBuildingAccessReport: TfmBuildingAccessReport
         ImeName = 'Microsoft IME 2003'
         TabOrder = 3
       end
-      object cmb_DoorName: TComboBox
-        Left = 240
-        Top = 50
-        Width = 120
-        Height = 20
-        ImeName = 'Microsoft IME 2003'
-        ItemHeight = 12
-        TabOrder = 4
-        OnChange = cmb_DoorNameChange
-        OnEnter = cmb_DoorNameEnter
-        OnExit = cmb_DoorNameExit
-        OnKeyDown = cmb_DoorNameKeyDown
-        OnKeyPress = cmb_DoorNameKeyPress
-      end
       object cmb_AccessPermit: TComboBox
         Left = 768
         Top = 50
@@ -512,7 +498,7 @@ inherited fmBuildingAccessReport: TfmBuildingAccessReport
         Height = 20
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
-        TabOrder = 5
+        TabOrder = 4
       end
       object cmb_Type: TComboBox
         Left = 432
@@ -522,7 +508,7 @@ inherited fmBuildingAccessReport: TfmBuildingAccessReport
         Style = csDropDownList
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
-        TabOrder = 6
+        TabOrder = 5
         OnChange = cmb_TypeChange
       end
       object cmb_EmType: TComboBox
@@ -533,7 +519,7 @@ inherited fmBuildingAccessReport: TfmBuildingAccessReport
         Style = csDropDownList
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
-        TabOrder = 7
+        TabOrder = 6
         Visible = False
       end
       object cmb_Company: TRzComboBox
@@ -550,7 +536,7 @@ inherited fmBuildingAccessReport: TfmBuildingAccessReport
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
         ParentCtl3D = False
-        TabOrder = 8
+        TabOrder = 7
         OnChange = cmb_CompanyChange
       end
       object cmb_Jijum: TRzComboBox
@@ -567,7 +553,7 @@ inherited fmBuildingAccessReport: TfmBuildingAccessReport
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
         ParentCtl3D = False
-        TabOrder = 9
+        TabOrder = 8
         OnChange = cmb_JijumChange
       end
       object cmb_Depart: TRzComboBox
@@ -584,8 +570,28 @@ inherited fmBuildingAccessReport: TfmBuildingAccessReport
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
         ParentCtl3D = False
-        TabOrder = 10
+        TabOrder = 9
         OnChange = cmb_DepartChange
+      end
+      object cmb_DoorName: TRzComboBox
+        Tag = 1
+        Left = 240
+        Top = 50
+        Width = 120
+        Height = 20
+        Ctl3D = False
+        DropDownWidth = 400
+        FlatButtons = True
+        FrameVisible = True
+        ImeName = 'Microsoft IME 2003'
+        ItemHeight = 12
+        ParentCtl3D = False
+        TabOrder = 10
+        OnChange = cmb_DoorNameChange
+        OnEnter = cmb_DoorNameEnter
+        OnExit = cmb_DoorNameExit
+        OnKeyPress = cmb_DoorNameKeyPress
+        OnKeyUp = cmb_DoorNameKeyUp
       end
     end
     object GroupBox2: TGroupBox
@@ -669,7 +675,7 @@ inherited fmBuildingAccessReport: TfmBuildingAccessReport
   object DoorList: TListBox [2]
     Left = 464
     Top = 72
-    Width = 193
+    Width = 400
     Height = 97
     ImeName = 'Microsoft Office IME 2007'
     ItemHeight = 12
@@ -851,7 +857,7 @@ inherited fmBuildingAccessReport: TfmBuildingAccessReport
       45524D49544E414D45225D00000000FFFF000000000002000000010000000004
       00B1BCB8B20009000000000000000000080000000000020000000000FFFFFF00
       0000000200000000000000FEFEFF000000000000000000000000FC0000000000
-      00000000000000000000005800E9E41F70F5B9E240BCFE8605D203E540}
+      00000000000000000000005800E9E41F70F5B9E2409D3516405018E540}
   end
   object frDBDataSet1: TfrDBDataSet
     DataSet = AdoQuery

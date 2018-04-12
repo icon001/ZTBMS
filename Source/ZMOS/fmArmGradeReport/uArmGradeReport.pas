@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, Gauges, ExtCtrls, Grids, BaseGrid, AdvGrid,ADODB,ActiveX,
-  uSubForm, CommandArray, DB,iniFiles,ComObj, AdvObj;
+  uSubForm, CommandArray, DB,iniFiles,ComObj, AdvObj, RzCmboBx;
 
 type
   TfmArmGradeReport = class(TfmASubForm)
@@ -31,10 +31,10 @@ type
     cmb_Floor: TComboBox;
     cmb_Area: TComboBox;
     ed_name: TEdit;
-    cmb_AlarmName: TComboBox;
     cmb_Type: TComboBox;
     cmb_EmType: TComboBox;
     AdoQuery: TADOQuery;
+    cmb_AlarmName: TRzComboBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btn_CloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -398,7 +398,7 @@ begin
     end;
   end;
 
-  LoadAlarmCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.itemIndex],AreaCodeList.Strings[cmb_Area.itemIndex],DeviceCodeList,cmb_AlarmName);
+  LoadAlarmCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.itemIndex],AreaCodeList.Strings[cmb_Area.itemIndex],DeviceCodeList,TComboBox(cmb_AlarmName));
 
   LoadType;
 
@@ -677,7 +677,7 @@ procedure TfmArmGradeReport.cmb_BuildingChange(Sender: TObject);
 begin
   LoadFloorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList,cmb_Floor);
   LoadAreaCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList,cmb_Area);
-  LoadAlarmCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList.Strings[cmb_Area.ItemIndex],DeviceCodeList,cmb_AlarmName);
+  LoadAlarmCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList.Strings[cmb_Area.ItemIndex],DeviceCodeList,TComboBox(cmb_AlarmName));
   if G_nSearchIndex = 0 then btn_SearchClick(btn_Search);
 
 end;
@@ -685,14 +685,14 @@ end;
 procedure TfmArmGradeReport.cmb_FloorChange(Sender: TObject);
 begin
   LoadAreaCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList,cmb_Area);
-  LoadAlarmCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList.Strings[cmb_Area.ItemIndex],DeviceCodeList,cmb_AlarmName);
+  LoadAlarmCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList.Strings[cmb_Area.ItemIndex],DeviceCodeList,TComboBox(cmb_AlarmName));
   if G_nSearchIndex = 0 then btn_SearchClick(btn_Search);
 
 end;
 
 procedure TfmArmGradeReport.cmb_AreaChange(Sender: TObject);
 begin
-  LoadAlarmCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList.Strings[cmb_Area.ItemIndex],DeviceCodeList,cmb_AlarmName);
+  LoadAlarmCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList.Strings[cmb_Area.ItemIndex],DeviceCodeList,TComboBox(cmb_AlarmName));
   if G_nSearchIndex = 0 then btn_SearchClick(btn_Search);
 
 end;

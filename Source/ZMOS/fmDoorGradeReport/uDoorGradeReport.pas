@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, Gauges, ExtCtrls, Grids, BaseGrid, AdvGrid,ADODB,ActiveX,
-  uSubForm, CommandArray, DB,iniFiles,ComObj, AdvObj;
+  uSubForm, CommandArray, DB,iniFiles,ComObj, AdvObj, RzCmboBx;
 
 type
   TfmDoorGradeReport = class(TfmASubForm)
@@ -31,10 +31,10 @@ type
     cmb_Floor: TComboBox;
     cmb_Area: TComboBox;
     ed_name: TEdit;
-    cmb_DoorName: TComboBox;
     cmb_Type: TComboBox;
     cmb_EmType: TComboBox;
     AdoQuery: TADOQuery;
+    cmb_DoorName: TRzComboBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btn_CloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -395,7 +395,7 @@ begin
     end;
   end;
 
-  LoadDoorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.itemIndex],AreaCodeList.Strings[cmb_Area.itemIndex],DoorCodeList,cmb_DoorName);
+  LoadDoorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.itemIndex],AreaCodeList.Strings[cmb_Area.itemIndex],DoorCodeList,TComboBox(cmb_DoorName));
 
   LoadType;
 
@@ -674,7 +674,7 @@ procedure TfmDoorGradeReport.cmb_BuildingChange(Sender: TObject);
 begin
   LoadFloorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList,cmb_Floor);
   LoadAreaCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList,cmb_Area);
-  LoadDoorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.itemIndex],AreaCodeList.Strings[cmb_Area.itemIndex],DoorCodeList,cmb_DoorName);
+  LoadDoorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.itemIndex],AreaCodeList.Strings[cmb_Area.itemIndex],DoorCodeList,TComboBox(cmb_DoorName));
   if G_nSearchIndex = 0 then btn_SearchClick(btn_Search);
 
 end;
@@ -682,14 +682,14 @@ end;
 procedure TfmDoorGradeReport.cmb_FloorChange(Sender: TObject);
 begin
   LoadAreaCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.ItemIndex],AreaCodeList,cmb_Area);
-  LoadDoorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.itemIndex],AreaCodeList.Strings[cmb_Area.itemIndex],DoorCodeList,cmb_DoorName);
+  LoadDoorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.itemIndex],AreaCodeList.Strings[cmb_Area.itemIndex],DoorCodeList,TComboBox(cmb_DoorName));
   if G_nSearchIndex = 0 then btn_SearchClick(btn_Search);
 
 end;
 
 procedure TfmDoorGradeReport.cmb_AreaChange(Sender: TObject);
 begin
-  LoadDoorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.itemIndex],AreaCodeList.Strings[cmb_Area.itemIndex],DoorCodeList,cmb_DoorName);
+  LoadDoorCode(BuildingCodeList.Strings[cmb_Building.ItemIndex],FloorCodeList.Strings[cmb_Floor.itemIndex],AreaCodeList.Strings[cmb_Area.itemIndex],DoorCodeList,TComboBox(cmb_DoorName));
   if G_nSearchIndex = 0 then btn_SearchClick(btn_Search);
 
 end;

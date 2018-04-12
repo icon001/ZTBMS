@@ -94,19 +94,6 @@ inherited fmNewAlarmReport: TfmNewAlarmReport
         Height = 12
         Caption = #44592#44592#53440#51077
       end
-      object cmb_Position: TComboBox
-        Left = 71
-        Top = 26
-        Width = 122
-        Height = 20
-        ImeName = 'Microsoft IME 2003'
-        ItemHeight = 12
-        TabOrder = 0
-        OnEnter = cmb_PositionEnter
-        OnExit = cmb_PositionExit
-        OnKeyDown = cmb_PositionKeyDown
-        OnKeyPress = cmb_PositionKeyPress
-      end
       object cmb_AlarmType: TComboBox
         Left = 295
         Top = 50
@@ -115,10 +102,10 @@ inherited fmNewAlarmReport: TfmNewAlarmReport
         Style = csDropDownList
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
-        TabOrder = 3
+        TabOrder = 2
       end
       object cmb_ModeState: TComboBox
-        Left = 71
+        Left = 70
         Top = 50
         Width = 122
         Height = 20
@@ -126,7 +113,7 @@ inherited fmNewAlarmReport: TfmNewAlarmReport
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
         ItemIndex = 0
-        TabOrder = 1
+        TabOrder = 0
         Text = #51204#52404
         Items.Strings = (
           #51204#52404
@@ -142,7 +129,7 @@ inherited fmNewAlarmReport: TfmNewAlarmReport
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
         ItemIndex = 0
-        TabOrder = 2
+        TabOrder = 1
         Text = #51204#52404
         OnChange = cmb_AlarmGroupChange
         Items.Strings = (
@@ -159,7 +146,7 @@ inherited fmNewAlarmReport: TfmNewAlarmReport
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
         ItemIndex = 0
-        TabOrder = 4
+        TabOrder = 3
         Text = #51204#52404
         Items.Strings = (
           #51204#52404
@@ -173,7 +160,24 @@ inherited fmNewAlarmReport: TfmNewAlarmReport
         Width = 185
         Height = 17
         Caption = 'PC'#51077#47141#49884#44036#51312#54924
+        TabOrder = 4
+      end
+      object cmb_Position: TRzComboBox
+        Tag = 1
+        Left = 70
+        Top = 26
+        Width = 122
+        Height = 20
+        Ctl3D = False
+        DropDownWidth = 400
+        FlatButtons = True
+        FrameVisible = True
+        ImeName = 'Microsoft IME 2003'
+        ItemHeight = 12
+        ParentCtl3D = False
         TabOrder = 5
+        OnKeyPress = cmb_PositionKeyPress
+        OnKeyUp = cmb_PositionKeyUp
       end
     end
     object GroupBox4: TGroupBox
@@ -533,7 +537,7 @@ inherited fmNewAlarmReport: TfmNewAlarmReport
   object AlarmList: TListBox [2]
     Left = 216
     Top = 64
-    Width = 193
+    Width = 400
     Height = 97
     ImeName = 'Microsoft Office IME 2007'
     ItemHeight = 12
@@ -698,7 +702,7 @@ inherited fmNewAlarmReport: TfmNewAlarmReport
       000400480F000005004C696E65330002000800000000010000FA030000000000
       000100080002000000000000000000FFFFFF002E020000000000000000000000
       FFFF0000000000020000000100000000FEFEFF000000000000000000000000FC
-      000000000000000000000000000000005800E9E41F70F5B9E2409A738D05D203
+      000000000000000000000000000000005800E9E41F70F5B9E240355D00984D18
       E540}
   end
   object frDBDataSet1: TfrDBDataSet

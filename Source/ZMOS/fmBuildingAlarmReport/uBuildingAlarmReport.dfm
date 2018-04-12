@@ -115,19 +115,6 @@ inherited fmBuildingAlarmReport: TfmBuildingAlarmReport
         Height = 12
         Caption = #44396#50669
       end
-      object cmb_Position: TComboBox
-        Left = 295
-        Top = 18
-        Width = 122
-        Height = 20
-        ImeName = 'Microsoft IME 2003'
-        ItemHeight = 12
-        TabOrder = 0
-        OnEnter = cmb_PositionEnter
-        OnExit = cmb_PositionExit
-        OnKeyDown = cmb_PositionKeyDown
-        OnKeyPress = cmb_PositionKeyPress
-      end
       object cmb_AlarmType: TComboBox
         Left = 503
         Top = 18
@@ -136,7 +123,7 @@ inherited fmBuildingAlarmReport: TfmBuildingAlarmReport
         Style = csDropDownList
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
-        TabOrder = 1
+        TabOrder = 0
       end
       object cmb_ModeState: TComboBox
         Left = 295
@@ -147,7 +134,7 @@ inherited fmBuildingAlarmReport: TfmBuildingAlarmReport
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
         ItemIndex = 0
-        TabOrder = 2
+        TabOrder = 1
         Text = #51204#52404
         Items.Strings = (
           #51204#52404
@@ -163,7 +150,7 @@ inherited fmBuildingAlarmReport: TfmBuildingAlarmReport
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
         ItemIndex = 0
-        TabOrder = 3
+        TabOrder = 2
         Text = #51204#52404
         OnChange = cmb_AlarmGroupChange
         Items.Strings = (
@@ -180,7 +167,7 @@ inherited fmBuildingAlarmReport: TfmBuildingAlarmReport
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
         ItemIndex = 0
-        TabOrder = 4
+        TabOrder = 3
         Text = #51204#52404
         Items.Strings = (
           #51204#52404
@@ -196,7 +183,7 @@ inherited fmBuildingAlarmReport: TfmBuildingAlarmReport
         Style = csDropDownList
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
-        TabOrder = 5
+        TabOrder = 4
         OnChange = cmb_BuildingChange
       end
       object cmb_Floor: TComboBox
@@ -207,7 +194,7 @@ inherited fmBuildingAlarmReport: TfmBuildingAlarmReport
         Style = csDropDownList
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
-        TabOrder = 6
+        TabOrder = 5
         OnChange = cmb_FloorChange
       end
       object cmb_Area: TComboBox
@@ -218,7 +205,7 @@ inherited fmBuildingAlarmReport: TfmBuildingAlarmReport
         Style = csDropDownList
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
-        TabOrder = 7
+        TabOrder = 6
         OnChange = cmb_AreaChange
       end
       object chk_PCtime: TCheckBox
@@ -227,7 +214,26 @@ inherited fmBuildingAlarmReport: TfmBuildingAlarmReport
         Width = 185
         Height = 17
         Caption = 'PC'#51077#47141#49884#44036#51312#54924
+        TabOrder = 7
+      end
+      object cmb_Position: TRzComboBox
+        Tag = 1
+        Left = 295
+        Top = 18
+        Width = 122
+        Height = 20
+        Ctl3D = False
+        DropDownWidth = 400
+        FlatButtons = True
+        FrameVisible = True
+        ImeName = 'Microsoft IME 2003'
+        ItemHeight = 12
+        ParentCtl3D = False
         TabOrder = 8
+        OnEnter = cmb_PositionEnter
+        OnExit = cmb_PositionExit
+        OnKeyDown = cmb_PositionKeyDown
+        OnKeyPress = cmb_PositionKeyPress
       end
     end
     object GroupBox4: TGroupBox
@@ -589,7 +595,7 @@ inherited fmBuildingAlarmReport: TfmBuildingAlarmReport
   object AlarmList: TListBox [2]
     Left = 440
     Top = 56
-    Width = 193
+    Width = 400
     Height = 97
     ImeName = 'Microsoft Office IME 2007'
     ItemHeight = 12
@@ -754,7 +760,7 @@ inherited fmBuildingAlarmReport: TfmBuildingAlarmReport
       000400480F000005004C696E65330002000800000000010000FA030000000000
       000100080002000000000000000000FFFFFF002E020000000000000000000000
       FFFF0000000000020000000100000000FEFEFF000000000000000000000000FC
-      000000000000000000000000000000005800E9E41F70F5B9E2401F579A05D203
+      000000000000000000000000000000005800E9E41F70F5B9E24032A8D3E04D18
       E540}
   end
   object frDBDataSet1: TfrDBDataSet

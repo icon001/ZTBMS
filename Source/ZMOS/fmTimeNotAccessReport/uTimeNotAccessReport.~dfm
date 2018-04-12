@@ -504,15 +504,21 @@ inherited fmTimeNotAccessReport: TfmTimeNotAccessReport
         TabOrder = 7
         OnClick = rg_GubunClick
       end
-      object cmb_Position: TComboBox
-        Left = 496
+      object cmb_Position: TRzComboBox
+        Tag = 1
+        Left = 501
         Top = 50
-        Width = 97
+        Width = 92
         Height = 20
+        Style = csDropDownList
+        Ctl3D = False
+        DropDownWidth = 400
+        FlatButtons = True
+        FrameVisible = True
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
+        ParentCtl3D = False
         TabOrder = 8
-        OnChange = cmb_PositionChange
       end
     end
     object GroupBox2: TGroupBox

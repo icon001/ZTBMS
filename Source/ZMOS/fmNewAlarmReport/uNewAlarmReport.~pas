@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Grids, BaseGrid, AdvGrid, StdCtrls, ComCtrls, Buttons, FR_DSet,
   FR_DBSet, FR_Class, DB, ADODB, uSubForm, CommandArray, Menus,iniFiles,ComObj,
-  Gauges, ExtCtrls,ActiveX, AdvObj;
+  Gauges, ExtCtrls,ActiveX, AdvObj, RzCmboBx;
 
 type
   TfmNewAlarmReport = class(TfmASubForm)
@@ -26,7 +26,6 @@ type
     dt_ToDate: TDateTimePicker;
     GroupBox3: TGroupBox;
     Label3: TLabel;
-    cmb_Position: TComboBox;
     Label4: TLabel;
     cmb_AlarmType: TComboBox;
     GroupBox4: TGroupBox;
@@ -42,6 +41,7 @@ type
     cmb_DeviceType: TComboBox;
     AlarmList: TListBox;
     chk_PCtime: TCheckBox;
+    cmb_Position: TRzComboBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure btn_CloseClick(Sender: TObject);
@@ -57,8 +57,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure cmb_AlarmGroupChange(Sender: TObject);
     procedure cmb_PositionExit(Sender: TObject);
-    procedure cmb_PositionKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure AlarmListDblClick(Sender: TObject);
     procedure AlarmListKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -67,6 +65,8 @@ type
     procedure cmb_PositionEnter(Sender: TObject);
     procedure CommandArrayCommandsTCloseExecute(Command: TCommand;
       Params: TStringList);
+    procedure cmb_PositionKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     ArmAreaCodeList : TStringList;
     AlarmCodeList : TStringList;
@@ -496,7 +496,7 @@ begin
   begin
     SaveDialog1.DefaultExt := 'csv';
     SaveDialog1.Filter := 'CSV File(*.csv)|*.csv';
-  else
+  end else
   begin
     SaveDialog1.DefaultExt := 'xls';
     SaveDialog1.Filter := 'EXCEL File(*.xls)|*.xls';
@@ -568,7 +568,7 @@ procedure TfmNewAlarmReport.FormShow(Sender: TObject);
 begin
   dt_FromDate.Date := Now;
   dt_ToDate.Date := Now;
-  GetAlarmName(cmb_Position);
+  GetAlarmName(TComboBox(cmb_Position));
   GetAlarmGroup(cmb_AlarmGroup);
   GetAlarmType(cmb_AlarmType,'');
 
@@ -852,17 +852,6 @@ begin
   if AlarmList.Visible then AlarmList.SetFocus;
 end;
 
-procedure TfmNewAlarmReport.cmb_PositionKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
-begin
-  inherited;
-  if Key = 13 then
-  begin
-    if L_bKeyPress then SearchAlarmNameList(cmb_Position.Text);
-    if AlarmList.Visible then AlarmList.SetFocus;
-  end;
-end;
-
 procedure TfmNewAlarmReport.AlarmListDblClick(Sender: TObject);
 begin
   inherited;
@@ -911,6 +900,18 @@ procedure TfmNewAlarmReport.CommandArrayCommandsTCloseExecute(
 begin
   inherited;
   Close;
+end;
+
+procedure TfmNewAlarmReport.cmb_PositionKeyUp(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  inherited;
+  if Key = 13 then
+  begin
+    if L_bKeyPress then SearchAlarmNameList(cmb_Position.Text);
+    if AlarmList.Visible then AlarmList.SetFocus;
+  end;
+
 end;
 
 initialization

@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, StdCtrls, Buttons, Gauges, ExtCtrls, Grids, BaseGrid,
-  AdvGrid, uSubForm, CommandArray,ComObj, DB, ADODB,iniFiles, AdvObj;
+  AdvGrid, uSubForm, CommandArray,ComObj, DB, ADODB,iniFiles, AdvObj,
+  RzCmboBx;
 
 type
   TfmTimeNotAccessReport = class(TfmASubForm)
@@ -45,7 +46,7 @@ type
     dt_ToDate: TDateTimePicker;
     rg_Gubun: TRadioGroup;
     lb_Position: TLabel;
-    cmb_Position: TComboBox;
+    cmb_Position: TRzComboBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure btn_SearchClick(Sender: TObject);
@@ -510,7 +511,7 @@ begin
   begin
     SaveDialog1.DefaultExt := 'csv';
     SaveDialog1.Filter := 'CSV File(*.csv)|*.csv';
-  else
+  end else
   begin
     SaveDialog1.DefaultExt := 'xls';
     SaveDialog1.Filter := 'EXCEL File(*.xls)|*.xls';
@@ -653,7 +654,7 @@ begin
   End;
   dt_FromDate.Date := Now;
   dt_ToDate.Date := Now;
-  GetDoorName(cmb_Position);
+  GetDoorName(TComboBox(cmb_Position));
   LoadCompanyCode(CompanyCodeList,cmb_Company);
   LoadJijumCode(CompanyCodeList.Strings[cmb_Company.ItemIndex],JijumCodeList,cmb_Jijum);
   LoadDepartCode(copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],1,3),copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],4,3),DepartCodeList,cmb_Depart);
@@ -711,15 +712,15 @@ procedure TfmTimeNotAccessReport.rg_GubunClick(Sender: TObject);
 begin
   if rg_Gubun.ItemIndex = 0 then
   begin
-    GetDoorName(cmb_Position);
+    GetDoorName(TComboBox(cmb_Position));
     lb_Position.Caption := '출입문명칭';
   end else if rg_Gubun.ItemIndex = 1 then
   begin
-    LoadDoorGubun(cmb_Position);
+    LoadDoorGubun(TComboBox(cmb_Position));
     lb_Position.Caption := '출입문구분';
   end else if rg_Gubun.ItemIndex = 2 then
   begin
-    LoadReaderPosition(cmb_Position);
+    LoadReaderPosition(TComboBox(cmb_Position));
     lb_Position.Caption := '리더위치';
   end;
 

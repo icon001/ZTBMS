@@ -1,6 +1,6 @@
 inherited fmAccessReport: TfmAccessReport
-  Left = 1034
-  Top = 267
+  Left = 670
+  Top = 210
   Width = 1024
   Height = 618
   Caption = #44592#44036#48324#52636#51077#51060#47141#48372#44256#49436
@@ -463,13 +463,14 @@ inherited fmAccessReport: TfmAccessReport
         Height = 20
         Style = csDropDownList
         Ctl3D = False
-        DropDownWidth = 200
+        DropDownWidth = 400
         FlatButtons = True
         FrameVisible = True
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
         ParentCtl3D = False
         TabOrder = 2
+        OnChange = cmb_PositionChange
       end
       object cmb_Company: TRzComboBox
         Tag = 1
@@ -806,7 +807,7 @@ inherited fmAccessReport: TfmAccessReport
       45524D49544E414D45225D00000000FFFF000000000002000000010000000004
       00B1BCB8B20009000000000000000000080000000000020000000000FFFFFF00
       0000000200000000000000FEFEFF000000000000000000000000FC0000000000
-      00000000000000000000005800E9E41F70F5B9E24034868805D203E540}
+      00000000000000000000005800E9E41F70F5B9E240715C644E5018E540}
   end
   object frDBDataSet1: TfrDBDataSet
     DataSet = AdoQuery

@@ -1,6 +1,6 @@
 inherited fmChangeAccessReport: TfmChangeAccessReport
-  Left = 171
-  Top = 285
+  Left = 425
+  Top = 251
   Width = 1024
   Height = 618
   Caption = #52636#51077#51060#47141#48372#44256#49436'('#51221#51648#51060#47141#51312#54924')'
@@ -481,17 +481,6 @@ inherited fmChangeAccessReport: TfmChangeAccessReport
         ImeName = 'Microsoft IME 2003'
         TabOrder = 3
       end
-      object cmb_Position: TComboBox
-        Left = 368
-        Top = 50
-        Width = 97
-        Height = 20
-        Style = csDropDownList
-        ImeName = 'Microsoft IME 2003'
-        ItemHeight = 12
-        TabOrder = 4
-        OnChange = cmb_PositionChange
-      end
       object cmb_AccessPermit: TComboBox
         Left = 200
         Top = 50
@@ -500,7 +489,7 @@ inherited fmChangeAccessReport: TfmChangeAccessReport
         Style = csDropDownList
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
-        TabOrder = 5
+        TabOrder = 4
         OnChange = cmb_AccessPermitChange
       end
       object cmb_Type: TComboBox
@@ -511,7 +500,7 @@ inherited fmChangeAccessReport: TfmChangeAccessReport
         Style = csDropDownList
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
-        TabOrder = 6
+        TabOrder = 5
         OnChange = cmb_TypeChange
       end
       object rg_Gubun: TRadioGroup
@@ -524,8 +513,25 @@ inherited fmChangeAccessReport: TfmChangeAccessReport
         Items.Strings = (
           #52636#51077#47928
           #52636#51077#47928#44396#48516)
-        TabOrder = 7
+        TabOrder = 6
         OnClick = rg_GubunClick
+      end
+      object cmb_Position: TRzComboBox
+        Tag = 1
+        Left = 373
+        Top = 50
+        Width = 92
+        Height = 20
+        Style = csDropDownList
+        Ctl3D = False
+        DropDownWidth = 400
+        FlatButtons = True
+        FrameVisible = True
+        ImeName = 'Microsoft IME 2003'
+        ItemHeight = 12
+        ParentCtl3D = False
+        TabOrder = 7
+        OnChange = cmb_PositionChange
       end
     end
     object GroupBox2: TGroupBox
@@ -744,7 +750,7 @@ inherited fmChangeAccessReport: TfmChangeAccessReport
       45524D49544E414D45225D00000000FFFF000000000002000000010000000004
       00B1BCB8B20009000000000000000000080000000000020000000000FFFFFF00
       0000000200000000000000FEFEFF000000000000000000000000FC0000000000
-      00000000000000000000005800E9E41F70F5B9E240B76D19CD58D8E440}
+      00000000000000000000005800E9E41F70F5B9E240CE2EF2554F18E540}
   end
   object frDBDataSet1: TfrDBDataSet
     DataSet = AdoQuery
