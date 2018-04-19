@@ -5371,7 +5371,7 @@ begin
         if DongYangUniversityEmployee(FindField('B_NUMBER').AsString,  //72기숙사3(여학생1),74기숙사4(여학생2),73기숙사1(남학생1),71기숙사2(남학생2)
                                  FindField('HAGBEON').AsString,      //학번
                                  FindField('IREUM').AsString,          //이름
-                                 FindField('R_NUMBER').AsString,      //호실
+                                 FindField('HAGGWA_NAME').AsString,      //R_NUMBER호실  HAGGWA_NAME(학과명)
                                  FindField('SINBUN_GB').AsString,     //신분구분(1:학부생, 2:대학원생, 3:교직원, 9:기타))
                                  FindField('REGDATE').AsString,       //등록일
                                  FindField('TOESA_FG').AsString,      //퇴사여부(1:퇴사)
@@ -5385,7 +5385,7 @@ begin
             DongYangUniversityEmployeeEventState(FindField('B_NUMBER').AsString,  //72기숙사3(여학생1),74기숙사4(여학생2),73기숙사1(남학생1),71기숙사2(남학생2)
                                  FindField('HAGBEON').AsString,      //학번
                                  FindField('IREUM').AsString,          //이름
-                                 FindField('R_NUMBER').AsString,      //호실
+                                 FindField('HAGGWA_NAME').AsString,      //R_NUMBER호실  HAGGWA_NAME(학과명)
                                  FindField('SINBUN_GB').AsString,     //신분구분(1:학부생, 2:대학원생, 3:교직원, 9:기타))
                                  FindField('REGDATE').AsString,       //등록일
                                  FindField('TOESA_FG').AsString,      //퇴사여부(1:퇴사)
@@ -5398,7 +5398,7 @@ begin
             DongYangUniversityEmployeeEventState(FindField('B_NUMBER').AsString,  //72기숙사3(여학생1),74기숙사4(여학생2),73기숙사1(남학생1),71기숙사2(남학생2)
                                  FindField('HAGBEON').AsString,      //학번
                                  FindField('IREUM').AsString,          //이름
-                                 FindField('R_NUMBER').AsString,      //호실
+                                 FindField('HAGGWA_NAME').AsString,      //R_NUMBER호실  HAGGWA_NAME(학과명)
                                  FindField('SINBUN_GB').AsString,     //신분구분(1:학부생, 2:대학원생, 3:교직원, 9:기타))
                                  FindField('REGDATE').AsString,       //등록일
                                  FindField('TOESA_FG').AsString,      //퇴사여부(1:퇴사)
