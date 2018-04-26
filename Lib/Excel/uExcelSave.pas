@@ -137,7 +137,17 @@ begin
       begin
         //Delay(3000);
         //oXL.Application.WorkBooks[1].SaveAs(SaveFileName, nFileFormat);
-        oXL.save;//(SaveFileName);
+        Try
+          oXL.save;//(SaveFileName);
+        Except
+          Try
+            oSheet.SaveAs(SaveFileName);
+          Except
+            showmessage('엑셀저장 실패로 CSV포맷으로 저장 됩니다.');
+            SaveFileName := copy(SaveFileName,1,Length(SaveFileName) - 3) + 'csv';
+            StringGrid.SaveToCSV(SaveFileName);
+          End;
+        End;
         //oXL.ActiveWorkBook.SaveAs(SaveFileName);
         //oSheet.SaveAs(SaveFileName);
       end;

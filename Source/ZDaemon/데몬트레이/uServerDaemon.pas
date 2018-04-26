@@ -2132,6 +2132,15 @@ begin
   Try
     ConnectTimer.Enabled := False;
     ConnectTimer.Interval := 1000;
+    for I:=DeviceConnectList.Count - 1 downto 0 do
+    begin
+      aPollingTime:= TDeviceSocketInfo(DeviceConnectList.objects[i]).LastConnectedTime;
+      aTimeOut:= IncTime(aPollingTime,0,0,G_nNodeConnectDelayTime,0);
+      if Now > aTimeout then
+      begin
+        WinSockDisConnect(TDeviceSocketInfo(DeviceConnectList.objects[i]),TDeviceSocketInfo(DeviceConnectList.objects[i]).WinSocket);
+      end;
+    end;
     for I:= 0 to ComNodeList.Count -1 do
     begin
 //      L_nConnectCount := L_nConnectCount + 1;
@@ -3071,7 +3080,7 @@ begin
 
           KTTControlCenterAlarmListLoad(NodeNo,aCommNode);
 
-          if Trim(IPStr) <> '' then
+          if (nSockType = 2) or (Trim(IPStr) <> '') then  //
           begin
             ComNodeList.AddObject('NODE'+InttoStr(aCommNode.No),aCommNode);
           end;
@@ -17691,7 +17700,8 @@ end;
 procedure TfmMain.Button1Click(Sender: TObject);
 begin
   inherited;
-  Application.MessageBox(PChar('해당MCU에 기본 항목으로 출입문을 사용하시겠습니까?'),'정보',MB_OKCANCEL);
+  showmessage(inttostr(DeviceConnectList.Count));
+//  Application.MessageBox(PChar('해당MCU에 기본 항목으로 출입문을 사용하시겠습니까?'),'정보',MB_OKCANCEL);
 //  Registration_DeviceTimeSync('');
   //
 end;
@@ -20217,8 +20227,10 @@ begin
   DeviceSocket.ClientIP := aConnectIP;
   DeviceSocket.ClientPort := aConnectPort;
   DeviceSocket.WinSocket := socket;
+  DeviceSocket.Connected := True;
   DeviceSocket.OnWinSockNodePacket := WinSockNodePacket;
   DeviceSocket.OnWinSockNodeDisConnect := WinSockNodeDisConnect;
+  DeviceSocket.SendPacket('00','Q','ID0000000',True,-1);
   nIndex := DeviceConnectList.IndexOf(inttostr(socket));
   if nIndex < 0 then
   begin

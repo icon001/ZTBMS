@@ -2326,7 +2326,7 @@ begin
   stSql := stSql + ' AND NOT EXISTS                                     ';
   stSql := stSql + ' (select * from KTTeleCop A                         ';
   stSql := stSql + ' where A.SCV_USRM_ID =B.SCV_USRM_ID                 ';
-  stSql := stSql + ' AND A.CP_ISSU_CNT = B.CP_ISSU_CNT                  ';
+//  stSql := stSql + ' AND A.CP_ISSU_CNT = B.CP_ISSU_CNT                  ';
   stSql := stSql + ' )                                                  ';
 
   with ADORelayExcut do
@@ -2358,7 +2358,8 @@ begin
   stSql := stSql + ' From KTTeleCop A,                            ';
   stSql := stSql + ' [link_server].[KTTeleCop].[dbo].[KTTeleCop] B ';
   stSql := stSql + ' where A.SCV_USRM_ID = B.SCV_USRM_ID           ';
-  stSql := stSql + ' AND A.SCV_USRM_STATUS_NM <> B.SCV_USRM_STATUS_NM ';
+  stSql := stSql + ' AND (A.SCV_USRM_STATUS_NM <> B.SCV_USRM_STATUS_NM ';
+  stSql := stSql + ' OR A.CP_ISSU_CNT <> B.CP_ISSU_CNT ) ';
 
   with ADORelayExcut do
   begin

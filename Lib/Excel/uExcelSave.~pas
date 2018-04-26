@@ -60,9 +60,9 @@ begin
       exit;
     end;
 
-    CopyFile(PChar(refFileName), PChar(SaveFileName + '1'), False);
+    CopyFile(PChar(refFileName), PChar(SaveFileName), False);
 
-    oXL.Workbooks.Open(SaveFileName + '1');
+    oXL.Workbooks.Open(SaveFileName);
     //oXL.Workbooks.Open(SaveFileName);
     oXL.DisplayAlerts := False;
     //oXL.Visible := True;
@@ -137,7 +137,7 @@ begin
       begin
         //Delay(3000);
         //oXL.Application.WorkBooks[1].SaveAs(SaveFileName, nFileFormat);
-        oXL.save(SaveFileName);
+        oXL.save;//(SaveFileName);
         //oXL.ActiveWorkBook.SaveAs(SaveFileName);
         //oSheet.SaveAs(SaveFileName);
       end;
@@ -160,7 +160,7 @@ begin
     end;
     exit;
   End;
-  DeleteFile(PChar(SaveFileName + '1'));
+  //DeleteFile(PChar(SaveFileName + '1'));
   Result := True;
 end;
 
