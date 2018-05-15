@@ -116,7 +116,6 @@ type
     function TB_ATEVENTBACKtimeInsert(aDate,aCompanyCode,aEMCode,aWeekCode,aTime,aJijumCode,aDepartCode,aEmName:string):Boolean;
     function TB_ATEVENTLEAVEtimeInsert(aDate,aCompanyCode,aEMCode,aWeekCode,aTime,aJijumCode,aDepartCode,aEmName:string):Boolean;
 
-    function TB_ATEVENTOutTimeUpdate(aDate,aCompanyCode,aEMCode,aNowTime,aAtOutCode,aJijumCode,aDepartCode,aEmName:string):Boolean;
     function TB_ATEVENTBACKtimeUpdate(aDate,aCompanyCode,aEMCode,aTime,aJijumCode,aDepartCode,aEmName:string):Boolean;
     function TB_ATEVENTLEAVEtimeUpdate(aDate,aCompanyCode,aEMCode,aTime,aJijumCode,aDepartCode,aEmName:string):Boolean;
 
@@ -1985,28 +1984,6 @@ begin
 
 end;
 
-function TdmAdoQuery.TB_ATEVENTOutTimeUpdate(aDate,aCompanyCode,aEMCode,aNowTime,aAtOutCode,aJijumCode,aDepartCode,aEmName:string): Boolean;
-var
-  stSql : string;
-begin
-
-  stSql := 'update TB_ATEVENT ';
-  stSql := stSql + 'set AT_OUTTIME = ''' + aNowTime + ''', ';
-  stSql := stSql + ' AT_OUTCODE = ''' + aAtOutCode + ''', ';
-  stSql := stSql + ' AT_SUMMARY = ''N'', ';
-  if aJijumCode <> '' then stSql := stSql + ' CO_JIJUMCODE = ''' + aJijumCode + ''', ';
-  if aDepartCode <> '' then stSql := stSql + ' CO_DEPARTCODE = ''' + aDepartCode + ''', ';
-  if aEmName <> '' then stSql := stSql + ' EM_NAME = ''' + aEmName + ''', ';
-  stSql := stSql + ' AT_UPDATETIME = ''' + FormatDateTime('yyyymmddHHMMSS',Now) + ''' ';
-  stSql := stSql + ' where GROUP_CODE = ''' + GROUPCODE + ''' ';
-  stSql := stSql + ' and AT_DATE = ''' + aDate + ''' ';
-  stSql := stSql + ' and CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
-  stSql := stSql + ' and EM_CODE = ''' + aEMCode + ''' ';
-
-  result := DataModule1.ProcessEventExecSQL(stSql);
-
-
-end;
 
 function TdmAdoQuery.TB_LOWDATAInsert(NodeNO: integer; aIP, aPort,
   aECUID, aTxRx: string; aCommand: char; aReceiveData: string): Boolean;

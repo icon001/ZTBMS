@@ -917,7 +917,7 @@ begin
   ButtonEnable(State);
 
 
-  OldCardNo := ed_CardNo.Text ;
+  OldCardNo := Trim(ed_CardNo.Text) ;
 //  pn_EmployUpdateMode;
 end;
 
@@ -962,7 +962,7 @@ begin
   if cmb_sCompany.ItemIndex < 0 then stCompanyCode := '000'
   else stCompanyCode := sCompanyCodeList.Strings[cmb_sCompany.ItemIndex];
   if Trim(stCompanyCode) = '' then stCompanyCode := '000';
-  bResult := dmAdoQuery.DeleteTB_EMPLOYEE(ed_sEmpNo.Text,stCompanyCode,ed_CardNo.Text);
+  bResult := dmAdoQuery.DeleteTB_EMPLOYEE(ed_sEmpNo.Text,stCompanyCode,Trim(ed_CardNo.Text));
 
   if bResult then
   begin
@@ -1149,7 +1149,7 @@ begin
                                  stDepartCode,stPosiCode,stCophone,
                                  FormatDateTime('yyyymmdd',dt_sJoinDt.Date),FormatDateTime('yyyymmdd',dt_sRetireDt.Date),
                                  ed_sZipcode.Text,ed_sAddr1.Text,ed_sAddr2.Text,ed_sHomePhone.Text,ed_sHandphone.Text,
-                                 '1',ed_CardNo.Text,ed_EmpImg.Text,stFdmsId,stEmTypeCode,
+                                 '1',Trim(ed_CardNo.Text),ed_EmpImg.Text,stFdmsId,stEmTypeCode,
                                  stTimeCodeUse,stTimeCodeGroup,stTime1,stTime2,stTime3,stTime4,stTimeWeek,stMaster,stWorkCode);
     if bResult then     inc(AutoSabun);
   end  else if UpperCase(State) = 'UPDATE' then
@@ -1181,7 +1181,7 @@ begin
                                  stDepartCode,stPosiCode,stCophone,
                                  FormatDateTime('yyyymmdd',dt_sJoinDt.Date),FormatDateTime('yyyymmdd',dt_sRetireDt.Date),
                                  ed_sZipcode.Text,ed_sAddr1.Text,ed_sAddr2.Text,ed_sHomePhone.Text,ed_sHandphone.Text,
-                                 '1',ed_CardNo.Text,ed_EmpImg.Text,stEmTypeCode,stFdmsId,
+                                 '1',Trim(ed_CardNo.Text),ed_EmpImg.Text,stEmTypeCode,stFdmsId,
                                  stTimeCodeUse,stTimeCodeGroup,stTime1,stTime2,stTime3,stTime4,stTimeWeek,stMaster,stWorkCode);
     if L_bValidateUpdate then
     begin
@@ -1225,6 +1225,7 @@ var
 begin
   Result := False;
   bResult := False;
+  aCardNo := Trim(aCardNo);
   bResult := CheckTB_EMPLOYEE(aCompanyCode,aEmpID);
   if bResult then
   begin
@@ -1414,6 +1415,7 @@ var
 begin
   //stFdmsID := GetEmployeeFdmsID(aCompanyCode,aEmpID);
   Result := False;
+  aCardNo := Trim(aCardNo);
   if Trim(aCardNo)<> '' then
   begin
     bResult := False;
@@ -1604,10 +1606,10 @@ begin
 
   end;
   
-  stSql := CommonSql.InsertIntoTB_EMPHIS(aCompanyCode,aEmpID,aFdmsId,'2',ed_CardNo.Text,'1',
+  stSql := CommonSql.InsertIntoTB_EMPHIS(aCompanyCode,aEmpID,aFdmsId,'2',Trim(ed_CardNo.Text),'1',
            ed_sEmpNM.text,ed_sHandphone.text,cmb_sCompany.text,cmb_sJijum.text,cmb_sDepart.text,cmb_sPosi.text);//수정
   result := DataModule1.ProcessExecSQL(stSql);
-  stSql := CommonSql.InsertIntoTB_EMPLOYEECHANGE(aCompanyCode,aEmpID,ed_CardNo.Text,'DupEmployee','2');
+  stSql := CommonSql.InsertIntoTB_EMPLOYEECHANGE(aCompanyCode,aEmpID,Trim(ed_CardNo.Text),'DupEmployee','2');
   DataModule1.ProcessExecSQL(stSql);
 
 end;
@@ -2045,7 +2047,7 @@ begin
       if (Application.MessageBox(PChar(stMsg),'변경',MB_OKCANCEL) = ID_CANCEL)  then Exit;
     end;
   end; }
-  ed_CardNo.Text := aCardNo;
+  ed_CardNo.Text := Trim(aCardNo);
 
 end;
 
@@ -3483,7 +3485,7 @@ begin
      (UpperCase(State) = 'UPDATE') then
   begin
     if aCheckBox and chk_CardReg.Checked then
-      ed_CardNo.Text := aCardNo;
+      ed_CardNo.Text := Trim(aCardNo);
   end else
   begin
     if aCheckBox and chk_CardRegSearch.Checked then

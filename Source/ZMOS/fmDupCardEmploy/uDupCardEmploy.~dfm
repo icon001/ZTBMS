@@ -1254,6 +1254,7 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
           Height = 20
           ImeName = 'Microsoft IME 2003'
           TabOrder = 22
+          Visible = False
         end
         object ed_SelectEmCode: TEdit
           Left = 264
@@ -1262,6 +1263,7 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
           Height = 20
           ImeName = 'Microsoft IME 2003'
           TabOrder = 23
+          Visible = False
         end
       end
     end

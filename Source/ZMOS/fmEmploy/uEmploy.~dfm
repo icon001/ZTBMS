@@ -1145,6 +1145,7 @@ inherited fmEmploy: TfmEmploy
         Height = 20
         ImeName = 'Microsoft IME 2003'
         TabOrder = 24
+        Visible = False
       end
       object ed_SelectCompanyCode: TEdit
         Left = 264
@@ -1153,6 +1154,7 @@ inherited fmEmploy: TfmEmploy
         Height = 20
         ImeName = 'Microsoft IME 2003'
         TabOrder = 25
+        Visible = False
       end
     end
   end

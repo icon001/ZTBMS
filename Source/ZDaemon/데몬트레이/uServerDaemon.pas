@@ -2534,7 +2534,12 @@ begin
             if Not IsDigit(stValidDate) then stValidDate := '00000000';
             stValidDate := copy(stValidDate,3,6); //유효기간
 
-            aCardNo:= FindField('CA_CARDNO').asString;
+            aCardNo:= Trim(FindField('CA_CARDNO').asString);
+            if G_bCardFixedUse then
+            begin
+              aCardNo := copy(aCardno,1,G_nCardFixedLength);
+            end;
+
             //Memo1.Lines.Add('CardAutoDownStart:'+ aCardNo);
             aDeviceID:= FillZeroNumber(FindField('AC_NODENO').asInteger,3);
             aDeviceID:= aDeviceID + FindField('AC_ECUID').AsString;

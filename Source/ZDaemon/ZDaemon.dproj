@@ -1,0 +1,393 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{1E99BB9D-A1B0-4EFA-B52E-B3A49B5D4FA6}</ProjectGuid>
+        <MainSource>ZDaemon.dpr</MainSource>
+        <Base>True</Base>
+        <Config Condition="'$(Config)'==''">Debug</Config>
+        <TargetedPlatforms>1153</TargetedPlatforms>
+        <AppType>Application</AppType>
+        <FrameworkType>VCL</FrameworkType>
+        <ProjectVersion>18.2</ProjectVersion>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
+        <Base_Win32>true</Base_Win32>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Base)'=='true') or '$(Base_Win64)'!=''">
+        <Base_Win64>true</Base_Win64>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
+        <Cfg_1>true</Cfg_1>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
+        <Cfg_1_Win32>true</Cfg_1_Win32>
+        <CfgParent>Cfg_1</CfgParent>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
+        <Cfg_2>true</Cfg_2>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
+        <Cfg_2_Win32>true</Cfg_2_Win32>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base)'!=''">
+        <DCC_E>false</DCC_E>
+        <DCC_F>false</DCC_F>
+        <DCC_K>false</DCC_K>
+        <DCC_N>true</DCC_N>
+        <DCC_S>false</DCC_S>
+        <DCC_ImageBase>00400000</DCC_ImageBase>
+        <DCC_DebugInformation>1</DCC_DebugInformation>
+        <DCC_SymbolReferenceInfo>1</DCC_SymbolReferenceInfo>
+        <DCC_ExeOutput>..\..\bin</DCC_ExeOutput>
+        <DCC_UsePackage>vcl;rtl;vclx;indy;inet;xmlrtl;vclie;inetdbbde;inetdbxpress;dbrtl;dsnap;dsnapcon;vcldb;soaprtl;VclSmp;dbexpress;dbxcds;bdertl;vcldbx;webdsnap;websnap;adortl;ibxpress;teeui;teedb;tee;dss;visualclx;visualdbclx;vclactnband;vclshlctrls;IntrawebDB_50_70;Intraweb_50_70;Rave50CLX;Rave50VCL;dclOfficeXP;A406_R70;lmdweb30_d7;lmdtxt70db_d7;lmd70_d7;lmdsys20_d7;lmdsp20db_D7;lmdsp20_d7;lmdsh30_d7;lmdrtf30db_d7;lmdrtf30_d7;lmddsg20_d7;lmd70db_d7;lmdbar10_d7;db424d7r;DXAddonsD7;DXStringOnlyD7;DXSockD7;DXServersD7;Rz30Ctls70;Rz30DBCtls70;inetdb;RyuCommand;RyuLib;RyuVCL;TMSD7;tmsexd7;tmswizd7;tmsxlsd7;$(DCC_UsePackage)</DCC_UsePackage>
+        <SanitizedProjectName>ZDaemon</SanitizedProjectName>
+        <DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;DUnitX.MemoryLeakMonitor;Winapi;System.Win;Data.Win;$(DCC_Namespace)</DCC_Namespace>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_MajorVer>6</VerInfo_MajorVer>
+        <VerInfo_Release>2</VerInfo_Release>
+        <VerInfo_Build>13</VerInfo_Build>
+        <VerInfo_Locale>1042</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=ZeronAlliance;FileDescription=;FileVersion=6.0.2.13;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base_Win32)'!=''">
+        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
+        <BT_BuildType>Debug</BT_BuildType>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
+        <Icon_MainIcon>ZDaemon_Icon.ico</Icon_MainIcon>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
+        <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base_Win64)'!=''">
+        <Icon_MainIcon>ZDaemon_Icon.ico</Icon_MainIcon>
+        <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
+        <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1)'!=''">
+        <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
+        <DCC_DebugInformation>0</DCC_DebugInformation>
+        <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+        <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <AppEnableHighDPI>true</AppEnableHighDPI>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2)'!=''">
+        <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
+        <DCC_Optimize>false</DCC_Optimize>
+        <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <AppEnableHighDPI>true</AppEnableHighDPI>
+    </PropertyGroup>
+    <ItemGroup>
+        <DelphiCompile Include="$(MainSource)">
+            <MainSource>MainSource</MainSource>
+        </DelphiCompile>
+        <DCCReference Include="..\..\..\[컴포넌트]\FastMM\FastMM4.pas"/>
+        <DCCReference Include="..\..\..\[컴포넌트]\FastMM\FastMM4Messages.pas"/>
+        <DCCReference Include="데몬트레이\uServerDaemon.pas">
+            <Form>fmMain</Form>
+        </DCCReference>
+        <DCCReference Include="비밀번호체크\uLogin.pas">
+            <Form>fmLogin</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Lib\uLomosUtil.pas"/>
+        <DCCReference Include="..\..\Lib\uMSDEsql.pas"/>
+        <DCCReference Include="..\..\Lib\DIMime.pas"/>
+        <DCCReference Include="비밀번호변경\uPwChange.pas">
+            <Form>fmPwChange</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Lib\uDevicemodule.pas">
+            <Form>ComModule</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fmMonitoringState\uMonitoringState.pas">
+            <Form>fmMonitoringState</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Lib\uSubForm.pas">
+            <Form>fmASubForm</Form>
+        </DCCReference>
+        <DCCReference Include="환경설정\uAttendConfig.pas">
+            <Form>fmAttendConfig</Form>
+        </DCCReference>
+        <DCCReference Include="기기위치등록\uPositionSet.pas">
+            <Form>fmPositionSet</Form>
+        </DCCReference>
+        <DCCReference Include="스케줄등록\DoorSchReg.pas">
+            <Form>DoorscheduleRegForm</Form>
+        </DCCReference>
+        <DCCReference Include="스케줄등록\uSchadule.pas">
+            <Form>fmSchadule</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Lib\udmAdoQuery.pas">
+            <Form>dmAdoQuery</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fmDoorStateReport\uDoorStateReport.pas">
+            <Form>fmDoorStateReport</Form>
+        </DCCReference>
+        <DCCReference Include="통신환경설정\uNetConfig.pas">
+            <Form>fmNetConfig</Form>
+        </DCCReference>
+        <DCCReference Include="fmJNHospitalDoorSetting\uJNHospitalDoorSetting.pas">
+            <Form>fmJNHospitalDoorSetting</Form>
+        </DCCReference>
+        <DCCReference Include="fmMDIAlarmZoneAdmin\uMDIAlarmZoneAdmin.pas">
+            <Form>fmMDIAlarmZoneAdmin</Form>
+        </DCCReference>
+        <DCCReference Include="식수기기관리\uFoodAdmin.pas">
+            <Form>fmFoodAdmin</Form>
+        </DCCReference>
+        <DCCReference Include="fmCardReaderServer\uCardReaderServer.pas">
+            <Form>fmCardReaderServer</Form>
+        </DCCReference>
+        <DCCReference Include="fmCardReaderServerMonitor\uCardReaderServerMonitor.pas">
+            <Form>fmCardReaderServerMonitor</Form>
+        </DCCReference>
+        <DCCReference Include="환경설정\uPerRelayConfig.pas">
+            <Form>fmperRelayConfig</Form>
+        </DCCReference>
+        <DCCReference Include="환경설정\uRelaysentence.pas">
+            <Form>fmRelaysentence</Form>
+        </DCCReference>
+        <DCCReference Include="fmInOutReader\uInOutReader.pas">
+            <Form>fmInOutReader</Form>
+        </DCCReference>
+        <DCCReference Include="fmDeviceSetting\uDeviceSetting.pas">
+            <Form>fmDeviceSetting</Form>
+        </DCCReference>
+        <DCCReference Include="fmAlaramReader\uAlaramReader.pas">
+            <Form>fmAlaramReader</Form>
+        </DCCReference>
+        <DCCReference Include="fmInOutGroup\uInOutGroup.pas">
+            <Form>fmInOutGroup</Form>
+        </DCCReference>
+        <DCCReference Include="fmInOutGroupName\uInOutGroupName.pas">
+            <Form>fmInOutGroupName</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Lib\Socket\uClientInfo.pas"/>
+        <DCCReference Include="..\..\Lib\Socket\uMoPacketItem.pas"/>
+        <DCCReference Include="..\..\Lib\Socket\uClientComThread.pas"/>
+        <DCCReference Include="..\..\Lib\Socket\uClientCommunication.pas"/>
+        <DCCReference Include="..\..\Lib\DataBase\uDataBase.pas"/>
+        <DCCReference Include="..\..\Lib\FileInfo.pas"/>
+        <DCCReference Include="fmReaderSetting\uReaderSetting.pas">
+            <Form>fmReaderSetting</Form>
+        </DCCReference>
+        <DCCReference Include="PersonRelayModule\uPersonRelay.pas">
+            <Form>dmPersonRelay</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fmLocateCode\uLocateCode.pas">
+            <Form>fmLocateCode</Form>
+        </DCCReference>
+        <DCCReference Include="fmMDIDeviceCode\uMDIDeviceCode.pas">
+            <Form>fmMDIDeviceCode</Form>
+        </DCCReference>
+        <DCCReference Include="fmDeviceCode\uEcuCount.pas">
+            <Form>fmEcuCount</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Lib\systeminfos.pas"/>
+        <DCCReference Include="..\..\Lib\UCommonModule.pas">
+            <Form>CommonModule</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fmSequenceChange\uSequenceChange.pas">
+            <Form>fmSequenceChange</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\..\[LIB]\DBConnect\uDataBaseConfig.pas">
+            <Form>fmDataBaseConfig</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\..\[LIB]\Query\uCommonSql.pas">
+            <Form>CommonSql</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\..\..\[LIB]\Query\uFireBird.pas">
+            <Form>FireBird</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\..\..\[LIB]\Query\uMDBSql.pas">
+            <Form>MDBSql</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\..\..\[LIB]\Query\uMssql.pas">
+            <Form>Mssql</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\..\..\[LIB]\Query\uPostGreSql.pas">
+            <Form>PostGreSql</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\..\..\[LIB]\uDataModule1.pas">
+            <Form>DataModule1</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\..\Lib\udmServerToMonitor.pas">
+            <Form>dmServerToMonitor</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Lib\uKTTControl.pas">
+            <Form>dmKTTControl</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\..\Lib\udmAttendEvent.pas">
+            <Form>dmAttendEvent</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="실시간송수신현황조회\uCurrentState.pas">
+            <Form>fmCurrentState</Form>
+        </DCCReference>
+        <DCCReference Include="Lib\uKTTDDNS.pas">
+            <Form>dmKTTDDNS</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Lib\uMonitoringServer.pas">
+            <Form>dmMonitoringServer</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fmKTTMonitoring\uKTTMonitoring.pas">
+            <Form>fmKTTMonitoring</Form>
+        </DCCReference>
+        <DCCReference Include="fmDDNSMonitoring\uDDNSMonitoring.pas">
+            <Form>fmDDNSMonitoring</Form>
+        </DCCReference>
+        <DCCReference Include="fmKTTCodeAdmin\uKTTCodeAdmin.pas">
+            <Form>fmKTTCodeAdmin</Form>
+        </DCCReference>
+        <DCCReference Include="fmFiregubunCode\uFiregubunCode.pas">
+            <Form>fmFiregubunCode</Form>
+        </DCCReference>
+        <DCCReference Include="fmFireGroup\uFireGroup.pas">
+            <Form>fmFireGroup</Form>
+        </DCCReference>
+        <DCCReference Include="fmInOutGroupCode\uInOutGroupCode.pas">
+            <Form>fmInOutGroupCode</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Lib\Socket\uMoPacketList.pas"/>
+        <DCCReference Include="기기접속현황\uDeviceConnectState.pas">
+            <Form>fmDeviceConnectState</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Lib\Socket\uWinSocket.pas">
+            <Form>dmSocket</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\..\Lib\Socket\Winsockclasses\u_c_log.pas"/>
+        <DCCReference Include="..\..\Lib\Socket\Winsockclasses\u_c_basic_object.pas"/>
+        <DCCReference Include="..\..\Lib\Socket\Winsockclasses\u_c_byte_buffer.pas"/>
+        <DCCReference Include="..\..\Lib\Socket\Winsockclasses\u_c_display.pas"/>
+        <DCCReference Include="..\..\Lib\Socket\Winsockunits\u_types_constants.pas"/>
+        <DCCReference Include="..\..\Lib\Socket\Winsockunits\u_characters.pas"/>
+        <DCCReference Include="..\..\Lib\Socket\Winsockunits\u_dir.pas"/>
+        <DCCReference Include="..\..\Lib\Socket\Winsockunits\u_display_hex_2.pas"/>
+        <DCCReference Include="..\..\Lib\Socket\Winsockunits\u_file.pas"/>
+        <DCCReference Include="..\..\Lib\Socket\Winsockunits\u_strings.pas"/>
+        <DCCReference Include="fmArmAreaAdmin\uMDIArmAreaAdmin.pas">
+            <Form>fmMDIArmArea</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Lib\Socket\uNodeServerWinSocket.pas">
+            <Form>dmNodeServerWinSock</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fmAntiPassGroupCode\uAntiPassGroupCode.pas">
+            <Form>fmAntiPassGroupCode</Form>
+        </DCCReference>
+        <DCCReference Include="fmDoorAntiPass\uDoorAntiPass.pas">
+            <Form>fmDoorAntiPass</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Lib\uCompanyCodeLoad.pas"/>
+        <DCCReference Include="..\..\Lib\AntiPassGroup\uAntiPassGroup.pas">
+            <Form>dmAntiPassGroup</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fmMessage\uMessage.pas">
+            <Form>fmMessage</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Lib\DataBase\uRelayDB.pas">
+            <Form>dmRelayDB</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\..\Lib\Food\uFoodEmployee.pas">
+            <Form>dmFoodEmployee</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\..\Lib\uZTBMSFunction.pas"/>
+        <DCCReference Include="..\..\Lib\DataBase\uDBCreate.pas">
+            <Form>dmDBCreate</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\..\Lib\DataBase\uDBFunction.pas">
+            <Form>dmDBFunction</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Lib\uFoodSummary.pas">
+            <Form>dmFoodSummary</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Lib\uRelayDoor.pas">
+            <Form>dmRelayDoor</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="fmMDIAdmin\uMDIDoorAdmin.pas">
+            <Form>fmMDIDoorAdmin</Form>
+        </DCCReference>
+        <None Include="수정목록.txt">
+            <ContainerId>File</ContainerId>
+        </None>
+        <BuildConfiguration Include="Debug">
+            <Key>Cfg_2</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Base">
+            <Key>Base</Key>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Release">
+            <Key>Cfg_1</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Delphi.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Delphi.Personality>
+                <Source>
+                    <Source Name="MainSource">ZDaemon.dpr</Source>
+                </Source>
+                <Language>
+                    <Language Name="RootDir">E:\[GitProject]\[프로젝트]\[DEL70]\[ZTBMS]\Source\ZDaemon\</Language>
+                </Language>
+            </Delphi.Personality>
+            <Platforms>
+                <Platform value="iOSDevice64">True</Platform>
+                <Platform value="Linux64">True</Platform>
+                <Platform value="Win32">True</Platform>
+                <Platform value="Win64">False</Platform>
+            </Platforms>
+        </BorlandProject>
+        <ProjectFileVersion>12</ProjectFileVersion>
+    </ProjectExtensions>
+    <Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
+    <Import Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj" Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')"/>
+</Project>

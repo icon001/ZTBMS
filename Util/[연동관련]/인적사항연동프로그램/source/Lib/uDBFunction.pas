@@ -872,6 +872,8 @@ begin
   stSql := stSql + 'EM_NAME = ''' + aEmpNM + ''' ';
   if aEmTypeCode <> '' then stSql := stSql + ',RG_CODE = ''' + aEmTypeCode + ''' ';
   if aWorkCode <> '' then stSql := stSql + ',WG_CODE = ' + aWorkCode + ' ';
+  if aAddr1 <> '' then stSql := stSql + ',EM_ADDR1 = ''' + aAddr1 + ''' ';
+  if aAddr2 <> '' then stSql := stSql + ',EM_ADDR2 = ''' + aAddr2 + ''' ';
 //  if aHandphone <> '' then stSql := stSql + ',EM_HANDPHONE = ' + aHandphone + ' ';
   stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
   stSql := stSql + ' AND EM_CODE = ''' + aEmpID + ''' ';

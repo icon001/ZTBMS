@@ -339,6 +339,7 @@ begin
           end else
           begin
             stImage := FindField('EM_IMAGE').AsString;
+            stImage := stringReplace(stImage,'\\','\',[rfReplaceAll]);
             if FileExists(stImage) then
               Image1.Picture.LoadFromFile(stImage);
           end;
@@ -2072,6 +2073,7 @@ begin
           end else
           begin
             stImage := FindField('EM_IMAGE').AsString;
+            stImage := stringReplace(stImage,'\\','\',[rfReplaceAll]);
             if FileExists(stImage) then
               Image1.Picture.LoadFromFile(stImage);
           end;
@@ -2178,6 +2180,7 @@ begin
           end else
           begin
             stImage := FindField('EM_IMAGE').AsString;
+            stImage := stringReplace(stImage,'\\','\',[rfReplaceAll]);
             if FileExists(stImage) then
               Image1.Picture.LoadFromFile(stImage);
           end;
@@ -2269,6 +2272,7 @@ begin
           end else
           begin
             stImage := FindField('EM_IMAGE').AsString;
+            stImage := stringReplace(stImage,'\\','\',[rfReplaceAll]);
             if FileExists(stImage) then
               Image1.Picture.LoadFromFile(stImage);
           end;

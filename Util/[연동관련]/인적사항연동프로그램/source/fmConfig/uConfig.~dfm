@@ -74,7 +74,7 @@ object fmConfig: TfmConfig
     Top = 0
     Width = 458
     Height = 217
-    ActivePage = TabSheet3
+    ActivePage = TabSheet2
     Align = alTop
     TabOrder = 1
     object TabSheet1: TTabSheet

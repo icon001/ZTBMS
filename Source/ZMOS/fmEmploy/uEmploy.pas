@@ -614,7 +614,7 @@ begin
         break;
       end;
     end;
-    ed_CardNo.Text := cells[19,Row];
+    ed_CardNo.Text := Trim(cells[19,Row]);
     ed_fdmsNo.Text := cells[22,Row];
     L_stOldFdmsNo := cells[22,Row];
 
@@ -970,7 +970,7 @@ begin
   ButtonEnable(State);
 
 
-  L_stOldCardNo := ed_CardNo.Text ;
+  L_stOldCardNo := Trim(ed_CardNo.Text) ;
 //  pn_EmployUpdateMode;
 end;
 
@@ -1014,7 +1014,7 @@ begin
   end else bCardDelete := False;
   if DataModule1.DupCheckTB_CARDFINGER(L_stOldFdmsNo) then   //만약 지문 데이터가 있으면 다시 한번 현재 카드로 변경 해 주자
   begin
-    dmAdoQuery.UpdateTB_CARDFINGER(L_stOldFdmsNo,ed_CardNo.Text,'','0','Y');
+    dmAdoQuery.UpdateTB_CARDFINGER(L_stOldFdmsNo,Trim(ed_CardNo.Text),'','0','Y');
   end;
 
   if bCardDelete then
@@ -1024,7 +1024,7 @@ begin
       ShowMessage('카드데이터를 삭제 하시려면 카드의 등록상태를 정지 시키셔야 합니다.');
       Exit;
     end;
-    bResult := DeleteTB_CARD(ed_CardNo.Text);
+    bResult := DeleteTB_CARD(Trim(ed_CardNo.Text));
     if Not bResult then Exit;
   end;
 
@@ -1040,7 +1040,7 @@ begin
     Exit;
   end;
 
-  bResult := dmAdoQuery.DeleteTB_EMPLOYEE(ed_sEmpNo.Text,stCompanyCode,ed_CardNo.Text);
+  bResult := dmAdoQuery.DeleteTB_EMPLOYEE(ed_sEmpNo.Text,stCompanyCode,Trim(ed_CardNo.Text));
   //DeleteTB_FingerDeviceCard_FingerNo(sg_Employ.cells[22,sg_Employ.Row]);
   //DeleteTB_CardFinger_FingerNo(sg_Employ.cells[22,sg_Employ.Row]);
 
@@ -1253,14 +1253,14 @@ begin
     //end;
     if DataModule1.DupCheckTB_CARDFINGER(L_stOldFdmsNo) then   //만약 지문 데이터가 있으면 다시 한번 현재 카드로 변경 해 주자
     begin
-      dmAdoQuery.UpdateTB_CARDFINGER(L_stOldFdmsNo,ed_CardNo.Text,'','1','Y');
+      dmAdoQuery.UpdateTB_CARDFINGER(L_stOldFdmsNo,Trim(ed_CardNo.Text),'','1','Y');
     end;
 
     bResult := InsertTB_EMPLOYEE(ed_sEmpNo.Text,ed_sEmpNM.Text,stCompanyCode,stJijumCode,
                                  stDepartCode,stPosiCode,stCophone,
                                  FormatDateTime('yyyymmdd',dt_sJoinDt.Date),FormatDateTime('yyyymmdd',dt_sRetireDt.Date),
                                  ed_sZipcode.Text,ed_sAddr1.Text,ed_sAddr2.Text,ed_sHomePhone.Text,ed_sHandphone.Text,
-                                 intTostr(cmb_RegGubun.ItemIndex),ed_CardNo.Text,ed_EmpImg.Text,stFdmsId,stEmTypeCode,
+                                 intTostr(cmb_RegGubun.ItemIndex),Trim(ed_CardNo.Text),ed_EmpImg.Text,stFdmsId,stEmTypeCode,
                                  stTimeCodeUse,stTimeCodeGroup,stTime1,stTime2,stTime3,stTime4,stTimeWeek,stMaster,stWorkCode);
     if bResult then     inc(AutoSabun);
   end  else if UpperCase(State) = 'UPDATE' then
@@ -1360,6 +1360,7 @@ var
 begin
   Result := False;
   bResult := False;
+  aCardNo := Trim(aCardNo);
   bResult := CheckTB_EMPLOYEE(aEmpID,aCompanyCode);
   if bResult then
   begin
@@ -2169,7 +2170,7 @@ begin
     if Trim(ed_CardNo.Text) <> aCardNo then
     begin
       if (Application.MessageBox(PChar(stMsg),'변경',MB_OKCANCEL) = ID_CANCEL)  then Exit;
-      UpdatTB_CARD_Change(ed_CardNo.Text,aCardNo);
+      UpdatTB_CARD_Change(Trim(ed_CardNo.Text),aCardNo);
       //DeleteTB_Card(ed_CardNo.Text);
     end;
   end;
@@ -3718,7 +3719,7 @@ begin
   begin
     fmFingerRegistDevice := TfmFingerRegistDevice.Create(nil);
     fmFingerRegistDevice.FingerUserID := L_stOldFdmsNo;//ed_fdmsNo.text;
-    fmFingerRegistDevice.FingerCardNo := ed_CardNo.text;
+    fmFingerRegistDevice.FingerCardNo := Trim(ed_CardNo.text);
     fmFingerRegistDevice.ShowModal;
     if fmFingerRegistDevice.Save then
     begin
@@ -3730,7 +3731,7 @@ begin
   begin
     fmSHFingerRegistDevice := TfmSHFingerRegistDevice.Create(nil);
     fmSHFingerRegistDevice.FingerUserID := L_stOldFdmsNo;//ed_fdmsNo.text;
-    fmSHFingerRegistDevice.FingerCardNo := ed_CardNo.text;
+    fmSHFingerRegistDevice.FingerCardNo := Trim(ed_CardNo.text);
     fmSHFingerRegistDevice.FPDeviceID := strtoint(G_stFingerReaderID);
     fmSHFingerRegistDevice.FPDeviceVer := G_nFingerDeviceVer;
 
@@ -3746,7 +3747,7 @@ begin
     fmSHFingerDeviceReg := TfmSHFingerDeviceReg.Create(nil);
     fmSHFingerDeviceReg.FingerDeviceID := strtoint(G_stFingerReaderID) - 1;
     fmSHFingerDeviceReg.FingerUserID := L_stOldFdmsNo;//ed_fdmsNo.text;
-    fmSHFingerDeviceReg.FingerCardNo := ed_CardNo.text;
+    fmSHFingerDeviceReg.FingerCardNo := Trim(ed_CardNo.text);
     fmSHFingerDeviceReg.ShowModal;
     if fmSHFingerDeviceReg.Save then
     begin

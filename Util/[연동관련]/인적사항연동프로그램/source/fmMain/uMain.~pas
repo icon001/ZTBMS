@@ -164,10 +164,14 @@ type
     Function LoadMappingCode:Boolean;
     Function GetMappingType : string;
   private
-    //아주대병원연동
+    //아주대연동
     Function AjuUniversityRelay(aCount:integer=0):Boolean;
     Function AjuConversionEmployee(aJijumName,aDepartName,aPosiCode,aEmName,aEmCode,aCardSeq,aType,aGubun:string):Boolean;
     Function Delete_MFC_HUB(aSEQNO:integer):Boolean;
+  private
+    //아주대기숙사 연동
+    Function AjuUniversityDormitoryRelay(aCount:integer=0):Boolean;
+    Function AjuDormitoryConversionEmployee(aJijumName,aCophone,aPosiName,aInOutState,aEmCode,aEmName,aCardSeq,aType,aAddr1,aAddr2:string):Boolean;
   private
     L_bJNRealTimeStart : Boolean;
     L_bJNGetHospitalInfoStart : Boolean;
@@ -619,6 +623,8 @@ begin
        mn_RelayDB.Caption := '즉시연동'
     else if L_stProgramType = '11' then
        mn_RelayDB.Caption := '즉시연동'
+    else if L_stProgramType = '12' then
+       mn_RelayDB.Caption := '즉시연동'
     ;
   Finally
     TempAdoQuery.Free;
@@ -737,6 +743,10 @@ begin
     begin
       StatusBar1.Panels[2].Text := 'RelayTimerTimer' + FormatDateTime('yyyymmddhhnnss',Now) ;
       DongYangUniversityRelay;
+    end else if L_stProgramType = '12' then   //아주대 기숙사 연동
+    begin
+      StatusBar1.Panels[2].Text := 'RelayTimerTimer' + FormatDateTime('yyyymmddhhnnss',Now) ;
+      AjuUniversityDormitoryRelay;
     end;
   Finally
   End;
@@ -1011,6 +1021,10 @@ begin
     begin
       StatusBar1.Panels[2].Text := 'RelayTimerTimer' + FormatDateTime('yyyymmddhhnnss',Now) ;
       DongYangUniversityRelay;
+    end else if L_stProgramType = '12' then   //아주대기숙사
+    begin
+      StatusBar1.Panels[2].Text := 'RelayTimerTimer' + FormatDateTime('yyyymmddhhnnss',Now) ;
+      AjuUniversityDormitoryRelay;
     end;
 
     if Not isDigit(L_stRelayTime) then  L_stRelayTime := '30';
@@ -1162,6 +1176,9 @@ begin
   begin
     result := FillCharString(aIDNO,'N',14);
     result := result + FillZeroStrNum(aSeq,2);
+  end else if L_stProgramType = '12' then   //아주대 기숙사
+  begin
+    result := FillZeroStrNum(aIDNO,13,False) + FillZeroStrNum(aSeq,3,False);
   end;
 end;
 
@@ -1354,6 +1371,8 @@ begin
     MDIChildShow('TfmSTXChangWonCurrentState')
   else if L_stProgramType = '11' then //동양대 북서울 캠퍼스
     MDIChildShow('TfmDongyangUniversityCurrentState')
+  else if L_stProgramType = '12' then //아주대 기숙사
+    MDIChildShow('TfmDeviceCurrentState')
     ;
 end;
 
@@ -2326,7 +2345,7 @@ begin
   stSql := stSql + ' AND NOT EXISTS                                     ';
   stSql := stSql + ' (select * from KTTeleCop A                         ';
   stSql := stSql + ' where A.SCV_USRM_ID =B.SCV_USRM_ID                 ';
-  stSql := stSql + ' AND A.CP_ISSU_CNT = B.CP_ISSU_CNT                  ';
+//  stSql := stSql + ' AND A.CP_ISSU_CNT = B.CP_ISSU_CNT                  ';
   stSql := stSql + ' )                                                  ';
 
   with ADORelayExcut do
@@ -2358,7 +2377,8 @@ begin
   stSql := stSql + ' From KTTeleCop A,                            ';
   stSql := stSql + ' [link_server].[KTTeleCop].[dbo].[KTTeleCop] B ';
   stSql := stSql + ' where A.SCV_USRM_ID = B.SCV_USRM_ID           ';
-  stSql := stSql + ' AND A.SCV_USRM_STATUS_NM <> B.SCV_USRM_STATUS_NM ';
+  stSql := stSql + ' AND (A.SCV_USRM_STATUS_NM <> B.SCV_USRM_STATUS_NM ';
+  stSql := stSql + ' OR A.CP_ISSU_CNT <> B.CP_ISSU_CNT ) ';
 
   with ADORelayExcut do
   begin
@@ -5622,6 +5642,215 @@ begin
     TempAdoQuery.Free;
     CoUninitialize;
   End;
+end;
+
+function TfmMain.AjuUniversityDormitoryRelay(aCount: integer): Boolean;
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+  stTempSql : string;
+begin
+  result := False;
+  if Not dmAdoRelay.DBConnected then
+  begin
+    RelayAdoConnectCheckTimer.Enabled := True;
+    Exit;
+  end;
+  if Not dmDBModule.DBConnected then
+  begin
+    StatusBar1.Panels[2].Text := 'Not dmDBModule.DBConnected ';
+    AdoConnectCheckTimer.Enabled := True;
+    Exit;
+  end;
+
+  stSql := ' Select * from MFC_HUB_DORMITORY ';
+  if aCount > 0 then stSql := stSql + ' Where RowNum <= ' + inttostr(aCount);
+  stSql := stSql + ' order by HUB_SEQNO ';
+
+  if L_bRelayDB then Exit;
+  L_bRelayDB := True;
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmAdoRelay.ADOConnection;
+    TempAdoQuery.DisableControls;
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      result := True;
+      if recordcount < 1 then Exit;
+      While Not Eof do
+      begin
+        if G_bApplicationTerminate then Exit;
+      if AjuDormitoryConversionEmployee(FindField('HUB_BDNM').AsString,FindField('HUB_ROOM').AsString,
+                               FindField('HUB_GENDER').AsString,FindField('HUB_STATES').AsString,
+                               FindField('HUB_IDNO').AsString,FindField('HUB_NAME').AsString,FindField('HUB_ISFG').AsString,
+                               FindField('HUB_LSFG').AsString,FindField('HUB_UNNM').AsString,FindField('HUB_PSNM').AsString) then
+      begin
+        Delete_MFC_HUB(FindField('HUB_SEQNO').AsInteger);
+      end;
+
+        Application.ProcessMessages;
+        Next;
+      end;
+    end;
+  Finally
+    L_bRelayDB := False;
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TfmMain.AjuDormitoryConversionEmployee(aJijumName, aCophone,
+  aPosiName, aInOutState, aEmCode, aEmName, aCardSeq, aType, aAddr1,
+  aAddr2: string): Boolean;
+var
+  stCompanyCode : string;
+  stJijumCode : string;
+  stDepartCode : string;
+  stPosiCode : string;
+  stCardState : string;
+  stCardNo : string;
+  nFdmsID : integer;
+  stOldCodeNo : string;
+  stOldCardState : string;
+  bCardStateChange : Boolean;
+  stWorkCode,stEndDate : string;
+begin
+  result := False;
+  // aType : //0:정상,1:분실
+  // aPosiName : //남자(001),여자(002)
+  //aCophone : 호실
+  //aInOutState : 0.입사,1.퇴사,2.신청,3.선발,4.등록,5.대기,6.미등록,7.가등록
+  //aAddr1 : 단과대명, aAddr2 : 학과명
+  aEmName := StringReplace(aEmName,'''','',[rfReplaceAll]);
+  stCompanyCode := '001';
+  stJijumCode := GetJijumCode(stCompanyCode,aJijumName);
+  if stJijumCode = '000' then
+  begin
+    if Trim(aJijumName) <> '' then
+      CreateJijumCode(stCompanyCode,aJijumName,stJijumCode);
+  end;
+  stDepartCode := '000';
+
+
+  stPosiCode := GetPosiCode(stCompanyCode,aPosiName); ;
+  if stPosiCode = '000' then
+  begin
+    if Trim(aPosiName) <> '' then
+      CreatePosiCode(stCompanyCode,aPosiName,stPosiCode);
+  end;
+
+  bCardStateChange := False;
+  stCardState := '2';
+  if aType = '0' then stCardState := '1';  //aType이 0 인경우만 정상
+
+  if length(aEmCode) < 9 then
+    aEmCode := FillZeroStrNum(aEmCode,9,True);
+
+  stCardNo := MakeCardNo(aEmCode,aCardSeq);
+
+  if dmDBFunction.CheckTB_EMPLOYEE('001',aEmCode,nFdmsID,stWorkCode,stEndDate) then
+  begin
+    if aInOutState = '0' then
+    begin
+      if Not dmDBFunction.UpdateTB_EMPLOYEE(aEmCode,
+                      aEmName,
+                      stCompanyCode,
+                      stJijumCode,
+                      stDepartCode,
+                      stPosiCode,
+                      aCophone,
+                      FormatDateTime('yyyymmdd',now),
+                      '99991231',
+                      '',
+                      aAddr1,
+                      aAddr2,
+                      '',
+                      '',
+                      stCardState,
+                      stCardNo,
+                      '',
+                      inttostr(nFdmsID),
+                      '001',
+                      '') then Exit;
+      dmDBFunction.InsertIntoTB_EMPHIS(stCompanyCode,aEmCode,inttostr(nFdmsID),
+                        '2',stCardNo,stCardState,aEmName,
+                        '','아주대기숙사',aJijumName,aCophone,'');
+    end else
+    begin
+      DeleteTB_EMPLOYEE(aEmCode,stCardNo);
+      dmDBFunction.InsertIntoTB_EMPHIS(stCompanyCode,aEmCode,inttostr(nFdmsID),
+                        '3',stCardNo,stCardState,aEmName,
+                        '','아주대기숙사',aJijumName,aCophone,'');
+      result := True;
+      Exit;
+    end;
+  end else
+  begin
+    if aInOutState = '0' then
+    begin
+      nFdmsID := strtoint(GetFdmsID);
+      if Not dmDBFunction.InsertIntoTB_EMPLOYEE(aEmCode,
+                        aEmName,
+                        stCompanyCode,
+                        stJijumCode,
+                        stDepartCode,
+                        stPosiCode,
+                        aCophone,
+                        FormatDateTime('yyyymmdd',now),
+                        '99991231',
+                        '',
+                        aAddr1,
+                        aAddr2,
+                        '',
+                        '',
+                        stCardState,
+                        stCardNo,
+                        '',
+                        inttostr(nFdmsID),
+                        '001',
+                        '') then Exit;
+      dmDBFunction.InsertIntoTB_EMPHIS(stCompanyCode,aEmCode,inttostr(nFdmsID),
+                          '1',stCardNo,stCardState,aEmName,
+                          '','아주대기숙사',aJijumName,aCophone,'');
+    end else
+    begin
+      result := True;
+      Exit;
+    end;
+  end;
+  //학번에 다른 카드가 있으면 기존 카드 정지 후
+  if dmDBFunction.CheckTB_CARD_Employee(stCompanyCode,aEmCode,stCardNo,stOldCodeNo) then
+  begin
+    //같은 사번으로 다른 카드가 있는 경우
+    //기존카드 권한을 똑같이 옮김
+    dmDBFunction.UpdateTB_CARD_Change(stOldCodeNo,stCardNo);
+  end;
+  if dmDBFunction.CheckTB_CARD_CardNo(stCardNo,stOldCardState) = 1 then
+  begin
+    if stCardState <> stOldCardState then bCardStateChange := True;
+    if Not dmDBFunction.UpdateTB_CARD(stCardNo,'1',stCardState,aEmCode,'001') then Exit;
+  end else
+  begin
+    if Not dmDBFunction.InsertIntoTB_CARD_Value(stCardNo,'1',stCardState,aEmCode,'001') then Exit;
+  end;
+
+  if stCardState <> '1' then  //비정상
+  begin
+    dmDBFunction.UpdateTB_DEVICECARDNO_permit(stCardNo,'N');
+  end;
+
+  result := True;
 end;
 
 end.

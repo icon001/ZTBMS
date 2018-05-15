@@ -331,7 +331,6 @@ type
     RelayControlTimer: TTimer;
     mn_JNHospital: TMenuItem;
     CardDownLoadCheckTimer: TTimer;
-    Button1: TButton;
     procedure miExitClick(Sender: TObject);
     procedure tbiDblClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);

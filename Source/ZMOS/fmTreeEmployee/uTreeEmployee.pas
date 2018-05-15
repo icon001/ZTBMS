@@ -305,8 +305,8 @@ begin
     if length(cells[13,Row]) = 8 then
       dt_RetireDt.Date := strToDate(copy(cells[13,Row],1,4) + '-' + copy(cells[13,Row],5,2) + '-' + copy(cells[13,Row],7,2) ) ;
     ed_Handphone.Text := cells[18,Row];
-    ed_CardNo.Text := cells[6,Row];
-    L_stOldCardNo := ed_CardNo.Text ;
+    ed_CardNo.Text := Trim(cells[6,Row]);
+    L_stOldCardNo := Trim(ed_CardNo.Text) ;
 
     MapJpg := TJpegImage.Create;
     MapStream := TMemoryStream.Create;
@@ -422,7 +422,7 @@ begin
 
     bResult := InsertTB_EMPLOYEE(ed_EmpNo.Text,ed_Name.Text,stCompanyCode,stJijumCode,
                                  stDepartCode,stPosiCode,stCophone,FormatDateTime('yyyymmdd',Now),FormatDateTime('yyyymmdd',dt_RetireDt.Date),
-                                 '','','','',ed_Handphone.Text,'1',ed_CardNo.Text,ed_EmpImg.Text,stFdmsId,stEmTypeCode);
+                                 '','','','',ed_Handphone.Text,'1',Trim(ed_CardNo.Text),ed_EmpImg.Text,stFdmsId,stEmTypeCode);
   end  else if UpperCase(L_stState) = 'UPDATE' then
   begin
     if ed_EmpNo.Text <> ed_OldEmpNo.Text then
@@ -433,10 +433,10 @@ begin
         Exit;
       end;
     end;
-    bResult := UpdateTB_EMPLOYEE(ed_OldEmpNo.Text,ed_EmpNo.Text,ed_Name.Text,stCompanyCode,stJijumCode,stDepartCode,stPosiCode,FormatDateTime('yyyymmdd',dt_RetireDt.Date),ed_Handphone.Text,'1',ed_CardNo.Text,ed_EmpImg.Text,stEmTypeCode,stCophone);
+    bResult := UpdateTB_EMPLOYEE(ed_OldEmpNo.Text,ed_EmpNo.Text,ed_Name.Text,stCompanyCode,stJijumCode,stDepartCode,stPosiCode,FormatDateTime('yyyymmdd',dt_RetireDt.Date),ed_Handphone.Text,'1',Trim(ed_CardNo.Text),ed_EmpImg.Text,stEmTypeCode,stCophone);
     if L_bValidateUpdate then
     begin
-      UpdateTB_DEVICECARDNORcvAck(ed_CardNo.Text,'N'); //유효기간 변경 된경우 재전송
+      UpdateTB_DEVICECARDNORcvAck(Trim(ed_CardNo.Text),'N'); //유효기간 변경 된경우 재전송
     end;
   end;
   
@@ -1755,7 +1755,7 @@ begin
   if (UpperCase(L_stState) = 'INSERT') or
      (UpperCase(L_stState) = 'UPDATE') then
   begin
-    ed_CardNo.Text := aCardNo;
+    ed_CardNo.Text := Trim(aCardNo);
   end else
   begin
     ShowEmployeeCardNo(aCardNo);
@@ -2039,8 +2039,8 @@ begin
     if length(cells[13,Row]) = 8 then
       dt_RetireDt.Date := strToDate(copy(cells[13,Row],1,4) + '-' + copy(cells[13,Row],5,2) + '-' + copy(cells[13,Row],7,2) ) ;
     ed_Handphone.Text := cells[18,Row];
-    ed_CardNo.Text := cells[6,Row];
-    L_stOldCardNo := ed_CardNo.Text ;
+    ed_CardNo.Text := Trim(cells[6,Row]);
+    L_stOldCardNo := Trim(ed_CardNo.Text) ;
 
     MapJpg := TJpegImage.Create;
     MapStream := TMemoryStream.Create;
@@ -2146,8 +2146,8 @@ begin
       dt_RetireDt.Date := strToDate(copy(cells[13,Row],1,4) + '-' + copy(cells[13,Row],5,2) + '-' + copy(cells[13,Row],7,2) ) ;
     ed_Handphone.Text := cells[18,Row];
     ed_CompanyPhone.Text := cells[11,Row];
-    ed_CardNo.Text := cells[6,Row];
-    L_stOldCardNo := ed_CardNo.Text ;
+    ed_CardNo.Text := Trim(cells[6,Row]);
+    L_stOldCardNo := Trim(ed_CardNo.Text) ;
 
     MapJpg := TJpegImage.Create;
     MapStream := TMemoryStream.Create;
@@ -2238,8 +2238,8 @@ begin
       dt_RetireDt.Date := strToDate(copy(cells[13,ATop],1,4) + '-' + copy(cells[13,ATop],5,2) + '-' + copy(cells[13,ATop],7,2) ) ;
     ed_Handphone.Text := cells[18,ATop];
     ed_CompanyPhone.Text := cells[11,ATop];
-    ed_CardNo.Text := cells[6,ATop];
-    L_stOldCardNo := ed_CardNo.Text ;
+    ed_CardNo.Text := Trim(cells[6,ATop]);
+    L_stOldCardNo := Trim(ed_CardNo.Text) ;
 
     MapJpg := TJpegImage.Create;
     MapStream := TMemoryStream.Create;
