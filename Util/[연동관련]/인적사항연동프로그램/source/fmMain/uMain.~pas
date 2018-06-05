@@ -113,6 +113,8 @@ type
     Procedure MDIChildShow(FormName:String);
     procedure JunnamEventState(aGubun,aJijumCode,aEmCode,aEmCophone,aEmName,aDepartName,
                                aCardSeq,aRegState,aEmState,aUpdateTime,aResult:string);
+    procedure YeosuEventState(aGubun,aJijumCode,aEmCode,aEmCophone,aEmName,aDepartName,
+                               aCardSeq,aRegState,aEmState,aUpdateTime,aResult:string);
     procedure KTBundangEventState(aUpdateTime,aEmCode,aCardNo,aEmName,aCardIssuCount,aStartDate,aEndDate,aJijumName,
                                aDepartName,aPosiName,aWorkGubun,aResult:string);
     procedure CHOSUNEventState(aEmCode,aEmName,aPosiCode,aJijumName,aDepartName,aRegname,aCompanyPhone,aReTireDate,aCardSeq,aResult:string);
@@ -172,6 +174,7 @@ type
     //아주대기숙사 연동
     Function AjuUniversityDormitoryRelay(aCount:integer=0):Boolean;
     Function AjuDormitoryConversionEmployee(aJijumName,aCophone,aPosiName,aInOutState,aEmCode,aEmName,aCardSeq,aType,aAddr1,aAddr2:string):Boolean;
+    Function Delete_MFC_HUB_DORMITORY(aSEQNO:integer):Boolean;
   private
     L_bJNRealTimeStart : Boolean;
     L_bJNGetHospitalInfoStart : Boolean;
@@ -182,6 +185,13 @@ type
     Function JUNNAMConversionEmployee(aGubun,aJijumCode,aEmCode,aEmCophone,aEmName,aDepartName,
                                aCardSeq,aRegState,aEmState,aUpdateTime:string):Boolean;
     Function ServerSender(aSendData:string):Boolean;
+  private
+    //여수 병원 연동
+    Function YeosuRealTimeRelay:Boolean; //환자 정보 연동건
+    Function YeosupatientRelay(aCode,aInDate,aOutDate,aState:string;aLogFile:Boolean=False):Boolean;
+    Function YeosuRelay(aDate:String):Boolean;
+    Function YeosuConversionEmployee(aGubun,aJijumCode,aEmCode,aEmCophone,aEmName,aDepartName,
+                               aCardSeq,aRegState,aEmState,aUpdateTime:string):Boolean;
   private
     //KT 서초사옥 연동
     Function KTBundangRelay(aDate:String):Boolean;
@@ -595,6 +605,8 @@ begin
         Next;
       end;
     end;
+     mn_GetHospital.Visible := False;
+     mn_DeleteHospital.Visible := False;
 
     if L_stProgramType = '1' then
        mn_RelayDB.Caption := '즉시연동'
@@ -625,6 +637,14 @@ begin
        mn_RelayDB.Caption := '즉시연동'
     else if L_stProgramType = '12' then
        mn_RelayDB.Caption := '즉시연동'
+    else if L_stProgramType = '13' then
+    begin
+       mn_RelayDB.Caption := '전체연동' ;
+       mn_GetHospital.Visible := True;
+       mn_DeleteHospital.Visible := True;
+       RealTimer.Enabled := True;
+       SocketConnectCheckTimer.Enabled := True;
+    end
     ;
   Finally
     TempAdoQuery.Free;
@@ -747,6 +767,10 @@ begin
     begin
       StatusBar1.Panels[2].Text := 'RelayTimerTimer' + FormatDateTime('yyyymmddhhnnss',Now) ;
       AjuUniversityDormitoryRelay;
+    end else if L_stProgramType = '13' then   //여수종합병원 연동
+    begin
+      StatusBar1.Panels[2].Text := '전체연동' + L_stLastRelayTime;
+      YeosuRelay('');
     end;
   Finally
   End;
@@ -1025,6 +1049,10 @@ begin
     begin
       StatusBar1.Panels[2].Text := 'RelayTimerTimer' + FormatDateTime('yyyymmddhhnnss',Now) ;
       AjuUniversityDormitoryRelay;
+    end else if L_stProgramType = '13' then   //여수병원
+    begin
+      StatusBar1.Panels[2].Text := 'RelayTimerTimer' + FormatDateTime('yyyymmddhhnnss',Now) ;
+      YeosuRelay(L_stLastRelayTime);
     end;
 
     if Not isDigit(L_stRelayTime) then  L_stRelayTime := '30';
@@ -1179,6 +1207,9 @@ begin
   end else if L_stProgramType = '12' then   //아주대 기숙사
   begin
     result := FillZeroStrNum(aIDNO,13,False) + FillZeroStrNum(aSeq,3,False);
+  end else if L_stProgramType = '13' then //여수병원
+  begin
+    result := FillCharString(aIDNO,'*',16);
   end;
 end;
 
@@ -1373,6 +1404,8 @@ begin
     MDIChildShow('TfmDongyangUniversityCurrentState')
   else if L_stProgramType = '12' then //아주대 기숙사
     MDIChildShow('TfmDeviceCurrentState')
+  else if L_stProgramType = '13' then //여수병원
+    MDIChildShow('TfmJUNNAMCurrentState')
     ;
 end;
 
@@ -5029,7 +5062,8 @@ begin
   if G_bApplicationTerminate then Exit;
   RealTimer.Enabled := False;
   Try
-    if L_stProgramType = '2' then JNRealTimeRelay;
+    if L_stProgramType = '2' then JNRealTimeRelay
+    else if L_stProgramType = '13' then YeosuRealTimeRelay;
   Finally
     RealTimer.Enabled := Not G_bApplicationTerminate;
   End;
@@ -5663,7 +5697,7 @@ begin
     Exit;
   end;
 
-  stSql := ' Select * from MFC_HUB_DORMITORY ';
+  stSql := ' Select * from CARD.MFC_HUB_DORMITORY ';
   if aCount > 0 then stSql := stSql + ' Where RowNum <= ' + inttostr(aCount);
   stSql := stSql + ' order by HUB_SEQNO ';
 
@@ -5690,13 +5724,13 @@ begin
       While Not Eof do
       begin
         if G_bApplicationTerminate then Exit;
-      if AjuDormitoryConversionEmployee(FindField('HUB_BDNM').AsString,FindField('HUB_ROOM').AsString,
-                               FindField('HUB_GENDER').AsString,FindField('HUB_STATES').AsString,
-                               FindField('HUB_IDNO').AsString,FindField('HUB_NAME').AsString,FindField('HUB_ISFG').AsString,
-                               FindField('HUB_LSFG').AsString,FindField('HUB_UNNM').AsString,FindField('HUB_PSNM').AsString) then
-      begin
-        Delete_MFC_HUB(FindField('HUB_SEQNO').AsInteger);
-      end;
+        if AjuDormitoryConversionEmployee(FindField('HUB_BDNM').AsString,FindField('HUB_ROOM').AsString,
+                                 FindField('HUB_GENDER').AsString,FindField('HUB_STATES').AsString,
+                                 FindField('HUB_IDNO').AsString,FindField('HUB_NAME').AsString,FindField('HUB_ISFG').AsString,
+                                 FindField('HUB_LSFG').AsString,FindField('HUB_UNNM').AsString,FindField('HUB_PSNM').AsString) then
+        begin
+          Delete_MFC_HUB_DORMITORY(FindField('HUB_SEQNO').AsInteger);
+        end;
 
         Application.ProcessMessages;
         Next;
@@ -5725,7 +5759,13 @@ var
   stOldCardState : string;
   bCardStateChange : Boolean;
   stWorkCode,stEndDate : string;
+
 begin
+(*FindField('HUB_BDNM').AsString,FindField('HUB_ROOM').AsString,
+                                 FindField('HUB_GENDER').AsString,FindField('HUB_STATES').AsString,
+                                 FindField('HUB_IDNO').AsString,FindField('HUB_NAME').AsString,FindField('HUB_ISFG').AsString,
+                                 FindField('HUB_LSFG').AsString,FindField('HUB_UNNM').AsString,FindField('HUB_PSNM').AsString
+                                 *)
   result := False;
   // aType : //0:정상,1:분실
   // aPosiName : //남자(001),여자(002)
@@ -5761,7 +5801,7 @@ begin
 
   if dmDBFunction.CheckTB_EMPLOYEE('001',aEmCode,nFdmsID,stWorkCode,stEndDate) then
   begin
-    if aInOutState = '0' then
+    if (aInOutState = '0') or (aInOutState = '4') then
     begin
       if Not dmDBFunction.UpdateTB_EMPLOYEE(aEmCode,
                       aEmName,
@@ -5851,6 +5891,365 @@ begin
   end;
 
   result := True;
+end;
+
+function TfmMain.Delete_MFC_HUB_DORMITORY(aSEQNO: integer): Boolean;
+var
+  stSql : string;
+begin
+  stSql := ' Delete From CARD.MFC_HUB_DORMITORY ';
+  stSql := stSql + ' where HUB_SEQNO = ' + inttostr(aSEQNO) ;
+
+  result := dmAdoRelay.ProcessExecSQL(stSql);
+
+end;
+
+function TfmMain.YeosuRelay(aDate: String): Boolean;
+var
+  stSql : string;
+  nFdmsID : integer;
+  stDate : string;
+  stCurrentTime : string;
+begin
+  //직원정보 연동은 수작업으로 하기로 함
+  result:=True;
+  Exit;
+  
+  result := False;
+  if Not dmAdoRelay.DBConnected then Exit;
+  stSql := 'select getDate() - 0.0001 as curTime ';
+  with RelayADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      dmAdoRelay.DBConnected := False;
+      Exit;
+    End;
+    Try
+      if Not Findfield('curTime').IsNull then
+      begin
+        stCurrentTime := formatDateTime('yyyymmddhhnnsszzz',(Findfield('curTime').AsDateTime) );
+        stCurrentTime := copy(stCurrentTime,1,4) + '-' + copy(stCurrentTime,5,2) + '-' + copy(stCurrentTime,7,2)
+                         + ' ' + copy(stCurrentTime,9,2) + ':' + copy(stCurrentTime,11,2) + ':' + copy(stCurrentTime,13,2) + '.' + copy(stCurrentTime,15,3);
+      end else
+      begin
+        stCurrentTime := formatDateTime('yyyymmddhhnnsszzz',Now );
+        stCurrentTime := copy(stCurrentTime,1,4) + '-' + copy(stCurrentTime,5,2) + '-' + copy(stCurrentTime,7,2)
+                          + ' ' + copy(stCurrentTime,9,2) + ':' + copy(stCurrentTime,11,2) + ':' + copy(stCurrentTime,13,2) + '.' + copy(stCurrentTime,15,3);
+      end;
+    Except
+        LogSave(G_stExeFolder + '\..\log\Program' + FormatDateTime('yyyymmdd',now) +'.log','CurTimeChangeError');
+        stCurrentTime := formatDateTime('yyyymmddhhnnsszzz',Now );
+        stCurrentTime := copy(stCurrentTime,1,4) + '-' + copy(stCurrentTime,5,2) + '-' + copy(stCurrentTime,7,2)
+                          + ' ' + copy(stCurrentTime,9,2) + ':' + copy(stCurrentTime,11,2) + ':' + copy(stCurrentTime,13,2) + '.' + copy(stCurrentTime,15,3);
+    End;
+  end;
+
+  stSql := ' Select CARD_GUBN,CARD_HOSP,CARD_IDNO,CARD_JWNO,';
+  stSql := stSql + 'CARD_NAME,CARD_SUKR,CARD_ISCT,CARD_STGB,';
+  stSql := stSql + 'CARD_STAT,CARD_UPDT from VW_CARD_UMST ';
+  if aDate <> '' then
+  begin
+    stDate := copy(aDate,1,4) + '-' + copy(aDate,5,2) + '-' + copy(aDate,7,2);
+    stDate := stDate + ' ' + copy(aDate,9,2) + ':' + copy(aDate,11,2) + ':' + copy(aDate,13,2);
+    if Length(aDate) > 15 then stDate := stDate + '.' + copy(aDate,15,3);
+    stSql := stSql + ' Where CARD_UPDT > ''' + stDate + ''' ' ;
+    stSql := stSql + ' AND CARD_UPDT <= ''' + stCurrentTime + ''' ' ; //현재 시간 보다 10초전
+  end;
+  stSql := stSql + ' order by CARD_UPDT ';
+//  Memo1.Text := stSql;
+  
+  with RelayADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    result := True;
+    if recordCount < 1 then Exit;
+    while Not Eof do
+    begin
+      if YeosuConversionEmployee(FindField('CARD_GUBN').AsString,FindField('CARD_HOSP').AsString,
+                               FindField('CARD_IDNO').AsString,FindField('CARD_JWNO').AsString,
+                               FindField('CARD_NAME').AsString,FindField('CARD_SUKR').AsString,
+                               FindField('CARD_ISCT').AsString,FindField('CARD_STGB').AsString,
+                               FindField('CARD_STGB').AsString,FindField('CARD_UPDT').AsString) then
+      begin
+        if Not FindField('CARD_UPDT').IsNull then
+        begin
+          Try
+            L_stLastRelayTime := formatDateTime('yyyymmddhhnnsszzz',FindField('CARD_UPDT').AsDateTime);
+            dmDBFunction.UpdateTB_CONFIG('EMPCONV','LASTTIME',L_stLastRelayTime);
+          Except
+            LogSave(G_stExeFolder + '\..\log\Program' + FormatDateTime('yyyymmdd',now) +'.log','LastRelayTimeChangeError');
+          End;
+        end;
+        YeosuEventState(FindField('CARD_GUBN').AsString,FindField('CARD_HOSP').AsString,
+                               FindField('CARD_IDNO').AsString,FindField('CARD_JWNO').AsString,
+                               FindField('CARD_NAME').AsString,FindField('CARD_SUKR').AsString,
+                               FindField('CARD_ISCT').AsString,FindField('CARD_STGB').AsString,
+                               FindField('CARD_STGB').AsString,FindField('CARD_UPDT').AsString,
+                               'sucess');
+      end else
+      begin
+        YeosuEventState(FindField('CARD_GUBN').AsString,FindField('CARD_HOSP').AsString,
+                               FindField('CARD_IDNO').AsString,FindField('CARD_JWNO').AsString,
+                               FindField('CARD_NAME').AsString,FindField('CARD_SUKR').AsString,
+                               FindField('CARD_ISCT').AsString,FindField('CARD_STGB').AsString,
+                               FindField('CARD_STGB').AsString,FindField('CARD_UPDT').AsString,
+                               'fail');
+      end;
+      Application.ProcessMessages;
+      Next;
+    end;
+    LogSave(G_stExeFolder + '\..\log\Program' + FormatDateTime('yyyymmdd',now) +'.log','EmConversion ');
+  end;
+end;
+
+function TfmMain.YeosuConversionEmployee(aGubun, aJijumCode, aEmCode,
+  aEmCophone, aEmName, aDepartName, aCardSeq, aRegState, aEmState,
+  aUpdateTime: string): Boolean;
+var
+  stCardNo : string;
+  stCompanyCode : string;
+  stDepartCode : string;
+  stPosiCode : string;
+  stCardState : string;
+  nFdmsID : integer;
+  stOldCodeNo : string;
+  stOldCardState : string;
+  bCardStateChange : Boolean;
+  stWorkCode,stEndDate : string;
+begin
+  result := False;
+  if aGubun = '' then aGubun := '1';
+  aEmName := StringReplace(aEmName,'''','',[rfReplaceAll]);
+  if length(aEmCode) < 7 then
+    aEmCode := FillZeroStrNum(aEmCode,7,True);
+  stCardNo := aGubun[1] + aEmCode + FillZeroStrNum(aCardSeq,2);
+  stCardNo := FillCharString(stCardNo,'*',16,False);
+  stCompanyCode := '001';
+  aJijumCode := FillZeroStrNum(aJijumCode,3);
+  stDepartCode := GetDepartCode(stCompanyCode,aJijumCode,aDepartName);
+  if stDepartCode = '000' then
+  begin
+    if Trim(aDepartName) <> '' then
+      CreateDepartCode(stCompanyCode,aJijumCode,aDepartName,stDepartCode);
+  end;
+
+  bCardStateChange := False;
+  stPosiCode := '000';
+  stCardState := '2';
+  if (aRegState = '01') and (aEmState = '01') then stCardState := '1';  //재직중이면서 정상 카드 인경우만 사용 가능
+
+  if dmDBFunction.CheckTB_EMPLOYEE('001',aEmCode,nFdmsID,stWorkCode,stEndDate) then
+  begin
+    if Not dmDBFunction.UpdateTB_EMPLOYEE(aEmCode,
+                    aEmName,
+                    '001',
+                    aJijumCode,
+                    stDepartCode,
+                    stPosiCode,
+                    aEmCophone,
+                    '20000101',
+                    '99991231',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    stCardState,
+                    stCardNo,
+                    '',
+                    inttostr(nFdmsID),
+                    '001',
+                    '') then Exit;
+    dmDBFunction.InsertIntoTB_EMPHIS('001',aEmCode,inttostr(nFdmsID),
+                      '2',stCardNo,stCardState,aEmName,
+                      '','여수병원','',aDepartName,'');
+  end else
+  begin
+    nFdmsID := strtoint(GetFdmsID);
+    if Not dmDBFunction.InsertIntoTB_EMPLOYEE(aEmCode,
+                      aEmName,
+                      '001',
+                      aJijumCode,
+                      stDepartCode,
+                      stPosiCode,
+                      aEmCophone,
+                      '20000101',
+                      '99991231',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      stCardState,
+                      stCardNo,
+                      '',
+                      inttostr(nFdmsID),
+                      '001',
+                      '') then Exit;
+    dmDBFunction.InsertIntoTB_EMPHIS('001',aEmCode,inttostr(nFdmsID),
+                        '1',stCardNo,stCardState,aEmName,
+                        '','여수병원','',aDepartName,'');
+  end;
+  //학번에 다른 카드가 있으면 기존 카드 정지 후
+  if dmDBFunction.CheckTB_CARD_Employee('001',aEmCode,stCardNo,stOldCodeNo) then
+  begin
+    //같은 사번으로 다른 카드가 있는 경우
+    //기존카드 권한을 똑같이 옮김
+    dmDBFunction.UpdateTB_CARD_Change(stOldCodeNo,stCardNo);
+  end;
+  if dmDBFunction.CheckTB_CARD_CardNo(stCardNo,stOldCardState) = 1 then
+  begin
+    if stCardState <> stOldCardState then bCardStateChange := True;
+    if Not dmDBFunction.UpdateTB_CARD(stCardNo,'1',stCardState,aEmCode,'001') then Exit;
+  end else
+  begin
+    if Not dmDBFunction.InsertIntoTB_CARD_Value(stCardNo,'1',stCardState,aEmCode,'001') then Exit;
+  end;
+
+  if stCardState <> '1' then  //비정상
+  begin
+    dmDBFunction.UpdateTB_DEVICECARDNO_permit(stCardNo,'N');
+  end;
+
+  if Not CheckTB_DEVICECARDNO_CardPermit(stCardNo) then
+  begin
+    UpdateTB_CARD_NewCard(stCardNo);
+  end;
+
+  result := True;
+end;
+
+procedure TfmMain.YeosuEventState(aGubun, aJijumCode, aEmCode, aEmCophone,
+  aEmName, aDepartName, aCardSeq, aRegState, aEmState, aUpdateTime,
+  aResult: string);
+var
+  fmJUNNAMCurrentState : TForm;
+begin
+  if L_bJUNNAMShowState then
+  begin
+    fmJUNNAMCurrentState := MDIForm('TfmJUNNAMCurrentState');
+    if fmJUNNAMCurrentState <> nil then
+    begin
+      TfmJUNNAMCurrentState(fmJUNNAMCurrentState).JunnamEventState(aGubun,aJijumCode,aEmCode,aEmCophone,aEmName,aDepartName,
+                               aCardSeq,aRegState,aEmState,aUpdateTime,aResult);
+    end;
+  end;
+
+end;
+
+function TfmMain.YeosuRealTimeRelay: Boolean;
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+begin
+  if L_bJNGetHospitalInfoStart then Exit;
+
+  dmAdoRelay.AdoRelay1Connected(L_stDBType2, L_stDBIP2, L_stDBPort2,
+                    L_stDBUserID2, L_stDBUserPW2, L_stDBName2);
+  result := False;
+  if Not dmAdoRelay.DBConnected1 then Exit;
+  L_bJNRealTimeStart:=True;
+  stSql := 'select * from pmiaccev ';
+  if L_stDBType2 <> '1' then
+  begin
+    stSql := stSql + ' where accestat != ''X'' ';
+    stSql := stSql + ' and ( (acceaddt  between to_char(to_date(sysdate-1),''yyyymmdd'') and to_char(to_date(sysdate),''yyyymmdd'')) ';
+    stSql := stSql + '  or (accedsdt between to_char(to_date(sysdate-1),''yyyymmdd'') and to_char(to_date(sysdate),''yyyymmdd'')) ) ';
+  end;
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmAdoRelay.ADOConnection1;
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      ServerSender('SUCESS');   //연동할 데이터가 없어도 성공한 것이다.
+      if recordcount < 1 then Exit;
+      While Not Eof do
+      begin
+        if G_bApplicationTerminate then Exit;
+        YeosupatientRelay(FindField('ACCEIDNO').AsString,FindField('ACCEADDT').AsString,FindField('ACCEDSDT').AsString,FindField('ACCESTAT').AsString);
+
+        Application.ProcessMessages;
+        Next;
+      end;
+    End;
+  Finally
+    L_bJNRealTimeStart:=False;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+
+end;
+
+function TfmMain.YeosupatientRelay(aCode, aInDate, aOutDate,
+  aState: string; aLogFile: Boolean): Boolean;
+var
+  nIndex : integer;
+  oPatient : TPatientInfo;
+  stState : string;
+begin
+  //aCode : 사번
+  //aInDate : 입원일자
+  //aOutDate : 퇴원일자
+  //aState : C:재원중 D:퇴원중
+  stState := aState;
+  if aOutDate > formatDateTime('yyyymmdd',now-1) then stState := 'C'; //오늘 퇴원한 사람은 강제로 등록으로 처리 하자.
+  if stState = 'E' then stState := 'C'; //가퇴원환자도 입원환자로 본다.
+
+  nIndex := PatientList.IndexOf(aCode);
+  if nIndex < 0 then
+  begin
+    oPatient := TPatientInfo.Create(nil);
+    oPatient.PatientNo := aCode;
+    oPatient.HospitalizeDate := aInDate;
+    oPatient.LeaveDate := aOutDate;
+    oPatient.OnStateChange := PatientStateChange;
+    PatientList.AddObject(aCode,oPatient);
+  end;
+  nIndex := PatientList.IndexOf(aCode);
+  if nIndex > -1 then
+  begin
+    if aOutDate < TPatientInfo(PatientList.Objects[nIndex]).HospitalizeDate then
+    begin
+      //어제 퇴원 후 오늘 입원 한사람, 어제 퇴원으로 권한이 삭제 된 후에 오늘 다시 입원으로 다시 등록이 반복된다.
+      Exit; //만약 퇴원일자가 입원일자보다 더 빠른 경우가 있는 처리 건은 퇴원 처리 할 필요가 없다.
+    end;
+    TPatientInfo(PatientList.Objects[nIndex]).HospitalizeDate := aInDate;
+    TPatientInfo(PatientList.Objects[nIndex]).LeaveDate := aOutDate;
+    if(stState = 'D') then
+    begin
+      if TPatientInfo(PatientList.Objects[nIndex]).LeaveDate >= TPatientInfo(PatientList.Objects[nIndex]).HospitalizeDate then
+      begin
+        //퇴원일자가 입원일자보다 작은 경우만 퇴원 처리하자. ==> 이부분이 문제가 됨
+        //이걸 퇴원일자가 입원일자 보다 큰 경우 퇴원 처리로 변경 처리함.
+        TPatientInfo(PatientList.Objects[nIndex]).State := stState;
+      end else
+      begin
+        if aLogFile then LogSave(G_stExeFolder + '\..\log\Convert' + FormatDateTime('yyyymmdd',now) +'.log',aCode + ' StateChange');
+        TPatientInfo(PatientList.Objects[nIndex]).State := 'C';
+      end;
+    end
+    else TPatientInfo(PatientList.Objects[nIndex]).State := stState; //상태값 변경 처리 하자.
+
+  end;
 end;
 
 end.

@@ -1,6 +1,6 @@
 inherited fmMain: TfmMain
-  Left = 417
-  Top = 162
+  Left = 222
+  Top = 144
   Width = 1030
   Height = 730
   Caption = #49324#50896' '#50672#46041' '#49884#49828#53596
@@ -3080,9 +3080,7 @@ inherited fmMain: TfmMain
   end
   object ControlSocketPort: TApdWinsockPort
     WsLocalAddresses.Strings = (
-      '192.168.0.106'
-      '192.168.101.3'
-      '192.168.10.3')
+      '172.16.29.130')
     WsLocalAddressIndex = 0
     WsPort = '3431'
     WsSocksServerInfo.Port = 0

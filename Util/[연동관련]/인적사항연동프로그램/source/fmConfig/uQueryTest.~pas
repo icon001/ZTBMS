@@ -44,8 +44,8 @@ procedure TfmQueryTest.Button1Click(Sender: TObject);
 begin
   Try
     ADOQuery1.Close;
-    if ConnectNo = 1 then ADOQuery1.Connection := dmAdoRelay.ADOConnection
-    else if ConnectNo = 2 then ADOQuery1.Connection := dmAdoRelay.ADOConnection1;
+    if ConnectNo = 1 then ADOQuery1.Connection := dmAdoRelay.ADOConnectionTEST
+    else if ConnectNo = 2 then ADOQuery1.Connection := dmAdoRelay.ADOConnectionTEST;
     ADOQuery1.SQL.Text := Memo1.Text;
     if UpperCase(copy(Memo1.Text,1,Length('Select'))) = 'SELECT' then
     begin
@@ -55,6 +55,10 @@ begin
       ADOQuery1.ExecSQL;
     end;
   Except
+    ON E: Exception do
+    begin
+      showmessage(E.Message);
+    end;
     Exit;
   End;
 end;

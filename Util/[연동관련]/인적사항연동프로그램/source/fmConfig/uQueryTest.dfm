@@ -1,6 +1,6 @@
 object fmQueryTest: TfmQueryTest
-  Left = 541
-  Top = 245
+  Left = 253
+  Top = 230
   Width = 823
   Height = 337
   Caption = 'Query Test'

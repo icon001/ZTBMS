@@ -74,7 +74,7 @@ object fmConfig: TfmConfig
     Top = 0
     Width = 458
     Height = 217
-    ActivePage = TabSheet2
+    ActivePage = TabSheet1
     Align = alTop
     TabOrder = 1
     object TabSheet1: TTabSheet
@@ -415,7 +415,8 @@ object fmConfig: TfmConfig
           '9.'#49436#50872#45824#54617#44368
           '10.STX'#52285#50896
           '11.'#46041#50577#45824#48513#49436#50872#52896#54140#49828
-          '12.'#50500#51452#45824#44592#49689#49324)
+          '12.'#50500#51452#45824#44592#49689#49324
+          '13.'#50668#49688#48337#50896)
       end
       object ed_RelayTime: TEdit
         Left = 128

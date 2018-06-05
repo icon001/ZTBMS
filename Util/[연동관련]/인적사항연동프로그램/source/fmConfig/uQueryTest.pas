@@ -55,7 +55,12 @@ begin
       ADOQuery1.ExecSQL;
     end;
   Except
-    Exit;
+    ON E: Exception do
+    begin
+      showmessage(E.Message);
+      Exit;
+    end;
+    //Exit;
   End;
 end;
 
