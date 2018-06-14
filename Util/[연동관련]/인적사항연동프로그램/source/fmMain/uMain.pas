@@ -4737,7 +4737,7 @@ begin
   stSql := stSql + ' AND a.DO_DOORNO = b.DO_DOORNO ) ';
   stSql := stSql + ' Where (a.AT_RELAY is Null ';
   stSql := stSql + ' or a.AT_RELAY <> ''Y'') ';
-  stSql := stSql + ' AND a.AT_ATTYPE = ''1'' ';
+//  stSql := stSql + ' AND a.AT_ATTYPE = ''1'' ';  //전체데이터 모주 전송으로 변경 
   stSql := stSql + ' order by a.AC_DATE,a.AC_TIME ';
 
   if L_bRelayDB then Exit;
@@ -5338,7 +5338,8 @@ begin
 
   L_bJNGetHospitalInfoStart := True;
 
-  stSql := 'select * from pmiaccesv ';
+  if L_stProgramType = '2' then stSql := 'select * from pmiaccesv '
+  else if L_stProgramType = '13' then stSql := 'select * from pmiaccev ';
   if L_stDBType2 <> '1' then
   begin
     stSql := stSql + ' where accestat = ''C'' or accestat = ''E'' ';
@@ -5361,7 +5362,8 @@ begin
       if recordcount < 1 then Exit;
       While Not Eof do
       begin
-        JNpatientRelay(FindField('ACCEIDNO').AsString,FindField('ACCEADDT').AsString,FindField('ACCEDSDT').AsString,FindField('ACCESTAT').AsString);
+        if L_stProgramType = '2' then JNpatientRelay(FindField('ACCEIDNO').AsString,FindField('ACCEADDT').AsString,FindField('ACCEDSDT').AsString,FindField('ACCESTAT').AsString)
+        else if L_stProgramType = '13' then YeosupatientRelay(FindField('ACCEIDNO').AsString,FindField('ACCEADDT').AsString,FindField('ACCEDSDT').AsString,FindField('ACCESTAT').AsString);
 
 //        Application.ProcessMessages; => 이것을 추가 하면 RealTimer 에서 메시지를 캡쳐해 가서 그 다음 진행이 안됨...
         Next;

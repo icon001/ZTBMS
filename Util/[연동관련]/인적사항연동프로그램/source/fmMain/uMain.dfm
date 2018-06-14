@@ -3080,7 +3080,9 @@ inherited fmMain: TfmMain
   end
   object ControlSocketPort: TApdWinsockPort
     WsLocalAddresses.Strings = (
-      '172.16.29.130')
+      '192.168.0.106'
+      '192.168.101.3'
+      '192.168.10.3')
     WsLocalAddressIndex = 0
     WsPort = '3431'
     WsSocksServerInfo.Port = 0
