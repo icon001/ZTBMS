@@ -555,7 +555,6 @@ begin
   L_stSelectNodeNO := copy(LocationDeviceList.Strings[nDevicePos],2,3);
   L_stSelectECUID := copy(LocationDeviceList.Strings[nDevicePos],5,2);
   L_stSelectNO := copy(LocationDeviceList.Strings[nDevicePos],7,3);
-  TImage(Sender).PopupMenu := PopupMenu_Alarm;
 end;
 
 procedure TfmZoneMap.LocationMapShow(aBuildingCode, aFloorCode,aSectorCode:string;bFirst: Boolean);

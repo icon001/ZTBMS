@@ -101,7 +101,7 @@ inherited fmClientConfig: TfmClientConfig
     Top = 0
     Width = 486
     Height = 313
-    ActivePage = TabSheet2
+    ActivePage = MonitoringTab
     Align = alTop
     MultiLine = True
     TabOrder = 0

@@ -517,6 +517,7 @@ begin
   else AlarmTab.TabVisible := False;
 
   chk_OpenModeDoorOpen.Checked := OpenModeDoorOpen;
+  chk_UpdateEmCode.Checked := G_bUpdateEmCode;
   chk_Alarm.Checked := ACAlarmUse;
   chk_longOpen.Checked := LongDoorOpenAlarmUse;
   chk_ACAlarmEvnet.Checked := ACAlarmEventUse;

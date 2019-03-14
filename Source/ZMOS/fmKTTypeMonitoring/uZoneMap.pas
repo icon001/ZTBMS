@@ -597,6 +597,7 @@ begin
   stSql := stSql + ' AND a.LO_DONGCODE = ''' + aBuildingCode + ''' ';
   stSql := stSql + ' AND a.LO_FLOORCODE = ''' + aFloorCode + ''' ';
   stSql := stSql + ' AND a.LO_AREACODE = ''' + aSectorCode + ''' ';
+  stSql := stSql + ' AND a.al_locateuse = ''Y'' ';
   //stSql := stSql + ' AND a.AR_USE = ''Y'' ';
   with AdoQuery1 do
   begin

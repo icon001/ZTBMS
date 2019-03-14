@@ -2591,8 +2591,8 @@ begin
     else chk_ECUAc.Checked := False;
     if cells[5,Row] <> '0' then chk_ECUAt.Checked := True
     else chk_ECUAt.Checked := False;
-    if cells[24,Row] = '1' then chk_MCUTimeCode.Checked := True
-    else chk_MCUTimeCode.Checked := False;
+    if cells[24,Row] = '1' then chk_ECUTimeCode.Checked := True
+    else chk_ECUTimeCode.Checked := False;
     //if cells[7,Row] <> '0' then chk_ECUPt.Checked := True
     //else chk_ECUPt.Checked := False;
     chk_ECUPt.Checked := True;

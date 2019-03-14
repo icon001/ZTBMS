@@ -6183,7 +6183,7 @@ begin
     btnMCUPosition.Enabled := True;
     btn_TimeCode0.Enabled := True;
     cmb_CardType.Enabled := True;
-    if G_nArmAreaUse then cmb_McuArmAreaUse.Enabled := True;
+    if G_nArmAreaUse = 1 then cmb_McuArmAreaUse.Enabled := True;
 
     //ECU Form Enable
     sg_ECUCode.Enabled := False;
@@ -6269,7 +6269,7 @@ begin
     btnMCUPosition.Enabled := True;
     btn_TimeCode0.Enabled := True;
     cmb_CardType.Enabled := True;
-    if G_nArmAreaUse then cmb_McuArmAreaUse.Enabled := True;
+    if G_nArmAreaUse = 1 then cmb_McuArmAreaUse.Enabled := True;
 
     //ECU Form Enable
     cmb_sMCUCode2.Enabled := False;
