@@ -11,9 +11,9 @@ inherited fmD2DFdState: TfmD2DFdState
   Position = poMainFormCenter
   Visible = True
   WindowState = wsMaximized
-  OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 12
   object GroupBox3: TGroupBox [0]
@@ -717,7 +717,7 @@ inherited fmD2DFdState: TfmD2DFdState
       0000FFFF00000000000200000001000000000400B1BCB8B20009000000000000
       000000080000000000020000000000FFFFFF000000000200000000000000FEFE
       FF000000000000000000000000FC000000000000000000000000000000005800
-      E9E41F70F5B9E240EFE6A95610CEE440}
+      E9E41F70F5B9E24052B81E05572EE540}
   end
   object frDBDataSet1: TfrDBDataSet
     DataSet = ADOQuery

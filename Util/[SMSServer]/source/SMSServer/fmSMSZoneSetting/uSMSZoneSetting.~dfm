@@ -505,6 +505,7 @@ inherited fmSMSZoneSetting: TfmSMSZoneSetting
           Height = 25
           Caption = #49325#51228
           TabOrder = 4
+          OnClick = btn_DeleteClick
           Glyph.Data = {
             76010000424D7601000000000000760000002800000020000000100000000100
             0400000000000001000000000000000000001000000000000000000000000000

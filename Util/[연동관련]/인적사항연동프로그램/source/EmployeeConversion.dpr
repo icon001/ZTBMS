@@ -23,7 +23,7 @@ uses
   uDeviceCurrentState in 'fmDeviceCurrentState\uDeviceCurrentState.pas' {fmDeviceCurrentState},
   uCHOSUNCurrentState in 'fmCHOSUNCurrentState\uCHOSUNCurrentState.pas' {fmCHOSUNCurrentState},
   uQuery in 'fmQuery\uQuery.pas' {fmQuery},
-  uJUNNAMCurrentState in 'fmJUNNAMCurrentState\uJUNNAMCurrentState.pas' {fmJUNNAMCurrentState},
+  uYoungGwangCurrentState in 'fmYoungGwangCurrentState\uYoungGwangCurrentState.pas' {fmYoungGwangCurrentState},
   uKTBundangCurrentState in 'fmKTBundangCurrentState\uKTBundangCurrentState.pas' {fmKTBundangCurrentState},
   uSSANGYONGCurrentState in 'fmSSANGYONGCurrentState\uSSANGYONGCurrentState.pas' {fmSSANGYONGCurrentState},
   uDongyangUniversityCurrentState in 'fmDongyangUniversityCurrentState\uDongyangUniversityCurrentState.pas' {fmDongyangUniversityCurrentState},
@@ -34,7 +34,9 @@ uses
   uQueryTest in 'fmConfig\uQueryTest.pas' {fmQueryTest},
   uData in '..\lib\uData.pas' {dmData: TDataModule},
   uDBFunction in 'Lib\uDBFunction.pas' {dmDBFunction: TDataModule},
-  uYounseUniversityCurrentState in 'fmYounseUniversityCurrentState\uYounseUniversityCurrentState.pas' {fmYounseUniversityCurrentState};
+  uYounseUniversityCurrentState in 'fmYounseUniversityCurrentState\uYounseUniversityCurrentState.pas' {fmYounseUniversityCurrentState},
+  uHongikCurrentState in 'fmHongikCurrentState\uHongikCurrentState.pas' {fmHongikCurrentState},
+  uJUNNAMCurrentState in 'fmJUNNAMCurrentState\uJUNNAMCurrentState.pas' {fmJUNNAMCurrentState};
 
 {$R *.res}
 {$R manifest.RES}

@@ -47,9 +47,15 @@ begin
   Try
     oXL := CreateOleObject('Excel.Application');
   Except
-    showmessage('엑셀저장 실패로 CSV포맷으로 저장 됩니다.');
-    SaveFileName := copy(SaveFileName,1,Length(SaveFileName) - 3) + 'csv';
-    StringGrid.SaveToCSV(SaveFileName);
+    if FileOut then
+    begin
+      showmessage('엑셀저장 실패로 CSV포맷으로 저장 됩니다.');
+      SaveFileName := copy(SaveFileName,1,Length(SaveFileName) - 3) + 'csv';
+      StringGrid.SaveToCSV(SaveFileName);
+    end else
+    begin
+      showmessage('엑셀이 미설치시 출력기능이 제공되지 않습니다.');
+    end;
     exit;
   End;
 
@@ -58,6 +64,12 @@ begin
     begin
       Showmessage(refFileName + ' 파일이 없습니다.');
       exit;
+    end;
+
+    if (SaveFileName = '') then
+    begin
+      DeleteFile('c:\temp.xls');
+      SaveFileName := 'c:\temp.xls';
     end;
 
     CopyFile(PChar(refFileName), PChar(SaveFileName), False);

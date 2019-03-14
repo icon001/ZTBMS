@@ -304,6 +304,9 @@ begin
   if Trim(ed_name.Text) <> '' then
     stSql := stSql + ' AND a.EM_NAME LIKE ''%' + Trim(ed_name.Text)  + '%'' ';
 
+  stSql := stSql + ' order by b.FO_DATE ';
+
+//  memo1.text := stSql;
 
   with ADOQuery do
   begin
@@ -313,8 +316,18 @@ begin
     Try
       Open;
     Except
-      showmessage('조회에 실패하였습니다');
-      Exit;
+      on E : EDatabaseError do
+          begin
+            // ERROR MESSAGE-BOX DISPLAY
+            ShowMessage(E.Message );
+            Exit;
+          end;
+        else
+          begin
+            ShowMessage('데이터베이스 에러' );
+            Exit;
+          end;
+      //Exit;
     End;
 
     if RecordCount < 1 then

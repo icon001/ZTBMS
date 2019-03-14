@@ -11,6 +11,7 @@ type
     ADOQuery1: TADOQuery;
     ADOConnection: TADOConnection;
     ADOConnection1: TADOConnection;
+    ADOConnectionTEST: TADOConnection;
     procedure DataModuleCreate(Sender: TObject);
   private
     FOnAdoConnected: TAdoConnectedEvent;
@@ -18,20 +19,24 @@ type
     FOnAdoEvent: TAdoEvent;
     FDBConnected1: Boolean;
     FOnAdoConnected1: TAdoConnectedEvent;
+    FDBConnectedTest: Boolean;
     {SQLLOG저장}
     procedure SQLErrorLog(aSQL:string);
     procedure SetDBConnected(const Value: Boolean);
     procedure SetDBConnected1(const Value: Boolean);
+    procedure SetDBConnectedTest(const Value: Boolean);
     { Private declarations }
   public
     { Public declarations }
     Function ProcessExecSQL(aSql:String): Boolean;
     Function AdoRelayConnected(aDataBaseType,aServerIP,aServerPort,aUserID,aUserPw,aDataBaseName:string):Boolean;
     Function AdoRelay1Connected(aDataBaseType,aServerIP,aServerPort,aUserID,aUserPw,aDataBaseName:string):Boolean;
+    Function AdoRelayTESTConnected(aDataBaseType,aServerIP,aServerPort,aUserID,aUserPw,aDataBaseName:string):Boolean;
     Function AdoRelayConnectTEST(aConnectString:string):Boolean;
   public
     property DBConnected :Boolean read FDBConnected  write SetDBConnected;
     property DBConnected1 :Boolean read FDBConnected1  write SetDBConnected1;
+    property DBConnectedTest :Boolean read FDBConnectedTest  write SetDBConnectedTest;
     property OnAdoConnected:      TAdoConnectedEvent read FOnAdoConnected       write FOnAdoConnected;
     property OnAdoConnected1:      TAdoConnectedEvent read FOnAdoConnected1       write FOnAdoConnected1;
     property OnAdoEvent:          TAdoEvent read FOnAdoEvent  write FOnAdoEvent;
@@ -431,6 +436,91 @@ begin
     CursorLocation := clUseServer;
   end;
   result := True;
+end;
+
+function TdmAdoRelay.AdoRelayTESTConnected(aDataBaseType, aServerIP,
+  aServerPort, aUserID, aUserPw, aDataBaseName: string): Boolean;
+var
+  conStr : string;
+begin
+  result := False;
+  DBConnectedTest := False;
+  if aDataBaseType = '1' then    //MSSQL
+  begin
+    conStr := constr + 'Provider=SQLOLEDB.1;';
+    conStr := constr + 'Password=' + aUserPw + ';';
+    conStr := constr + 'Persist Security Info=True;';
+    conStr := constr + 'User ID=' + aUserID + ';';
+    conStr := constr + 'Initial Catalog=' + aDataBaseName + ';';
+    conStr := constr + 'Data Source=' + aServerIP  + ',' + aServerPort;
+  end else if aDataBaseType = '2' then  //PostGreSql
+  begin
+    conStr := 'Provider=PostgreSQL.1;';
+    conStr := constr + 'Data Source=' + aServerIP + ',' + aServerPort + ';';
+    conStr := constr + 'location=' + aDataBaseName + ';';
+    conStr := constr + 'User Id='+ aUserID + ';';
+    conStr := constr + 'password=' + aUserPw;
+  end else if aDataBaseType = '3' then  //Oracle
+  begin
+    conStr := 'Provider=MSDAORA.1;';
+    conStr := constr + 'Password=' + aUserPw + ';';
+    conStr := constr + 'User ID='+ aUserID + ';';
+    conStr := constr + 'Data Source=' + aDataBaseName + ';';
+    conStr := constr + 'Persist Security Info=False';   
+  end else if aDataBaseType = '5' then  //Oracle
+  begin
+    conStr := 'Provider=OraOLEDB.Oracle;';
+    conStr := constr + 'Data Source=(DESCRIPTION=(CID=GTU_APP)(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=' + aServerIP + ')(PORT=' + aServerPort + ')))(CONNECT_DATA=(SERVICE_NAME=' + aDataBaseName + ')(SERVER=DEDICATED)));';
+    conStr := constr + 'User Id='+ aUserID + ';';
+    conStr := constr + 'Password=' + aUserPw + '';
+  end else if aDataBaseType = '6' then  //Tibero
+  begin
+    constr := 'Provider=MSDASQL.1;';
+    conStr := conStr + 'User ID=' + aUserID + ';';
+    conStr := conStr + 'Password=' + aUserPw + ';';
+    conStr := conStr + 'Persist Security Info=True;';
+    conStr := conStr + 'Data Source=' + aServerIP + ';';
+
+  end else if aDataBaseType = '0' then   //MDB
+  begin
+
+  end else
+  begin
+    //showmessage('DB Type 이 정확하지 않습니다.');
+    Exit;
+  end;
+
+  with ADOConnectionTEST do
+  begin
+    Connected := False;
+    ConnectionString := conStr;
+    //ConnectionString := 'Provider=OraOLEDB.Oracle.1;Password=icon002;User ID=icon002;Data Source=OPPRA;Persist Security Info=True';
+    LoginPrompt:= false ;
+    Try
+      Connected := True;
+    Except
+      on E : Exception do
+        begin
+          SQLErrorLog('DBError('+ E.Message + ')' + conStr );
+          // ERROR MESSAGE-BOX DISPLAY
+          //ShowMessage(E.Message );
+          Exit;
+        end;
+      else
+        begin
+          //ShowMessage('데이터베이스 접속 에러' );
+          Exit;
+        end;
+    End;
+    CursorLocation := clUseServer;
+  end;
+  DBConnectedTest := True;
+  result := True;
+end;
+
+procedure TdmAdoRelay.SetDBConnectedTest(const Value: Boolean);
+begin
+  FDBConnectedTest := Value;
 end;
 
 end.

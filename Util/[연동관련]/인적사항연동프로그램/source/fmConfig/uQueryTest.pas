@@ -45,7 +45,8 @@ begin
   Try
     ADOQuery1.Close;
     if ConnectNo = 1 then ADOQuery1.Connection := dmAdoRelay.ADOConnectionTEST
-    else if ConnectNo = 2 then ADOQuery1.Connection := dmAdoRelay.ADOConnectionTEST;
+    else if ConnectNo = 2 then ADOQuery1.Connection := dmAdoRelay.ADOConnectionTEST
+    else if ConnectNo = 3 then ADOQuery1.Connection := dmAdoRelay.ADOConnectionTEST;
     ADOQuery1.SQL.Text := Memo1.Text;
     if UpperCase(copy(Memo1.Text,1,Length('Select'))) = 'SELECT' then
     begin

@@ -85,6 +85,8 @@ type
     ed_ArmAreaName: TEdit;
     SpeedButton1: TSpeedButton;
     SaveDialog1: TSaveDialog;
+    ADOSearchQuery: TADOQuery;
+    Timer1: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -114,6 +116,7 @@ type
     procedure cmb_EcuChange(Sender: TObject);
     procedure ed_ArmAreaNameChange(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
   private
     MCUIDList : TStringList;
     sMCUIDList : TStringList;
@@ -474,11 +477,8 @@ begin
   stSql := stSql + ' order by a.AR_VIEWSEQ,a.AC_NODENO,a.AC_ECUID,a.AR_AREANO  ';
 
   Try
-    CoInitialize(nil);
-    TempAdoQuery := TADOQuery.Create(nil);
-    TempAdoQuery.Connection := DataModule1.ADOConnection;
 
-    with TempAdoQuery do
+    with ADOSearchQuery do
     begin
       Close;
       Sql.Clear;
@@ -544,8 +544,7 @@ begin
       end;
     end;
   Finally
-    TempAdoQuery.Free;
-    CoUninitialize;
+    
   End;
   sg_AlarmClick(sg_Alarm);
 
@@ -744,7 +743,8 @@ begin
   DeviceLoad(stNodeNo,regDeviceIDList,cmb_regDeviceCode,'N');
   if cmb_MCUCode.ItemIndex > 0 then stNodeNo := copy(MCUIDList.Strings[cmb_MCUCode.ItemIndex],1,3);
   DeviceLoad(stNodeNo,DeviceIDList,cmb_ECU,'Y');
-  AlarmSearch(stBuildingCode,stFloorCode,stAreaCode,stNodeNo,'','');
+  //AlarmSearch(stBuildingCode,stFloorCode,stAreaCode,stNodeNo,'',''); --한남대에서 메모리 부족 에러
+  Timer1.Enabled := True;
   L_bDeviceUpdate := False;
 end;
 
@@ -1286,7 +1286,7 @@ begin
       se_ArmAreaNo.Value := 0;
     end else se_ArmAreaNo.Value := nNextArmArea ;
 
-    if Not G_nArmAreaUse = 1 then se_ArmAreaNo.Value := 0; //방범구역 미사용시 구역번호는 0번이다.
+    if G_nArmAreaUse = 0 then se_ArmAreaNo.Value := 0; //방범구역 미사용시 구역번호는 0번이다.
     
     if Uppercase(State) = 'INSERT' then
     begin
@@ -2632,6 +2632,13 @@ begin
     end;
   end;
 
+end;
+
+procedure TfmAlaramDeviceAdmin.Timer1Timer(Sender: TObject);
+begin
+  inherited;
+  Timer1.Enabled := False;
+  cmb_BuildingCode1Change(cmb_BuildingCode1);
 end;
 
 end.

@@ -32,6 +32,24 @@ type
     Property State : string read FState write SetState;           //ÀÔÅð¿ø »óÅÂ C:ÀÔ¿ø,S:Åð¿ø
   end;
 
+  TEmergencyInfo = class(TComponent)
+  private
+    FLeaveDate: string;
+    FState: string;
+    FPatientNo: string;
+    FHospitalizeDate: string;
+    FOnStateChange: TStateChange;
+    procedure SetHospitalizeDate(const Value: string);
+    procedure SetLeaveDate(const Value: string);
+    procedure SetState(const Value: string);
+  public
+    ProPerty OnStateChange : TStateChange read FOnStateChange Write FOnStateChange;
+  published
+    Property PatientNo : string read FPatientNo write FPatientNo;
+    Property HospitalizeDate : string read FHospitalizeDate write SetHospitalizeDate; //ÀÔ¿øÀÏÀÚ
+    Property LeaveDate : string read FLeaveDate write SetLeaveDate; //Åð¿øÀÏÀÚ
+    Property State : string read FState write SetState;           //ÀÔÅð¿ø »óÅÂ C:ÀÔ¿ø,S:Åð¿ø
+  end;
 var
   dmData: TdmData;
 
@@ -54,6 +72,30 @@ begin
 end;
 
 procedure TPatientInfo.SetState(const Value: string);
+begin
+  if FState = Value then Exit;
+  FState := Value;
+  if Assigned(FOnStateChange) then
+  begin
+    OnStateChange(Self,PatientNo,HospitalizeDate,LeaveDate,State);
+  end;
+end;
+
+{ TEmergencyInfo }
+
+procedure TEmergencyInfo.SetHospitalizeDate(const Value: string);
+begin
+  if FHospitalizeDate >= Value then  Exit;
+  FHospitalizeDate := Value;
+end;
+
+procedure TEmergencyInfo.SetLeaveDate(const Value: string);
+begin
+  if FLeaveDate >= Value then  Exit;
+  FLeaveDate := Value;
+end;
+
+procedure TEmergencyInfo.SetState(const Value: string);
 begin
   if FState = Value then Exit;
   FState := Value;

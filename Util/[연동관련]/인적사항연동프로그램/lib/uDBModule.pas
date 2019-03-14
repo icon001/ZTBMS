@@ -21,6 +21,7 @@ type
   public
     { Public declarations }
     Function ProcessExecSQL(aSql:String;bUpdateResult:Boolean=False): Boolean;
+
   published
     property DBConnected : Boolean read FDBConnected write SetDBConnected;
     property OnAdoConnected:      TAdoConnectedEvent read FOnAdoConnected       write FOnAdoConnected;
@@ -34,6 +35,7 @@ implementation
 {$R *.dfm}
 
 { TdmDBModule }
+
 
 
 function TdmDBModule.ProcessExecSQL(aSql: String;
@@ -136,6 +138,7 @@ begin
   //Critical_SaveLog.Release;
   {$I+}
 end;
+
 
 
 

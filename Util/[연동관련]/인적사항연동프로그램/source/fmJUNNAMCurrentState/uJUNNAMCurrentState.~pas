@@ -100,7 +100,7 @@ begin
   begin
     if RowCount >= 1000 then  rowCount := 999;
 
-    InsertRows(1,1);
+    if Cells[0,1] <> '' then InsertRows(1,1);
 
     nPos := PosIndex(';',aData,1);
     Cells[0,1] := copy(aData,1,nPos - 1);

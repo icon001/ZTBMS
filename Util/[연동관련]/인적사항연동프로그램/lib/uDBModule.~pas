@@ -21,6 +21,14 @@ type
   public
     { Public declarations }
     Function ProcessExecSQL(aSql:String;bUpdateResult:Boolean=False): Boolean;
+  public
+    Function InsertTB_HonikMappingJijum(aLEVEL1,aCompanyCode,aJijumCode,aLEVEL1_NAME,aChange:string):Boolean;
+    Function InsertTB_HonikMappingPosi(aGUBUN,aCompanyCode,aPosiCode,aGUBUN_NAME,aChange:string):Boolean;
+    Function UpdateTB_HonikTempTable2(aCAMPUS,aKEY,aLEVEL1,aLEVEL1_NAME,aLEVEL2,aLEVEL2_NAME,aGUBUN,aGUBUN_NAME,aNAME,aCARD_CNT,aCurChange,aCurMode:string):Boolean;
+    Function UpdateTB_HonikMappingDepart(aLEVEL1,aLEVEL2,aLEVEL2_NAME,aChange:string):Boolean;
+    Function UpdateTB_HonikMappingJijum(aLEVEL1,aLEVEL1_NAME,aChange:string):Boolean;
+    Function UpdateTB_HonikMappingPosi(aGUBUN,aGUBUN_NAME,aChange:string):Boolean;
+
   published
     property DBConnected : Boolean read FDBConnected write SetDBConnected;
     property OnAdoConnected:      TAdoConnectedEvent read FOnAdoConnected       write FOnAdoConnected;
@@ -35,6 +43,118 @@ implementation
 
 { TdmDBModule }
 
+
+
+function TdmDBModule.CheckTB_HonikMappingJijum(aLEVEL1: string;
+  var aName: string): integer;
+var
+  stSql : string;
+  TempAdoQuery :TADOQuery;
+begin
+  result := -1;
+  stSql := 'select * from TB_HonikMappingJijum  where K_LEVEL1 = ''' + aLEVEL1 + ''' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmDBModule.ADOConnection;
+    TempAdoQuery.DisableControls;
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+
+      result := 0;
+      if recordcount < 1 then Exit;
+      aName := FindField('K_LEVEL1_NAME').AsString;
+      result := 1;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TdmDBModule.InsertTB_HonikMappingDepart(aLEVEL1, aLEVEL2,
+  aCompanyCode, aJijumCode, aDepartCode, aLEVEL2_NAME,
+  aChange: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Insert Into TB_HonikMappingDepart ( ';
+  stSql := stSql + '  K_LEVEL1 ,';
+  stSql := stSql + '  K_LEVEL2 ,';
+  stSql := stSql + '  CO_COMPANYCODE ,';
+  stSql := stSql + '  CO_JIJUMCODE ,';
+  stSql := stSql + '  CO_DEPARTCODE ,';
+  stSql := stSql + '  K_LEVEL2_NAME ,';
+  stSql := stSql + '  K_CHANGE ,';
+  stSql := stSql + '  K_CHANGEDATE ';               //구분
+  stSql := stSql + ') ';
+  stSql := stSql + ' Values(';
+  stSql := stSql + '''' + aLEVEL1 + ''',';
+  stSql := stSql + '''' + aLEVEL2 + ''',';
+  stSql := stSql + '''' + aCompanyCode + ''',';
+  stSql := stSql + '''' + aJijumCode + ''',';
+  stSql := stSql + '''' + aDepartCode + ''',';
+  stSql := stSql + '''' + aLEVEL2_NAME + ''',';
+  stSql := stSql + '''' + aChange + ''',';
+  stSql := stSql + 'getdate())';
+  result := ProcessExecSQL(stSql);
+end;
+
+function TdmDBModule.InsertTB_HonikMappingJijum(aLEVEL1, aCompanyCode,
+  aJijumCode, aLEVEL1_NAME, aChange: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Insert Into TB_HonikMappingJijum ( ';
+  stSql := stSql + '  K_LEVEL1 ,';
+  stSql := stSql + '  CO_COMPANYCODE ,';
+  stSql := stSql + '  CO_JIJUMCODE ,';
+  stSql := stSql + '  K_LEVEL1_NAME ,';
+  stSql := stSql + '  K_CHANGE ,';
+  stSql := stSql + '  K_CHANGEDATE ';               //구분
+  stSql := stSql + ') ';
+  stSql := stSql + ' Values(';
+  stSql := stSql + '''' + aLEVEL1 + ''',';
+  stSql := stSql + '''' + aCompanyCode + ''',';
+  stSql := stSql + '''' + aJijumCode + ''',';
+  stSql := stSql + '''' + aLEVEL1_NAME + ''',';
+  stSql := stSql + '''' + aChange + ''',';
+  stSql := stSql + 'getdate())';
+  result := ProcessExecSQL(stSql);
+end;
+
+function TdmDBModule.InsertTB_HonikMappingPosi(aGUBUN, aCompanyCode,
+  aPosiCode, aGUBUN_NAME, aChange: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Insert Into TB_HonikMappingPosi ( ';
+  stSql := stSql + '  K_GUBUN ,';
+  stSql := stSql + '  CO_COMPANYCODE ,';
+  stSql := stSql + '  PO_POSICODE ,';
+  stSql := stSql + '  K_GUBUN_NAME ,';
+  stSql := stSql + '  K_CHANGE ,';
+  stSql := stSql + '  K_CHANGEDATE ';               //구분
+  stSql := stSql + ') ';
+  stSql := stSql + ' Values(';
+  stSql := stSql + '''' + aGUBUN + ''',';
+  stSql := stSql + '''' + aCompanyCode + ''',';
+  stSql := stSql + '''' + aPosiCode + ''',';
+  stSql := stSql + '''' + aGUBUN_NAME + ''',';
+  stSql := stSql + '''' + aChange + ''',';
+  stSql := stSql + 'getdate())';
+  result := ProcessExecSQL(stSql);
+end;
 
 function TdmDBModule.ProcessExecSQL(aSql: String;
   bUpdateResult: Boolean): Boolean;
@@ -58,7 +178,7 @@ begin
       SQL.Text:= aSql;
       try
         nResult := ExecSQL;
-SQLErrorLog(aSql);
+//SQLErrorLog(aSql);
       except
       ON E: Exception do
         begin
@@ -138,5 +258,74 @@ begin
 end;
 
 
+
+function TdmDBModule.UpdateTB_HonikMappingDepart(aLEVEL1, aLEVEL2,
+  aLEVEL2_NAME, aChange: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'update TB_HonikMappingDepart set ';
+  stSql := stSql + '  K_LEVEL2_NAME =''' + aLEVEL2_NAME + ''',';  
+  stSql := stSql + '  K_CHANGE =''' + aChange + ''', ';      //변경시 Y 미변경시 N
+  stSql := stSql + '  K_CHANGEDATE = getdate() ';
+  stSql := stSql + ' where K_LEVEL1 = ''' + aLEVEL1 + ''' ';       //단과대코드( 소속 )
+  stSql := stSql + ' AND K_LEVEL2 = ''' + aLEVEL2 + ''' ';      
+
+  result := ProcessExecSQL(stSql);
+end;
+
+function TdmDBModule.UpdateTB_HonikMappingJijum(aLEVEL1, aLEVEL1_NAME,
+  aChange: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'update TB_HonikMappingJijum set ';
+  stSql := stSql + '  K_LEVEL1_NAME =''' + aLEVEL1_NAME + ''',';  //단과대명칭( 소속명 )
+  stSql := stSql + '  K_CHANGE =''' + aChange + ''', ';      //변경시 Y 미변경시 N
+  stSql := stSql + '  K_CHANGEDATE = getdate() ';
+  stSql := stSql + ' where K_LEVEL1 = ''' + aLEVEL1 + ''' ';       //단과대코드( 소속 )
+
+  result := ProcessExecSQL(stSql);
+
+end;
+
+function TdmDBModule.UpdateTB_HonikMappingPosi(aGUBUN, aGUBUN_NAME,
+  aChange: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'update TB_HonikMappingPosi set ';
+  stSql := stSql + '  K_GUBUN_NAME =''' + aGUBUN_NAME + ''',';  //단과대명칭( 소속명 )
+  stSql := stSql + '  K_CHANGE =''' + aChange + ''', ';      //변경시 Y 미변경시 N
+  stSql := stSql + '  K_CHANGEDATE = getdate() ';
+  stSql := stSql + ' where K_GUBUN = ''' + aGUBUN + ''' ';       //단과대코드( 소속 )
+
+  result := ProcessExecSQL(stSql);
+end;
+
+function TdmDBModule.UpdateTB_HonikTempTable2(aCAMPUS, aKEY, aLEVEL1,
+  aLEVEL1_NAME, aLEVEL2, aLEVEL2_NAME, aGUBUN, aGUBUN_NAME, aNAME,
+  aCARD_CNT, aCurChange, aCurMode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'update TB_HonikTempTable2 set ';
+  stSql := stSql + '  K_LEVEL1 = ''' + aLEVEL1 + ''',';        //단과대코드( 소속 )
+  stSql := stSql + '  K_LEVEL1_NAME =''' + aLEVEL1_NAME + ''',';  //단과대명칭( 소속명 )
+  stSql := stSql + '  K_LEVEL2 = ''' + aLEVEL2 + ''',';         //학과코드 ( 소속2)
+  stSql := stSql + '  K_LEVEL2_NAME = ''' + aLEVEL2_NAME + ''',';  //학과명칭 (소속2명)
+  stSql := stSql + '  K_GUBUN = ''' + aGUBUN + ''',';               //구분
+  stSql := stSql + '  K_GUBUN_NAME = ''' + aGUBUN_NAME + ''', ';   //구분명 ( 1:교수, 2:강사, 3:조교, 4: 대학원생, 5:학부생, 6:직원 )
+  stSql := stSql + '  K_NAME = ''' + aNAME + ''',';        //성명
+  stSql := stSql + '  K_CARD_CNT =''' + aCARD_CNT + ''',';      //카드발급차수
+  stSql := stSql + '  K_STATE = ' + aCurMode  + ', ';      //변경 모드 1.입력,2.수정,3.삭제
+  stSql := stSql + '  K_CHANGE =''' + aCurChange + ''' ';      //변경시 Y 미변경시 N
+  if aCurChange = 'Y' then stSql := stSql + '  ,K_RELAY = ''N'' ';
+  if aCurChange = 'Y' then stSql := stSql + '  ,K_CHANGEDATE = getdate() ';
+  stSql := stSql + ' where K_CAMPUS  = ' + aCAMPUS + '';    //캠퍼스 구분 1:서울 2:세종
+  stSql := stSql + ' and K_KEY = ''' + aKEY + ''' ';       //학번 ( 종번 )
+
+  result := ProcessExecSQL(stSql);
+end;
 
 end.

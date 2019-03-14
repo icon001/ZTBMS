@@ -165,6 +165,18 @@ inherited fmPerFdState: TfmPerFdState
           Progress = 0
         end
       end
+      object Memo1: TMemo
+        Left = 160
+        Top = 96
+        Width = 793
+        Height = 425
+        ImeName = 'Microsoft IME 2010'
+        Lines.Strings = (
+          'Memo1')
+        ScrollBars = ssBoth
+        TabOrder = 5
+        Visible = False
+      end
     end
   end
   object Panel1: TPanel [1]
@@ -756,7 +768,7 @@ inherited fmPerFdState: TfmPerFdState
       0000FFFF00000000000200000001000000000400B1BCB8B20009000000000000
       000000080000000000020000000000FFFFFF000000000200000000000000FEFE
       FF000000000000000000000000FC000000000000000000000000000000005800
-      E9E41F70F5B9E240AE2451F010CEE440}
+      E9E41F70F5B9E2408E78C68EEF2DE540}
   end
   object frDBDataSet1: TfrDBDataSet
     DataSet = ADOQuery

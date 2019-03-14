@@ -397,7 +397,7 @@ begin
   cmb_Box.Clear;
   cmb_Box.ItemIndex := -1;
 
-  stSql := 'select * from TB_ALARMDEVICE ';
+  stSql := 'select * from TB_ACCESSDEVICE ';
   stSql := stSql + ' WHERE GROUP_CODE = ''1234567890'' ';
   if cmb_MCUCode.ItemIndex > 0 then
   begin
@@ -418,7 +418,7 @@ begin
       end;
     end;
   end;
-  stSql := stSql + ' order by AL_VIEWSEQ ';
+  stSql := stSql + ' order by AC_NODENO,AC_ECUID ';
   with AdoQuery do
   begin
     Close;
@@ -432,7 +432,7 @@ begin
     if recordCount < 1 then Exit;
     while Not Eof do
     begin
-      cmb_Box.Items.Add(FindField('AL_ZONENAME').AsString);
+      cmb_Box.Items.Add(FindField('AC_DEVICENAME').AsString);
       ALARMIDList.Add(FillZeroNumber(FindField('AC_NODENO').asinteger,3) + FindField('AC_ECUID').AsString);
       Next;
     end;

@@ -1473,6 +1473,7 @@ var
   stQuick : string;
 begin
   if CommNode = nil then Exit;
+  SendCardTime := getTickCount;  //전송할 데이터가 있다면 전송시간을 현재로 바꾸자... 이게 없으면 마지막 전송후 문제가 되어 Ack가 안오는 경우 전송시간이 갱신이 안된다.2019년 1월 25일 
 
   nCardFixType := CommNode.CardFixType;
   MemoryCardAdd(aCardNo, ValidDay, cardType, RegCode, aTimeCode, func,aAlarmAreaGrade,aDoorAreaGrade,aCardGroup,aCardTimeCode,aCardWeekCode,
@@ -2968,7 +2969,8 @@ begin
   //SendPacket('00','R','SM2599',aQuick);
   //SendPacket('00','R','SM2699RSM2500',aQuick);
   SendPacket('00','R','SM2699RSM2500a',aQuick); //20150818 화재복구후 현재 모드 상태 재전송 기능 추가
-  //SendPacket('00','R','SM2699RSM62',False); //20170131 상태를 현재 상태로 재설정
+  //SendPacket('00','R','SM2699RSM62',False); //20170131 상태를 현재 상태로 재설정 - 확장기로 보내는 것이 아니고 메인에 보내야 하는데 잘못 보냈음(20190221)
+  SendPacket('00','R','SM62',False); //20190221 상태를 현재 상태로 재설정 - 화재 복구 후 출입문 안잠기는 문제때문에
 end;
 
 procedure TDevice.DeviceDoorInfoSearch(aDoor:string);

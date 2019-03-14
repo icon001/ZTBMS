@@ -65,6 +65,7 @@ type
     procedure cmb_MCUCodeChange(Sender: TObject);
     procedure btn_AddClick(Sender: TObject);
     procedure sg_smsphoneClick(Sender: TObject);
+    procedure btn_DeleteClick(Sender: TObject);
   private
     BuildingCodeList : TStringList;
     FloorCodeList : TStringList;
@@ -952,6 +953,28 @@ begin
     if recordcount < 1 then Exit;
     result := True;
   end;
+end;
+
+procedure TfmSMSZoneSetting.btn_DeleteClick(Sender: TObject);
+var
+  stNodeNo : string;
+  stEcuID : string;
+  stZoneNum : string;
+  stSql : string;
+begin
+  inherited;
+  stNodeNo := copy(ed_devicecode.Text,1,3);
+  stEcuID := copy(ed_devicecode.Text,4,2);
+  stZoneNum := ed_AlarmNo.Text;
+
+  stSql := ' Delete from TB_SMSALARMZONE ';
+  stSql := stSql + ' Where AC_NODENO = ' +  stNodeNo ;
+  stSql := stSql + ' AND AC_ECUID = ''' + stEcuID + ''' ';
+  stSql := stSql + ' AND AL_ZONENUM = ''' + stZoneNum + ''' ';
+  stSql := stSql + ' AND SA_TELNO = ''' + ed_OldTelnumber.Text + ''' ';
+  DataModule1.ProcessExecSQL(stSql);
+  showSMSPhone(copy(ed_devicecode.Text,1,3),copy(ed_devicecode.Text,4,2),ed_AlarmNo.Text);
+
 end;
 
 end.

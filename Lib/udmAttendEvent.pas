@@ -587,7 +587,6 @@ function TdmAttendEvent.Process_UpdateAttendData(aATDate, aNowTime,
   aCardNo, aCompanyCode, aEMCode, aAttendType: string; aWeekCode: integer;
   aYesterDay, aAtInsert: Boolean;aJijumCode,aDepartCode,aEmName:string;var aATCode:string): Boolean;
 begin
-
   if aAttendType = '1' then //출근
   begin
 //TEST
@@ -885,7 +884,11 @@ begin
     end;
     Exit;
   end;
-  
+
+(*
+ErrorLogSave(ExeFolder + '\..\log\ATlog'+ FormatDateTIme('yyyymmdd',Now)+'.log',
+                 '근태 데이터 저장',aDate+':'+aNowTime+':'+aCompanyCode+':'+ aEMCode);
+*)
   if dmAdoQuery.DupCheckTB_ATEVENT_OutTime(aDate,aNowTime,aCompanyCode,aEMCode) then   //퇴근시간이 없거나 현재시간보다 작은 경우
   begin
     stATOutCode := GetATOutCode(aATCode,aNowTime,nWeekCode,aYesterDay,stWorkEndTime);  //근태타입에 대한 퇴근코드 가져오자.
@@ -1268,7 +1271,14 @@ begin
   wHour  := StrtoInt(Copy(aTime,9,2));
   wMinute:= StrtoInt(Copy(aTime,11,2));
   wSecond:= StrtoInt(Copy(aTime,13,2));
-  dtPresent:= EncodeDatetime(wYear, wMonth, wDay, wHour, wMinute, wSecond,00);
+  Try
+    dtPresent:= EncodeDatetime(wYear, wMonth, wDay, wHour, wMinute, wSecond,00);
+  Except
+    ErrorLogSave(ExeFolder + '\..\log\log'+ FormatDateTIme('yyyymmdd',Now)+'.log',
+                 '근태 시간 오류',aTime+':'+aEMCode);
+    //타임 형식에 맞지 않으면 에러 처리 하자.
+    Exit;
+  end;
   dtYesterDay := dtPresent - 1;
 
   stDate:= Copy(aTime,1,8);  //근태 기준 일자를 잡자.
@@ -1461,6 +1471,7 @@ begin
     if (aButton = ATWorkOutsideNo) then stButton := '4'
     else if (aButton = ATWorkInNo) then stButton := '5';
   end;
+
 
   if Not CheckTB_ATLISTEVENT(Copy(aTime,1,8),Copy(aTime,9,6),stCompanyCode,stEMCode,aNodeNo,aECUID,stATCode,stTemp) then
     InsertTB_ATLISTEVENT(Copy(aTime,1,8),Copy(aTime,9,6),stCompanyCode,stEMCode,aNodeNo,aECUID,stATCode,stTemp,aCardNo,aDoorNo,aReaderNo,stButton,stDate);

@@ -50,6 +50,7 @@ type
     chk_Event: TCheckBox;
     Label21: TLabel;
     cmb_FoodGubun: TComboBox;
+    Memo1: TMemo;
     procedure btn_CloseClick(Sender: TObject);
     procedure btn_PrintClick(Sender: TObject);
     procedure btn_FileSaveClick(Sender: TObject);
@@ -57,7 +58,6 @@ type
     procedure cmb_CompanyChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure FormActivate(Sender: TObject);
     procedure cmb_JijumChange(Sender: TObject);
     procedure cmb_DepartChange(Sender: TObject);
     procedure cmb_PosiChange(Sender: TObject);
@@ -66,6 +66,7 @@ type
     procedure cmb_FoodAreaChange(Sender: TObject);
     procedure cmb_FoodPERMITChange(Sender: TObject);
     procedure ed_nameKeyPress(Sender: TObject; var Key: Char);
+    procedure FormShow(Sender: TObject);
   private
     CompanyCodeList : TStringList;
     JijumCodeList : TStringList;
@@ -175,7 +176,7 @@ begin
   else if DBTYPE = 'PG' then stSql := PostGreSql.SelectTB_EMPLOYEEJoinFoodState(FormatDateTime('yyyymmdd',dt_startDate.Date),FormatDateTime('yyyymmdd',dt_endDate.Date),stFoodArea,stFoodPermit,bInnerJoin,stFoodCode)
   else if DBTYPE = 'MSSQL' then stSql := MSSql.SelectTB_EMPLOYEEJoinFoodState(FormatDateTime('yyyymmdd',dt_startDate.Date),FormatDateTime('yyyymmdd',dt_endDate.Date),stFoodArea,stFoodPermit,bInnerJoin,stFoodCode)
   else Exit;
-  
+
   if (Not IsMaster) and (CompanyGrade <> '0') then
   begin
     if CompanyGrade = '1' then
@@ -277,6 +278,9 @@ begin
 
   stSql := stSql + ' Order By a.CO_COMPANYCODE,a.EM_CODE ';
 
+
+//  memo1.Text := stSql;
+  
   with ADOQuery do
   begin
     Close;
@@ -368,47 +372,6 @@ begin
   PosiCodeList := TStringList.Create;
   FoodAreaList := TStringList.Create;
   FoodCodeList := TStringList.Create;
-end;
-
-procedure TfmPerFdState.FormActivate(Sender: TObject);
-var
-  nIndex : integer;
-begin
-  dt_startDate.Date := Now;
-  dt_endDate.Date := Now;
-
-  GridInitialize(sg_report as TStringGrid);
-
-  LoadCompanyCode(CompanyCodeList,cmb_Company);
-  LoadJijumCode('',JijumCodeList,cmb_Jijum);
-  LoadDepartCode('','',DepartCodeList,cmb_Depart);
-  LoadFoodArea(FoodAreaList,cmb_FoodArea);
-  LoadFoodCode(FoodCodeList,cmb_FoodGubun);
-
-  if Not IsMaster then
-  begin
-    if strtoint(CompanyGrade) > 1 then
-    begin
-      nIndex := CompanyCodeList.IndexOf(MasterCompany);
-      if nIndex > -1 then
-      begin
-        cmb_Company.ItemIndex := nIndex;
-        LoadJijumCode(CompanyCodeList.Strings[nIndex],JijumCodeList,cmb_Jijum);
-      end;
-      cmb_Company.Enabled := False;
-      LoadPosiCode(MasterCompany,PosiCodeList,cmb_Posi);
-    end;
-    if strtoint(CompanyGrade) > 2 then
-    begin
-      nIndex := JijumCodeList.IndexOf(MasterCompany + MasterJijum);
-      if nIndex > -1 then cmb_Jijum.ItemIndex := nIndex;
-      cmb_Jijum.Enabled := False;
-    end;
-  end;
-  LoadDepartCode(copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],1,3),copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],4,3),DepartCodeList,cmb_Depart);
-
-  btn_SearchClick(btn_Search);
-
 end;
 
 procedure TfmPerFdState.cmb_JijumChange(Sender: TObject);
@@ -560,6 +523,47 @@ begin
     key := #0;
     btn_SearchClick(btn_Search);
   end;
+end;
+
+procedure TfmPerFdState.FormShow(Sender: TObject);
+var
+  nIndex : integer;
+begin
+  dt_startDate.Date := Now;
+  dt_endDate.Date := Now;
+
+  GridInitialize(sg_report as TStringGrid);
+
+  LoadCompanyCode(CompanyCodeList,cmb_Company);
+  LoadJijumCode('',JijumCodeList,cmb_Jijum);
+  LoadDepartCode('','',DepartCodeList,cmb_Depart);
+  LoadFoodArea(FoodAreaList,cmb_FoodArea);
+  LoadFoodCode(FoodCodeList,cmb_FoodGubun);
+
+  if Not IsMaster then
+  begin
+    if strtoint(CompanyGrade) > 1 then
+    begin
+      nIndex := CompanyCodeList.IndexOf(MasterCompany);
+      if nIndex > -1 then
+      begin
+        cmb_Company.ItemIndex := nIndex;
+        LoadJijumCode(CompanyCodeList.Strings[nIndex],JijumCodeList,cmb_Jijum);
+      end;
+      cmb_Company.Enabled := False;
+      LoadPosiCode(MasterCompany,PosiCodeList,cmb_Posi);
+    end;
+    if strtoint(CompanyGrade) > 2 then
+    begin
+      nIndex := JijumCodeList.IndexOf(MasterCompany + MasterJijum);
+      if nIndex > -1 then cmb_Jijum.ItemIndex := nIndex;
+      cmb_Jijum.Enabled := False;
+    end;
+  end;
+  LoadDepartCode(copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],1,3),copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],4,3),DepartCodeList,cmb_Depart);
+
+  btn_SearchClick(btn_Search);
+
 end;
 
 initialization

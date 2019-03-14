@@ -937,4 +937,17 @@ inherited fmAlaramDeviceAdmin: TfmAlaramDeviceAdmin
     Left = 72
     Top = 448
   end
+  object ADOSearchQuery: TADOQuery
+    Connection = DataModule1.ADOConnection
+    Parameters = <>
+    Left = 64
+    Top = 8
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 500
+    OnTimer = Timer1Timer
+    Left = 104
+    Top = 8
+  end
 end

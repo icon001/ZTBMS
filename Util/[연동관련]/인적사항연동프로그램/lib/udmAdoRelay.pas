@@ -12,6 +12,7 @@ type
     ADOConnection: TADOConnection;
     ADOConnection1: TADOConnection;
     ADOConnectionTEST: TADOConnection;
+    ADOConnection2: TADOConnection;
     procedure DataModuleCreate(Sender: TObject);
   private
     FOnAdoConnected: TAdoConnectedEvent;
@@ -20,25 +21,31 @@ type
     FDBConnected1: Boolean;
     FOnAdoConnected1: TAdoConnectedEvent;
     FDBConnectedTest: Boolean;
+    FDBConnected2: Boolean;
+    FOnAdoConnected2: TAdoConnectedEvent;
     {SQLLOG저장}
     procedure SQLErrorLog(aSQL:string);
     procedure SetDBConnected(const Value: Boolean);
     procedure SetDBConnected1(const Value: Boolean);
     procedure SetDBConnectedTest(const Value: Boolean);
+    procedure SetDBConnected2(const Value: Boolean);
     { Private declarations }
   public
     { Public declarations }
     Function ProcessExecSQL(aSql:String): Boolean;
     Function AdoRelayConnected(aDataBaseType,aServerIP,aServerPort,aUserID,aUserPw,aDataBaseName:string):Boolean;
     Function AdoRelay1Connected(aDataBaseType,aServerIP,aServerPort,aUserID,aUserPw,aDataBaseName:string):Boolean;
+    Function AdoRelay2Connected(aDataBaseType,aServerIP,aServerPort,aUserID,aUserPw,aDataBaseName:string):Boolean;
     Function AdoRelayTESTConnected(aDataBaseType,aServerIP,aServerPort,aUserID,aUserPw,aDataBaseName:string):Boolean;
     Function AdoRelayConnectTEST(aConnectString:string):Boolean;
   public
     property DBConnected :Boolean read FDBConnected  write SetDBConnected;
     property DBConnected1 :Boolean read FDBConnected1  write SetDBConnected1;
+    property DBConnected2 :Boolean read FDBConnected2  write SetDBConnected2;
     property DBConnectedTest :Boolean read FDBConnectedTest  write SetDBConnectedTest;
     property OnAdoConnected:      TAdoConnectedEvent read FOnAdoConnected       write FOnAdoConnected;
     property OnAdoConnected1:      TAdoConnectedEvent read FOnAdoConnected1       write FOnAdoConnected1;
+    property OnAdoConnected2:      TAdoConnectedEvent read FOnAdoConnected2       write FOnAdoConnected2;
     property OnAdoEvent:          TAdoEvent read FOnAdoEvent  write FOnAdoEvent;
   end;
 
@@ -283,7 +290,7 @@ procedure TdmAdoRelay.SetDBConnected1(const Value: Boolean);
 begin
   if FDBConnected1 = Value then Exit;
   FDBConnected1 := Value;
-  if Assigned(FOnAdoConnected) then
+  if Assigned(FOnAdoConnected2) then
   begin
     OnAdoConnected1(Self,Value);
   end;
@@ -521,6 +528,136 @@ end;
 procedure TdmAdoRelay.SetDBConnectedTest(const Value: Boolean);
 begin
   FDBConnectedTest := Value;
+end;
+
+function TdmAdoRelay.AdoRelay2Connected(aDataBaseType, aServerIP,
+  aServerPort, aUserID, aUserPw, aDataBaseName: string): Boolean;
+var
+  conStr : string;
+begin
+  result := False;
+  DBConnected2 := False;
+  if aDataBaseType = '1' then    //MSSQL
+  begin
+    conStr := constr + 'Provider=SQLOLEDB.1;';
+    conStr := constr + 'Password=' + aUserPw + ';';
+    conStr := constr + 'Persist Security Info=True;';
+    conStr := constr + 'User ID=' + aUserID + ';';
+    conStr := constr + 'Initial Catalog=' + aDataBaseName + ';';
+    conStr := constr + 'Data Source=' + aServerIP  + ',' + aServerPort;
+  end else if aDataBaseType = '2' then  //PostGreSql
+  begin
+    conStr := 'Provider=PostgreSQL.1;';
+    conStr := constr + 'Data Source=' + aServerIP + ',' + aServerPort + ';';
+    conStr := constr + 'location=' + aDataBaseName + ';';
+    conStr := constr + 'User Id='+ aUserID + ';';
+    conStr := constr + 'password=' + aUserPw;
+  end else if aDataBaseType = '3' then  //Oracle
+  begin
+    //conStr := 'Provider=OraOLEDB.Oracle;';
+    //conStr := constr + 'Data Source=(DESCRIPTION=(CID=GTU_APP)(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=' + aServerIP + ')(PORT=' + aServerPort + ')))(CONNECT_DATA=(SID=' + aDataBaseName + ')(SERVER=DEDICATED)));';
+    //conStr := 'Provider=OraOLEDB.Oracle;';
+    //conStr := constr + 'Data Source=(DESCRIPTION=(CID=GTU_APP)(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=' + aServerIP + ')(PORT=' + aServerPort + ')))(CONNECT_DATA=(SERVICE_NAME=' + aDataBaseName + ')(SERVER=DEDICATED)));';
+    //conStr := constr + 'User Id='+ aUserID + ';';
+    //conStr := constr + 'Password=' + aUserPw + '';
+
+    conStr := 'Provider=MSDAORA.1;';
+    //conStr := 'Provider=OraOLEDB.Oracle;';
+    conStr := constr + 'Password=' + aUserPw + ';';
+    conStr := constr + 'User ID='+ aUserID + ';';
+    conStr := constr + 'Data Source=' + aDataBaseName + ';';
+    conStr := constr + 'Persist Security Info=False';   
+    //conStr := constr + 'Persist Security Info=True';  False
+  end else if aDataBaseType = '5' then  //Oracle
+  begin
+    //conStr := 'Provider=OraOLEDB.Oracle;';
+    //conStr := constr + 'Data Source=(DESCRIPTION=(CID=GTU_APP)(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=' + aServerIP + ')(PORT=' + aServerPort + ')))(CONNECT_DATA=(SID=' + aDataBaseName + ')(SERVER=DEDICATED)));';
+    conStr := 'Provider=OraOLEDB.Oracle;';
+    conStr := constr + 'Data Source=(DESCRIPTION=(CID=GTU_APP)(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=' + aServerIP + ')(PORT=' + aServerPort + ')))(CONNECT_DATA=(SERVICE_NAME=' + aDataBaseName + ')(SERVER=DEDICATED)));';
+    conStr := constr + 'User Id='+ aUserID + ';';
+    conStr := constr + 'Password=' + aUserPw + '';
+  end else if aDataBaseType = '6' then  //Tibero
+  begin
+    constr := 'Provider=MSDASQL.1;';
+    conStr := conStr + 'User ID=' + aUserID + ';';
+    conStr := conStr + 'Password=' + aUserPw + ';';
+    conStr := conStr + 'Persist Security Info=True;';
+    conStr := conStr + 'Data Source=' + aServerIP + ';';
+
+(*//    conStr := 'Provider=tbprov.Tbprov;Location=165.132.16.80,8629;User ID=yonsei_kt;Password=yonsei_kt;';
+//    conStr := 'Provider=tbprov.Tbprov;';
+    conStr := 'Provider=tbprov.Tbprov.5;';
+    //stConnectString := 'Provider=tbprov.Tbprov.1;';
+    conStr := conStr + 'Cache Authentication=False;';
+    conStr := conStr + 'Encrypt Password=False;';
+    conStr := conStr + 'Integrated Security="";';
+    conStr := conStr + 'Mask Password=False;';
+    conStr := conStr + 'Persist Encrypted=False;';
+    conStr := conStr + 'Persist Security Info=False;';
+    conStr := conStr + 'User ID=' + aUserID + ';';
+    conStr := conStr + 'Password=' + aUserPw + ';';
+    conStr := conStr + 'Bind Flags=0;';
+    conStr := conStr + 'Initial Catalog=' + aDataBaseName + ';';
+    conStr := conStr + 'Data Source=' + aServerIP + ';';
+    conStr := conStr + 'Impersonation Level=Anonymous;';
+    conStr := conStr + 'Location="";';
+    conStr := conStr + 'Lock Owner="";';
+    conStr := conStr + 'Mode=ReadWrite;';
+    conStr := conStr + 'Protection Level=None;';
+    conStr := conStr + 'Extended Properties="";';
+    conStr := conStr + 'Updatable Cursor=False;';
+    conStr := conStr + 'Enlist=None'; *)
+  end else if aDataBaseType = '0' then   //MDB
+  begin
+  {      //if DBName = '' then
+    DBName := stExeFolder + '\..\DB\ZMOS.mdb';
+    conStr := 'Provider=Microsoft.Jet.OLEDB.4.0;';
+    conStr := conStr + 'Data Source=' + DBName + ';';
+    conStr := conStr + 'Persist Security Info=True;';
+    conStr := conStr + 'Jet OLEDB:Database ';
+    //if stuserPW <> '' then  conStr := conStr + ' Password=' + stuserPW;  }
+  end else
+  begin
+    //showmessage('DB Type 이 정확하지 않습니다.');
+    Exit;
+  end;
+
+  with ADOConnection2 do
+  begin
+    Connected := False;
+    ConnectionString := conStr;
+    //ConnectionString := 'Provider=OraOLEDB.Oracle.1;Password=icon002;User ID=icon002;Data Source=OPPRA;Persist Security Info=True';
+    LoginPrompt:= false ;
+    Try
+      Connected := True;
+    Except
+      on E : Exception do
+        begin
+          SQLErrorLog('DBError('+ E.Message + ')' + conStr );
+          // ERROR MESSAGE-BOX DISPLAY
+          //ShowMessage(E.Message );
+          Exit;
+        end;
+      else
+        begin
+          //ShowMessage('데이터베이스 접속 에러' );
+          Exit;
+        end;
+    End;
+    CursorLocation := clUseServer;
+  end;
+  DBConnected2 := True;
+  result := True;
+end;
+
+procedure TdmAdoRelay.SetDBConnected2(const Value: Boolean);
+begin
+  if FDBConnected2 = Value then exit;
+  FDBConnected2 := Value;
+  if Assigned(FOnAdoConnected2) then
+  begin
+    OnAdoConnected2(Self,Value);
+  end;
 end;
 
 end.

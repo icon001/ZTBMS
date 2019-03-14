@@ -189,6 +189,7 @@ begin
   else Exit;
 
 
+
   if (Not IsMaster) and (CompanyGrade <> '0') then
   begin
     if CompanyGrade = '1' then

@@ -1,0 +1,5 @@
+[DBConfig]
+Host=127.0.0.1
+Port=1433
+UserID=sa
+UserPW=c2FwYXNzd2Q=

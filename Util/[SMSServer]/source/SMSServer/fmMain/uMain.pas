@@ -822,6 +822,7 @@ begin
   //Exit;
   Try
     SMSSendTimer.Enabled := False;
+    dmSMSModule.DBConnected := False;  //매번 재접속하자.
     if Not dmSMSModule.DBConnected then
     begin
       dmSMSModule.ServerType := L_nServerType;
@@ -833,7 +834,11 @@ begin
       dmSMSModule.DataBaseName := L_stSMSDataBaseName;
       dmSMSModule.DataBaseConnect(False);
     end;
-    if Not dmSMSModule.DBConnected then Exit;
+    if Not dmSMSModule.DBConnected then
+    begin
+      DataModule1.SQLErrorLog('SMS Server DBConnected Error');
+      Exit;
+    end;
     AlarmToSmsSend;
 
   Finally
@@ -848,14 +853,23 @@ var
   stSql : string;
   stMessage : string;
 begin
-  stSql := ' Select a.*,b.AL_ZONENAME as AL_ALARMAREANAME,c.AL_ZONENAME,d.SA_MESSAGE,d.SA_TELNO from TB_ALARMEVENT a ';
+  TDataBaseConfig.GetObject.DataBaseConnect;
+
+  if ( Not TDataBaseConfig.GetObject.DBConnected) then
+  begin
+    DataModule1.SQLErrorLog('Zmos DBConnected Error');
+    Exit;
+  end;
+
+  stSql := ' Select a.*,b.AR_NAME as AL_ALARMAREANAME,c.AL_ZONENAME,d.SA_MESSAGE,d.SA_TELNO from TB_ALARMEVENT a ';
   //stSql := stSql + ' Inner Join TB_ALARMSTATUSCODE b ';
   //stSql := stSql + ' ON(a.AL_ALARMSTATUSCODE = b.AL_ALARMSTATUSCODE
   //stSql := stSql + ' AND AL_SMSSEND = ''Y'') ';
-  stSql := stSql + ' Inner Join tb_alarmdevice b ';
+  stSql := stSql + ' Inner Join TB_ARMAREA b ';
   stSql := stSql + ' ON(a.GROUP_CODE = b.GROUP_CODE ';
   stSql := stSql + ' AND a.AC_NODENO = b.AC_NODENO ';
-  stSql := stSql + ' AND a.AC_ECUID = b.AC_ECUID ) ';
+  stSql := stSql + ' AND a.AC_ECUID = b.AC_ECUID  ';
+  stSql := stSql + ' AND a.AL_ZONECODE = b.AR_AREANO ) ';
   stSql := stSql + ' Inner Join tb_zonedevice c ';
   stSql := stSql + ' ON(a.GROUP_CODE = c.GROUP_CODE ';
   stSql := stSql + ' AND a.AC_NODENO = c.AC_NODENO ';

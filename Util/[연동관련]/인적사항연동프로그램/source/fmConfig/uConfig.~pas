@@ -60,6 +60,24 @@ type
     btn_QueryTest2: TSpeedButton;
     Label17: TLabel;
     ed_BasicPosiCode: TEdit;
+    TabSheet5: TTabSheet;
+    Label18: TLabel;
+    cmb_DBType3: TComboBox;
+    Label19: TLabel;
+    ed_dbip3: TEdit;
+    Label20: TLabel;
+    ed_dbport3: TEdit;
+    Label21: TLabel;
+    ed_dbuserid3: TEdit;
+    Label22: TLabel;
+    ed_dbpw3: TEdit;
+    Label23: TLabel;
+    ed_dbname3: TEdit;
+    btn_ConnectTest3: TSpeedButton;
+    ed_ConnectedTest3: TEdit;
+    btn_QueryTest3: TSpeedButton;
+    gb_Emergency: TGroupBox;
+    ed_EmergencyCode: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure sbCancelClick(Sender: TObject);
     procedure sbSaveClick(Sender: TObject);
@@ -68,10 +86,13 @@ type
     procedure SpeedButton1Click(Sender: TObject);
     procedure btn_ConnectTest2Click(Sender: TObject);
     procedure btn_QueryTest1Click(Sender: TObject);
+    procedure btn_ConnectTest3Click(Sender: TObject);
   private
     { Private declarations }
     procedure LoadConfig;
   private
+    Function CheckHonikTempTable() : Boolean;
+    Function CreateHonikTempTable() : Boolean;
     Function UpdateTB_CONFIG(aCONFIGGROUP,aCONFIGCODE,aCONFIGVALUE:string):string;
     Function InsertIntoTB_CONFIG(aCONFIGGROUP,aCONFIGCODE,aCONFIGVALUE:string):string;
   public
@@ -136,10 +157,17 @@ begin
           else if FindField('CO_CONFIGCODE').AsString = 'DBUSERID2' then ed_dbuserid2.Text := FindField('CO_CONFIGVALUE').AsString
           else if FindField('CO_CONFIGCODE').AsString = 'DBUSERPW2' then ed_dbpw2.Text := FindField('CO_CONFIGVALUE').AsString
           else if FindField('CO_CONFIGCODE').AsString = 'DBNAME2'   then ed_dbname2.Text := FindField('CO_CONFIGVALUE').AsString
+          else if FindField('CO_CONFIGCODE').AsString = 'DBTYPE3'   then cmb_DBType3.itemIndex := strtoint(FindField('CO_CONFIGVALUE').AsString) - 1
+          else if FindField('CO_CONFIGCODE').AsString = 'DBIP3'     then ed_dbip3.Text := FindField('CO_CONFIGVALUE').AsString
+          else if FindField('CO_CONFIGCODE').AsString = 'DBPORT3'   then ed_dbport3.Text := FindField('CO_CONFIGVALUE').AsString
+          else if FindField('CO_CONFIGCODE').AsString = 'DBUSERID3' then ed_dbuserid3.Text := FindField('CO_CONFIGVALUE').AsString
+          else if FindField('CO_CONFIGCODE').AsString = 'DBUSERPW3' then ed_dbpw3.Text := FindField('CO_CONFIGVALUE').AsString
+          else if FindField('CO_CONFIGCODE').AsString = 'DBNAME3'   then ed_dbname3.Text := FindField('CO_CONFIGVALUE').AsString
           else if FindField('CO_CONFIGCODE').AsString = 'RELAYTIME'   then ed_RelayTime.Text := FindField('CO_CONFIGVALUE').AsString
           else if FindField('CO_CONFIGCODE').AsString = 'COCODE'   then ed_companyCode.Text := FindField('CO_CONFIGVALUE').AsString
           else if FindField('CO_CONFIGCODE').AsString = 'JIJUMCD'   then ed_JijumCode.Text := FindField('CO_CONFIGVALUE').AsString
           else if FindField('CO_CONFIGCODE').AsString = 'POSICD'   then ed_BasicPosiCode.Text := FindField('CO_CONFIGVALUE').AsString
+          else if FindField('CO_CONFIGCODE').AsString = 'EMGCD'   then ed_EmergencyCode.Text := FindField('CO_CONFIGVALUE').AsString
           ;
         end;
         Next;
@@ -149,7 +177,7 @@ begin
     TempAdoQuery.Free;
     CoUninitialize;
   End;
-
+  cmb_ProgramTypeChange(cmb_ProgramType);
 end;
 
 procedure TfmConfig.sbCancelClick(Sender: TObject);
@@ -161,7 +189,10 @@ procedure TfmConfig.sbSaveClick(Sender: TObject);
 var
   stSql : string;
 begin
-
+  if( (cmb_ProgramType.ItemIndex + 1) = 15) or ((cmb_ProgramType.ItemIndex + 1) = 16) then
+  begin
+    if Not CheckHonikTempTable() then CreateHonikTempTable();
+  end;
   stSql := UpdateTB_CONFIG('EMPCONV','PGTYPE',inttostr(cmb_ProgramType.ItemIndex + 1));
   dmDBModule.ProcessExecSQL(stSql);
   stSql := UpdateTB_CONFIG('EMPCONV','DBTYPE',inttostr(cmb_DBType.ItemIndex + 1));
@@ -169,6 +200,10 @@ begin
   stSql := InsertIntoTB_CONFIG('EMPCONV','DBTYPE2',inttostr(cmb_DBType2.ItemIndex + 1));
   dmDBModule.ProcessExecSQL(stSql);
   stSql := UpdateTB_CONFIG('EMPCONV','DBTYPE2',inttostr(cmb_DBType2.ItemIndex + 1));
+  dmDBModule.ProcessExecSQL(stSql);
+  stSql := InsertIntoTB_CONFIG('EMPCONV','DBTYPE3',inttostr(cmb_DBType3.ItemIndex + 1));
+  dmDBModule.ProcessExecSQL(stSql);
+  stSql := UpdateTB_CONFIG('EMPCONV','DBTYPE3',inttostr(cmb_DBType3.ItemIndex + 1));
   dmDBModule.ProcessExecSQL(stSql);
 
 
@@ -178,12 +213,20 @@ begin
   dmDBModule.ProcessExecSQL(stSql);
   stSql := UpdateTB_CONFIG('EMPCONV','DBIP2',ed_dbip2.Text);
   dmDBModule.ProcessExecSQL(stSql);
+  stSql := InsertIntoTB_CONFIG('EMPCONV','DBIP3',ed_dbip3.Text);
+  dmDBModule.ProcessExecSQL(stSql);
+  stSql := UpdateTB_CONFIG('EMPCONV','DBIP3',ed_dbip3.Text);
+  dmDBModule.ProcessExecSQL(stSql);
 
   stSql := UpdateTB_CONFIG('EMPCONV','DBPORT',ed_dbport.Text);
   dmDBModule.ProcessExecSQL(stSql);
   stSql := InsertIntoTB_CONFIG('EMPCONV','DBPORT2',ed_dbport2.Text);
   dmDBModule.ProcessExecSQL(stSql);
   stSql := UpdateTB_CONFIG('EMPCONV','DBPORT2',ed_dbport2.Text);
+  dmDBModule.ProcessExecSQL(stSql);
+  stSql := InsertIntoTB_CONFIG('EMPCONV','DBPORT3',ed_dbport3.Text);
+  dmDBModule.ProcessExecSQL(stSql);
+  stSql := UpdateTB_CONFIG('EMPCONV','DBPORT3',ed_dbport3.Text);
   dmDBModule.ProcessExecSQL(stSql);
 
   stSql := UpdateTB_CONFIG('EMPCONV','DBUSERID',ed_dbuserid.Text);
@@ -192,6 +235,10 @@ begin
   dmDBModule.ProcessExecSQL(stSql);
   stSql := UpdateTB_CONFIG('EMPCONV','DBUSERID2',ed_dbuserid2.Text);
   dmDBModule.ProcessExecSQL(stSql);
+  stSql := InsertIntoTB_CONFIG('EMPCONV','DBUSERID3',ed_dbuserid3.Text);
+  dmDBModule.ProcessExecSQL(stSql);
+  stSql := UpdateTB_CONFIG('EMPCONV','DBUSERID3',ed_dbuserid3.Text);
+  dmDBModule.ProcessExecSQL(stSql);
 
   stSql := UpdateTB_CONFIG('EMPCONV','DBUSERPW',ed_dbpw.Text);
   dmDBModule.ProcessExecSQL(stSql);
@@ -199,12 +246,20 @@ begin
   dmDBModule.ProcessExecSQL(stSql);
   stSql := UpdateTB_CONFIG('EMPCONV','DBUSERPW2',ed_dbpw2.Text);
   dmDBModule.ProcessExecSQL(stSql);
+  stSql := InsertIntoTB_CONFIG('EMPCONV','DBUSERPW3',ed_dbpw3.Text);
+  dmDBModule.ProcessExecSQL(stSql);
+  stSql := UpdateTB_CONFIG('EMPCONV','DBUSERPW3',ed_dbpw3.Text);
+  dmDBModule.ProcessExecSQL(stSql);
 
   stSql := UpdateTB_CONFIG('EMPCONV','DBNAME',ed_dbname.Text);
   dmDBModule.ProcessExecSQL(stSql);
   stSql := InsertIntoTB_CONFIG('EMPCONV','DBNAME2',ed_dbname2.Text);
   dmDBModule.ProcessExecSQL(stSql);
   stSql := UpdateTB_CONFIG('EMPCONV','DBNAME2',ed_dbname2.Text);
+  dmDBModule.ProcessExecSQL(stSql);
+  stSql := InsertIntoTB_CONFIG('EMPCONV','DBNAME3',ed_dbname3.Text);
+  dmDBModule.ProcessExecSQL(stSql);
+  stSql := UpdateTB_CONFIG('EMPCONV','DBNAME3',ed_dbname3.Text);
   dmDBModule.ProcessExecSQL(stSql);
 
   stSql := UpdateTB_CONFIG('EMPCONV','RELAYTIME',ed_RelayTime.Text);
@@ -216,6 +271,11 @@ begin
   dmDBModule.ProcessExecSQL(stSql);
 
   stSql := UpdateTB_CONFIG('EMPCONV','POSICD',ed_BasicPosiCode.Text);
+  dmDBModule.ProcessExecSQL(stSql);
+
+  stSql := InsertIntoTB_CONFIG('EMPCONV','EMGCD',ed_EmergencyCode.Text);
+  dmDBModule.ProcessExecSQL(stSql);
+  stSql := UpdateTB_CONFIG('EMPCONV','EMGCD',ed_EmergencyCode.Text);
   dmDBModule.ProcessExecSQL(stSql);
 
 
@@ -252,6 +312,13 @@ begin
     ed_companyCode.Visible := False;
   end; *)
   ed_BasicPosiCode.Enabled := True;
+  if cmb_ProgramType.ItemIndex = 12 then
+  begin
+    gb_Emergency.Visible := True;
+  end else
+  begin
+    gb_Emergency.Visible := False;
+  end;
 end;
 
 procedure TfmConfig.btn_ConnectTestClick(Sender: TObject);
@@ -310,6 +377,134 @@ begin
   fmQueryTest.ConnectNo := TSpeedButton(Sender).Tag;
   fmQueryTest.ShowModal;
   fmQueryTest.Free;
+end;
+
+procedure TfmConfig.btn_ConnectTest3Click(Sender: TObject);
+begin
+  if dmAdoRelay.AdoRelayTESTConnected(inttostr(cmb_DBType3.ItemIndex + 1), ed_dbip3.Text, ed_dbport3.Text,
+                    ed_dbuserid3.Text, ed_dbpw3.Text, ed_dbname3.Text) then
+  begin
+    ed_ConnectedTest3.Text := 'Connected';
+    btn_QueryTest3.Enabled := True;
+  end else
+  begin
+    ed_ConnectedTest3.Text := 'DisConnected';
+    btn_QueryTest3.Enabled := False;
+  end;
+
+end;
+
+function TfmConfig.CheckHonikTempTable(): Boolean;
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+begin
+  result := False;
+  stSql := 'select * from TB_HonikTempTable ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmDBModule.ADOConnection;
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      result := true;
+    end;
+  Finally
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TfmConfig.CreateHonikTempTable: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'CREATE TABLE TB_HonikTempTable ( ';
+  stSql := stSql + '  K_CAMPUS integer  NULL,';    //캠퍼스 구분 1:서울 2:세종
+  stSql := stSql + '  K_LEVEL1 varchar(6)   NULL,';        //단과대코드( 소속 )
+  stSql := stSql + '  K_LEVEL1_NAME varchar(100)   NULL,';  //단과대명칭( 소속명 )
+  stSql := stSql + '  K_LEVEL2 varchar(6)  NULL,';         //학과코드 ( 소속2)
+  stSql := stSql + '  K_LEVEL2_NAME varchar(100)   NULL,';  //학과명칭 (소속2명)
+  stSql := stSql + '  K_GUBUN char(10) NULL,';               //구분
+  stSql := stSql + '  K_GUBUN_NAME varchar(100)  NULL, ';   //구분명 ( 1:교수, 2:강사, 3:조교, 4: 대학원생, 5:학부생, 6:직원 )
+  stSql := stSql + '  K_NAME varchar(100)    NULL,';        //성명
+  stSql := stSql + '  K_KEY varchar(50)    NULL,';       //학번 ( 종번 )
+  stSql := stSql + '  K_CARD_CNT varchar(10)   NULL,';      //카드발급차수
+  stSql := stSql + '  K_SEND char(10)   NULL';      //연동 유무
+  stSql := stSql + ') ';
+
+
+  result := DataModule1.ProcessExecSQL(stSql);
+
+  stSql := 'CREATE TABLE TB_HonikTempTable2 ( ';
+  stSql := stSql + '  K_CAMPUS integer  NULL,';    //캠퍼스 구분 1:서울 2:세종
+  stSql := stSql + '  K_LEVEL1 varchar(6)   NULL,';        //단과대코드( 소속 )
+  stSql := stSql + '  K_LEVEL1_NAME varchar(100)   NULL,';  //단과대명칭( 소속명 )
+  stSql := stSql + '  K_LEVEL2 varchar(6)  NULL,';         //학과코드 ( 소속2)
+  stSql := stSql + '  K_LEVEL2_NAME varchar(100)   NULL,';  //학과명칭 (소속2명)
+  stSql := stSql + '  K_GUBUN char(10) NULL,';               //구분
+  stSql := stSql + '  K_GUBUN_NAME varchar(100)  NULL, ';   //구분명 ( 1:교수, 2:강사, 3:조교, 4: 대학원생, 5:학부생, 6:직원 )
+  stSql := stSql + '  K_NAME varchar(100)    NULL,';        //성명
+  stSql := stSql + '  K_KEY varchar(50)    NULL,';       //학번 ( 종번 )
+  stSql := stSql + '  K_CARD_CNT varchar(10)   NULL,';      //카드발급차수
+  stSql := stSql + '  K_STATE integer   NULL,';      //상태,1.신규,2.업데이트,3,삭제
+  stSql := stSql + '  K_CHANGE char(10)   NULL,';      //변경유무
+  stSql := stSql + '  K_RELAY char(10)   NULL,';      //연동 유무
+  stSql := stSql + '  K_CHANGEDATE datetime   NULL';      //변경일
+  stSql := stSql + ') ';
+
+
+  result := DataModule1.ProcessExecSQL(stSql);
+
+  stSql := 'CREATE TABLE TB_HonikMappingJijum ( ';
+  stSql := stSql + '  K_LEVEL1 varchar(6)   NOT NULL,';        //단과대코드( 소속 )
+  stSql := stSql + '  CO_COMPANYCODE varchar(3)   NULL,';        //단과대코드( 소속 )
+  stSql := stSql + '  CO_JIJUMCODE varchar(3)   NULL,';        //단과대코드( 소속 )
+  stSql := stSql + '  K_LEVEL1_NAME varchar(100)   NULL,';  //단과대명칭( 소속명 )
+  stSql := stSql + '  K_CHANGE char(10)   NULL,';      //변경유무
+  stSql := stSql + '  K_CHANGEDATE datetime   NULL,';      //변경일
+  stSql := stSql + '  PRIMARY KEY CLUSTERED ([K_LEVEL1]) ';
+  stSql := stSql + ') ';
+
+
+  result := DataModule1.ProcessExecSQL(stSql);
+
+  stSql := 'CREATE TABLE TB_HonikMappingDepart ( ';
+  stSql := stSql + '  K_LEVEL1 varchar(6)   NOT NULL,';        //단과대코드( 소속 )
+  stSql := stSql + '  K_LEVEL2 varchar(6)   NOT NULL,';        //학과코드 ( 소속2)
+  stSql := stSql + '  CO_COMPANYCODE varchar(3)   NULL,';        //단과대코드( 소속 )
+  stSql := stSql + '  CO_JIJUMCODE varchar(3)   NULL,';        //단과대코드( 소속 )
+  stSql := stSql + '  CO_DEPARTCODE varchar(3)   NULL,';        //학과코드 ( 소속2)
+  stSql := stSql + '  K_LEVEL2_NAME varchar(100)   NULL,';  //학과명칭 (소속2명)
+  stSql := stSql + '  K_CHANGE char(10)   NULL,';      //변경유무
+  stSql := stSql + '  K_CHANGEDATE datetime   NULL,';      //변경일
+  stSql := stSql + '  PRIMARY KEY CLUSTERED ([K_LEVEL1],[K_LEVEL2]) ';
+  stSql := stSql + ') ';
+
+
+  result := DataModule1.ProcessExecSQL(stSql);
+
+  stSql := 'CREATE TABLE TB_HonikMappingPosi ( ';
+  stSql := stSql + '  K_GUBUN varchar(6)   NOT NULL,';        //구분코드
+  stSql := stSql + '  CO_COMPANYCODE varchar(3)   NULL,';        //단과대코드( 소속 )
+  stSql := stSql + '  PO_POSICODE varchar(3)   NULL,';        //직위코드
+  stSql := stSql + '  K_GUBUN_NAME varchar(100)   NULL,';  //구분명
+  stSql := stSql + '  K_CHANGE char(10)   NULL,';      //변경유무
+  stSql := stSql + '  K_CHANGEDATE datetime   NULL,';      //변경일
+  stSql := stSql + '  PRIMARY KEY CLUSTERED ([K_GUBUN]) ';
+  stSql := stSql + ') ';
+
+
+  result := DataModule1.ProcessExecSQL(stSql);
 end;
 
 end.

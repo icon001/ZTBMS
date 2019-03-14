@@ -1,6 +1,6 @@
 inherited fmMain: TfmMain
-  Left = 190
-  Top = 114
+  Left = 357
+  Top = 125
   BorderStyle = bsSingle
   Caption = #49569#49688#49888#54788#54889#51312#54924
   ClientHeight = 800

@@ -1,8 +1,8 @@
 object dmAdoRelay: TdmAdoRelay
   OldCreateOrder = False
   OnCreate = DataModuleCreate
-  Left = 1044
-  Top = 196
+  Left = 916
+  Top = 193
   Height = 257
   Width = 308
   object RelayExeQuery: TADOQuery
@@ -37,5 +37,13 @@ object dmAdoRelay: TdmAdoRelay
     Provider = 'SQLOLEDB.1'
     Left = 32
     Top = 88
+  end
+  object ADOConnectionTEST: TADOConnection
+    ConnectionString = 
+      'Provider=SQLOLEDB.1;Persist Security Info=False;User ID=lomo;Ini' +
+      'tial Catalog=LOMO;Data Source=127.0.0.1'
+    Provider = 'SQLOLEDB.1'
+    Left = 32
+    Top = 136
   end
 end

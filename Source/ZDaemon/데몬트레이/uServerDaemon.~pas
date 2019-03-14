@@ -1615,6 +1615,7 @@ end;
 procedure TfmMain.Timer1Timer(Sender: TObject);
 begin
   if G_bApplicationTerminate then Exit;
+  StatusBar1.Panels[2].Text := 'Timer1Timer';
   Visible:=False;
   Timer1.Enabled:=False;
 end;
@@ -2534,7 +2535,12 @@ begin
             if Not IsDigit(stValidDate) then stValidDate := '00000000';
             stValidDate := copy(stValidDate,3,6); //유효기간
 
-            aCardNo:= FindField('CA_CARDNO').asString;
+            aCardNo:= Trim(FindField('CA_CARDNO').asString);
+            if G_bCardFixedUse then
+            begin
+              aCardNo := copy(aCardno,1,G_nCardFixedLength);
+            end;
+
             //Memo1.Lines.Add('CardAutoDownStart:'+ aCardNo);
             aDeviceID:= FillZeroNumber(FindField('AC_NODENO').asInteger,3);
             aDeviceID:= aDeviceID + FindField('AC_ECUID').AsString;
@@ -4671,6 +4677,7 @@ begin
 
     if bUseATDevice then  //근태 타입 기기이면
     begin
+      StatusBar1.Panels[1].Text := 'bUseATDevice';
       if Not bGetEmployee then
       begin
         stClientSendData := 'R' +
@@ -13770,7 +13777,8 @@ end;
 procedure TfmMain.PersonRelayTimerTimer(Sender: TObject);
 begin
   if G_bApplicationTerminate then Exit;
-//  PersonRelayTimer.Interval := 6000000;
+  StatusBar1.Panels[2].Text := 'PersonRelayTimerTimer';
+  //  PersonRelayTimer.Interval := 6000000;
   Try
     PersonRelayTimer.Enabled := False;
     if PersonRelayType = 2 then //서초사옥 테이블 연동
@@ -14053,6 +14061,7 @@ begin
     HolidaySendTimer.Enabled := False;
     Exit;   //PC 스케줄 제어이면 내려갈 필요가 없다.
   end;
+  StatusBar1.Panels[2].Text := 'HolidaySendTimerTimer';
   Try
     HolidaySendTimer.Enabled := False;
     stNowYear := formatDateTime('yyyy',now);
@@ -14544,6 +14553,7 @@ end;
 
 procedure TfmMain.LogDirectoryDeleteTimerTimer(Sender: TObject);
 begin
+  StatusBar1.Panels[2].Text := 'LogDirectoryDeleteTimerTimer';
   if G_bApplicationTerminate then Exit;
   Try
     LogDirectoryDeleteTimer.Enabled := False;
@@ -15203,6 +15213,7 @@ end;
 procedure TfmMain.ClientAckTimerTimer(Sender: TObject);
 begin
   if G_bApplicationTerminate then Exit;
+//  StatusBar1.Panels[2].Text := 'ClientAckTimerTimer';
   SendClientData('ACK');
 end;
 
@@ -15825,6 +15836,7 @@ var
   i : integer;
 begin
   if L_stDeviceSortDate = FormatDateTime('yyyymmdd',now) then Exit;
+  StatusBar1.Panels[2].Text := 'DeviceSortTimerTimer';
 
   for i := 0 to DeviceList.Count - 1 do
   begin
@@ -16112,6 +16124,7 @@ end;
 procedure TfmMain.STRTimerTimer(Sender: TObject);
 begin
   if L_bSTRDataSending then Exit;
+  StatusBar1.Panels[2].Text := 'STRTimerTimer';
   STRTimer.Enabled := False;
   L_bSTRDataSending := True;
   //STR에서 저장한 정보를 전송하자.
@@ -17698,9 +17711,16 @@ end;
 
 
 procedure TfmMain.Button1Click(Sender: TObject);
+var
+  stTemp : string;
 begin
   inherited;
-  showmessage(inttostr(DeviceConnectList.Count));
+  ATEventList.SaveToFile(ExeFolder + '\..\log\ATEvent'+ FormatDateTIme('yyyymmdd',Now)+'.log');
+  stTemp := '00120000000000000001400000000000268702625211a002001019T120057                       1이혜림';
+          TdmAttendEvent(WorkTypeList.Objects[0]).Process_EmployeeATEvent(copy(stTemp,4,14),copy(stTemp,18,3),copy(stTemp,21,2),Trim(copy(stTemp,23,20)),
+                         copy(stTemp,46,3),Trim(copy(stTemp,55,30)),copy(stTemp,49,3),copy(stTemp,52,3),Trim(copy(stTemp,86,100)),copy(stTemp,43,1),copy(stTemp,44,1),copy(stTemp,45,1),copy(stTemp,85,1));
+
+//  showmessage(inttostr(DeviceConnectList.Count));
 //  Application.MessageBox(PChar('해당MCU에 기본 항목으로 출입문을 사용하시겠습니까?'),'정보',MB_OKCANCEL);
 //  Registration_DeviceTimeSync('');
   //
@@ -18216,6 +18236,7 @@ end;
 
 procedure TfmMain.RestartTimerTimer(Sender: TObject);
 begin
+  StatusBar1.Panels[2].Text := 'RestartTimerTimer';
   RestartTimer.Enabled := False;
   if L_bRestartingTimer then Exit;
   L_bRestartingTimer := True;
@@ -18262,6 +18283,7 @@ var
   i : integer;
 begin
   //Exit;
+  StatusBar1.Panels[2].Text := 'StateSendTimerTimer';
   StateSendTimer.Interval := 200;
   if ClientSendList.Count > 0 then Exit; //전송건수가 1건 이상인 경우에는 나중에 전송하자.
   Try
@@ -18678,6 +18700,7 @@ end;
 procedure TfmMain.ClientDBSocketClearTimerTimer(Sender: TObject);
 begin
   inherited;
+  StatusBar1.Panels[2].Text := 'ClientDBSocketClearTimerTimer';
   if L_nOldDBSocketSeq <> 0 then
   begin
     dmMonitoringServer.DBSocketClear(L_nOldDBSocketSeq);
@@ -18856,6 +18879,7 @@ end;
 procedure TfmMain.GroupPermitTimerTimer(Sender: TObject);
 begin
   inherited;
+  StatusBar1.Panels[2].Text := 'GroupPermitTimerTimer';
   Try
     GroupPermitTimer.Enabled := False;
     if G_bApplicationTerminate then Exit;
@@ -19763,6 +19787,7 @@ var
   bResult : Boolean;
 begin
   inherited;
+//  StatusBar1.Panels[2].Text := 'DBProcessTimerTimer(' + inttostr(AlarmEventList.Count) + '/' + inttostr(AccessEventList.Count) + '/' + inttostr(ATEventList.Count) + ')';
   DBProcessTimer.Enabled := False;
   Try
     if Not TDataBaseConfig.GetObject.DBConnected then
@@ -19947,6 +19972,7 @@ begin
           ATSendClientData(Self,stClientSendData,strtoint(copy(stTemp,18,3)));
         end else
         begin
+  StatusBar1.Panels[2].Text := inttostr(ATEventList.Count) + '\' + stTemp;
           TdmAttendEvent(WorkTypeList.Objects[nWorkTypeIndex]).Process_EmployeeATEvent(copy(stTemp,4,14),copy(stTemp,18,3),copy(stTemp,21,2),Trim(copy(stTemp,23,20)),
                          copy(stTemp,46,3),Trim(copy(stTemp,55,30)),copy(stTemp,49,3),copy(stTemp,52,3),Trim(copy(stTemp,86,100)),copy(stTemp,43,1),copy(stTemp,44,1),copy(stTemp,45,1),copy(stTemp,85,1));
         end;
@@ -19959,6 +19985,7 @@ begin
   Finally
     DBProcessTimer.Enabled := L_bDBProcessTimerStart;
   End;
+  //StatusBar1.Panels[2].Text := 'DBProcessTimerTimer_End(' + inttostr(AlarmEventList.Count) + '/' + inttostr(AccessEventList.Count) + ')';
 end;
 
 procedure TfmMain.DBLogLoad;
@@ -21148,6 +21175,7 @@ var
   i : integer;
 begin
   inherited;
+  StatusBar1.Panels[2].Text := 'LogServerTimerTimer';
   Try
     bLogServer := False;
     ProcessList := TStringList.Create;
@@ -22080,6 +22108,7 @@ var
 begin
   inherited;
   if G_bApplicationTerminate then Exit;
+  StatusBar1.Panels[2].Text := 'DeviceInfoSearchTimer';
   DeviceInfoSearch.Interval := 2000; //2초에 한번씩...
   DeviceInfoSearch.Enabled := False;
 
@@ -22163,6 +22192,8 @@ var
   stSendData : string;
 begin
   inherited;
+  StatusBar1.Panels[2].Text := 'WebRelayTimerTimer';
+
   if G_nSpecialProgram = 6 then
   begin
     if InnoNixAlarmEventList.Count < 1 then Exit;
@@ -22345,6 +22376,7 @@ var
   i : integer;
 begin
   inherited;
+  StatusBar1.Panels[2].Text := 'CheckKTTSenderTimerTimer';
   //여기에서 KTTSenderDaemon Check 하여 실행 시키자.
   Try
     bKTTSendDaemon := False;
@@ -22913,6 +22945,7 @@ end;
 procedure TfmMain.CardDeleteTimerTimer(Sender: TObject);
 begin
   inherited;
+  StatusBar1.Panels[2].Text := 'CardDeleteTimerTimer';
   Try
     CardDeleteTimer.Enabled := False;
     if G_nSpecialProgram = 1 then
@@ -23095,6 +23128,7 @@ var
   TempAdoQuery : TAdoQuery;
 begin
   inherited;
+  StatusBar1.Panels[2].Text := 'DaemonStateCheckTimerTimer';
   DaemonStateCheckTimer.Enabled := False;
   Try
     stSql := 'Select * from TB_CURRENTDAEMON ';
@@ -23264,6 +23298,7 @@ var
   nDeviceIndex : integer;
 begin
   inherited;
+  StatusBar1.Panels[2].Text := 'RelayControlTimerTimer';
   Try
     RelayControlTimer.Enabled  := False;
     //전남대병원 통신시간 지났으면 출입문 네가티브 모드 변경하자.
@@ -23896,6 +23931,7 @@ begin
   L_bCardDownLoad := False;
   CardAutoDownTimer.Enabled := Not G_bApplicationTerminate;
   CardDownLoadCheckTimer.Enabled := False;
+  StatusBar1.Panels[2].Text := 'ConnectTimerTimer';
 end;
 
 end.

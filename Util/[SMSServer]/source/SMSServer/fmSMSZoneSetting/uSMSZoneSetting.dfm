@@ -56,9 +56,9 @@ inherited fmSMSZoneSetting: TfmSMSZoneSetting
       object Label9: TLabel
         Left = 16
         Top = 112
-        Width = 48
+        Width = 60
         Height = 12
-        Caption = #48169#48276#44396#50669
+        Caption = #52968#53944#47204#47084#47749
       end
       object lb_Building1: TLabel
         Left = 16

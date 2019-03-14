@@ -1,8 +1,8 @@
 inherited fmMain: TfmMain
-  Left = 222
-  Top = 144
-  Width = 1030
-  Height = 730
+  Left = 245
+  Top = 116
+  Width = 988
+  Height = 658
   Caption = #49324#50896' '#50672#46041' '#49884#49828#53596
   Font.Charset = HANGEUL_CHARSET
   Font.Height = -12
@@ -19,8 +19,8 @@ inherited fmMain: TfmMain
   object Image1: TImage [0]
     Left = 0
     Top = 57
-    Width = 1022
-    Height = 589
+    Width = 980
+    Height = 517
     Align = alClient
     AutoSize = True
     Center = True
@@ -28,7 +28,7 @@ inherited fmMain: TfmMain
   object ToolBar1: TToolBar [1]
     Left = 0
     Top = 0
-    Width = 1022
+    Width = 980
     Height = 57
     ButtonHeight = 51
     ButtonWidth = 79
@@ -53,8 +53,8 @@ inherited fmMain: TfmMain
   end
   object StatusBar1: TStatusBar [2]
     Left = 0
-    Top = 646
-    Width = 1022
+    Top = 574
+    Width = 980
     Height = 30
     Panels = <
       item
@@ -78,6 +78,17 @@ inherited fmMain: TfmMain
       item
         Width = 50
       end>
+  end
+  object Memo1: TMemo [3]
+    Left = 200
+    Top = 136
+    Width = 553
+    Height = 369
+    ImeName = 'Microsoft IME 2010'
+    Lines.Strings = (
+      'Memo1')
+    TabOrder = 2
+    Visible = False
   end
   inherited CommandArray: TCommandArray
     Commands = <
@@ -122,6 +133,18 @@ inherited fmMain: TfmMain
         CommandKind = 0
         Name = 'THizeState'
         OnExecute = CommandArrayCommandsTHizeStateExecute
+      end
+      item
+        CommandName = 'YoungGwangState'
+        CommandKind = 0
+        Name = 'TYoungGwang'
+        OnExecute = CommandArrayCommandsTYoungGwangExecute
+      end
+      item
+        CommandName = 'HongikState'
+        CommandKind = 0
+        Name = 'THongikState'
+        OnExecute = CommandArrayCommandsTHongikExecute
       end>
   end
   object MainMenu1: TMainMenu
@@ -176,6 +199,11 @@ inherited fmMain: TfmMain
         Caption = #53748#50896#54872#51088#49325#51228
         OnClick = mn_DeleteHospitalClick
       end
+    end
+    object test1: TMenuItem
+      Caption = 'test'
+      Visible = False
+      OnClick = test1Click
     end
   end
   object tbi: TantTaskbarIcon

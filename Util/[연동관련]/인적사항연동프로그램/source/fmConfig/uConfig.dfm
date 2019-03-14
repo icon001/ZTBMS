@@ -1,6 +1,6 @@
 object fmConfig: TfmConfig
-  Left = 667
-  Top = 355
+  Left = 631
+  Top = 331
   Width = 466
   Height = 340
   Caption = #54872#44221#49444#51221
@@ -74,7 +74,7 @@ object fmConfig: TfmConfig
     Top = 0
     Width = 458
     Height = 217
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Align = alTop
     TabOrder = 1
     object TabSheet1: TTabSheet
@@ -348,6 +348,142 @@ object fmConfig: TfmConfig
         TabOrder = 6
       end
     end
+    object TabSheet5: TTabSheet
+      Caption = #51217#49549#54872#44221'3'
+      ImageIndex = 4
+      object Label18: TLabel
+        Left = 16
+        Top = 20
+        Width = 96
+        Height = 12
+        Caption = #45936#51060#53552#48288#51060#49828#53440#51077
+      end
+      object Label19: TLabel
+        Left = 16
+        Top = 44
+        Width = 84
+        Height = 12
+        Caption = #45936#51060#53552#48288#51060#49828'IP'
+      end
+      object Label20: TLabel
+        Left = 16
+        Top = 68
+        Width = 96
+        Height = 12
+        Caption = #45936#51060#53552#48288#51060#49828'PORT'
+      end
+      object Label21: TLabel
+        Left = 16
+        Top = 92
+        Width = 36
+        Height = 12
+        Caption = #44228#51221'ID'
+      end
+      object Label22: TLabel
+        Left = 16
+        Top = 116
+        Width = 60
+        Height = 12
+        Caption = #44228#51221'PASSWD'
+      end
+      object Label23: TLabel
+        Left = 16
+        Top = 140
+        Width = 84
+        Height = 12
+        Caption = #45936#51060#53552#48288#51060#49828#47749
+      end
+      object btn_ConnectTest3: TSpeedButton
+        Left = 16
+        Top = 167
+        Width = 97
+        Height = 17
+        Caption = #51217#49549#53580#49828#53944
+        OnClick = btn_ConnectTest3Click
+      end
+      object btn_QueryTest3: TSpeedButton
+        Tag = 3
+        Left = 336
+        Top = 167
+        Width = 97
+        Height = 17
+        Caption = #53244#47532#53580#49828#53944
+        Enabled = False
+        OnClick = btn_QueryTest1Click
+      end
+      object cmb_DBType3: TComboBox
+        Left = 128
+        Top = 16
+        Width = 201
+        Height = 20
+        Style = csDropDownList
+        ImeName = 'Microsoft Office IME 2007'
+        ItemHeight = 12
+        ItemIndex = 0
+        TabOrder = 0
+        Text = '1.MSSQL'
+        Items.Strings = (
+          '1.MSSQL'
+          '2.POSTGRESQL'
+          '3.ORACLE'
+          '4.MDB'
+          '5.ORACLE(oraOleDB)'
+          '6.ODBC')
+      end
+      object ed_dbip3: TEdit
+        Left = 128
+        Top = 40
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        TabOrder = 1
+      end
+      object ed_dbport3: TEdit
+        Left = 128
+        Top = 64
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        TabOrder = 2
+      end
+      object ed_dbuserid3: TEdit
+        Left = 128
+        Top = 88
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        TabOrder = 3
+      end
+      object ed_dbpw3: TEdit
+        Left = 128
+        Top = 112
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        TabOrder = 4
+      end
+      object ed_dbname3: TEdit
+        Left = 128
+        Top = 136
+        Width = 201
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        TabOrder = 5
+      end
+      object ed_ConnectedTest3: TEdit
+        Left = 128
+        Top = 166
+        Width = 201
+        Height = 18
+        BevelInner = bvNone
+        BevelOuter = bvNone
+        Ctl3D = False
+        ImeName = 'Microsoft Office IME 2007'
+        ParentCtl3D = False
+        ReadOnly = True
+        TabOrder = 6
+      end
+    end
     object TabSheet2: TTabSheet
       Caption = #54532#47196#44536#47016
       ImageIndex = 1
@@ -416,7 +552,10 @@ object fmConfig: TfmConfig
           '10.STX'#52285#50896
           '11.'#46041#50577#45824#48513#49436#50872#52896#54140#49828
           '12.'#50500#51452#45824#44592#49689#49324
-          '13.'#50668#49688#48337#50896)
+          '13.'#50668#49688#48337#50896
+          '14.'#50689#44305#51333#54633#48337#50896
+          '15.'#54861#51061#45824'('#49436#50872')'
+          '16.'#54861#51061#45824'('#49464#51333')')
       end
       object ed_RelayTime: TEdit
         Left = 128
@@ -456,6 +595,25 @@ object fmConfig: TfmConfig
         MaxLength = 3
         TabOrder = 4
         Text = '000'
+      end
+      object gb_Emergency: TGroupBox
+        Left = 264
+        Top = 80
+        Width = 145
+        Height = 49
+        Caption = #51025#44553#49892#53076#46300
+        TabOrder = 5
+        Visible = False
+        object ed_EmergencyCode: TEdit
+          Left = 16
+          Top = 21
+          Width = 97
+          Height = 20
+          ImeName = 'Microsoft Office IME 2007'
+          MaxLength = 3
+          TabOrder = 0
+          Text = '000'
+        end
       end
     end
     object TabSheet3: TTabSheet

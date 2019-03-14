@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, DB, ADODB, FR_DSet, FR_DBSet, FR_Class, Grids,
-  BaseGrid, AdvGrid, StdCtrls, Buttons, uSubForm, CommandArray;
+  BaseGrid, AdvGrid, StdCtrls, Buttons, uSubForm, CommandArray, AdvObj;
 
 type
   TfmPerATState = class(TfmASubForm)
@@ -296,6 +296,7 @@ begin
   end;
   stSql := stSql + ' Order by b.EM_CODE ';
 
+ 
   with ADOQuery do
   begin
     Close;

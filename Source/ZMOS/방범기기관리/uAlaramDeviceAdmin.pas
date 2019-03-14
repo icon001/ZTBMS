@@ -85,6 +85,8 @@ type
     ed_ArmAreaName: TEdit;
     SpeedButton1: TSpeedButton;
     SaveDialog1: TSaveDialog;
+    ADOSearchQuery: TADOQuery;
+    Timer1: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -114,6 +116,7 @@ type
     procedure cmb_EcuChange(Sender: TObject);
     procedure ed_ArmAreaNameChange(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
   private
     MCUIDList : TStringList;
     sMCUIDList : TStringList;
@@ -132,6 +135,7 @@ type
     procedure FormClear;
     procedure FormEnable(aState:string);
     procedure ButtonEnable(aState:string);
+    procedure SearchLock(aEnable : Boolean);
     procedure MCULoad(aBuildingCode,aFloorCode,aAreaCode:string;aList:TStringList;cmb_Box:TComboBox;aType:string);
     procedure DeviceLoad(aNodeNo:string;StringList:TStringList;cmb_Box:TComboBox;aType:string);
     procedure LoadBuildingCode(cmb_Box:TComboBox);
@@ -401,6 +405,7 @@ begin
   FormClear;
   FormEnable(State);
   ButtonEnable(State);
+  SearchLock(False);
 
   GridInit; //스트링그리드 초기화
 
@@ -474,11 +479,8 @@ begin
   stSql := stSql + ' order by a.AR_VIEWSEQ,a.AC_NODENO,a.AC_ECUID,a.AR_AREANO  ';
 
   Try
-    CoInitialize(nil);
-    TempAdoQuery := TADOQuery.Create(nil);
-    TempAdoQuery.Connection := DataModule1.ADOConnection;
 
-    with TempAdoQuery do
+    with ADOSearchQuery do
     begin
       Close;
       Sql.Clear;
@@ -487,11 +489,13 @@ begin
       Try
         Open;
       Except
+        SearchLock(True);
         Exit;
       End;
 
       if RecordCount < 1 then
       begin
+        SearchLock(True);
         Exit;
       end;
 
@@ -544,8 +548,7 @@ begin
       end;
     end;
   Finally
-    TempAdoQuery.Free;
-    CoUninitialize;
+    SearchLock(True);
   End;
   sg_AlarmClick(sg_Alarm);
 
@@ -744,7 +747,8 @@ begin
   DeviceLoad(stNodeNo,regDeviceIDList,cmb_regDeviceCode,'N');
   if cmb_MCUCode.ItemIndex > 0 then stNodeNo := copy(MCUIDList.Strings[cmb_MCUCode.ItemIndex],1,3);
   DeviceLoad(stNodeNo,DeviceIDList,cmb_ECU,'Y');
-  AlarmSearch(stBuildingCode,stFloorCode,stAreaCode,stNodeNo,'','');
+  //AlarmSearch(stBuildingCode,stFloorCode,stAreaCode,stNodeNo,'',''); --한남대에서 메모리 부족 에러
+  Timer1.Enabled := True;
   L_bDeviceUpdate := False;
 end;
 
@@ -2632,6 +2636,23 @@ begin
     end;
   end;
 
+end;
+
+procedure TfmAlaramDeviceAdmin.Timer1Timer(Sender: TObject);
+begin
+  inherited;
+  Timer1.Enabled := False;
+  cmb_BuildingCode1Change(cmb_BuildingCode1);
+end;
+
+procedure TfmAlaramDeviceAdmin.SearchLock(aEnable: Boolean);
+begin
+  cmb_BuildingCode1.Enabled := aEnable;
+  cmb_FloorCode1.Enabled := aEnable;
+  cmb_AreaCode1.Enabled := aEnable;
+  cmb_MCUCode.Enabled := aEnable;
+  cmb_Ecu.Enabled := aEnable;
+  ed_ArmAreaName.Enabled := aEnable;
 end;
 
 end.

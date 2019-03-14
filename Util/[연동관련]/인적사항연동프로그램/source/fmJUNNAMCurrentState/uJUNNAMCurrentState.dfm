@@ -1,6 +1,6 @@
 inherited fmJUNNAMCurrentState: TfmJUNNAMCurrentState
-  Left = 191
-  Top = 416
+  Left = 501
+  Top = 462
   Width = 1016
   Height = 607
   Caption = #49892#49884#44036' '#49569#49688#49888' '#54788#54889' '#51312#54924

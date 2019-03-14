@@ -587,7 +587,6 @@ function TdmAttendEvent.Process_UpdateAttendData(aATDate, aNowTime,
   aCardNo, aCompanyCode, aEMCode, aAttendType: string; aWeekCode: integer;
   aYesterDay, aAtInsert: Boolean;aJijumCode,aDepartCode,aEmName:string;var aATCode:string): Boolean;
 begin
-
   if aAttendType = '1' then //출근
   begin
 //TEST
@@ -885,7 +884,11 @@ begin
     end;
     Exit;
   end;
-  
+
+(*
+ErrorLogSave(ExeFolder + '\..\log\ATlog'+ FormatDateTIme('yyyymmdd',Now)+'.log',
+                 '근태 데이터 저장',aDate+':'+aNowTime+':'+aCompanyCode+':'+ aEMCode);
+*)
   if dmAdoQuery.DupCheckTB_ATEVENT_OutTime(aDate,aNowTime,aCompanyCode,aEMCode) then   //퇴근시간이 없거나 현재시간보다 작은 경우
   begin
     stATOutCode := GetATOutCode(aATCode,aNowTime,nWeekCode,aYesterDay,stWorkEndTime);  //근태타입에 대한 퇴근코드 가져오자.
@@ -1254,6 +1257,8 @@ begin
   stEmName := aEmName;
   stATCode := '001'; //디폴트로 1교대 입력
 
+ErrorLogSave(ExeFolder + '\..\log\ATlog'+ FormatDateTIme('yyyymmdd',Now)+'.log',
+                 'Process_EmployeeATEvent',aTime+':'+aEMCode);
 
   if Not IsDigit(aTime) then
   begin
@@ -1462,6 +1467,9 @@ begin
     else if (aButton = ATWorkInNo) then stButton := '5';
   end;
 
+ErrorLogSave(ExeFolder + '\..\log\ATlog'+ FormatDateTIme('yyyymmdd',Now)+'.log',
+                 'CheckTB_ATLISTEVENT',aTime+':'+aEMCode);
+
   if Not CheckTB_ATLISTEVENT(Copy(aTime,1,8),Copy(aTime,9,6),stCompanyCode,stEMCode,aNodeNo,aECUID,stATCode,stTemp) then
     InsertTB_ATLISTEVENT(Copy(aTime,1,8),Copy(aTime,9,6),stCompanyCode,stEMCode,aNodeNo,aECUID,stATCode,stTemp,aCardNo,aDoorNo,aReaderNo,stButton,stDate);
 
@@ -1535,14 +1543,18 @@ begin
     end else //입실
     begin
       stLastInTime := dmDBFunction.GetTB_ATEVENT_LastInTime(stDate,stCompanyCode,stEMCode,stATCode,stWorkStartTime,stWorkEndTime);
+      stLastOutTime := dmDBFunction.GetTB_ATEVENT_LastOutTime(stDate,stCompanyCode,stEMCode,stATCode,stWorkStartTime,stWorkEndTime);
+
       if (stLastInTime = '') or (stLastInTime < aTime) then
       begin
-        dmDBFunction.UpdateTB_ATEVENT_Field_StringValue(stDate,stCompanyCode,stEMCode,'AT_LASTINTIME',aTime);
+        //dmDBFunction.UpdateTB_ATEVENT_Field_StringValue(stDate,stCompanyCode,stEMCode,'AT_LASTINTIME',aTime);
+        if (stLastInTime = '') then dmDBFunction.UpdateTB_ATEVENT_Field_StringValue(stDate,stCompanyCode,stEMCode,'AT_LASTINTIME',aTime)
+        else if (aTime > stLastOutTime) and (stLastOutTime <> '') then dmDBFunction.UpdateTB_ATEVENT_Field_StringValue(stDate,stCompanyCode,stEMCode,'AT_LASTINTIME',aTime);
+        //K뱅크에서 들어오기만 들어오고 나가는 경우가 발생하지 않아서... 기존에 무조건 업데이트를 나간적이 있는 경우 나간 시간보다 들어온 시간이 커진 경우만 업데이트로 변경 처리함
       end else
       begin
         Exit;
       end;
-      stLastOutTime := dmDBFunction.GetTB_ATEVENT_LastOutTime(stDate,stCompanyCode,stEMCode,stATCode,stWorkStartTime,stWorkEndTime);
       if stLastOutTime <> '' then  //나간적이 있는 경우만 계산 하자.
       begin
         if(stLastOutTime < stLastInTime) then stLastOutTime := stLastInTime;   //마지막 나간 시간이 마지막 들어간 시간보다 더 빠르면 들어가는 것을 두번 수행하는 경우이다.

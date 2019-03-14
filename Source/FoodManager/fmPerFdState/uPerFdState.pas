@@ -50,6 +50,7 @@ type
     chk_Event: TCheckBox;
     Label21: TLabel;
     cmb_FoodGubun: TComboBox;
+    Memo1: TMemo;
     procedure btn_CloseClick(Sender: TObject);
     procedure btn_PrintClick(Sender: TObject);
     procedure btn_FileSaveClick(Sender: TObject);
@@ -175,7 +176,7 @@ begin
   else if DBTYPE = 'PG' then stSql := PostGreSql.SelectTB_EMPLOYEEJoinFoodState(FormatDateTime('yyyymmdd',dt_startDate.Date),FormatDateTime('yyyymmdd',dt_endDate.Date),stFoodArea,stFoodPermit,bInnerJoin,stFoodCode)
   else if DBTYPE = 'MSSQL' then stSql := MSSql.SelectTB_EMPLOYEEJoinFoodState(FormatDateTime('yyyymmdd',dt_startDate.Date),FormatDateTime('yyyymmdd',dt_endDate.Date),stFoodArea,stFoodPermit,bInnerJoin,stFoodCode)
   else Exit;
-  
+
   if (Not IsMaster) and (CompanyGrade <> '0') then
   begin
     if CompanyGrade = '1' then
@@ -277,6 +278,9 @@ begin
 
   stSql := stSql + ' Order By a.CO_COMPANYCODE,a.EM_CODE ';
 
+
+//  memo1.Text := stSql;
+  
   with ADOQuery do
   begin
     Close;

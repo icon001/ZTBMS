@@ -426,7 +426,8 @@ begin
   if Not FileExists(aImportFileName) then Exit;
   targetName := ExtractFileName(aImportFileName);
   targetName := ChangeFileExt(targetName,'');
-  if UpperCase(targetName) = 'TB_ZIPCODE' then
+
+  if (UpperCase(targetName) = 'TB_ZIPCODE')  then
   begin
     ga_Table.Progress := ga_Table.MaxValue;
     Ga_Tot.Progress := Ga_Tot.Progress + 1;
@@ -434,18 +435,18 @@ begin
     Exit;
   end;
 
-(*  if UpperCase(targetName) = 'TB_EMPHIS' then
+  if UpperCase(targetName) = 'TB_EMPHIS' then
   begin
     ga_Table.Progress := ga_Table.MaxValue;
     Ga_Tot.Progress := Ga_Tot.Progress + 1;
     result := True; //TB_EMPHIS 테이블은 복구 하지 말자. Serial 부분 때문에 문제 발생함
     Exit;
-  end; *)
+  end;
   if UpperCase(targetName) = 'TB_CLIENTSOCK' then
   begin
     ga_Table.Progress := ga_Table.MaxValue;
     Ga_Tot.Progress := Ga_Tot.Progress + 1;
-    result := True; //TB_EMPHIS 테이블은 복구 하지 말자. Serial 부분 때문에 문제 발생함
+    result := True; //TB_CLIENTSOCK 테이블은 복구 하지 말자. Serial 부분 때문에 문제 발생함
     Exit;
   end;
   if UpperCase(targetName) = 'TB_FACECOP' then
@@ -475,7 +476,7 @@ begin
   DropTable(targetName);
   if Not CreateTable(targetName) then
   begin
-    showmessage(targetName +' 테이블 생성 오류입니다.');
+    //showmessage(targetName +' 테이블 생성 오류입니다.');
     Exit;
   end;
 
@@ -639,8 +640,8 @@ begin
         if Not FileDBRestor(ed_BackupDir.Text + '\' + BackupFileList.Strings[i]) then
         begin
           Memo1.Lines.Add(BackupFileList.Strings[i] + ' 복구 실패');
-          showmessage(BackupFileList.Strings[i] + ' 복구 실패');
-          break;
+          //showmessage(BackupFileList.Strings[i] + ' 복구 실패');
+          //break;
         end;
       end;
     end;

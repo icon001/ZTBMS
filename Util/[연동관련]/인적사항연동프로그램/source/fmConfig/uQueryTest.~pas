@@ -58,8 +58,9 @@ begin
     ON E: Exception do
     begin
       showmessage(E.Message);
+      Exit;
     end;
-    Exit;
+    //Exit;
   End;
 end;
 

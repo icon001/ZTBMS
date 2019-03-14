@@ -22,12 +22,13 @@ type
     FOnStateChange: TStateChange;
     procedure SetState(const Value: string);
     procedure SetHospitalizeDate(const Value: string);
+    procedure SetLeaveDate(const Value: string);
   public
     ProPerty OnStateChange : TStateChange read FOnStateChange Write FOnStateChange;
   published
     Property PatientNo : string read FPatientNo write FPatientNo;
     Property HospitalizeDate : string read FHospitalizeDate write SetHospitalizeDate; //ÀÔ¿øÀÏÀÚ
-    Property LeaveDate : string read FLeaveDate write FLeaveDate; //Åð¿øÀÏÀÚ
+    Property LeaveDate : string read FLeaveDate write SetLeaveDate; //Åð¿øÀÏÀÚ
     Property State : string read FState write SetState;           //ÀÔÅð¿ø »óÅÂ C:ÀÔ¿ø,S:Åð¿ø
   end;
 
@@ -44,6 +45,12 @@ procedure TPatientInfo.SetHospitalizeDate(const Value: string);
 begin
   if FHospitalizeDate >= Value then  Exit;
   FHospitalizeDate := Value;
+end;
+
+procedure TPatientInfo.SetLeaveDate(const Value: string);
+begin
+  if FLeaveDate >= Value then  Exit;
+  FLeaveDate := Value;
 end;
 
 procedure TPatientInfo.SetState(const Value: string);
