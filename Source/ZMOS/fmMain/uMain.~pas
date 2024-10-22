@@ -21,11 +21,12 @@ uses
 const con_AccessMapMonitoring = 1;
 const con_AccessReport = 2;
 const con_AccessTypeMonitoring = 3;
-const con_AlarmAccessReport = 4;
-const con_AlarmAdminReport = 5;
-const con_AlarmMapMonitoring = 6;
-const con_AlarmTypeMonitoring = 7;
-const con_ArmGradeReport = 8;
+const con_AdminChangeReport = 4;
+const con_AlarmAccessReport = 5;
+const con_AlarmAdminReport = 6;
+const con_AlarmMapMonitoring = 7;
+const con_AlarmTypeMonitoring = 8;
+const con_ArmGradeReport = 9;
 const con_BuildingAccessReport = 10;
 const con_BuildingAccessTypeMonitoring = 11;
 const con_BuildingAlarmReport = 12;
@@ -63,6 +64,7 @@ const con_PersonStateReport = 81;
 const con_ReaderState = 82;
 const con_RemoteSupport = 83;
 const con_ScheduleForm = 88;
+const con_SystemLoginReport = 89;
 const con_TimeAccessReport = 90;
 const con_TimeNotAccessReport = 91;
 const con_TreeEmployeeShow = 92;
@@ -269,7 +271,6 @@ type
     mn_empChangeReport: TMenuItem;
     DaemonLiveCheckTimer: TTimer;
     DaemonLiveRecvTimer: TTimer;
-    pan_DaemonReceve: TPanel;
     DaemonMessageVisibleTimer1: TTimer;
     mn_cardReport: TMenuItem;
     btn_message: TSpeedButton;
@@ -325,6 +326,11 @@ type
     MediaPlayer2: TMediaPlayer;
     DoorStateCheckTimer1: TTimer;
     N56: TMenuItem;
+    mn_SystemLoginReport: TMenuItem;
+    mn_AdminChangeReport: TMenuItem;
+    MediaPlayer3: TMediaPlayer;
+    Memo1: TMemo;
+    Memo2: TMemo;
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure mn_CloseClick(Sender: TObject);
@@ -507,6 +513,8 @@ type
     procedure DoorStateCheckTimer1Timer(Sender: TObject);
     procedure N56Click(Sender: TObject);
     procedure MediaPlayer1Notify(Sender: TObject);
+    procedure mn_SystemLoginReportClick(Sender: TObject);
+    procedure mn_AdminChangeReportClick(Sender: TObject);
   private
     FLogined: Boolean;
     FPrivileges: String;
@@ -520,6 +528,7 @@ type
     ControlPort : string;
     StatePort : string;
     EventPort : string;
+    L_bMessageFlag : Boolean;
     L_nArmAreaStateCount : integer;
     L_nRecvPacketCount : integer;
     L_nWebContentLength : integer;
@@ -664,7 +673,6 @@ type
 
 
   private //데이터 연동 관련
-    Function GetFdmsID:string;
     Function GetEmployeeFdmsID(aCompanyCode,aEmpID:string):string;
     Function GetCardNo(aCompanyCode,aEmpID:string):string;
 
@@ -709,6 +717,7 @@ type
     procedure MemoryFree;
     procedure TimerStopAndFree;
     procedure MonitorHeaderNameCreate;
+
   private
     procedure BuildingSectorDeviceLoad;
     procedure LoadArmArea;
@@ -760,6 +769,7 @@ type
     procedure FireRecovery(Sender:TObject); //화재복구
     procedure DeviceChange; //리더 변경발생
 //    procedure ServerConnectEvent(Sender:TObject;aValue:Boolean); //Daemon Server Connected Event
+
   private
     L_bSendResult :Boolean;
     L_bWait :Boolean;
@@ -803,6 +813,7 @@ procedure TfmMain.FormShow(Sender: TObject);
 var
   LogoFile : string;
 begin
+
   if G_bApplicationTerminate then Exit;
 
   FailCount := 0;
@@ -821,6 +832,8 @@ begin
   Monitoring := False;
   GroupMonitoring := False;
   CenterPanel;
+
+
 
   TDataBaseConfig.GetObject.DataBaseConnect;
   if Not TDataBaseConfig.GetObject.DBConnected then
@@ -846,7 +859,9 @@ begin
   InitConfigSet;
   ClientConfigRead;
 
+
   AlarmEventViewStatusCodeLoad;     //알람 발생 코드 로딩
+
   AlarmEventSoundStatusCodeLoad;
   CommonModule.LoadAlarmModeNotCard(AlarmModeNotCardList);
   CommonModule.LoadZoneDetectList(ZoneDetectList);
@@ -859,6 +874,18 @@ begin
 
   dmJavara.JavaraLoad; //자바라 타입 로드
 
+  if G_nDaemonServerVersion < 11 then
+  begin
+    showmessage('통신 데몬을 업데이트 하셔야 합니다.');
+    Exit;
+  end;
+  if G_nDaemonServerVersion > 10 then
+  begin
+    if (Application.MessageBox(PChar('모니터링 프로그램을 업데이트 하셔야 합니다. 지금 업데이트 하시겠습니까?'),'정보',MB_OKCANCEL) <> IDCANCEL)  then
+    begin
+      mn_MonitoringUpgradeClick(mn_MonitoringUpgrade);
+    end;
+  end;
 end;
 
 procedure TfmMain.FormCreate(Sender: TObject);
@@ -866,6 +893,7 @@ var
   ini_fun : TiniFile;
   i : integer;
 begin
+  mn_AdminChangeReport.Visible := False;
   Application.OnMessage := MessageEvent;
   NETTYPE :='TCPIP';
   self.ModuleID := 'Main';
@@ -917,6 +945,9 @@ begin
   G_nAlarmRefreshDate := 2;
   L_nArmAreaStateCount := 0;
   Panel1.Left := -1000;
+
+  //========================================================== 자동 로그인 추가(2024.04)
+  //if G_bAutoLoginUse = True then Action_LoginExecute(Self);
 end;
 
 procedure TfmMain.mn_CloseClick(Sender: TObject);
@@ -1010,7 +1041,6 @@ begin
 
   bAuthConnect := AuthSiteConnect;
 
-
   bRegistryKeyCheck := RegistryKeyCheck(L_stCustomerID);
   if Not bRegistryKeyCheck then
   begin
@@ -1060,6 +1090,7 @@ begin
           end;
         end;
       end;
+
 
       if Not bResult then
       begin
@@ -1282,6 +1313,10 @@ begin
   MenuNameSet;
   MonitorHeaderNameCreate;
 
+  //========================================================== 자동 로그인 추가(2024.04)
+  if G_bAutoLoginUse = True then Action_LoginExecute(nil);
+  //========================================================== 자동 로그인 추가(2024.04)
+  
   AlarmSound.Enabled := True;
   stContent := CreateZmosConfig;
   if stContent <> '' then
@@ -1303,6 +1338,7 @@ begin
    StatusBar1.Panels[1].Text := '로그인 중입니다.' ;
 
    TLogin.GetObject.ShowLoginDlg;
+
    Master_ID := TLogin.GetObject.UserID;
    Master_Name := TLogin.GetObject.UserName;
    AdminGrade := Trim(TLogin.GetObject.Grade);
@@ -1320,10 +1356,12 @@ var
   bPWChange : Boolean;
   dtUpdateTime : TDateTime;
 begin
-  FLogined := Value;
   mn_Login.Enabled := not Value;
   Mn_LogOff.Enabled := value;
   mn_PWChange.Enabled := Value;
+  if FLogined = Value then Exit;
+  FLogined := Value;
+
   if FLogined then
   begin
    StatusBar1.Panels[0].Text := Master_Name;
@@ -1385,6 +1423,7 @@ end;
 
 procedure TfmMain.SetPrivileges(const Value: String);
 begin
+  //showmessage(Value);
   FPrivileges := Value;
   TravelMenuItem(MN_BasicCode,Value); //코드관리
   TravelMenuItem(mn_Manager,Value); //운영관리
@@ -1406,6 +1445,7 @@ Procedure TfmMain.TravelMenuItem(MenuItem:TMenuItem;ProgIDs:String);
 var
   Loop : Integer;
 begin
+
   For Loop:=0 to Menuitem.Count - 1 do
       TravelmenuItem(MenuITem.Items[Loop],ProgIDs);
 
@@ -2113,6 +2153,7 @@ begin
   fdmsAsciiToHex := True;
   fdmsDepartCodeUse := False;
   fdmsDelete := False;
+  G_bCardFullUse := False;
 
   UseDeviceServer := True; //기본적으로 기기가 서버인 구조이다.
 
@@ -2242,6 +2283,10 @@ begin
         end else if FindField('CO_CONFIGCODE').AsString = 'CARDAUTO' then
         begin
           if UpperCase(FindField('CO_CONFIGVALUE').AsString) = 'TRUE' then CardAutoDownLoadUse := True;
+        end else if FindField('CO_CONFIGCODE').AsString = 'CARDFULL' then
+        begin
+          if UpperCase(FindField('CO_CONFIGVALUE').AsString) <> '1' then G_bCardFullUse := False
+          else G_bCardFullUse := True;
         end else if FindField('CO_CONFIGCODE').AsString = 'SPECIALCD' then
         begin
           G_nSpecialProgram := StrtoInt(FindField('CO_CONFIGVALUE').AsString);
@@ -2829,6 +2874,7 @@ procedure TfmMain.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   ini_fun : TiniFile;
 begin
+  Logined := False;
   Try
     G_bApplicationTerminate := True;
     MediaPlayer1.Close;
@@ -2864,6 +2910,11 @@ begin
     begin
       self.FindClassForm('TfmAccessTypeMonitoring').FindCommand('Close').Execute;
     end;
+    if G_bFormEnabled[con_AdminChangeReport] then
+    begin
+      self.FindClassForm('TfmAdminChangeReport').FindCommand('Close').Execute;
+    end;
+
     if G_bFormEnabled[con_BuildingAccessTypeMonitoring] then
     begin
       self.FindClassForm('TfmBuildingAccessTypeMonitoring').FindCommand('Close').Execute;
@@ -3833,6 +3884,7 @@ begin
   FM107 := '핸드폰';
   FM108 := '주소1';
   FM109 := '주소2';
+  FM110 := '재직구분';
   FM901 := '빌딩코드';
   FM902 := '빌딩명칭';
   FM903 := '빌딩권한';
@@ -3929,6 +3981,9 @@ begin
       end else if FindField('FM_CODE').AsString = '109' then
       begin
         FM109 := FindField('FM_NAME').asstring;
+      end else if FindField('FM_CODE').AsString = '110' then
+      begin
+        FM110 := FindField('FM_NAME').asstring;
       end else if FindField('FM_CODE').AsString = '901' then
       begin
         FM901 := FindField('FM_NAME').asstring;
@@ -4117,10 +4172,14 @@ begin
 
   if LMDIniCtrl1.ReadString('환경설정','개방모드열림상태','N') = 'Y' then OpenModeDoorOpen := True
   else OpenModeDoorOpen := False;
+  if LMDIniCtrl1.ReadString('환경설정','사번수정','N') = 'Y' then G_bUpdateEmCode := True
+  else G_bUpdateEmCode := False;
   if LMDIniCtrl1.ReadString('환경설정','알람발생','N') = 'Y' then ACAlarmUse := True
   else ACAlarmUse := False;
   if LMDIniCtrl1.ReadString('환경설정','장시간열림알람발생','N') = 'Y' then LongDoorOpenAlarmUse := True
   else LongDoorOpenAlarmUse := False;
+  if LMDIniCtrl1.ReadString('환경설정','출입문열림알람발생','N') = 'Y' then G_bDoorOpenAlarmUse := True
+  else G_bDoorOpenAlarmUse := False;
   if LMDIniCtrl1.ReadString('환경설정','출입전용알람발생','N') = 'Y' then ACAlarmEventUse := True
   else ACAlarmEventUse := False;
   ACAlarmEventCode := LMDIniCtrl1.ReadString('환경설정','출입전용알람코드','NF,AF');
@@ -4142,6 +4201,7 @@ begin
   G_nAlarmCount := LMDIniCtrl1.ReadInteger('환경설정','AlarmCount',1);
 
   PTAlaramFile := LMDIniCtrl1.ReadString('환경설정','방범알람파일','');
+  G_stDoorOpenAlaramFile := LMDIniCtrl1.ReadString('환경설정','출입문열림파일','');
   IsCardGradCopy := False;
   if LMDIniCtrl1.ReadInteger('환경설정','카드권한복사',0) = 1  then IsCardGradCopy := True;
   G_nAccessEventSearch := LMDIniCtrl1.ReadInteger('환경설정','출입이벤트',1);
@@ -4196,6 +4256,13 @@ begin
   G_nMultiDeleteCard := LMDIniCtrl1.ReadInteger('환경설정','멀티삭제',0);
   G_nEmployeeAdminType := LMDIniCtrl1.ReadInteger('환경설정','사원관리',0);
   G_nFileFormat := LMDIniCtrl1.ReadInteger('환경설정','파일포맷',0);
+
+  //========================================================== 자동 로그인 추가(2024.04)
+  if LMDIniCtrl1.ReadString('환경설정','자동로그인사용','N') = 'Y' then G_bAutoLoginUse := True
+  else G_bAutoLoginUse := False;
+  G_stAutoLoginUserID := LMDIniCtrl1.ReadString('환경설정','자동로그인사용자아이디','1234');
+  G_stAutoLoginUserPW := LMDIniCtrl1.ReadString('환경설정','자동로그인패스워드','1234');
+  //========================================================== 자동 로그인 추가(2024.04)
 
   if LMDIniCtrl1.ReadInteger('사원정보','기본퇴사일사용유무',0) = 1 then  G_bRetireDateUse := True
   else G_bRetireDateUse := False;
@@ -5366,7 +5433,7 @@ var
   stSql : string;
   aFdmsID : string;
 begin
-  aFdmsID := GetFdmsID;
+  aFdmsID := CommonModule.GetNextFdmsID;//GetFdmsID;
   stSql := 'Insert Into TB_EMPLOYEE(';
   stSql := stSql + 'GROUP_CODE,';
   stSql := stSql + 'EM_CODE,';
@@ -5990,45 +6057,6 @@ begin
   result := True;
 end;
 
-function TfmMain.GetFdmsID: string;
-var
-  stSql : string;
-  nFdms_id : integer;
-  TempAdoQuery :TADOQuery;
-begin
-  result := '31';
-  stSql := 'select Max(Fdms_id) as fdms_id from TB_EMPLOYEE ';
-  Try
-    CoInitialize(nil);
-    TempAdoQuery := TADOQuery.Create(nil);
-    TempAdoQuery.Connection := DataModule1.ADOConnection;
-    TempAdoQuery.DisableControls;
-
-    with TempAdoQuery do
-    begin
-      Close;
-      Sql.Clear;
-      Sql.Text := stSql;
-      Try
-        Open;
-      Except
-        Exit;
-      End;
-      if recordCount < 1 then Exit;
-      Try
-        nFdms_id := FindField('fdms_id').AsInteger;
-        if nFdms_id = 0 then Exit;
-      Except
-        Exit;
-      End;
-      result := inttostr(nFdms_id + 1);
-    end;
-  Finally
-    TempAdoQuery.EnableControls;
-    TempAdoQuery.Free;
-    CoUninitialize;
-  End;
-end;
 
 function TfmMain.GetEmployeeFdmsID(aCompanyCode, aEmpID: string): string;
 var
@@ -6081,11 +6109,44 @@ var
   TempAdoQuery :TADOQuery;
   stCardNo : string;
   i : integer;
+  aAlarmStateList : TStringList;
+  oAlarmState : TAlarmState;
+  aAccessStateList : TStringList;
+  oAccessState : TAccessState;
+  stKey : string;
+  stState : string;
+  nAlarmTotCnt : integer;
+  nAlarmErrcnt : integer;
+  nIndex : integer;
+  nAccessErrcnt : integer;
+  nMainCnt : integer;
+  nExtCnt : integer;
+  stTemp : string;
 begin
+  for i := 0 to DeviceStateList.Count - 1 do
+  begin
+    if TDeviceState(DeviceStateList.Objects[i]) <> nil then
+    begin
+      stTemp := FillZeroNumber(TDeviceState(DeviceStateList.Objects[i]).NodeNo,3) + TDeviceState(DeviceStateList.Objects[i]).EcuId;
+      if TDeviceState(DeviceStateList.Objects[i]).CardBufferFull then stTemp := stTemp + ':1'
+      else stTemp := stTemp + ':0';
+      memo1.Lines.Add(stTemp);
+    end;
+    Application.ProcessMessages;
+  end;
+(*
+  nMainCnt := 0;
+  nExtCnt := 0;
+  nAlarmTotCnt := 0;
+  nAlarmErrcnt :=0;
+  nAccessErrcnt := 0;
+  aAlarmStateList := TStringList.Create;
+  aAccessStateList := TStringList.Create;
+  memo1.Lines.Clear;
+  memo2.Lines.Clear;
 
-  nFdms_id := strtoint(GetFdmsID);
-  i := 0;
-  stSql := ' select * from TB_EMPHIS where CA_CARDNO is null ';
+  stSql := 'select * from TB_ALARMEVENT where AL_INPUTTIME >= ''20240709130000000'' order by al_date,al_time';
+
   Try
     CoInitialize(nil);
     TempAdoQuery := TADOQuery.Create(nil);
@@ -6103,39 +6164,105 @@ begin
       End;
       While Not Eof do
       begin
-        stCardNo := GetCardNo(FindField('CO_COMPANYCODE').AsString,FindField('EM_CODE').AsString);
-        stSql := ' Update TB_EMPHIS set CA_CARDNO = ''' + stCardNo + ''' ';
-        stSql := stsql + ' Where CO_COMPANYCODE = ''' + FindField('CO_COMPANYCODE').AsString + ''' ';
-        stSql := stSql + ' AND EM_CODE = ''' + FindField('EM_CODE').AsString + ''' ';
-
-        DataModule1.ProcessExecSQL(stSql);
-        inc(i);
-        //inc(nFdms_id);
+        stKey := FindField('AC_NODENO').AsString +  FindField('AC_ECUID').AsString +  FindField('AL_ZONECODE').AsString;
+        nIndex := aAlarmStateList.indexOf(stKey);
+        if nIndex < 0 then
+        begin
+          if (FindField('AL_ALARMSTATUSCODE').AsString = '00') then
+          begin
+            oAlarmState := TAlarmState.create(self);
+            oAlarmState.NodeNo := FindField('AC_NODENO').AsInteger;
+            oAlarmState.EcuID := FindField('AC_ECUID').AsString;
+            oAlarmState.AlarmAreaNo := FindField('AL_ZONECODE').AsInteger;
+            oAlarmState.State := FindField('AL_ALARMMODECODE').AsString;
+            aAlarmStateList.AddObject(stKey,oAlarmState);
+          end;
+        end else
+        begin
+          if ( FindField('AL_ALARMMODECODE').AsString = 'A') or (FindField('AL_ALARMMODECODE').AsString = 'D') then
+          begin
+            nAlarmTotCnt := nAlarmTotCnt +1;
+            if (TAlarmState(aAlarmStateList.Objects[nIndex]).State =  FindField('AL_ALARMMODECODE').AsString) and (FindField('AL_ALARMSTATUSCODE').AsString = '00')  then
+            begin
+              nAlarmErrcnt := nAlarmErrcnt + 1;
+              memo1.Lines.Add(FindField('AL_INPUTTIME').AsString);
+            end;
+            TAlarmState(aAlarmStateList.Objects[nIndex]).State := FindField('AL_ALARMMODECODE').AsString ;
+          end;   
+        end;
         Application.ProcessMessages;
-        StatusBar1.Panels[1].Text := inttostr(i);
         Next;
       end;
     end;
-{    showmessage('지문번호 등록완료');
-    stSql := ' Delete From TB_EMPHIS ';
-    DataModule1.ProcessExecSQL(stSql);
-    showmessage('TB_EMPHIS 삭제');
-    stSql := 'insert into tb_emphis(co_companycode,em_code,fdms_id,mode,send_status,CA_CARDTYPE,send_status2,em_name) ';
-    stSql := stSql + 'select co_companycode,em_code,fdms_id,''1'',''N'',''1'',''N'',em_name from tb_employee ';
-    DataModule1.ProcessExecSQL(stSql);
-    showmessage('TB_EMPHIS 생성');
-    stSql := 'update tb_emphis set ca_cardno = (select ca_cardno from tb_card ';
-    stSql := stSql + ' where tb_card.CO_COMPANYCODE = tb_emphis.CO_COMPANYCODE ';
-    stSql := stSql + ' and tb_card.EM_CODE = tb_emphis.EM_CODE) ';
-    DataModule1.ProcessExecSQL(stSql);
-    showmessage('TB_EMPHIS CARD 생성');
-}
+    stSql := 'select * from TB_ACCESSEVENT where AC_INSERTDATE >= ''202407091320000000'' order by ac_date,ac_time,AC_INSERTDATE' ;
+    with TempAdoQuery do
+    begin
+      Close;
+      sql.Text := stSql;
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      While Not Eof do
+      begin
+        stKey := FindField('AC_ECUID').AsString +  FindField('CA_CARDNO').AsString;
+        nIndex := aAccessStateList.indexOf(stKey);
+        if nIndex < 0 then
+        begin
+          oAccessState := TAccessState.create(self);
+          oAccessState.NodeNo := FindField('AC_NODENO').AsInteger;
+          oAccessState.EcuID := FindField('AC_ECUID').AsString;
+          if FindField('AC_ECUID').AsString = '00' then
+          begin
+            oAccessState.Number := nMainCnt;
+            nMainCnt := nMainCnt + 1;
+          end else
+          begin
+            oAccessState.Number := nExtCnt;
+            nExtCnt := nExtCnt + 1;
+          end;
+          aAccessStateList.AddObject(stKey,oAccessState);
+        end else
+        begin
+          if FindField('AC_ECUID').AsString = '00' then
+          begin
+            if(TAccessState(aAccessStateList.Objects[nIndex]).Number <> (nMainCnt mod 4)) then
+            begin
+              nAccessErrcnt := nAccessErrcnt + 1;
+              stTemp := FindField('AC_INSERTDATE').AsString;
+              memo2.Lines.Add(FindField('AC_INSERTDATE').AsString);
+//              Exit;
+              if (TAccessState(aAccessStateList.Objects[nIndex]).Number) = ( (nMainCnt-1) mod 4) then nMainCnt:=nMainCnt-1;
+              if (TAccessState(aAccessStateList.Objects[nIndex]).Number) = ( (nMainCnt+1) mod 4) then nMainCnt:=nMainCnt+1;
+            end;
+            nMainCnt := nMainCnt + 1;
+          end else
+          begin
+            if(TAccessState(aAccessStateList.Objects[nIndex]).Number <> (nExtCnt mod 4)) then
+            begin
+              nAccessErrcnt := nAccessErrcnt + 1;
+              stTemp := FindField('AC_INSERTDATE').AsString;
+              memo2.Lines.Add(FindField('AC_INSERTDATE').AsString);
+              if (TAccessState(aAccessStateList.Objects[nIndex]).Number) = ( (nExtCnt-1) mod 4) then nExtCnt:=nExtCnt-1;
+              if (TAccessState(aAccessStateList.Objects[nIndex]).Number) = ( (nExtCnt+1) mod 4) then nExtCnt:=nExtCnt+1;
+            end;
+            nExtCnt := nExtCnt + 1;
+          end;
+        end;
+        Application.ProcessMessages;
+        Next;
+      end;
+    end;
+
   Finally
     TempAdoQuery.EnableControls;
     TempAdoQuery.Free;
     CoUninitialize;
   End;
 
+  showmessage('방범 에러 갯수 : ' +inttostr(nAlarmErrcnt) + '/' + inttostr(nAlarmTotCnt) + '\n'+ '카드 에러 갯수 : ' +inttostr(nAccessErrcnt) + '/' + inttostr(nMainCnt + nExtCnt) + '\n');
+*)
 end;
 
 function TfmMain.GetCardNo(aCompanyCode, aEmpID: string): string;
@@ -6185,6 +6312,7 @@ var
   i : integer;
 begin
   if (Application.MessageBox(PChar('전체기기의 화재복구 명령을 전송 하시겠습니까?'),'정보',MB_OKCANCEL) = IDCANCEL)  then Exit;
+  (*
   if G_bFormEnabled[con_Monitoring] then
   begin
     if G_nMultiDaemon = 0 then
@@ -6232,6 +6360,9 @@ begin
     end;
     DataModule1.TB_SYSTEMLOGInsert('000','00',DOORTYPE,'0','0000000000','화재복구');
   end;
+  *)
+  SendDaemonDataList.Add('FIRERECOVERY'+ DATADELIMITER + '000' + DATADELIMITER);
+  DataModule1.TB_SYSTEMLOGInsert('000','00',DOORTYPE,'0','0000000000','화재복구');
 end;
 
 procedure TfmMain.DataModuleAdoConnected(Sender: TObject;
@@ -6541,12 +6672,12 @@ begin
     if Value then
     begin
       DaemonMessageVisibleTimer1.Enabled := False;
-      pan_DaemonReceve.Visible := False;
+      StatusBar1.Panels[1].Text := '통신데몬 접속' ;
     end else
     begin
-      pan_DaemonReceve.Visible := True;
+      StatusBar1.Panels[1].Text := '통신데몬 접속 연결 해제' ;
       DaemonMessageVisibleTimer1.Enabled := True;
-    end;        
+    end;
   end;
   if FDaemonServerConnected = Value then Exit;
   FDaemonServerConnected := Value;
@@ -7115,6 +7246,9 @@ begin
         TempDeviceState.ECUID := stEcuID;
         TempDeviceState.DeviceName := FindField('AC_DEVICENAME').asstring;
         TempDeviceState.Connected := False;
+        if FindField('AC_CARDFULL').asstring = '1' then
+          TempDeviceState.CardBufferFull := True
+        else TempDeviceState.CardBufferFull := False;
         
         TempDeviceState.OnDeviceConnected := DeviceConnected;
         TempDeviceState.OnAlarmModeChanged := AlarmModeChanged;
@@ -7298,6 +7432,7 @@ begin
   AlarmEventViewStatusCode := TStringList.Create;
   AlarmEventSoundStatusCode := TStringList.Create;
   AlarmEventSoundColor := TStringList.Create;
+  AlarmEventArmStateEvent := TStringList.Create;
   AlarmSoundFileList := TStringList.Create;
   LocationMapList := TStringList.Create;
 
@@ -7339,6 +7474,7 @@ begin
   AlarmEventViewStatusCode.Clear;
   AlarmEventSoundStatusCode.Clear;
   AlarmEventSoundColor.Clear;
+  AlarmEventArmStateEvent.Clear;
   AlarmSoundFileList.Clear;
   LocationMapList.Clear;
 
@@ -7420,6 +7556,7 @@ begin
   AlarmEventViewStatusCode.Free;
   AlarmEventSoundStatusCode.Free;
   AlarmEventSoundColor.Free;
+  AlarmEventArmStateEvent.Free;
   AlarmSoundFileList.Free;
 
   LocationMapList.Free;
@@ -7719,6 +7856,13 @@ begin
           aEcuID, aDoorNo, aDoorManageType,aDoorPNType,aDoorStateType,aDoorLockType,aDoorFire);
   end;
 
+  if G_bDoorOpenAlarmUse and FileExists(G_stDoorOpenAlaramFile) then 
+  begin
+    MediaPlayer3.Close;
+    MediaPlayer3.FileName := G_stDoorOpenAlaramFile;
+    MediaPlayer3.Open;
+    MediaPlayer3.play;
+  end;
 end;
 
 procedure TfmMain.AlarmEventSoundStatusCodeLoad;
@@ -7728,6 +7872,7 @@ var
 
 begin
   AlarmEventSoundStatusCode.Clear;
+  AlarmEventSoundColor.Clear;
 
   stSql := ' Select * from TB_ALARMSTATUSCODE ';
   stSql := stSql + ' Where AL_ALARMSOUND = 1 ';
@@ -7772,15 +7917,21 @@ var
   stSql : string;
   TempAdoQuery :TADOQuery;
 begin
+
+  AlarmEventArmStateEvent.Clear;
+
   AlarmEventViewStatusCode.Clear;
+
   stSql := ' Select * from TB_ALARMSTATUSCODE ';
   stSql := stSql + ' Where AL_ALARMVIEW = 1 ';
 
   Try
+
     CoInitialize(nil);
     TempAdoQuery := TADOQuery.Create(nil);
     TempAdoQuery.Connection := DataModule1.ADOConnection;
     TempAdoQuery.DisableControls;
+
 
     with TempAdoQuery do
     begin
@@ -7797,6 +7948,7 @@ begin
       While Not Eof do
       begin
         AlarmEventViewStatusCode.Add(FindField('AL_ALARMSTATUSCODE').AsString);
+        AlarmEventArmStateEvent.Add(FindField('AL_ARMEVENT').AsString);
         Next;
       end;
 
@@ -7806,6 +7958,7 @@ begin
     TempAdoQuery.Free;
     CoUninitialize;
   End;
+
 end;
 
 procedure TfmMain.AlarmModeChanged(Sender: TObject; NodeNo: integer;
@@ -8579,7 +8732,6 @@ begin
     begin
       L_bDaemonLiveReceive := False;
       DaemonMessageVisibleTimer1.Enabled := False;
-      pan_DaemonReceve.Visible := False;
       Exit;
     end;
     //if Not WinsockPort.Open then Exit;
@@ -8587,14 +8739,12 @@ begin
     begin
       L_bDaemonLiveReceive := False;
       DaemonMessageVisibleTimer1.Enabled := False;
-      pan_DaemonReceve.Visible := False;
       Exit;
     end;
     if L_bDaemonLiveReceive then
     begin
       L_bDaemonLiveReceive := False;
       DaemonMessageVisibleTimer1.Enabled := False;
-      pan_DaemonReceve.Visible := False;
       Exit;
     end;
     //StatusBar1.Panels[2].Text := 'DaemonLiveRecvTimerTimer WinSock Close';
@@ -8619,7 +8769,6 @@ procedure TfmMain.DaemonLive(Sender: TObject);
 begin
   L_bDaemonLiveReceive := True;
   L_nRecvPacketCount := 0;
-  pan_DaemonReceve.Visible := False;
   //DaemonLiveRecvTimer.Enabled := False;
   DaemonMessageVisibleTimer1.Enabled := False;
   //DaemonLiveCheckTimer.Enabled := False;
@@ -8631,7 +8780,12 @@ end;
 procedure TfmMain.DaemonMessageVisibleTimer1Timer(Sender: TObject);
 begin
   if G_bApplicationTerminate then Exit;
-  pan_DaemonReceve.Visible := Not pan_DaemonReceve.Visible;
+  L_bMessageFlag := Not L_bMessageFlag;
+
+  if L_bMessageFlag then
+    StatusBar1.Panels[1].Text := '통신데몬 접속 연결 해제'
+  else
+    StatusBar1.Panels[1].Text := '';
 
 {  inc(L_nDaemonReciveFailCount);
   if L_nDaemonReciveFailCount > 10 then
@@ -8823,11 +8977,15 @@ begin
   begin
     if UpperCase(stShow) = 'TRUE' then G_bFormEnabled[con_AccessReport] := True
     else G_bFormEnabled[con_AccessReport] := False;
-  end else if UpperCase(stValue) = UpperCase('AccessTypeMonitoring') then
+  end else if UpperCase(stValue) = UpperCase('AccessTypeMonitoring') then      
   begin
     if UpperCase(stShow) = 'TRUE' then G_bFormEnabled[con_AccessTypeMonitoring] := True
     else G_bFormEnabled[con_AccessTypeMonitoring] := False;
     Monitoring := G_bFormEnabled[con_AccessTypeMonitoring];
+  end else if UpperCase(stValue) = UpperCase('AdminChangeReport') then
+  begin
+    if UpperCase(stShow) = 'TRUE' then G_bFormEnabled[con_AdminChangeReport] := True
+    else G_bFormEnabled[con_AdminChangeReport] := False;
   end else if UpperCase(stValue) = UpperCase('AlarmAccessReport') then
   begin
     if UpperCase(stShow) = 'TRUE' then G_bFormEnabled[con_AlarmAccessReport] := True
@@ -9002,6 +9160,10 @@ begin
   begin
     if UpperCase(stShow) = 'TRUE' then G_bFormEnabled[con_ScheduleForm] := True
     else G_bFormEnabled[con_ScheduleForm] := False;
+  end else if UpperCase(stValue) = UpperCase('SystemLoginReport') then
+  begin
+    if UpperCase(stShow) = 'TRUE' then G_bFormEnabled[con_SystemLoginReport] := True
+    else G_bFormEnabled[con_SystemLoginReport] := False;
   end else if UpperCase(stValue) = UpperCase('TimeAccessReport') then
   begin
     if UpperCase(stShow) = 'TRUE' then G_bFormEnabled[con_TimeAccessReport] := True
@@ -9132,6 +9294,7 @@ begin
   AccessHeaderNameList.Add(FM103);
   AccessHeaderNameList.Add(FM108);
   AccessHeaderNameList.Add(FM109);
+//  AccessHeaderNameList.Add(FM110);
 
   AlarmHeaderNameList.clear;
   AlarmHeaderNameList.Add('발생일자');
@@ -10873,8 +11036,7 @@ begin
   GetProgramGrade(Action_DoorGradeSearch.Hint,bInsertGrade,bUpdateGrade,bDeleteGrade);
   MDIChildGradeShow('TfmMDIDoorGrade',bInsertGrade,bUpdateGrade,bDeleteGrade);
   fmMDIDoorGrade := MDIForm('TfmMDIDoorGrade');
-  TfmMDIDoorGrade(fmMDIDoorGrade).GradeSetting(bInsertGrade,bUpdateGrade,bDeleteGrade);
-
+  TfmMDIDoorGrade(fmMDIDoorGrade).GradeSetting(bInsertGrade,bUpdateGrade,bDeleteGrade); 
 end;
 
 procedure TfmMain.Action_AlarmGardeSearchExecute(Sender: TObject);
@@ -11386,6 +11548,29 @@ begin
   inherited;
   if (MediaPlayer1.NotifyValue = nvSuccessful) then AlarmPlayStop := True;
   if (MediaPlayer1.Mode = mpStopped) then AlarmPlayStop := True;
+
+end;
+
+procedure TfmMain.mn_SystemLoginReportClick(Sender: TObject);
+var
+  bInsertGrade : Boolean;
+  bUpdateGrade : Boolean;
+  bDeleteGrade : Boolean;
+begin
+  GetProgramGrade(TMenuItem(Sender).Hint,bInsertGrade,bUpdateGrade,bDeleteGrade);
+  MDIChildShow('TfmSystemLoginReport');
+  self.FindClassForm('TfmSystemLoginReport').FindCommand('GRADEREFRESH').Execute;
+end;
+
+procedure TfmMain.mn_AdminChangeReportClick(Sender: TObject);
+var
+  bInsertGrade : Boolean;
+  bUpdateGrade : Boolean;
+  bDeleteGrade : Boolean;
+begin
+  GetProgramGrade(TMenuItem(Sender).Hint,bInsertGrade,bUpdateGrade,bDeleteGrade);
+  MDIChildShow('TfmAdminChangeReport');
+  self.FindClassForm('TfmAdminChangeReport').FindCommand('GRADEREFRESH').Execute;
 
 end;
 

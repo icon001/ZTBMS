@@ -19,7 +19,7 @@ inherited fmLocateCode: TfmLocateCode
     Top = 33
     Width = 584
     Height = 382
-    ActivePage = BuildingTab
+    ActivePage = AreaTab
     Align = alClient
     TabOrder = 0
     OnChange = PageControl1Change
@@ -51,7 +51,7 @@ inherited fmLocateCode: TfmLocateCode
             Height = 337
             Cursor = crDefault
             Align = alClient
-            ColCount = 2
+            ColCount = 3
             DefaultColWidth = 90
             DefaultRowHeight = 21
             FixedCols = 0
@@ -71,14 +71,41 @@ inherited fmLocateCode: TfmLocateCode
             ActiveCellFont.Height = -11
             ActiveCellFont.Name = 'Tahoma'
             ActiveCellFont.Style = [fsBold]
-            SearchFooter.FindNextCaption = 'Find next'
-            SearchFooter.FindPrevCaption = 'Find previous'
-            SearchFooter.HighLightCaption = 'Highlight'
-            SearchFooter.HintClose = 'Close'
-            SearchFooter.HintFindNext = 'Find next occurence'
-            SearchFooter.HintFindPrev = 'Find previous occurence'
-            SearchFooter.HintHighlight = 'Highlight occurences'
-            SearchFooter.MatchCaseCaption = 'Match case'
+            ColumnHeaders.Strings = (
+              #48716#46377#53076#46300
+              #48716#46377#47749#52845)
+            ControlLook.FixedGradientHoverFrom = clGray
+            ControlLook.FixedGradientHoverTo = clWhite
+            ControlLook.FixedGradientDownFrom = clGray
+            ControlLook.FixedGradientDownTo = clSilver
+            ControlLook.DropDownHeader.Font.Charset = DEFAULT_CHARSET
+            ControlLook.DropDownHeader.Font.Color = clWindowText
+            ControlLook.DropDownHeader.Font.Height = -11
+            ControlLook.DropDownHeader.Font.Name = 'Tahoma'
+            ControlLook.DropDownHeader.Font.Style = []
+            ControlLook.DropDownHeader.Visible = True
+            ControlLook.DropDownHeader.Buttons = <>
+            ControlLook.DropDownFooter.Font.Charset = DEFAULT_CHARSET
+            ControlLook.DropDownFooter.Font.Color = clWindowText
+            ControlLook.DropDownFooter.Font.Height = -11
+            ControlLook.DropDownFooter.Font.Name = 'MS Sans Serif'
+            ControlLook.DropDownFooter.Font.Style = []
+            ControlLook.DropDownFooter.Visible = True
+            ControlLook.DropDownFooter.Buttons = <>
+            Filter = <>
+            FilterDropDown.Font.Charset = DEFAULT_CHARSET
+            FilterDropDown.Font.Color = clWindowText
+            FilterDropDown.Font.Height = -11
+            FilterDropDown.Font.Name = 'MS Sans Serif'
+            FilterDropDown.Font.Style = []
+            FilterDropDownClear = '(All)'
+            FixedColWidth = 84
+            FixedFont.Charset = DEFAULT_CHARSET
+            FixedFont.Color = clWindowText
+            FixedFont.Height = -11
+            FixedFont.Name = 'Tahoma'
+            FixedFont.Style = [fsBold]
+            FloatFormat = '%.2f'
             PrintSettings.DateFormat = 'dd/mm/yyyy'
             PrintSettings.Font.Charset = DEFAULT_CHARSET
             PrintSettings.Font.Color = clWindowText
@@ -102,20 +129,23 @@ inherited fmLocateCode: TfmLocateCode
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
             ScrollSynch = True
-            FixedColWidth = 84
-            FixedFont.Charset = DEFAULT_CHARSET
-            FixedFont.Color = clWindowText
-            FixedFont.Height = -11
-            FixedFont.Name = 'Tahoma'
-            FixedFont.Style = [fsBold]
-            FloatFormat = '%.2f'
-            ColumnHeaders.Strings = (
-              #48716#46377#53076#46300
-              #48716#46377#47749#52845)
-            Filter = <>
-            Version = '3.3.0.1'
+            SearchFooter.FindNextCaption = 'Find next'
+            SearchFooter.FindPrevCaption = 'Find previous'
+            SearchFooter.Font.Charset = DEFAULT_CHARSET
+            SearchFooter.Font.Color = clWindowText
+            SearchFooter.Font.Height = -11
+            SearchFooter.Font.Name = 'MS Sans Serif'
+            SearchFooter.Font.Style = []
+            SearchFooter.HighLightCaption = 'Highlight'
+            SearchFooter.HintClose = 'Close'
+            SearchFooter.HintFindNext = 'Find next occurence'
+            SearchFooter.HintFindPrev = 'Find previous occurence'
+            SearchFooter.HintHighlight = 'Highlight occurences'
+            SearchFooter.MatchCaseCaption = 'Match case'
+            Version = '6.0.4.4'
             ColWidths = (
               84
+              90
               90)
           end
         end
@@ -142,7 +172,7 @@ inherited fmLocateCode: TfmLocateCode
             end
             object Label2: TLabel
               Left = 16
-              Top = 77
+              Top = 61
               Width = 48
               Height = 12
               Caption = #48716#46377#47749#52845
@@ -162,6 +192,13 @@ inherited fmLocateCode: TfmLocateCode
               Caption = #52286#44592
               OnClick = btn_BuildingSearchClick
             end
+            object Label16: TLabel
+              Left = 16
+              Top = 85
+              Width = 48
+              Height = 12
+              Caption = #50672#46041#53076#46300
+            end
             object ed_BuildingCode: TEdit
               Left = 120
               Top = 28
@@ -174,7 +211,7 @@ inherited fmLocateCode: TfmLocateCode
             end
             object ed_BuildingName: TEdit
               Left = 120
-              Top = 73
+              Top = 57
               Width = 217
               Height = 20
               ImeName = 'Microsoft IME 2003'
@@ -216,6 +253,14 @@ inherited fmLocateCode: TfmLocateCode
               TabOrder = 4
               OnClick = chk_BuildingAutoClick
             end
+            object ed_BuildingRelayCode: TEdit
+              Left = 120
+              Top = 81
+              Width = 217
+              Height = 20
+              ImeName = 'Microsoft IME 2003'
+              TabOrder = 5
+            end
           end
         end
       end
@@ -251,14 +296,14 @@ inherited fmLocateCode: TfmLocateCode
             TabOrder = 0
             object Label4: TLabel
               Left = 16
-              Top = 57
+              Top = 47
               Width = 78
               Height = 12
               Caption = #52789#53076#46300'(3'#51088#47532')'
             end
             object Label5: TLabel
               Left = 16
-              Top = 90
+              Top = 70
               Width = 36
               Height = 12
               Caption = #52789#47749#52845
@@ -285,9 +330,16 @@ inherited fmLocateCode: TfmLocateCode
               Height = 12
               Caption = #48716#46377#53076#46300
             end
+            object Label17: TLabel
+              Left = 16
+              Top = 93
+              Width = 48
+              Height = 12
+              Caption = #50672#46041#53076#46300
+            end
             object ed_FloorCode: TEdit
               Left = 120
-              Top = 53
+              Top = 43
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
@@ -297,7 +349,7 @@ inherited fmLocateCode: TfmLocateCode
             end
             object ed_FloorName: TEdit
               Left = 120
-              Top = 86
+              Top = 66
               Width = 217
               Height = 20
               ImeName = 'Microsoft IME 2003'
@@ -340,7 +392,7 @@ inherited fmLocateCode: TfmLocateCode
             end
             object chk_FloorAuto: TCheckBox
               Left = 232
-              Top = 55
+              Top = 45
               Width = 113
               Height = 17
               Caption = #53076#46300#51088#46041#49373#49457
@@ -348,6 +400,14 @@ inherited fmLocateCode: TfmLocateCode
               State = cbChecked
               TabOrder = 5
               OnClick = chk_FloorAutoClick
+            end
+            object ed_FloorRelayCode: TEdit
+              Left = 120
+              Top = 89
+              Width = 217
+              Height = 20
+              ImeName = 'Microsoft IME 2003'
+              TabOrder = 6
             end
           end
         end
@@ -390,7 +450,7 @@ inherited fmLocateCode: TfmLocateCode
             Height = 280
             Cursor = crDefault
             Align = alClient
-            ColCount = 3
+            ColCount = 4
             DefaultColWidth = 90
             DefaultRowHeight = 21
             FixedCols = 0
@@ -410,14 +470,41 @@ inherited fmLocateCode: TfmLocateCode
             ActiveCellFont.Height = -11
             ActiveCellFont.Name = 'Tahoma'
             ActiveCellFont.Style = [fsBold]
-            SearchFooter.FindNextCaption = 'Find next'
-            SearchFooter.FindPrevCaption = 'Find previous'
-            SearchFooter.HighLightCaption = 'Highlight'
-            SearchFooter.HintClose = 'Close'
-            SearchFooter.HintFindNext = 'Find next occurence'
-            SearchFooter.HintFindPrev = 'Find previous occurence'
-            SearchFooter.HintHighlight = 'Highlight occurences'
-            SearchFooter.MatchCaseCaption = 'Match case'
+            ColumnHeaders.Strings = (
+              #52789#53076#46300
+              #52789#47749#52845)
+            ControlLook.FixedGradientHoverFrom = clGray
+            ControlLook.FixedGradientHoverTo = clWhite
+            ControlLook.FixedGradientDownFrom = clGray
+            ControlLook.FixedGradientDownTo = clSilver
+            ControlLook.DropDownHeader.Font.Charset = DEFAULT_CHARSET
+            ControlLook.DropDownHeader.Font.Color = clWindowText
+            ControlLook.DropDownHeader.Font.Height = -11
+            ControlLook.DropDownHeader.Font.Name = 'Tahoma'
+            ControlLook.DropDownHeader.Font.Style = []
+            ControlLook.DropDownHeader.Visible = True
+            ControlLook.DropDownHeader.Buttons = <>
+            ControlLook.DropDownFooter.Font.Charset = DEFAULT_CHARSET
+            ControlLook.DropDownFooter.Font.Color = clWindowText
+            ControlLook.DropDownFooter.Font.Height = -11
+            ControlLook.DropDownFooter.Font.Name = 'MS Sans Serif'
+            ControlLook.DropDownFooter.Font.Style = []
+            ControlLook.DropDownFooter.Visible = True
+            ControlLook.DropDownFooter.Buttons = <>
+            Filter = <>
+            FilterDropDown.Font.Charset = DEFAULT_CHARSET
+            FilterDropDown.Font.Color = clWindowText
+            FilterDropDown.Font.Height = -11
+            FilterDropDown.Font.Name = 'MS Sans Serif'
+            FilterDropDown.Font.Style = []
+            FilterDropDownClear = '(All)'
+            FixedColWidth = 84
+            FixedFont.Charset = DEFAULT_CHARSET
+            FixedFont.Color = clWindowText
+            FixedFont.Height = -11
+            FixedFont.Name = 'Tahoma'
+            FixedFont.Style = [fsBold]
+            FloatFormat = '%.2f'
             PrintSettings.DateFormat = 'dd/mm/yyyy'
             PrintSettings.Font.Charset = DEFAULT_CHARSET
             PrintSettings.Font.Color = clWindowText
@@ -441,20 +528,23 @@ inherited fmLocateCode: TfmLocateCode
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
             ScrollSynch = True
-            FixedColWidth = 84
-            FixedFont.Charset = DEFAULT_CHARSET
-            FixedFont.Color = clWindowText
-            FixedFont.Height = -11
-            FixedFont.Name = 'Tahoma'
-            FixedFont.Style = [fsBold]
-            FloatFormat = '%.2f'
-            ColumnHeaders.Strings = (
-              #52789#53076#46300
-              #52789#47749#52845)
-            Filter = <>
-            Version = '3.3.0.1'
+            SearchFooter.FindNextCaption = 'Find next'
+            SearchFooter.FindPrevCaption = 'Find previous'
+            SearchFooter.Font.Charset = DEFAULT_CHARSET
+            SearchFooter.Font.Color = clWindowText
+            SearchFooter.Font.Height = -11
+            SearchFooter.Font.Name = 'MS Sans Serif'
+            SearchFooter.Font.Style = []
+            SearchFooter.HighLightCaption = 'Highlight'
+            SearchFooter.HintClose = 'Close'
+            SearchFooter.HintFindNext = 'Find next occurence'
+            SearchFooter.HintFindPrev = 'Find previous occurence'
+            SearchFooter.HintHighlight = 'Highlight occurences'
+            SearchFooter.MatchCaseCaption = 'Match case'
+            Version = '6.0.4.4'
             ColWidths = (
               84
+              90
               90
               90)
           end
@@ -492,28 +582,28 @@ inherited fmLocateCode: TfmLocateCode
             TabOrder = 0
             object Label10: TLabel
               Left = 16
-              Top = 73
+              Top = 70
               Width = 90
               Height = 12
               Caption = #44396#50669#53076#46300'(3'#51088#47532')'
             end
             object Label11: TLabel
               Left = 16
-              Top = 98
+              Top = 93
               Width = 48
               Height = 12
               Caption = #44396#50669#47749#52845
             end
             object Label12: TLabel
               Left = 16
-              Top = 125
+              Top = 141
               Width = 48
               Height = 12
               Caption = #50948#52824#51221#48372
             end
             object btn_AreaSearch: TSpeedButton
               Left = 120
-              Top = 119
+              Top = 135
               Width = 81
               Height = 25
               Caption = #52286#44592
@@ -528,14 +618,21 @@ inherited fmLocateCode: TfmLocateCode
             end
             object Label15: TLabel
               Left = 16
-              Top = 48
+              Top = 47
               Width = 36
               Height = 12
               Caption = #52789#53076#46300
             end
+            object Label18: TLabel
+              Left = 16
+              Top = 117
+              Width = 48
+              Height = 12
+              Caption = #50672#46041#53076#46300
+            end
             object ed_AreaCode: TEdit
               Left = 120
-              Top = 69
+              Top = 66
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
@@ -545,7 +642,7 @@ inherited fmLocateCode: TfmLocateCode
             end
             object ed_AreaName: TEdit
               Left = 120
-              Top = 94
+              Top = 89
               Width = 217
               Height = 20
               ImeName = 'Microsoft IME 2003'
@@ -553,16 +650,16 @@ inherited fmLocateCode: TfmLocateCode
             end
             object Panel10: TPanel
               Left = 16
-              Top = 152
+              Top = 176
               Width = 353
-              Height = 161
+              Height = 137
               BevelOuter = bvLowered
               TabOrder = 2
               object imgArea: TImage
                 Left = 1
                 Top = 1
                 Width = 351
-                Height = 159
+                Height = 135
                 Align = alClient
                 Stretch = True
               end
@@ -579,7 +676,7 @@ inherited fmLocateCode: TfmLocateCode
             end
             object cmb_sFloorCode2: TComboBox
               Left = 120
-              Top = 44
+              Top = 43
               Width = 217
               Height = 20
               ImeName = 'Microsoft IME 2003'
@@ -589,7 +686,7 @@ inherited fmLocateCode: TfmLocateCode
             end
             object ed_AreaImg: TEdit
               Left = 216
-              Top = 121
+              Top = 137
               Width = 97
               Height = 20
               ImeName = 'Microsoft IME 2003'
@@ -598,7 +695,7 @@ inherited fmLocateCode: TfmLocateCode
             end
             object chk_ArearAuto: TCheckBox
               Left = 232
-              Top = 71
+              Top = 68
               Width = 113
               Height = 17
               Caption = #53076#46300#51088#46041#49373#49457
@@ -606,6 +703,14 @@ inherited fmLocateCode: TfmLocateCode
               State = cbChecked
               TabOrder = 6
               OnClick = chk_ArearAutoClick
+            end
+            object ed_AreaRelayCode: TEdit
+              Left = 120
+              Top = 113
+              Width = 217
+              Height = 20
+              ImeName = 'Microsoft IME 2003'
+              TabOrder = 7
             end
           end
         end
@@ -665,7 +770,6 @@ inherited fmLocateCode: TfmLocateCode
             Height = 257
             Cursor = crDefault
             Align = alClient
-            ColCount = 4
             DefaultColWidth = 90
             DefaultRowHeight = 21
             FixedCols = 0
@@ -685,14 +789,41 @@ inherited fmLocateCode: TfmLocateCode
             ActiveCellFont.Height = -11
             ActiveCellFont.Name = 'Tahoma'
             ActiveCellFont.Style = [fsBold]
-            SearchFooter.FindNextCaption = 'Find next'
-            SearchFooter.FindPrevCaption = 'Find previous'
-            SearchFooter.HighLightCaption = 'Highlight'
-            SearchFooter.HintClose = 'Close'
-            SearchFooter.HintFindNext = 'Find next occurence'
-            SearchFooter.HintFindPrev = 'Find previous occurence'
-            SearchFooter.HintHighlight = 'Highlight occurences'
-            SearchFooter.MatchCaseCaption = 'Match case'
+            ColumnHeaders.Strings = (
+              #44396#50669#53076#46300
+              #44396#50669#47749#52845)
+            ControlLook.FixedGradientHoverFrom = clGray
+            ControlLook.FixedGradientHoverTo = clWhite
+            ControlLook.FixedGradientDownFrom = clGray
+            ControlLook.FixedGradientDownTo = clSilver
+            ControlLook.DropDownHeader.Font.Charset = DEFAULT_CHARSET
+            ControlLook.DropDownHeader.Font.Color = clWindowText
+            ControlLook.DropDownHeader.Font.Height = -11
+            ControlLook.DropDownHeader.Font.Name = 'Tahoma'
+            ControlLook.DropDownHeader.Font.Style = []
+            ControlLook.DropDownHeader.Visible = True
+            ControlLook.DropDownHeader.Buttons = <>
+            ControlLook.DropDownFooter.Font.Charset = DEFAULT_CHARSET
+            ControlLook.DropDownFooter.Font.Color = clWindowText
+            ControlLook.DropDownFooter.Font.Height = -11
+            ControlLook.DropDownFooter.Font.Name = 'MS Sans Serif'
+            ControlLook.DropDownFooter.Font.Style = []
+            ControlLook.DropDownFooter.Visible = True
+            ControlLook.DropDownFooter.Buttons = <>
+            Filter = <>
+            FilterDropDown.Font.Charset = DEFAULT_CHARSET
+            FilterDropDown.Font.Color = clWindowText
+            FilterDropDown.Font.Height = -11
+            FilterDropDown.Font.Name = 'MS Sans Serif'
+            FilterDropDown.Font.Style = []
+            FilterDropDownClear = '(All)'
+            FixedColWidth = 84
+            FixedFont.Charset = DEFAULT_CHARSET
+            FixedFont.Color = clWindowText
+            FixedFont.Height = -11
+            FixedFont.Name = 'Tahoma'
+            FixedFont.Style = [fsBold]
+            FloatFormat = '%.2f'
             PrintSettings.DateFormat = 'dd/mm/yyyy'
             PrintSettings.Font.Charset = DEFAULT_CHARSET
             PrintSettings.Font.Color = clWindowText
@@ -716,20 +847,23 @@ inherited fmLocateCode: TfmLocateCode
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
             ScrollSynch = True
-            FixedColWidth = 84
-            FixedFont.Charset = DEFAULT_CHARSET
-            FixedFont.Color = clWindowText
-            FixedFont.Height = -11
-            FixedFont.Name = 'Tahoma'
-            FixedFont.Style = [fsBold]
-            FloatFormat = '%.2f'
-            ColumnHeaders.Strings = (
-              #44396#50669#53076#46300
-              #44396#50669#47749#52845)
-            Filter = <>
-            Version = '3.3.0.1'
+            SearchFooter.FindNextCaption = 'Find next'
+            SearchFooter.FindPrevCaption = 'Find previous'
+            SearchFooter.Font.Charset = DEFAULT_CHARSET
+            SearchFooter.Font.Color = clWindowText
+            SearchFooter.Font.Height = -11
+            SearchFooter.Font.Name = 'MS Sans Serif'
+            SearchFooter.Font.Style = []
+            SearchFooter.HighLightCaption = 'Highlight'
+            SearchFooter.HintClose = 'Close'
+            SearchFooter.HintFindNext = 'Find next occurence'
+            SearchFooter.HintFindPrev = 'Find previous occurence'
+            SearchFooter.HintHighlight = 'Highlight occurences'
+            SearchFooter.MatchCaseCaption = 'Match case'
+            Version = '6.0.4.4'
             ColWidths = (
               84
+              90
               90
               90
               90)

@@ -173,11 +173,12 @@ var
 begin
   GridInitialize(sg_Employ); //스트링그리드 초기화
 
-  if DBTYPE = 'MSSQL' then stSql := MSSQL.SelectTB_CARDJoinTBEmployee
-  else if DBType = 'PG' then stSql := PostGreSql.SelectTB_CARDJoinTBEmployee
-  else if DBType = 'MDB' then stSql := MDBSql.SelectTB_CARDJoinTBEmployee
-  else if DBType = 'FB' then stSql := FireBird.SelectTB_CARDJoinTBEmployee
+  if DBTYPE = 'MSSQL' then stSql := MSSQL.SelectTB_CARDJoinTBEmployee(False)
+  else if DBType = 'PG' then stSql := PostGreSql.SelectTB_CARDJoinTBEmployee(False)
+  else if DBType = 'MDB' then stSql := MDBSql.SelectTB_CARDJoinTBEmployee(False)
+  else if DBType = 'FB' then stSql := FireBird.SelectTB_CARDJoinTBEmployee(False)
   else Exit;
+  stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
 
   if (Not IsMaster) and (CompanyGrade <> '0') then
   begin

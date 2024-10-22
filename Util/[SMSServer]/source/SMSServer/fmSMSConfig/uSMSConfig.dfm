@@ -292,13 +292,38 @@ object fmSMSConfig: TfmSMSConfig
         end
       end
       object btn_Test: TButton
-        Left = 184
+        Left = 48
         Top = 336
         Width = 75
         Height = 25
         Caption = #53580#49828#53944
         TabOrder = 2
         OnClick = btn_TestClick
+      end
+      object DBGrid1: TDBGrid
+        Left = 8
+        Top = 368
+        Width = 505
+        Height = 89
+        DataSource = DataSource1
+        ImeName = 'Microsoft IME 2010'
+        Options = [dgEditing, dgAlwaysShowEditor, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
+        TabOrder = 3
+        TitleFont.Charset = HANGEUL_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -12
+        TitleFont.Name = #44404#47548#52404
+        TitleFont.Style = []
+      end
+      object Memo2: TMemo
+        Left = 128
+        Top = 336
+        Width = 361
+        Height = 25
+        ImeName = 'Microsoft IME 2010'
+        Lines.Strings = (
+          'select * from SDK_SMS_SEND order by SEND_DATE desc LIMIT 10')
+        TabOrder = 4
       end
     end
     object TabSheet2: TTabSheet
@@ -319,6 +344,30 @@ object fmSMSConfig: TfmSMSConfig
         ImeName = 'Microsoft IME 2010'
         TabOrder = 0
       end
+      object Button1: TButton
+        Left = 72
+        Top = 160
+        Width = 75
+        Height = 25
+        Caption = #53580#49828#53944
+        TabOrder = 1
+        OnClick = Button1Click
+      end
     end
+  end
+  object ADOQuery1: TADOQuery
+    Connection = SMSConnection
+    Parameters = <>
+    Left = 164
+    Top = 383
+  end
+  object DataSource1: TDataSource
+    DataSet = ADOQuery1
+    Left = 212
+    Top = 383
+  end
+  object SMSConnection: TADOConnection
+    Left = 24
+    Top = 376
   end
 end

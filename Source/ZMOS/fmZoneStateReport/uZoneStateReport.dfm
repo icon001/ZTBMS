@@ -4,6 +4,7 @@ inherited fmZoneStateReport: TfmZoneStateReport
   Width = 1036
   Height = 702
   Caption = #51316#49345#53468#51312#54924
+  Color = clWhite
   Font.Charset = HANGEUL_CHARSET
   Font.Height = -12
   FormStyle = fsMDIChild
@@ -172,7 +173,7 @@ inherited fmZoneStateReport: TfmZoneStateReport
     Left = 0
     Top = 89
     Width = 1028
-    Height = 579
+    Height = 586
     Cursor = crDefault
     Align = alClient
     ColCount = 76
@@ -256,6 +257,7 @@ inherited fmZoneStateReport: TfmZoneStateReport
     PrintSettings.FooterFont.Style = []
     PrintSettings.PageNumSep = '/'
     ScrollSynch = True
+    ScrollWidth = 16
     SearchFooter.FindNextCaption = 'Find next'
     SearchFooter.FindPrevCaption = 'Find previous'
     SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -354,6 +356,7 @@ inherited fmZoneStateReport: TfmZoneStateReport
       Top = 128
       Width = 369
       Height = 97
+      Color = clWhite
       TabOrder = 3
       Visible = False
       object Label1: TLabel

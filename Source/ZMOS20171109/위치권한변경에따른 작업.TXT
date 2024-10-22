@@ -1,0 +1,76 @@
+  if Not IsMaster then
+  begin
+    if BuildingGrade = 1 then
+    begin
+      if (aBuildingCode <> '') and (aBuildingCode <> '000') then
+        stSql := stSql + ' AND a.LO_DONGCODE = ''' + aBuildingCode + ''' '
+      else
+        stSql := stSql + ' AND a.LO_DONGCODE = ''' + MasterBuildingCode + ''' ';
+      if (aFloorCode <> '') and (aFloorCode <> '000') then
+        stSql := stSql + ' AND a.LO_FLOORCODE = ''' + aFloorCode + ''' ';
+      if (aAreaCode <> '') and (aAreaCode <> '000') then
+        stSql := stSql + ' AND a.LO_AREACODE = ''' + aAreaCode + ''' ';
+    end else if BuildingGrade = 2 then
+    begin
+      if (aBuildingCode <> '') and (aBuildingCode <> '000') then
+        stSql := stSql + ' AND a.LO_DONGCODE = ''' + aBuildingCode + ''' '
+      else
+        stSql := stSql + ' AND a.LO_DONGCODE = ''' + MasterBuildingCode + ''' ';
+      if (aFloorCode <> '') and (aFloorCode <> '000') then
+        stSql := stSql + ' AND a.LO_FLOORCODE = ''' + aFloorCode + ''' '
+      else
+        stSql := stSql + ' AND a.LO_FLOORCODE = ''' + MasterFloorCode + ''' ';
+      if (aAreaCode <> '') and (aAreaCode <> '000') then
+        stSql := stSql + ' AND a.LO_AREACODE = ''' + aAreaCode + ''' ';
+    end else if BuildingGrade = 3 then
+    begin
+      if (aBuildingCode <> '') and (aBuildingCode <> '000') then
+        stSql := stSql + ' AND a.LO_DONGCODE = ''' + aBuildingCode + ''' '
+      else
+        stSql := stSql + ' AND a.LO_DONGCODE = ''' + MasterBuildingCode + ''' ';
+      if (aFloorCode <> '') and (aFloorCode <> '000') then
+        stSql := stSql + ' AND a.LO_FLOORCODE = ''' + aFloorCode + ''' '
+      else
+        stSql := stSql + ' AND a.LO_FLOORCODE = ''' + MasterFloorCode + ''' ';
+      if (aAreaCode <> '') and (aAreaCode <> '000') then
+        stSql := stSql + ' AND a.LO_AREACODE = ''' + aAreaCode + ''' '
+      else
+        stSql := stSql + ' AND a.LO_AREACODE = ''' + MasterAreaCode + ''' ';
+    end else
+    begin
+      if BuildingGrade = 4 then stSql := stSql + ' AND b.AD_USERID = ''' + Master_ID + ''' ';
+      if (aBuildingCode <> '') and (aBuildingCode <> '000') then
+        stSql := stSql + ' AND a.LO_DONGCODE = ''' + aBuildingCode + ''' ';
+      if (aFloorCode <> '') and (aFloorCode <> '000') then
+        stSql := stSql + ' AND a.LO_FLOORCODE = ''' + aFloorCode + ''' ';
+      if (aAreaCode <> '') and (aAreaCode <> '000') then
+        stSql := stSql + ' AND a.LO_AREACODE = ''' + aAreaCode + ''' ';
+    end;
+  end else
+  begin
+    if (aBuildingCode <> '') and (aBuildingCode <> '000') then
+      stSql := stSql + ' AND a.LO_DONGCODE = ''' + aBuildingCode + ''' ';
+    if (aFloorCode <> '') and (aFloorCode <> '000') then
+      stSql := stSql + ' AND a.LO_FLOORCODE = ''' + aFloorCode + ''' ';
+    if (aAreaCode <> '') and (aAreaCode <> '000') then
+      stSql := stSql + ' AND a.LO_AREACODE = ''' + aAreaCode + ''' ';
+  end;
+  
+  
+  
+  if Not IsMaster then
+  begin
+    if BuildingGrade = 1 then
+    begin
+      stSql := stSql + ' AND a.LO_DONGCODE = ''' + MasterBuildingCode + ''' ';
+    end else if BuildingGrade = 2 then
+    begin
+      stSql := stSql + ' AND a.LO_DONGCODE = ''' + MasterBuildingCode + ''' ';
+      stSql := stSql + ' AND a.LO_FLOORCODE = ''' + MasterFloorCode + ''' ';
+    end else if BuildingGrade = 3 then
+    begin
+      stSql := stSql + ' AND a.LO_DONGCODE = ''' + MasterBuildingCode + ''' ';
+      stSql := stSql + ' AND a.LO_FLOORCODE = ''' + MasterFloorCode + ''' ';
+      stSql := stSql + ' AND a.LO_AREACODE = ''' + MasterAreaCode + ''' ';
+    end else if BuildingGrade = 4 then stSql := stSql + ' AND b.AD_USERID = ''' + Master_ID + ''' ';
+  end;

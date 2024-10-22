@@ -5054,7 +5054,7 @@ begin
   Try
     CoInitialize(nil);
     TempAdoQuery := TADOQuery.Create(nil);
-    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.Connection := DataModule1.ADOConnection1;
     with TempAdoQuery do
     begin
       Close;
@@ -5630,6 +5630,7 @@ begin
 
   if bResult then
   begin
+    dmDBFunction.DeleteTB_FIREGROUP_NodeNo(ed_NodeNo.Text);
     stBuildingCode := BuildingCodeList.Strings[ cmb_BuildingCode1.itemindex ];
     if (stBuildingCode = '') or (stBuildingCode = '000') then stFloorCode := '000'
     else  stFloorCode := FloorCodeList.Strings[ cmb_FloorCode1.itemindex ];

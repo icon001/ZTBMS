@@ -2262,6 +2262,7 @@ function TdmAdoQuery.UpdateTB_CARDFINGER(aUserID, aCARDNO, aFingerData,
 var
   stSql : string;
 begin
+  aCardNo := Trim(aCardNo);
   stSql := ' Update TB_CARDFINGER set ';
   stSql := stSql + ' FP_CARDNO = ''' + aCARDNO + ''', ';
   if aFingerData <> '' then stSql := stSql + ' FP_DATA = ''' + aFingerData + ''', ';
@@ -2418,6 +2419,7 @@ var
   stFdmsId : string;
 begin
   Result := False;
+  aCardNo := Trim(aCardNo);
   stFdmsId := GetEmployeeFdmsID(aCompanyCode,aEmpID);
   stSql := 'Delete From TB_FingerDeviceCard where FP_USERID = ' + stFdmsId + ' ';
   result := DataModule1.ProcessExecSQL(stSql);

@@ -366,6 +366,13 @@ inherited fmMain: TfmMain
         Caption = #54532#47196#44536#47016#50629#45936#51060#53944
         OnClick = N23Click
       end
+      object N73: TMenuItem
+        Caption = '-'
+      end
+      object N72: TMenuItem
+        Caption = #49884#51089#54532#47196#44536#47016#46321#47197
+        OnClick = N72Click
+      end
     end
   end
   object Menu_ImageList: TImageList

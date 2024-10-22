@@ -14,14 +14,14 @@ inherited fmAccessStateCode: TfmAccessStateCode
     Left = 0
     Top = 33
     Width = 494
-    Height = 285
+    Height = 292
     Align = alClient
     TabOrder = 0
     object sg_AccessStateCode: TAdvStringGrid
       Left = 1
       Top = 1
       Width = 492
-      Height = 283
+      Height = 290
       Cursor = crDefault
       Align = alClient
       ColCount = 2
@@ -102,6 +102,7 @@ inherited fmAccessStateCode: TfmAccessStateCode
       PrintSettings.FooterFont.Style = []
       PrintSettings.PageNumSep = '/'
       ScrollSynch = True
+      ScrollWidth = 16
       SearchFooter.FindNextCaption = 'Find next'
       SearchFooter.FindPrevCaption = 'Find previous'
       SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -123,10 +124,11 @@ inherited fmAccessStateCode: TfmAccessStateCode
   end
   object Panel1: TPanel [1]
     Left = 0
-    Top = 318
+    Top = 325
     Width = 494
     Height = 106
     Align = alBottom
+    Color = clWhite
     TabOrder = 1
     object Label8: TLabel
       Left = 16
@@ -334,9 +336,10 @@ inherited fmAccessStateCode: TfmAccessStateCode
   end
   object StatusBar1: TStatusBar [2]
     Left = 0
-    Top = 424
+    Top = 431
     Width = 494
     Height = 22
+    Color = clWhite
     Panels = <>
   end
   object Panel12: TPanel [3]
@@ -346,7 +349,7 @@ inherited fmAccessStateCode: TfmAccessStateCode
     Height = 33
     Align = alTop
     Caption = #52636#51077#49849#51064#53076#46300' '#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16

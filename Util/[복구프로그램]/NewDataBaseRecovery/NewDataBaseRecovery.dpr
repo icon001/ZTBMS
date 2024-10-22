@@ -4,7 +4,8 @@ uses
   Forms,
   uDataBaseConvert in 'uDataBaseConvert.pas' {Form1},
   uLomosUtil in '..\..\..\Lib\uLomosUtil.pas',
-  DIMime in '..\..\..\Lib\DIMime.pas';
+  DIMime in '..\..\..\Lib\DIMime.pas',
+  systeminfos in '..\..\..\Lib\systeminfos.pas';
 
 {$R *.res}
 

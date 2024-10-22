@@ -90,7 +90,7 @@ MaxStackSize=1048576
 ImageBase=4194304
 ExeDescription=
 [Directories]
-OutputDir=E:\[프로젝트]\[ZTBMS]\bin
+OutputDir=..\..\bin
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
@@ -138,7 +138,8 @@ Comments=
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlOutputDirectorry]
-Count=3
-Item0=E:\[프로젝트]\[ZTBMS]\bin
-Item1=E:\프로젝트\[ZTBMS]\bin
-Item2=E:\프로젝트\[ZTBMS]\Util\인증키관리\bin
+Count=4
+Item0=..\..\bin
+Item1=E:\[프로젝트]\[ZTBMS]\bin
+Item2=E:\프로젝트\[ZTBMS]\bin
+Item3=E:\프로젝트\[ZTBMS]\Util\인증키관리\bin

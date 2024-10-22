@@ -46,4 +46,12 @@ object dmAdoRelay: TdmAdoRelay
     Left = 32
     Top = 136
   end
+  object ADOConnection2: TADOConnection
+    ConnectionString = 
+      'Provider=SQLOLEDB.1;Persist Security Info=False;User ID=lomo;Ini' +
+      'tial Catalog=LOMO;Data Source=127.0.0.1'
+    Provider = 'SQLOLEDB.1'
+    Left = 128
+    Top = 88
+  end
 end

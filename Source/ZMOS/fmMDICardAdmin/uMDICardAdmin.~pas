@@ -108,6 +108,11 @@ type
     ed_DoorName: TEdit;
     Label3: TLabel;
     ed_AlarmAreaName: TEdit;
+    chk_Add: TCheckBox;
+    pan_Message: TPanel;
+    btn_message: TSpeedButton;
+    StaticText2: TStaticText;
+    st_Message: TStaticText;
     procedure btn_CloseClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure cmb_CompanyChange(Sender: TObject);
@@ -148,6 +153,12 @@ type
     procedure ed_searchTextKeyPress(Sender: TObject; var Key: Char);
     procedure CommandArrayCommandsTCloseExecute(Command: TCommand;
       Params: TStringList);
+    procedure sg_DoorCheckBoxChange(Sender: TObject; ACol, ARow: Integer;
+      State: Boolean);
+    procedure StaticText2Click(Sender: TObject);
+    procedure btn_messageClick(Sender: TObject);
+    procedure sg_GradeDoorCheckBoxClick(Sender: TObject; ACol,
+      ARow: Integer; State: Boolean);
   private
     CompanyCodeList : TStringList;
     JijumCodeList : TStringList;
@@ -162,12 +173,14 @@ type
     sAreaCodeList : TStringList;
     EmpTypeCodeList : TStringList;
     DoorGubunCodeList : TStringList;
+    WorkGubunCodeList : TStringList;
     CheckCount : integer;
+    FShowCount: integer;
     { Private declarations }
     procedure GetDepartCodeList;
     procedure GridInit(sg:TAdvStringGrid;aCol:integer);
     Procedure RcvCardDataByReader(aData:String);
-    procedure AdvStrinGridSetAllCheck(Sender: TObject;bchkState:Boolean);
+    procedure AdvStrinGridSetAllCheck(Sender: TObject;bchkState:Boolean;cardBuffer:Boolean);
     procedure LoadBuildingCode(cmb_Box:TComboBox);
     procedure LoadsBuildingCode(cmb_Box:TComboBox);
     procedure LoadFloorCode(aBuildingCode:string;cmb_Box:TComboBox);
@@ -199,6 +212,9 @@ type
     procedure CenterPanel;
     function GetFirstCheckListData(sg_list:TAdvStringGrid;aIndex:integer):string;
     procedure LoadDoorGubun(cmb_box :TComboBox);
+    procedure SetShowCount(const Value: integer);
+    Function checkCardBuffer(aNodeNo,aEcuID:string):Boolean;
+
 
   private
     procedure iniConfigRead;
@@ -211,6 +227,7 @@ type
     procedure GradeSetting(aInsertGrade,aUpdateGrade,aDeleteGrade:Boolean);
 
     procedure CardReadProcess(aCardNo:string;aCheckBox:Boolean=True);
+    property ShowCount : integer read FShowCount write SetShowCount;
   end;
 
 var
@@ -223,7 +240,9 @@ uses uDataModule1,
      uCompanyCodeLoad,
      uMssql,
      uPostGreSql,
-     uMDBSql, uFireBird, udmAdoQuery, uExcelSave, uJavara;
+     uMDBSql, uFireBird, udmAdoQuery, uExcelSave, uJavara,
+     uMonitoringCommonVariable,
+     uDeviceState;
 
 {$R *.dfm}
 
@@ -266,6 +285,7 @@ begin
   sAreaCodeList := TStringList.Create;
   EmpTypeCodeList := TStringList.Create;
   DoorGubunCodeList := TStringList.Create;
+  WorkGubunCodeList := TStringList.Create;
 
   if DUPCARDTYPE = 0 then sg_Card.ColWidths[4] := 0
   else sg_Card.ColWidths[4] := 90;
@@ -289,6 +309,7 @@ begin
   sAreaCodeList.Free;
   EmpTypeCodeList.Free;
   DoorGubunCodeList.Free;
+  WorkGubunCodeList.Free;
   
   ComPortList.Free;
   self.FindSubForm('Main').FindCommand('FORMSHOW').Params.Values['VALUE'] := 'MDICARDADMIN';
@@ -366,8 +387,12 @@ var
   TempAdoQuery : TADOQuery;
   bWhereSearch : Boolean;
 begin
-  GridInit(sg_Card,8);
-  CheckCount := 0;
+  if Not(chk_Add.Checked) then
+  begin
+    GridInit(sg_Card,8);
+    CheckCount := 0;
+    ShowCount := 0;
+  end;
   bWhereSearch := False;
 
   if DBTYPE = 'MSSQL' then stSql := MSSQL.SelectTB_CARDAdminJoinBase
@@ -397,6 +422,13 @@ begin
       bWhereSearch := True;
       stSql := stSql + ' AND a.CA_GUBUN = ''' + copy(cmb_regGubun1.Text,1,1) + ''' '
     end;
+  end else if cmb_SearchType.ItemIndex = 11 then
+  begin
+    if cmb_regGubun1.ItemIndex > 0 then
+    begin
+      bWhereSearch := True;
+      stSql := stSql + ' AND b.WG_CODE = ''' + WorkGubunCodeList.Strings[cmb_regGubun1.ItemIndex] + ''' '
+    end;   
   end else
   begin
     if Trim(ed_searchText.Text) <> '' then
@@ -528,6 +560,8 @@ begin
 
   stSql := stSql + ' order by a.CA_CARDNO ';
 
+
+
   Try
     CoInitialize(nil);
     TempAdoQuery := TADOQuery.Create(nil);
@@ -546,9 +580,20 @@ begin
       End;
 
       if RecordCount < 1 then  Exit;
- 
-      sg_Card.RowCount := RecordCount + 1;
-      nRow := 1;
+      if Not chk_Add.checked then
+      begin
+        sg_Card.RowCount := RecordCount + 1;
+        ShowCount := RecordCount;
+        nRow := 1;
+      end else
+      begin
+        nRow := sg_Card.RowCount;
+        ShowCount := ShowCount + RecordCount;
+        sg_Card.RowCount := sg_Card.RowCount + RecordCount;
+      end;
+
+      //sg_Card.RowCount := RecordCount + 1;
+      //nRow := 1;
       First;
       while Not Eof do
       begin
@@ -804,19 +849,32 @@ procedure TfmMDICardAdmin.CheckBoxClick(Sender: TObject; ACol, ARow: Integer;
 begin
   if ARow = 0 then //전체선택 또는 해제
   begin
-    AdvStrinGridSetAllCheck(Sender,State);
+    AdvStrinGridSetAllCheck(Sender,State,True);
   end;
 
 end;
 
 procedure TfmMDICardAdmin.AdvStrinGridSetAllCheck(Sender: TObject;
-  bchkState: Boolean);
+  bchkState: Boolean;cardBuffer:Boolean);
 var
   i : integer;
+  stNodeNo : string;
+  stECUID : string;
 begin
     for i:= 1 to (Sender as TAdvStringGrid).RowCount - 1  do
     begin
       (Sender as TAdvStringGrid).SetCheckBoxState(0,i,bchkState);
+      if bchkState and cardBuffer and G_bCardFullUse then
+      begin
+        stNodeNo:= (Sender as TAdvStringGrid).Cells[2,i];
+        stECUID:= (Sender as TAdvStringGrid).Cells[4,i];
+        if checkCardBuffer(stNodeNo,stECUID) then
+        begin
+          pan_Message.Visible := True;
+          st_Message.Caption := (Sender as TAdvStringGrid).Cells[0,i] + '의 카드 용량을 확인하여 주세요.';
+          (Sender as TAdvStringGrid).SetCheckBoxState(0,i,False);
+        end;
+      end;
     end;
 
 end;
@@ -2068,7 +2126,7 @@ begin
   begin
     if State then CheckCount := (Sender as TAdvStringGrid).RowCount - 1
     else CheckCount := 0;
-    AdvStrinGridSetAllCheck(Sender,State);
+    AdvStrinGridSetAllCheck(Sender,State,False);
   end else
   begin
     if State then CheckCount := CheckCount + 1
@@ -2656,6 +2714,17 @@ begin
   nLeft := nStartW + (nTotW div 2) - (nPanW div 2);
   Pan_Gauge.Top := nTop;
   Pan_Gauge.Left := nLeft;
+
+  nStartH := 65;
+  nStartW := 0;
+  nTotW := Width;
+  nTotH := Height;
+  nPanW := pan_Message.Width;
+  nPanH := pan_Message.Height;
+  nTop := nStartH + (nTotH div 2) - (nPanH div 2);
+  nLeft := nStartW + (nTotW div 2) - (nPanW div 2);
+  pan_Message.Top := nTop;
+  pan_Message.Left := nLeft;
 end;
 
 procedure TfmMDICardAdmin.FormResize(Sender: TObject);
@@ -2853,6 +2922,7 @@ begin
     if cmb_SearchType.ItemIndex = 6 then LoadRegGubun(cmb_regGubun1)
     else if cmb_SearchType.ItemIndex = 7 then LoadEmpType(EmpTypeCodeList,cmb_regGubun1)
     else if cmb_SearchType.ItemIndex = 8 then LoadCardGubun(cmb_regGubun1)
+    else if cmb_SearchType.ItemIndex = 11 then LoadWorkGubun(WorkGubunCodeList,cmb_regGubun1,'전체')
     else
     begin
       cmb_regGubun1.Visible := False;
@@ -2893,7 +2963,7 @@ begin
   begin
     SaveDialog1.DefaultExt := 'csv';
     SaveDialog1.Filter := 'CSV File(*.csv)|*.csv';
-  else
+  end else
   begin
     SaveDialog1.DefaultExt := 'xls';
     SaveDialog1.Filter := 'EXCEL File(*.xls)|*.xls';
@@ -3024,6 +3094,113 @@ procedure TfmMDICardAdmin.CommandArrayCommandsTCloseExecute(
 begin
   inherited;
   Close;
+end;
+
+procedure TfmMDICardAdmin.SetShowCount(const Value: integer);
+begin
+  FShowCount := Value;
+end;
+
+procedure TfmMDICardAdmin.sg_DoorCheckBoxChange(Sender: TObject; ACol,
+  ARow: Integer; State: Boolean);
+var
+  stNodeNo : string;
+  stEcuID : string;
+begin
+  inherited;
+  if Not G_bCardFullUse then Exit; ///cardFull 사용하지 않을 때만 체크 하자.
+  if State then
+  begin
+    if ARow < 1 then Exit;
+    stNodeNo:= (Sender as TAdvStringGrid).Cells[2,ARow];
+    stECUID:= (Sender as TAdvStringGrid).Cells[4,ARow];
+
+    if checkCardBuffer(stNodeNo,stECUID) then
+    begin
+      pan_Message.Visible := True;
+      st_Message.Caption := (Sender as TAdvStringGrid).Cells[0,ARow] + '의 카드 용량을 확인하여 주세요.';
+      (Sender as TAdvStringGrid).SetCheckBoxState(0,ARow,False);
+    end;
+  end;
+end;
+
+procedure TfmMDICardAdmin.StaticText2Click(Sender: TObject);
+begin
+  inherited;
+  pan_Message.Visible := False;
+end;
+
+procedure TfmMDICardAdmin.btn_messageClick(Sender: TObject);
+begin
+  inherited;
+  pan_Message.Visible := False;
+end;
+
+function TfmMDICardAdmin.checkCardBuffer(aNodeNo, aEcuID: string): Boolean;
+var
+  //stSql : String;
+  //TempAdoQuery : TADOQuery;
+  nIndex : integer;
+  stDeviceID : string;
+begin
+  result := False;
+  stDeviceID := FillZeroStrNum(aNodeNo,3) + aEcuID;
+
+  nIndex := DeviceStateList.IndexOf(stDeviceID);
+
+  if nIndex < 0 then Exit;
+
+  result := TDeviceState(DeviceStateList.Objects[nIndex]).CardBufferFull;
+  (*
+  stSql := 'Select * from ';
+  stSql := stSql + ' TB_ACCESSDEVICE  ';
+  stSql := stSql + ' where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND AC_NODENO = ' + aNodeNo + ' ';
+  stSql := stSql + ' AND AC_ECUID = ''' + aEcuID + ''' ';
+
+  Try
+
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+
+      if RecordCount < 1 then
+      begin
+        Exit;
+      end;
+
+      First;
+      if FindField('AC_CARDFULL').asstring = '1' then result := True;
+    end;
+  Finally
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+  *)
+end;
+
+
+procedure TfmMDICardAdmin.sg_GradeDoorCheckBoxClick(Sender: TObject; ACol,
+  ARow: Integer; State: Boolean);
+begin
+  inherited;
+  if ARow = 0 then //전체선택 또는 해제
+  begin
+    AdvStrinGridSetAllCheck(Sender,State,False);
+  end;
+
 end;
 
 initialization

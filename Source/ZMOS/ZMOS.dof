@@ -108,14 +108,14 @@ DebugCWD=
 [Language]
 ActiveLang=
 ProjectLang=
-RootDir=E:\[프로젝트]\[ZTBMS]\Source\ZMOS\fmMain\
+RootDir=Z:\Projects\[DEL70]\ZTBMS\[ZTBMS]\Source\ZMOS\fmMain\
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=6
 MinorVer=0
 Release=2
-Build=25
+Build=48
 Debug=0
 PreRelease=0
 Special=0
@@ -126,7 +126,7 @@ CodePage=949
 [Version Info Keys]
 CompanyName=ZeronAlliance
 FileDescription=
-FileVersion=6.0.2.25
+FileVersion=6.0.2.48
 InternalName=
 LegalCopyright=
 LegalTrademarks=

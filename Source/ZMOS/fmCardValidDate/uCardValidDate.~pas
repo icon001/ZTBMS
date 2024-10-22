@@ -37,7 +37,8 @@ type
     lb_search: TLabel;
     ed_searchText: TEdit;
     btn_EmployeeDelete: TSpeedButton;
-    cmb_EmpWorkGubun: TComboBox;
+    cmb_regGubun1: TComboBox;
+    Memo1: TMemo;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btn_CloseClick(Sender: TObject);
@@ -87,7 +88,6 @@ uses
   uMssql,
   uMDBSql,
   uPostGreSql,
-  uZTBMSFunction,
   uFireBird, uValidateSelect, udmAdoQuery;
 
 {$R *.dfm}
@@ -147,6 +147,8 @@ begin
   LoadDepartCode(stCompanyCode,stJijumCode,DepartCodeList,cmb_Depart);
 
   LoadPosiCode(stCompanyCode,PosiCodeList,cmb_Posi);
+  LoadEmpSearchType(cmb_SearchType);
+  cmb_SearchTypeChange(cmb_SearchType);
 
   self.FindSubForm('Main').FindCommand('FORMSHOW').Params.Values['VALUE'] := 'CardValidDate';
   self.FindSubForm('Main').FindCommand('FORMSHOW').Params.Values['SHOW'] := 'TRUE';
@@ -170,6 +172,27 @@ end;
 procedure TfmCardValidDate.cmb_SearchTypeChange(Sender: TObject);
 begin
   lb_search.Caption := cmb_SearchType.Text;
+  if cmb_SearchType.ItemIndex > 5 then
+  begin
+    cmb_regGubun1.Visible := True;
+    ed_searchText.Visible := False;
+    if cmb_SearchType.ItemIndex = 6 then LoadRegGubun(cmb_regGubun1)
+    else if cmb_SearchType.ItemIndex = 7 then LoadEmpType(EmpTypeCodeList,cmb_regGubun1)
+    else if cmb_SearchType.ItemIndex = 8 then LoadCardGubun(cmb_regGubun1)
+    else if cmb_SearchType.ItemIndex = 11 then LoadWorkGubun(WorkGubunCodeList,cmb_regGubun1,'전체')
+    else
+    begin
+      cmb_regGubun1.Visible := False;
+      ed_searchText.Visible := True;
+    end;
+  end else
+  begin
+    cmb_regGubun1.Visible := False;
+    ed_searchText.Visible := True;
+  end;
+
+(*
+  lb_search.Caption := cmb_SearchType.Text;
   if cmb_SearchType.ItemIndex = 0 then
   begin
     cmb_CardRegType.Visible := True;
@@ -187,7 +210,7 @@ begin
     ed_searchText.Visible := True;
     cmb_EmpWorkGubun.Visible := False;
   end;
-
+*)
 end;
 
 procedure TfmCardValidDate.btn_SearchClick(Sender: TObject);
@@ -209,11 +232,34 @@ var
 begin
   GridInitialize(sg_Employ); //스트링그리드 초기화
 
-  if DBTYPE = 'MSSQL' then stSql := MSSQL.SelectTB_CARDJoinTBEmployee
-  else if DBType = 'PG' then stSql := PostGreSql.SelectTB_CARDJoinTBEmployee
-  else if DBType = 'MDB' then stSql := MDBSql.SelectTB_CARDJoinTBEmployee
+  if DBTYPE = 'MSSQL' then stSql := MSSQL.SelectTB_CARDJoinTBEmployee(False)
+  else if DBType = 'PG' then stSql := PostGreSql.SelectTB_CARDJoinTBEmployee(False)
+  else if DBType = 'MDB' then stSql := MDBSql.SelectTB_CARDJoinTBEmployee(False)
   else if DBType = 'FB' then stSql := FireBird.SelectTB_CARDJoinTBEmployee
   else Exit;
+  if (cmb_SearchType.ItemIndex = 5) then  //카드번호
+  begin
+    if Trim(ed_searchText.Text) <> '' then
+    begin
+      stSql := stSql + ' Inner Join TB_CARD g ';
+      stSql := stSql + ' ON ( a.GROUP_CODE = g.GROUP_CODE ';
+      stSql := stSql + ' AND a.CO_COMPANYCODE = g.CO_COMPANYCODE  ';
+      stSql := stSql + ' AND a.EM_CODE = g.EM_CODE ) ';
+    end;
+  end;
+  if (cmb_SearchType.ItemIndex = 6) or  //카드등록구분
+     (cmb_SearchType.ItemIndex = 8) then //카드타입
+  begin
+    if cmb_regGubun1.ItemIndex > 0 then
+    begin
+      stSql := stSql + ' Inner Join TB_CARD g ';
+      stSql := stSql + ' ON ( a.GROUP_CODE = g.GROUP_CODE ';
+      stSql := stSql + ' AND a.CO_COMPANYCODE = g.CO_COMPANYCODE  ';
+      stSql := stSql + ' AND a.EM_CODE = g.EM_CODE ) ';
+    end;
+  end;
+  stSql := stSql + ' Where b.GROUP_CODE = ''' + GROUPCODE + ''' ';
+
   stFromDate := FormatDateTime('yyyymmdd',dt_FromDate.Date);
   stToDate := FormatDateTime('yyyymmdd',dt_ToDate.Date);
 
@@ -237,7 +283,7 @@ begin
           else stSql := stSql + ' OR ';
           stSql := stSql + ' a.CO_COMPANYCODE = ''' + CompanyCodeList.Strings[i] + ''' ';
         end;
-        stSql := stSql + ')'; 
+        stSql := stSql + ')';
       end else stSql := stSql + ' AND a.CO_COMPANYCODE = ''' + CompanyCodeList.Strings[cmb_Company.ItemIndex] + ''' ';
       if cmb_Jijum.ItemIndex > 0 then stSql := stSql + ' AND b.CO_JIJUMCODE = ''' + copy(JijumCodeList.Strings[cmb_Jijum.ItemIndex],4,3) + ''' ';
       if cmb_Depart.ItemIndex > 0 then stSql := stSql + ' AND b.CO_DEPARTCODE = ''' + copy(DepartCodeList.Strings[cmb_Depart.ItemIndex],7,3) + ''' ';
@@ -314,7 +360,55 @@ begin
   if cmb_Posi.ItemIndex > 0 then
     stSql := stSql + ' AND b.PO_POSICODE = ''' + copy(PosiCodeList.Strings[cmb_Posi.ItemIndex],4,3) + ''' ';
 
-  if cmb_SearchType.ItemIndex = 0 then //카드등록구분
+  if cmb_SearchType.ItemIndex = 6 then
+  begin
+    if cmb_regGubun1.ItemIndex > 0 then
+    begin
+      stSql := stSql + ' AND g.CA_CARDTYPE = ''' + copy(cmb_regGubun1.Text,1,1) + ''' '
+    end;
+  end else if cmb_SearchType.ItemIndex = 7 then
+  begin
+    if cmb_regGubun1.ItemIndex > 0 then
+    begin
+      stSql := stSql + ' AND b.RG_CODE = ''' + EmpTypeCodeList.Strings[cmb_regGubun1.itemIndex] + ''' '
+    end;
+  end else if cmb_SearchType.ItemIndex = 8 then
+  begin
+    if cmb_regGubun1.ItemIndex > 0 then
+    begin
+      stSql := stSql + ' AND g.CA_GUBUN = ''' + copy(cmb_regGubun1.Text,1,1) + ''' '
+    end;
+  end else if cmb_SearchType.ItemIndex = 11 then
+  begin
+    if cmb_regGubun1.ItemIndex > 0 then
+    begin
+      stSql := stSql + ' AND b.WG_CODE = ''' + WorkGubunCodeList.Strings[cmb_regGubun1.ItemIndex] + ''' '
+    end;
+  end else
+  begin
+    if Trim(ed_searchText.Text) <> '' then
+    begin
+      if cmb_SearchType.ItemIndex < 0 then cmb_SearchType.ItemIndex := 0;
+
+      if cmb_SearchType.ItemIndex = 0 then //사번
+        stSql := stSql + ' AND b.EM_CODE = ''' + Trim(ed_searchText.Text)  + ''' '
+      else if cmb_SearchType.ItemIndex = 1 then //이름
+        stSql := stSql + ' AND b.EM_NAME LIKE ''%' + Trim(ed_searchText.Text)  + '%'' '
+      else if cmb_SearchType.ItemIndex = 2 then //사내전화번호
+        stSql := stSql + ' AND b.em_cophone LIKE ''%' + Trim(ed_searchText.Text)  + '%'' '
+      else if cmb_SearchType.ItemIndex = 3 then //집전화번호
+        stSql := stSql + ' AND b.em_homephone LIKE ''%' + Trim(ed_searchText.Text)  + '%'' '
+      else if cmb_SearchType.ItemIndex = 4 then //휴대폰번호
+        stSql := stSql + ' AND b.em_handphone LIKE ''%' + Trim(ed_searchText.Text)  + '%'' '
+      else if cmb_SearchType.ItemIndex = 5 then //카드번호
+        stSql := stSql + ' AND g.CA_CARDNO LIKE ''%' + Trim(ed_searchText.Text)  + '%'' '
+      else if cmb_SearchType.ItemIndex = 9 then //주소1
+        stSql := stSql + ' AND b.EM_ADDR1 LIKE ''%' + Trim(ed_searchText.Text)  + '%'' '
+      else if cmb_SearchType.ItemIndex = 10 then //주소2
+        stSql := stSql + ' AND b.EM_ADDR2 LIKE ''%' + Trim(ed_searchText.Text)  + '%'' ';
+    end;
+  end;
+(*  if cmb_SearchType.ItemIndex = 0 then //카드등록구분
   begin
     if cmb_CardRegType.ItemIndex <> 0 then
     begin
@@ -332,12 +426,13 @@ begin
     if cmb_EmpWorkGubun.ItemIndex > 0 then stWorkCode := WorkGubunCodeList.Strings[cmb_EmpWorkGubun.ItemIndex];
     if stWorkCode <> '' then stSql := stSql + ' AND b.WG_CODE = ''' + stWorkCode  + ''' '
   end;
-
+*)
   CoInitialize(nil);
   TempAdoQuery := TADOQuery.Create(nil);
   TempAdoQuery.Connection := DataModule1.ADOConnection;
   TempAdoQuery.DisableControls;
 
+  memo1.Lines.Text := stSql;
   Try
     btn_Search.Enabled := False;
     Screen.Cursor:= crHourGlass;
@@ -370,11 +465,15 @@ begin
         begin
           cells[0,nRow] := FindField('CA_CARDNO').AsString;
           cells[1,nRow] := FindField('em_retiredate').AsString;
-          Case FindField('CA_CARDTYPE').asstring[1] of
-            '1' : begin stCardState := '1.등록'; end;
-            '2' : begin stCardState := '2.분실'; end;
-            '3' : begin stCardState := '3.정지'; end;
-            '4' : begin stCardState := '4.변경'; end;
+          stCardState :='';
+          if( Not FindField('CA_CARDTYPE').IsNull ) then
+          begin
+            Case FindField('CA_CARDTYPE').asstring[1] of
+              '1' : begin stCardState := '1.등록'; end;
+              '2' : begin stCardState := '2.분실'; end;
+              '3' : begin stCardState := '3.정지'; end;
+              '4' : begin stCardState := '4.변경'; end;
+            end;
           end;
           cells[2,nRow] := stCardState;// FindField('CA_CARDTYPE').AsString;
           cells[3,nRow] := FindField('COMPANYNAME').AsString;
@@ -507,6 +606,7 @@ procedure TfmCardValidDate.CardGradeDownLoad(aCardNo: string);
 var
   stSql : string;
 begin
+  if (aCardNo='') then Exit;
   stSql := ' Update TB_DEVICECARDNO set DE_RCVACK = ''N'' ';
   stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
   stSql := stSql + ' AND CA_CARDNO = ''' + aCardNo + ''' ';
@@ -551,7 +651,8 @@ begin
         if bChecked then
         begin
           Gauge1.Progress := Gauge1.Progress + 1;
-          if DleteCard(cells[0,i]) then dmAdoQuery.DeleteTB_EMPLOYEE(cells[7,i],cells[9,i],cells[0,i]);
+          if DleteCard(cells[0,i]) then
+            dmAdoQuery.DeleteTB_EMPLOYEE(cells[7,i],cells[9,i],cells[0,i]);
              //DeleteEmployeeInfo(cells[9,i],cells[7,i],cells[0,i]);
         end;
       end;
@@ -570,7 +671,11 @@ var
   bResult : Boolean;
 begin
   result := False;
-  if aCardNo = '' then Exit;
+  if aCardNo = '' then
+  begin
+    result := True;
+    Exit;
+  end;
   bResult := UpdateTB_DEVICECARDNO(aCardNo,'N'); //모든 카드 권한을 삭제 처리함
   if Not bResult then Exit;
 

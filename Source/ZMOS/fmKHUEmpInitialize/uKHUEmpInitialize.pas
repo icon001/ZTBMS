@@ -57,7 +57,6 @@ type
     Function UpdateTB_EMPLOYEE(aCompanyCode,aEmCode,aEmName,
                                 aJijumCode,aDepartCode,aPosicode,aFdmsNo,aCardNo:string):Boolean;
 
-    Function GetFdmsID:integer;
     Function GetMaxPositionNum : integer;
 
     Function CheckTB_CARD(aCardNo:string):Boolean;
@@ -85,7 +84,7 @@ uses
   uCompanyCodeLoad,
   uLomosUtil,
   uCommonSql
-  ;
+  , UCommonModule;
 
 {$R *.dfm}
 
@@ -303,7 +302,7 @@ begin
   stPosicode := '000';
   if cmb_Posi.ItemIndex > 0 then stPosicode := copy(PosiCodeList.Strings[cmb_Posi.ItemIndex],4,3);
 
-  nFdmsNo := GetFdmsID;
+  nFdmsNo := strtoint(CommonModule.GetNextFdmsID);
   nPositionNum := GetMaxPositionNum ;
 
   Gauge1.MaxValue := CheckCount;
@@ -383,45 +382,7 @@ begin
   end;
 end;
 
-function TfmKHUEmpInitialize.GetFdmsID: integer;
-var
-  stSql : string;
-  nFdms_id : integer;
-  TempAdoQuery : TADOQuery;
-begin
-  result := 31;
-  stSql := 'select Max(Fdms_id) as fdms_id from TB_EMPLOYEE ';
-  Try
-    CoInitialize(nil);
-    TempAdoQuery := TADOQuery.Create(nil);
-    TempAdoQuery.Connection := DataModule1.ADOConnection;
-    TempAdoQuery.DisableControls;
 
-    with TempAdoQuery do
-    begin
-      Close;
-      Sql.Clear;
-      Sql.Text := stSql;
-      Try
-        Open;
-      Except
-        Exit;
-      End;
-      if recordCount < 1 then Exit;
-      Try
-        nFdms_id := FindField('fdms_id').AsInteger;
-        if nFdms_id = 0 then Exit;
-      Except
-        Exit;
-      End;
-      result := nFdms_id + 1;
-    end;
-  Finally
-    TempAdoQuery.EnableControls;
-    TempAdoQuery.Free;
-    CoUninitialize;
-  End;
-end;
 
 function TfmKHUEmpInitialize.CheckTB_CARDEMPNO(aCompanyCode, aEmCode,
   aCardNo: string): Boolean;

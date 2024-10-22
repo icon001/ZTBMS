@@ -1,8 +1,8 @@
 object dmAdoRelay: TdmAdoRelay
   OldCreateOrder = False
   OnCreate = DataModuleCreate
-  Left = 613
-  Top = 248
+  Left = 614
+  Top = 227
   Height = 257
   Width = 308
   object RelayExeQuery: TADOQuery

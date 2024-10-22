@@ -2519,6 +2519,13 @@ inherited fmAlarmMapMonitoring: TfmAlarmMapMonitoring
       Caption = #44208#54633#51109#52824#47532#49483
       OnClick = Menu_DeviceRebootClick
     end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object mn_DeviceChange: TMenuItem
+      Caption = #52968#53944#47204#47084#44368#52404
+      OnClick = mn_DeviceChangeClick
+    end
   end
   object Popup_Locate: TPopupMenu
     AutoHotkeys = maManual

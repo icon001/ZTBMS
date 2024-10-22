@@ -23,6 +23,8 @@ inherited fmPerAtReport: TfmPerAtReport
     Width = 1016
     Height = 89
     Align = alTop
+    Color = clWhite
+    ParentColor = False
     TabOrder = 0
     object lb_CompanyName: TLabel
       Left = 160
@@ -374,14 +376,16 @@ inherited fmPerAtReport: TfmPerAtReport
     Left = 0
     Top = 122
     Width = 1016
-    Height = 525
+    Height = 532
     Align = alClient
+    Color = clWhite
+    ParentColor = False
     TabOrder = 1
     object sg_report: TAdvStringGrid
       Left = 2
       Top = 14
       Width = 1012
-      Height = 509
+      Height = 516
       Cursor = crDefault
       Align = alClient
       ColCount = 12
@@ -470,6 +474,7 @@ inherited fmPerAtReport: TfmPerAtReport
       PrintSettings.FooterFont.Name = 'MS Sans Serif'
       PrintSettings.FooterFont.Style = []
       PrintSettings.PageNumSep = '/'
+      ScrollWidth = 16
       SearchFooter.FindNextCaption = 'Find next'
       SearchFooter.FindPrevCaption = 'Find previous'
       SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -516,7 +521,7 @@ inherited fmPerAtReport: TfmPerAtReport
     Height = 33
     Align = alTop
     Caption = #44540#53468#48372#44256#49436
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -693,8 +698,8 @@ inherited fmPerAtReport: TfmPerAtReport
       72792E2241545F434F4E54454E54225D00000000FFFF00000000000200000001
       000000000400B1BCB8B200090000000000000000000800000000000200000000
       00FFFFFF000000000200000000000000FEFEFF000000000000000000000000FC
-      000000000000000000000000000000005800E9E41F70F5B9E240ED8E8B05D203
-      E540}
+      000000000000000000000000000000005800E9E41F70F5B9E240B47440DC323D
+      E640}
   end
   object frDBDataSet1: TfrDBDataSet
     DataSet = ADOQuery

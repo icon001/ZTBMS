@@ -1,6 +1,6 @@
 object dServerConnectModule: TdServerConnectModule
-  Left = 587
-  Top = 240
+  Left = 1408
+  Top = 431
   Width = 215
   Height = 150
   Color = clBtnFace

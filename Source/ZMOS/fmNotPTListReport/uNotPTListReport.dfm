@@ -23,6 +23,7 @@ inherited fmNotPTListReport: TfmNotPTListReport
     Width = 978
     Height = 89
     Align = alTop
+    Color = clWhite
     TabOrder = 0
     object GroupBox5: TGroupBox
       Left = 730
@@ -307,7 +308,7 @@ inherited fmNotPTListReport: TfmNotPTListReport
     Left = 0
     Top = 89
     Width = 978
-    Height = 517
+    Height = 524
     Cursor = crDefault
     Align = alClient
     ColCount = 4
@@ -391,6 +392,7 @@ inherited fmNotPTListReport: TfmNotPTListReport
     PrintSettings.FooterFont.Style = []
     PrintSettings.PageNumSep = '/'
     ScrollSynch = True
+    ScrollWidth = 16
     SearchFooter.FindNextCaption = 'Find next'
     SearchFooter.FindPrevCaption = 'Find previous'
     SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -412,6 +414,7 @@ inherited fmNotPTListReport: TfmNotPTListReport
       Top = 96
       Width = 329
       Height = 73
+      Color = clWhite
       TabOrder = 3
       Visible = False
       object Label3: TLabel

@@ -36,6 +36,7 @@ type
     function Table5VersionMake: Boolean;
     function Table6VersionMake: Boolean;
     function Table7VersionMake: Boolean;
+    function Table8VersionMake: Boolean;
   Published
     { Published declarations }
     Property Cancel:Boolean read FCancel write SetCancel;
@@ -1129,6 +1130,18 @@ begin
   dmDBModule.ProcessExecSQL(stSql);
 end;
 
+function TDataBaseConfig.Table8VersionMake: Boolean;
+var
+  stSql : string;
+begin
+  stSql := InsertIntoTB_CONFIG('EMPCONV','COCODE','099','회사코드');
+  dmDBModule.ProcessExecSQL(stSql);
+
+  stSql := UpdateTB_CONFIG('EMPCONV','TABLE_VER','8');
+  dmDBModule.ProcessExecSQL(stSql);
+
+end;
+
 procedure TDataBaseConfig.TableVersionCheck;
 var
   nTableVersion : integer;
@@ -1142,6 +1155,7 @@ begin
   if nTableVersion < 5 then Table5VersionMake;
   if nTableVersion < 6 then Table6VersionMake;
   if nTableVersion < 7 then Table7VersionMake;
+  if nTableVersion < 8 then Table8VersionMake;
 
 end;
 

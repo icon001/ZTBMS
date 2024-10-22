@@ -111,6 +111,7 @@ type
     DoorCodeList : TStringList;
     CheckCount : integer;
     EmpTypeCodeList : TStringList;
+    WorkGubunCodeList : TStringList;
     { Private declarations }
     procedure LoadBuildingCode(cmb_Box:TComboBox);
     procedure LoadFloorCode(aBuildingCode:string;cmb_Box:TComboBox);
@@ -169,6 +170,7 @@ begin
     AreaCodeList := TStringList.Create;
     EmpTypeCodeList := TStringList.Create;
     DoorCodeList := TStringList.Create;
+    WorkGubunCodeList := TStringList.Create;
 
     GridInit(sg_Door,1,2,False);
 
@@ -194,6 +196,7 @@ begin
     AreaCodeList.Free;
     EmpTypeCodeList.Free;
     DoorCodeList.Free;
+    WorkGubunCodeList.Free;
 
     Action := caFree;
 
@@ -701,6 +704,13 @@ begin
       bWhereSearch := True;
       stSql := stSql + ' AND a.CA_GUBUN = ''' + copy(cmb_regGubun1.Text,1,1) + ''' '
     end;
+  end else if cmb_SearchType.ItemIndex = 11 then
+  begin
+    if cmb_regGubun1.ItemIndex > 0 then
+    begin
+      bWhereSearch := True;
+      stSql := stSql + ' AND b.WG_CODE = ''' + WorkGubunCodeList.Strings[cmb_regGubun1.ItemIndex] + ''' '
+    end;   
   end else
   begin
     if Trim(ed_searchText.Text) <> '' then
@@ -1546,6 +1556,7 @@ begin
     if cmb_SearchType.ItemIndex = 6 then LoadRegGubun(cmb_regGubun1)
     else if cmb_SearchType.ItemIndex = 7 then LoadEmpType(EmpTypeCodeList,cmb_regGubun1)
     else if cmb_SearchType.ItemIndex = 8 then LoadCardGubun(cmb_regGubun1)
+    else if cmb_SearchType.ItemIndex = 11 then LoadWorkGubun(WorkGubunCodeList,cmb_regGubun1,'ÀüÃ¼') //LoadCardGubun(cmb_regGubun1)
     else
     begin
       cmb_regGubun1.Visible := False;

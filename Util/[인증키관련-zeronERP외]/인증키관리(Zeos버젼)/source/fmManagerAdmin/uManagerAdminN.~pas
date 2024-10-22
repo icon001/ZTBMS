@@ -67,10 +67,10 @@ type
     N1: TMenuItem;
     ed_zip: TEdit;
     Label9: TLabel;
-    ed_addr: TEdit;
     Label10: TLabel;
     mn_TelRing: TMenuItem;
     N2: TMenuItem;
+    ed_addr: TMemo;
     procedure btn_CloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);

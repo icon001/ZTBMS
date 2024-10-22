@@ -119,7 +119,6 @@ type
     function EmployeeFormCheck:Boolean;
     function EmployeeInsert:Boolean;
     procedure FormNameSet;
-    Function GetFdmsID:string;
     Function GetEmployeeFdmsID(aCompanyCode,aEmpID:string):string;
 
 
@@ -145,7 +144,7 @@ uses
   uLomosUtil,
   uZipCode,
   uCommonSql,
-  uCompanyCodeLoad, udmAdoQuery;
+  uCompanyCodeLoad, udmAdoQuery, UCommonModule;
 
 {$R *.dfm}
 
@@ -1215,7 +1214,7 @@ begin
       end;
     end;
 
-    stfdmsID := GetFdmsID;
+    stfdmsID := CommonModule.GetNextFdmsID;
 
     StatusBar1.Panels[0].Text := inttostr(i) + '/' + inttostr(sg_Employ.RowCount - 1) + FM106 +'정보 입력중...';
     if Not CheckTB_EMPLOYEE(stCompanyCode,stEmCode) then
@@ -1769,33 +1768,6 @@ begin
   end;
 end;
 
-function TfmBatchEmployee.GetFdmsID: string;
-var
-  stSql : string;
-  nFdms_id : integer;
-begin
-  result := '31';
-  stSql := 'select Max(Fdms_id) as fdms_id from TB_EMPLOYEE ';
-  with fdmsADOQuery do
-  begin
-    Close;
-    Sql.Clear;
-    Sql.Text := stSql;
-    Try
-      Open;
-    Except
-      Exit;
-    End;
-    if recordCount < 1 then Exit;
-    Try
-      nFdms_id := FindField('fdms_id').AsInteger;
-      if nFdms_id = 0 then Exit;
-    Except
-      Exit;
-    End;
-    result := inttostr(nFdms_id + 1);
-  end;
-end;
 
 procedure TfmBatchEmployee.cmb_CompanyChange(Sender: TObject);
 begin

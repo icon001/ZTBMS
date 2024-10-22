@@ -331,6 +331,9 @@ type
     RelayControlTimer: TTimer;
     mn_JNHospital: TMenuItem;
     CardDownLoadCheckTimer: TTimer;
+    mn_Update: TMenuItem;
+    N42: TMenuItem;
+    mn_fdmsResend: TMenuItem;
     procedure miExitClick(Sender: TObject);
     procedure tbiDblClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -475,6 +478,8 @@ type
     procedure RelayControlTimerTimer(Sender: TObject);
     procedure mn_JNHospitalClick(Sender: TObject);
     procedure CardDownLoadCheckTimerTimer(Sender: TObject);
+    procedure mn_UpdateClick(Sender: TObject);
+    procedure mn_fdmsResendClick(Sender: TObject);
   private
     //Component 모음
     MonitorSERVER: TDXServerCore;
@@ -567,6 +572,7 @@ type
     L_nDeviceServerPort3 : integer;           //기기별 서버포트 3
     L_nEventdeleteAccessDay : integer;     //출입 이벤트 데이터 보관일수
     L_nEventdeleteAttendDay : integer;     //근태 이벤트 데이터 보관일수
+    L_nEventdeleteEMPDay : integer;        // 사원 이력 데이터 보관일수
     L_nEventdeleteDaemonLogDay : integer; //로그 데이터 몇일전 데이터를 날릴것인지
     L_nEventdeleteFoodDay: integer;        //식수 이벤트 데이터 보관일수
     L_nEventdeletePatrolDay : integer;     //방범 이벤트 데이터 보관일수
@@ -577,7 +583,7 @@ type
     L_nFoodDupEvent : integer;          //식수 중복 이벤트 발생 유무
     L_nKTTControlServerAlarmEventCount : integer; //관제 서버 전송 알람 카운터
     L_nThreadRestartCount : integer;
-    L_nSendClientTimer : integer;  //클라이언트 전송 타이머
+
 
     L_stAttendServerPort : string;             //근태서버 Port
     L_stClientComBuff : string;
@@ -961,7 +967,7 @@ type
     Procedure Receive_RegUsedDevice(aNodeNo,aEcuID,aPacketData,aRegGubun: String); // ECU 등록 응답
     procedure Receive_JavaraSchedule(aNodeNo,aEcuID,aPacketData:string); //자바라 스케줄 등록
     procedure Receive_DoorTimeCodeUse(aNodeNo,aEcuID,aPacketData:string); //출입문타임코드 사용유무 등록
-  private
+  public
     L_bWebRelay : Boolean;
     InnoNixAlarmEventList : TStringList;
     { Private declarations }
@@ -970,7 +976,7 @@ type
     //**************************************
     Function FingerDeviceRelay : Boolean;
     Function FingerSend : Boolean;
-    Function fdmsConnect:Boolean; //fdms Connect
+    Function fdmsConnect(aMsg:Boolean=False):Boolean; //fdms Connect
     Function fdmsUserRelaySend(aEmCode,aFDMS_ID,aEM_NAME,aHandPhone,aDEPART_NAME,aPO_NAME,aCA_CARDNO,aMode,aJijumcode:string):Boolean;
     Function fdmsUserRelayDeleteSend(aFDMS_ID,aMode:string):Boolean;
     Function fdmsUserRelay:Boolean;
@@ -980,6 +986,16 @@ type
     Function GetFdmsUserKey(aFDMS_Key:string):string;
     Function NextFdmsUserKey:string;
     Function DeleteFdmsUser(aFDMS_ID:string):Boolean;
+    Function ShIntiFdmsUserAdd(aEmCode,aFDMS_ID, aEM_NAME,aHandPhone, aDEPART_NAME, aPO_NAME, aCA_CARDNO,aMode,aJijumCode:string):Boolean;
+    Function ShIntiInsertFdmsMEMBER(aEmCode,aFDMS_ID, aEM_NAME,aHandPhone, aDEPART_NAME, aPO_NAME, aCA_CARDNO,aMode,aJijumCode:string):Boolean;
+    Function ShIntiUpdateFdmsMEMBER(aEmCode,aFDMS_ID, aEM_NAME,aHandPhone, aDEPART_NAME, aPO_NAME, aCA_CARDNO,aMode,aJijumCode:string):Boolean;
+    Function ShIntiCheckFdmsUser(aFDMS_ID:string):Boolean;
+    Function ShIntiCheckFdmsVISITOR(aFDMS_ID:string):Boolean;
+    Function ShIntiInsertTB_PATTERNDAY(aFDMS_ID:string):Boolean;
+    Function ShIntiInsertTB_USERPATTERNLINK(aFDMS_ID:string):Boolean;
+    Function ShIntiInsertTB_USERSICKLEAVE(aFDMS_ID:string):Boolean;
+    Function ShIntiInsertTB_USER(aEmCode,aFDMS_ID, aEM_NAME,aHandPhone, aDEPART_NAME, aPO_NAME, aCA_CARDNO,aMode,aJijumCode:string):Boolean;
+    Function CheckIntiFdmsMEMBER(aFDMS_ID:string):Boolean;
     Function UpdateFdmsUser(aFdmsKey,aEmCode,aFDMS_ID, aEM_NAME,aHandPhone, aDEPART_NAME, aPO_NAME,aCA_CARDNO,aMode,aJijumCode:string):Boolean;
     Function InsertFdmsUser(aEmCode,aFDMS_ID, aEM_NAME,aHandPhone, aDEPART_NAME, aPO_NAME,aCA_CARDNO,aMode,aJijumCode:string):Boolean;
     function SHF_CheckSyncUserterminal(aPOSITIONNUM,aFINGERDEVICEID:string):integer;
@@ -998,6 +1014,7 @@ type
     //**************************************
     Function LoadAntiGroup : Boolean;  //AntiGroup 을 로딩 한다.
     Function LoadArmArea(aFirst:Boolean=True) : Boolean; //구역경계 사용여부를 로드한다.
+    Function LoadBuildingCode(aFirst:Boolean=True) : Boolean; //위치정보를 로드한다.
     Function LoadDoor(aFirst:Boolean=True) : Boolean; //Door 사용여부를 로드한다.
     Function LoadECU(aFirst:Boolean=True) : Boolean; //ECU를 로드한다.
     Function LoadInOutReader : Boolean; //입퇴실 리더 정보를 로드 한다.
@@ -1040,6 +1057,7 @@ type
     //메모리지움버튼 클릭시 처리
     Procedure DeviceRegisterClear(Sender: TObject;  ReceiveData: string;NodeNO : integer);  //원격제어 응답 데이타
     //AlarmEvent
+    Procedure ArmAreaStatusChange(Sender: TObject;  aArmAreaCode,aArmRelayCode,aArmAreaName,aBuildingCode,aArmStatus,aVacancy:string ); //알람구역 상태 변경
     Procedure DeviceRcvAlarmData(Sender: TObject;  cmd,ReceiveData: string;NodeNO : integer;FireGubunCode:string); //알람데이타
     procedure DeviceRcvTellogData(Sender: TObject;  ReceiveData: string;NodeNO : integer);
     Procedure DeviceRcvInitAckData(Sender: TObject;  ReceiveData: string;NodeNO : integer); //장비등록 등답데이타
@@ -1053,6 +1071,7 @@ type
     Procedure DeviceRcvDoorControl(Sender: TObject;  ReceiveData: string;NodeNO : integer);//문제어 응답 데이타
     Procedure DeviceNotDefineData(Sender: TObject;  ReceiveData: string;NodeNO : integer);  //정의 않된 프로토콜 데이타
     Procedure DeviceErorData(Sender: TObject;  aData: string;NodeNO : integer); // ERROR 데이터
+    procedure RcvCardBufferFull(Sender: TObject;  aData: string;NodeNO : integer); // Card Buffer Full
     procedure DeviceRcvScheduleData(Sender: TObject;  ReceiveData: string;NodeNO : integer); //스케줄 데이터 등록 처리
     procedure DeviceRcvRegTimeCodeData(Sender: TObject;  ReceiveData: string;NodeNO : integer); //타임코드 등록 처리
     procedure DeviceConnected(Sender: TObject;  Value:Boolean; NodeNo : integer;aECUID:string);
@@ -1203,7 +1222,10 @@ uses
   uRelayDoor,
   uFoodEmployee,
   uZTBMSFunction,
-  uFoodSummary, uDBFunction;
+  uFoodSummary,
+  uDBFunction,
+  uRelay,
+  uTimerIni;
 
 
 
@@ -1338,6 +1360,8 @@ var
   LogoFile : string;
   ini_fun : TiniFile;
 begin
+  Panel1.Left := -1000;
+
   L_bDBProcessTimerStart := True;
   L_bDeviceLoading := False;
   wmTaskbar := RegisterWindowMessage('TaskbarCreated');
@@ -1358,6 +1382,10 @@ begin
   dmNodeServerWinSock.OnWinSockStop := WinSockStop;
 
   ini_fun := TiniFile.Create(ExtractFileDir(Application.ExeName) + '\Zmos.INI');
+
+  if ini_fun.ReadString('DATABASE','MESSAGE','TRUE') = 'TRUE' then G_bDBErrorMessageShow := True
+  else G_bDBErrorMessageShow := False;
+    
   G_nDaemonGubun  := ini_fun.ReadInteger('DAEMON','GUBUN',0);
   if ini_fun.ReadString('CARD','DOWNLOADLOG','FALSE') = 'TRUE' then G_bCardDownloadLogSave := True
   else G_bCardDownloadLogSave := False;
@@ -1471,7 +1499,6 @@ begin
   L_nConnectCount := 0;
   tbi.Hint := 'FormCreate';
   tbi.Show;
-  Panel1.Left := -1000;
   L_bWebRelay := False;
   L_bValidExpiredChecking := False;
   ValidExpiredTimer.Enabled := True;
@@ -1668,7 +1695,7 @@ begin
   L_bDaemonStop := False;
   StatusBar1.Panels[0].Text := '송수신데몬서버 기동중...';
   tbi.Hint := '송수신데몬서버 기동중...';
-  TDataBaseConfig.GetObject.DataBaseConnect(False);
+  TDataBaseConfig.GetObject.DataBaseConnect(false);
   if Not TDataBaseConfig.GetObject.DBConnected then
   begin
     StatusBar1.Panels[0].Text := '송수신데몬서버 기동중(1)...';
@@ -1731,7 +1758,7 @@ begin
   end;
   if Not TDataBaseConfig.GetObject.DBConnected then
   begin
-    showmessage('데이터베이스 접속 실패입니다. 데이터베이스 환경설정을 확인하여 주세요.');
+    if G_bDBErrorMessageShow then showmessage('데이터베이스 접속 실패입니다. 데이터베이스 환경설정을 확인하여 주세요.');
     L_bClose := True;
     Application.Terminate;
     Exit;
@@ -1755,7 +1782,7 @@ StatusBar1.Panels[0].Text := '데이터베이스 접속완료...';
 
   GetDaemonConfig;
 StatusBar1.Panels[0].Text := 'GetDaemonConfig 로딩완료...';
-  sendClientTimer.Interval := L_nSendClientTimer;
+  sendClientTimer.Interval := G_nSendClientTimerInterval;
 
   GetMonitoringTypeConfig;
 StatusBar1.Panels[0].Text := 'GetMonitoringTypeConfig 로딩완료...';
@@ -1807,11 +1834,15 @@ StatusBar1.Panels[0].Text := 'LoadECU 로딩완료...';
     LoadDoor;      //출입문 정보 로드
 StatusBar1.Panels[0].Text := 'LoadDoor 로딩완료...';
     LoadArmArea;   //방범구역 정보 로드
+    LoadBuildingCode;
 StatusBar1.Panels[0].Text := 'LoadArmArea 로딩완료...';
     LoadFireGroup; //화재그룹 정보 로드
 StatusBar1.Panels[0].Text := 'LoadFireGroup 로딩중...';
-    //UpdateTB_DEVICECARDNO_AllMemory('N'); //대용량시 시간을 너무 많이 잡아 먹는다...ㅠ.ㅠ
-    if G_bCardMemoryLoad then LoadDeviceCardNo; //카드권한 로딩
+    if G_bCardMemoryLoad then
+    begin
+      dmDBFunction.UpdateTB_DEVICECARDNO_AllMemory('N'); //대용량시 시간을 너무 많이 잡아 먹는다...ㅠ.ㅠ
+      LoadDeviceCardNo; //카드권한 로딩
+    end;
 
   //  if UseDeviceServer then  //기기가 서버모드이면
   //  begin
@@ -1857,10 +1888,15 @@ StatusBar1.Panels[0].Text := 'LoadFireGroup 로딩중...';
 
     if fdmsUses = 'TRUE' then
     begin
+      mn_fdmsResend.Visible := True;
       //여기서 DBConnect 하자...
       if fdmsConnect then fdmsRelyTimer.Enabled := True
       else fdmsRelyTimer.Enabled := False;
-    end  else fdmsRelyTimer.Enabled := False;
+    end  else
+    begin
+      mn_fdmsResend.Visible := False;
+      fdmsRelyTimer.Enabled := False;
+    end;
 
     if SensorUse then mn_sensor.Visible := True
     else mn_sensor.Visible := False;
@@ -2132,7 +2168,7 @@ begin
   end;   }
   Try
     ConnectTimer.Enabled := False;
-    ConnectTimer.Interval := 1000;
+    ConnectTimer.Interval := G_nConnectTimerInterval;
     for I:=DeviceConnectList.Count - 1 downto 0 do
     begin
       aPollingTime:= TDeviceSocketInfo(DeviceConnectList.objects[i]).LastConnectedTime;
@@ -2751,8 +2787,8 @@ begin
             //Memo1.Lines.Add('CardAutoDownLoad:DisConnected1');
             Next;
             //Memo1.Lines.Add('CardAutoDownLoad:DisConnected2');
-            sleep(1);
-            MyProcessMessage;  
+            //sleep(1);
+            //MyProcessMessage;     //다시 안들어 오는 경우 발생
 
             //Application.ProcessMessages;   //20131011 연세대에서 멈춤 현상 발생해서 MyProcessMessage 로 변경 함
             //Memo1.Lines.Clear;
@@ -2842,6 +2878,9 @@ var
   nCardNo : int64;
   chCmd : char;
   stCardTemp : string;
+  stResult : string;
+  stDeviceID : string;
+  nIndex : integer;
 begin
   Try
 
@@ -2854,6 +2893,7 @@ begin
     if nCardNoLen = 0 then
     begin
       stCardNo:= Copy(ReceiveData,27,8);
+      stResult:= Copy(ReceiveData,27+8+6,1);
       if G_nSpecialProgram = 3 then  //KTTELECOP 스피드게이트용 3자리만 사용.
       begin
         stCardNo := DecodeCardNo(stCardNo,8,True);
@@ -2878,6 +2918,7 @@ begin
     end else
     begin
       stCardNo:= Copy(ReceiveData,27,nCardNoLen);
+      stResult:= Copy(ReceiveData,27+nCardNoLen+6,1);
       if aCardType = 2 then stCardNo := Hex2Ascii(stCardNo,True);
       if CARDLENGTHTYPE = 0 then  //PC에서 고정길이 타입으로 사용중이면
       begin
@@ -2903,8 +2944,29 @@ begin
       end;
       stCardNo := GetFixedCardNoCheck(stCardNo,G_bCardFixedUse,G_stCardFixedFillChar,G_nCardFixedPosition,G_nCardFixedLength);
     end;
+    if (Uppercase(chCmd)= 'L') and  (stResult = '1') then
+    begin
+      //카드 Buffer Full 이 난 상황이다.
+      stDeviceID:=FillzeroNumber(NodeNo,3) + stECUID;
+
+      nIndex := DeviceList.IndexOf(stDeviceID);
+      if nIndex > -1 then
+      begin
+        TDevice(DeviceList.Objects[nIndex]).CardBufferFull := True;
+      end;
+    end else if (Uppercase(chCmd)= 'N') or (stResult = '2') then
+    begin
+      //카드 Buffer Full 이 해결 된 상황이다.
+      stDeviceID:=FillzeroNumber(NodeNo,3) + stECUID;
+
+      nIndex := DeviceList.IndexOf(stDeviceID);
+      if nIndex > -1 then
+      begin
+        TDevice(DeviceList.Objects[nIndex]).CardBufferFull := False;
+      end;
+    end;
     // 자동으로 서버 타입에 맞춰서 카드 데이터 변환,2014-09-19
-    
+    StatusBar1.Panels[0].Text := inttostr(NodeNO) + stECUID + ';' + stCardNo + '수신';
     if dmAdoQuery.DupCheckTB_DEVICE_CARDNO(stCardNo,inttostr(NodeNO),stECUID) then  //Key 값으로 존재하면
     begin
       //if dmAdoQuery.CardPermitCheck(stCardNo,inttostr(NodeNO),stECUID,'N') then
@@ -3275,8 +3337,11 @@ begin
             //기기타입
             if FindField('AC_DEVICETYPE').AsString = '' then aDeviceType := '1'
             else aDeviceType := FindField('AC_DEVICETYPE').AsString[1];
-            aDevice.DeviceCode := FindField('AC_DEVICECODE').AsString; 
+            aDevice.DeviceCode := FindField('AC_DEVICECODE').AsString;
             aDevice.DeviceType := aDeviceType; //1:811,2:812,3:100,4:200
+
+            if FindField('AC_CARDFULL').AsString = '1' then aDevice.CardBufferFull := True
+            else aDevice.CardBufferFull := False;
 
             aDevice.OnRcvTellogData     := DeviceRcvTellogData;
             aDevice.OnRcvAlarmData      := DeviceRcvAlarmData;         //알람 데이터
@@ -3293,6 +3358,7 @@ begin
             aDevice.OnRcvRegSchedule    := DeviceRcvScheduleData;       //스케줄 데이터 등록 응답
             aDevice.OnRcvRegTimeCode    := DeviceRcvRegTimeCodeData;    //타임코드 등록 응답
             aDevice.OnErrorData         := DeviceErorData;
+            aDevice.OnCardBufferFull    := RcvCardBufferFull;
             aDevice.OnConnected         := DeviceConnected;
             aDevice.OnDoorManageModeChange := DoorMangageModeChange;  //출입문 운영모드 변경
             aDevice.OnDoorPNModeChange := DoorPNModeChange;  //출입문 운영모드 변경
@@ -3303,7 +3369,8 @@ begin
             aDevice.OnDeviceCodeChange    := DeviceCodeChange; //컨트롤러 코드 변경시
             aDevice.OnFireStateChange    := FireStateChange; //컨트롤러 코드 변경시
             aDevice.OnDeviceArmAreaDisArmEvent := DeviceArmAreaDisArmEvent; //미경계시간 알람 발생
-
+            aDevice.OnSendData :=         CommNodeSend;
+            
             DeviceList.AddObject( stDeviceID,aDevice);
           end else
           begin
@@ -3346,6 +3413,9 @@ begin
             else aDeviceType := FindField('AC_DEVICETYPE').AsString[1];
             TDevice(DeviceList.Objects[nIndex]).DeviceType := aDeviceType; //1:811,2:812,3:100,4:200
             TDevice(DeviceList.Objects[nIndex]).DeviceName := FindField('AC_DEVICENAME').AsString;
+
+            if FindField('AC_CARDFULL').AsString = '1' then TDevice(DeviceList.Objects[nIndex]).CardBufferFull := True
+            else TDevice(DeviceList.Objects[nIndex]).CardBufferFull := False;
 
           end;
         end;
@@ -3521,6 +3591,7 @@ var
   stTemp : string;
   bAlarmEventLog : Boolean;
   nCardFixType : integer;
+  nArmAreaIndex : integer;
 begin
 //  ReceiveData := stringReplace(ReceiveData,#0,'0',[rfReplaceAll]);
   nCardFixType := CARDLENGTHTYPE ;
@@ -3584,6 +3655,25 @@ begin
     stMode:= UpperCase(stMode);
     if cmd = 'A' then
     begin
+      if G_nSpecialProgram = 10 then   //홍대 세종 캠퍼스 이면 방범상태 연동하자.   20190319
+      begin
+        nArmAreaIndex := ArmAreaCodeList.IndexOf(FillZeroNumber(NodeNO,3) + stEcuID + stZoneCode );
+        if stStatus = 'ET' then
+        begin
+          if nArmAreaIndex > -1 then
+          begin
+            TRelayArmAreaCode(ArmAreaCodeList.Objects[nArmAreaIndex]).ArmStatus := stMode;
+            TRelayArmAreaCode(ArmAreaCodeList.Objects[nArmAreaIndex]).Vacancy := stStatus;
+          end;
+        end else
+        begin
+          if nArmAreaIndex > -1 then
+          begin
+            TRelayArmAreaCode(ArmAreaCodeList.Objects[nArmAreaIndex]).Vacancy := ' ';
+            TRelayArmAreaCode(ArmAreaCodeList.Objects[nArmAreaIndex]).ArmStatus := stMode;
+          end;
+        end;
+      end;
       if stStatus = '00' then
       begin
         //Mode Change StateCode
@@ -4326,7 +4416,7 @@ begin
                               ReceiveData[37],  //운영/개방
                               ReceiveData[36],  //Posi/Nega
                               cPermit,
-                              FormatdateTime('yyyymmddHHMMSS',Now),
+                              FormatdateTime('yyyymmddHHMMSSzzz',Now),
                               '000',
                               '',
                               '000',
@@ -4605,7 +4695,7 @@ begin
                           ReceiveData[37],
                           ReceiveData[36],
                           cPermit,
-                          FormatdateTime('yyyymmddHHMMSS',Now),
+                          FormatdateTime('yyyymmddHHMMSSzzz',Now),
                           stCompanyCode,
                           stEmCode,
                           stJijumCode,
@@ -5508,7 +5598,6 @@ begin
     IsNumericCardNo := True; //카드번호 숫자타입 사용/미사용
 
     L_bSendClientSequence := False;
-    L_nSendClientTimer := 5;
 
     L_stDaemonServerIP := '127.0.0.1';
     L_stDaemonServerPort := '1000'; //디폴트 포트
@@ -5543,6 +5632,7 @@ begin
     G_bCardMemoryLoad := False;
     G_bGlobalAntiPass := False;
     G_bDeviceCardPermitSync := True;
+    G_bCardFullUse := False;
 
     stSql := 'select * from TB_CONFIG ';
     stSql := stSql + ' where GROUP_CODE = ''' + GROUPCODE + ''' ';
@@ -5654,13 +5744,17 @@ begin
         begin
           if UpperCase(FindField('CO_CONFIGVALUE').AsString) <> '1' then G_bCardMemoryLoad := False
           else G_bCardMemoryLoad := True;
+        end else if FindField('CO_CONFIGCODE').AsString = 'CARDFULL' then
+        begin
+          if UpperCase(FindField('CO_CONFIGVALUE').AsString) <> '1' then G_bCardFullUse := False
+          else G_bCardFullUse := True;
         end else if FindField('CO_CONFIGCODE').AsString = 'CLIENTSEQ' then
         begin
           if UpperCase(FindField('CO_CONFIGVALUE').AsString) <> 'Y' then L_bSendClientSequence := False
           else L_bSendClientSequence := True;
         end else if FindField('CO_CONFIGCODE').AsString = 'CLIENTTIME' then
         begin
-          if isdigit(FindField('CO_CONFIGVALUE').AsString) then L_nSendClientTimer := strtoint(FindField('CO_CONFIGVALUE').AsString);
+          if isdigit(FindField('CO_CONFIGVALUE').AsString) then G_nSendClientTimerInterval := strtoint(FindField('CO_CONFIGVALUE').AsString);
         end else if FindField('CO_CONFIGCODE').AsString = 'CSOCKTYPE' then
         begin
           if isdigit(FindField('CO_CONFIGVALUE').AsString) then G_nMonitorSockType := strtoint(FindField('CO_CONFIGVALUE').AsString);
@@ -5945,7 +6039,8 @@ begin
   StatusBar1.Panels[2].Text := 'LogDeleteTime';
   //Application.ProcessMessages;
 
-  dtDaemonLogDeleteTime := dtDaemonLogDeleteTime + 1;
+  //dtDaemonLogDeleteTime := dtDaemonLogDeleteTime + 1;
+  dtDaemonLogDeleteTime := IncDay(dtDaemonLogDeleteTime,1);
 
   dtDate := Now - L_nEventdeleteDaemonLogDay;
   stDate := FormatdateTime('yyyymmdd',dtDate);
@@ -5987,6 +6082,7 @@ begin
     L_nDataBaseBackupCycle := 10;
     L_nEventdeleteAccessDay := 90;
     L_nEventdeleteAttendDay := 90;
+    L_nEventdeleteEMPDay := 0;
     L_nEventdeleteFoodDay := 90;
     L_nEventdeletePatrolDay := 90;
     L_stDataBaseLastBackupDate := FormatDateTime('yyyymmdd',Now);
@@ -6020,6 +6116,7 @@ begin
         else if FindField('CO_CONFIGCODE').AsString = 'BACKTIME' then  L_stDataBaseBackupTime := FindField('CO_CONFIGVALUE').AsString
         else if FindField('CO_CONFIGCODE').AsString = 'BACKCYCLE' then  L_nDataBaseBackupCycle := strtoint(FindField('CO_CONFIGVALUE').AsString)
         else if FindField('CO_CONFIGCODE').AsString = 'AT_DELETE' then L_nEventdeleteAttendDay := strtoint(FindField('CO_CONFIGVALUE').AsString)
+        else if FindField('CO_CONFIGCODE').AsString = 'EMP_DELETE' then L_nEventdeleteEMPDay := strtoint(FindField('CO_CONFIGVALUE').AsString)
         else if FindField('CO_CONFIGCODE').AsString = 'FD_DELETE' then L_nEventdeleteFoodDay := strtoint(FindField('CO_CONFIGVALUE').AsString)
         else if FindField('CO_CONFIGCODE').AsString = 'AC_DELETE' then L_nEventdeleteAccessDay := strtoint(FindField('CO_CONFIGVALUE').AsString)
         else if FindField('CO_CONFIGCODE').AsString = 'PT_DELETE' then L_nEventdeletePatrolDay := strtoint(FindField('CO_CONFIGVALUE').AsString);
@@ -6188,6 +6285,15 @@ begin
   stSql := stSql + ' where SY_DATE <= ''' + stDate + ''' ';
   DataModule1.ProcessExecSQL(stSql);
 
+  if(L_nEventdeleteEMPDay > 0 ) then
+  begin
+    //시스템 로그 데이터 삭제
+    stDate := FormatdateTime('yyyymmddhhnnss',Now - L_nEventdeleteEMPDay);
+    stSql := ' Delete From TB_EMPHIS ';
+    stSql := stSql + ' where EH_INSERTTIME <= ''' + stDate + ''' ';
+    DataModule1.ProcessExecSQL(stSql);
+  end;
+
   Result := True;
 end;
 
@@ -6217,7 +6323,7 @@ begin
     tmpTime := getTickCount;
     if (SendCardTime + 60000) < tmpTime then
     begin
-      //수신 완료 후 3초가 지났는데... 송신 성공이 안되었으면 송신중인 데이터 미송신으로 변경 후 다운로드 해제
+      //수신 완료 후 6초가 지났는데... 송신 성공이 안되었으면 송신중인 데이터 미송신으로 변경 후 다운로드 해제
       if Not L_bCardDownLoad then
       begin
         L_nCardSendCount := 0;
@@ -6303,9 +6409,9 @@ begin
     CardAutoDownTimer.Enabled := False;
     StatusBar1.Panels[2].Text := 'CardAutoDownTimer';
     //Application.ProcessMessages;
-    CardAutoDownTimer.Interval := 2000;
+    CardAutoDownTimer.Interval := G_nCardAutoDownTimerInterval;
     CardAutoDownTimer.Enabled := False;
-    CardDownLoadCheckTimer.Enabled := True;
+    CardDownLoadCheckTimer.Enabled := True;  ///1000초 동안 카드 다운로드에서 빠져 나오지 못하면 CardAutoDownTimer 재실행 히기기 위한 동작
     CardNoDownload(0,'00',False); //미전송 데이터 전송
     CardDownLoadCheckTimer.Enabled := False;
   Finally
@@ -6737,7 +6843,7 @@ begin
   stSql := stSql + '''' + aAlarmView[1] + ''',';
   stSql := stSql + '''' + aAlarmSound[1] + ''',';
   stSql := stSql + '' + aAlarmGrade + ',';
-  stSql := stSql + '''' + FormatDateTime('yyyymmddhhnnss',Now) + ''',';
+  stSql := stSql + '''' + FormatDateTime('yyyymmddhhnnsszzz',Now) + ''',';
   stSql := stSql + '''' + aCheckOk + ''', ';
   stSql := stSql + '''' + aCardNo + ''', ';
   stSql := stSql + '''' + aCompanyCode + ''', ';
@@ -8024,7 +8130,7 @@ begin
   End;
 end;
 
-function TfmMain.fdmsConnect: Boolean;
+function TfmMain.fdmsConnect(aMsg:Boolean=False): Boolean;
 var
   conStr : string;
 begin
@@ -8065,6 +8171,7 @@ begin
     Except
       on E : EDatabaseError do
       begin
+        if aMsg then showmessage(E.Message );
         LogSave(ExeFolder + '\..\log\FdmsError.log',E.Message );
         exit;
       end else
@@ -8122,7 +8229,7 @@ begin
 
 
   L_bDBProcessTimerStart := False;
-  DBProcessTimer.Enabled := False;
+
 
 
 
@@ -8495,7 +8602,7 @@ var
 begin
   if G_bApplicationTerminate then Exit;
   Try
-    DeviceInfoSendTimer.Interval := 60000;
+    DeviceInfoSendTimer.Interval := G_nG_nDeviceInfoSendTimerInterval;
     DeviceInfoSendTimer.Enabled := False;
     StatusBar1.Panels[2].Text := 'DeviceInfoSendTimer';
     //Application.ProcessMessages;
@@ -10359,6 +10466,7 @@ begin
     else if DBType = 'MSSQL' then MSSQLAllDataBackup(stBackupDir)
     else if DBType = 'MDB' then MDBAllDataBackup(stBackupDir);
   end;
+  showmessage('데이터 베이스 백업이 완료 되었습니다.');
 //  FileDataBaseBackup(False);
 end;
 
@@ -10433,6 +10541,12 @@ var
   stFdmsCardNo : string;
 begin
   Result := False;
+  if(fdmsType = '3') then
+  begin
+    //성현 통합 버젼 연동
+    Result := ShIntiFdmsUserAdd(aEmCode,aFDMS_ID, aEM_NAME,aHandPhone, aDEPART_NAME, aPO_NAME, aCA_CARDNO,aMode,aJijumCode);
+    Exit;
+  end;
   //Datamodule1.SQLErrorLog('FDMSLOG:fdmsUserRelaySend');
   if CheckFdmsUser(aFDMS_ID,stFdmsKey,stFdmsCardNo) then
   begin
@@ -10718,11 +10832,12 @@ begin
             if (Trim(FindField('cardNo').AsString) <> '')  then
             begin
               stCardNo := FindField('cardNo').AsString;
-              if fdmsDeleteCardUse then
+
+              if (G_nSpecialProgram <> 1) and fdmsDeleteCardUse then
               begin
                 stCardNo := copy(stCardNo,1,strtoint(fdmsDeleteCardStart)-1) + copy(stCardNo,strtoint(fdmsDeleteCardStart) + strtoint(fdmsDeleteCardLength),Length(stCardNo) - (strtoint(fdmsDeleteCardStart) + strtoint(fdmsDeleteCardLength) - 1));
               end;
-              if fdmsAsciiToHex then
+              if (G_nSpecialProgram <> 1) and fdmsAsciiToHex then
                  stCardNo := Ascii2Hex(stCardNo);
               if fdmsUserRelaySend(FindField('EM_CODE').AsString,
                                stFdmsID,
@@ -10857,7 +10972,7 @@ begin
   if G_bApplicationTerminate then Exit;
   if Not L_bDaemonStart then Exit;
   StateCheckTimer.Enabled := False;
-  StatusBar1.Panels[2].Text := 'StateCheckTimer';
+  StatusBar1.Panels[2].Text := '장비상태체크';
   for I:= 0 to DeviceList.Count -1 do
   begin
     if G_bApplicationTerminate then Exit;
@@ -11036,6 +11151,10 @@ begin
   begin
     stSql := 'select * from Tuser ';
     stSql := stSql + ' Where id = ' + aFDMS_ID ;
+  end else if fdmsType = '3' then //
+  begin
+    stSql := ' select * from TB_USER ';
+    stSql := stSql + 'where userID = '''+ FillZeroNumber(strtoint(aFDMS_ID),16)+''' ';
   end else Exit;
 
   With ADOfdms do
@@ -11100,6 +11219,16 @@ var
 begin
   result := False;
   stCardNo := aCA_CARDNO;
+  if (G_nSpecialProgram = 1) then  //KT사옥이면 시리얼 카드번호는 4바이트 HEX값으로 넘겨 주고 사번인 경우는 HEX로 풀어서 넘겨주자.
+  begin
+    if( stCardNo[10] <> '*') then // isDigit(copy(stCardNo,1,11)) ) then
+    begin
+      stCardNo := AsciiLen2Hex(stCardNo,11);
+    end else
+    begin
+      stCardNo := copy(stCardNo,1,8);
+    end;
+  end;
 
   if (fdmsType = '0') or (fdmsType = '2') then //성현
   begin
@@ -11184,6 +11313,16 @@ var
 begin
   result := False;
   stCardNo := aCA_CARDNO;
+  if (G_nSpecialProgram = 1) then  //KT사옥이면 시리얼 카드번호는 4바이트 HEX값으로 넘겨 주고 사번인 경우는 HEX로 풀어서 넘겨주자.
+  begin
+    if( stCardNo[10] <> '*') then //if( isDigit(copy(stCardNo,1,11)) ) then
+    begin
+      stCardNo := AsciiLen2Hex(stCardNo,11);
+    end else
+    begin
+      stCardNo := copy(stCardNo,1,8);
+    end;
+  end;
   if (fdmsType = '0') or (fdmsType = '2') then //성현
   begin
     if Trim(aHandPhone) = '' then aHandPhone := '000-000-0000';
@@ -13398,7 +13537,7 @@ begin
   inherited;
   if G_bApplicationTerminate then Exit;
   if Not L_bDaemonStart then Exit;
-  FTPSendTimer.Interval := 10000;
+  FTPSendTimer.Interval := G_nFTPSendTimerInterval;
   if L_bFTPSendProcess then Exit;   //FTP Sending
   FTPSendTimer.Enabled := False;
   StatusBar1.Panels[2].Text := 'FTPSendTimer';
@@ -13580,6 +13719,10 @@ var
   aDevice:    TDevice;
 begin
   result := False;
+  aDevice:= GetDevice(FillZeroNumber(aNodeNo,3) + aECUID );
+  if aDevice = nil then Exit;
+  aDevice.CardDownLoadClear;
+
   if Not FTP_CardDataCreate(inttostr(aNodeNo),aEcuID) then Exit;
 
   updateTB_FTPLIST_RetryCountAdd(inttostr(aNodeNo),aEcuID); //시도 횟수 증가
@@ -14009,6 +14152,41 @@ var
 begin
   // 충남대 작업 중 모니터링에서 알람 확인 시 전체 모니터링에 알람 확인 처리 뿌려 주기 위한 루틴
   if Not IsDigit(aDeviceID) then Exit;
+  if aDeviceID = '000' then
+  begin
+      StatusBar1.Panels[6].Text := 'FireRecovery';
+      for i:= 0 to ComNodeList.Count - 1 do
+      begin
+        TCommnode(ComNodeList.Objects[i]).FireRecovery(True);
+        if G_bFireRelayUse then
+        begin
+          TCommnode(ComNodeList.Objects[i]).AllRelayControl(G_nFireRelayNumber,G_nFireRelayTime);
+        end;
+      end;
+      for i:=0 to DeviceList.Count - 1 do
+      begin
+        for j := 1 to con_nFIXMAXDOORNO do
+        begin
+          TDevice(DeviceList.Objects[I]).SetDoorFire(j,False);
+        end;
+        //TDevice(DeviceList.Objects[I]).Door1Fire := False;
+        //TDevice(DeviceList.Objects[I]).Door2Fire := False;
+      end;
+
+      dmDBFunction.UpdateTB_CURRENTDAEMON_Field_StringValue('FIREORIGIN','CU_STATEVALUE','FALSE');
+      stClientSendData := 'R' +
+                            'S' +
+                            '000' +
+                            '00' +
+                            '00' +
+                            '00' +
+                            'SV' +
+                            'R' +
+                            FillZeroNumber(Length('FIRERECOVERY'),3) +
+                            'FIRERECOVERY';
+      SendClientData(stClientSendData);
+    Exit;
+  end;
   L_bFierDoorOpen := False;
   
   NodeStr:= 'NODE'+InttoStr(strtoint(aDeviceID));
@@ -14064,6 +14242,7 @@ begin
   StatusBar1.Panels[2].Text := 'HolidaySendTimerTimer';
   Try
     HolidaySendTimer.Enabled := False;
+    HolidaySendTimer.Interval := G_nHolidaySendTimerInterval;
     stNowYear := formatDateTime('yyyy',now);
 
     //Check_HolidayClear(stNowYear);
@@ -15257,27 +15436,50 @@ end;
 
 procedure TfmMain.TimerFree;
 begin
-  ConnectTimer.Enabled := False;
-  SendTimer.Enabled := False;
-  sendClientTimer.Enabled := False;
-  RecvTimeCheck.Enabled := False;
-  LogDeleteTime.Enabled := False;
-  DataBaseBackupTimer.Enabled := False;
-  CardAutoDownTimer.Enabled := False;
-  CardLoadTimer.Enabled := False;
-  SyncTimer.Enabled := False;
-  fdmsRelyTimer.Enabled := False;
-  StateCheckTimer.Enabled := False;
-  Timer1.Enabled := False;
-  FoodTimer.Enabled := False;
-  HolidaySendTimer.Enabled := False;
+  CardAutoDownTimer.Enabled := False;  //카드 자동 다운로드 타이머 DB에서 메모리 로딩 타이머
+  CardDownLoadCheckTimer.Enabled := False;  //1000초 동안 카드 다운로드에서 빠져 나오지 못하면 CardAutoDownTimer 재실행 히기기 위한 동작
+  CardLoadTimer.Enabled := False;  ///카드 데이터 메모리 로딩 타이머(현재 사용 안함)
+  ConnectTimer.Enabled := False;   //장비 접속 시도 타이머
+
+  DataBaseBackupTimer.Enabled := False;  //데이터베이스 백업 타이머
+  DBProcessTimer.Enabled := False; ///베모리에 있는 이벤트 DB에 Write하는 타이머
+  DeviceLoadTimer.Enabled := False;   //변경된 장비 로딩
+  DeviceInfoSearch.Enabled := False; //기기코드 조회
+
+  fdmsRelyTimer.Enabled := False;    ///지문리더 연동 타이머
+  FoodTimer.Enabled := False;   //식수코드 체크 타이머
+  FTPSendTimer.Enabled := False;  //FTP 카드 데이터 다운로드 타이머
+  FTPSendProcessChckTimer.Enabled := False; //FTP 전송중인지 체크하는 타이머
+
+  HolidaySendTimer.Enabled := False;   //장비에 공휴일 데이터 전송
+
+  LogDeleteTime.Enabled := False;   // 통신 로그 삭제 타이머
+
+  RecvTimeCheck.Enabled := False;   //카드 데이터 전송후 전송 완료 유무 체크하는 타이머 (현재 사용 안함)
+  RelayControlTimer.Enabled := False; //전남대병원 연동 프로그램 재기동 타이머
+
+  SendTimer.Enabled := False;      //장비에 패킷 전송 타이머
+  sendClientTimer.Enabled := False;  //모니터링 PC에 패킷 전송 타이머
+  SentenceRelayTimer.Enabled := False; //전문 연동타이머(연동시에만 동작)
+  SyncTimer.Enabled := False;     ///기기 시간 동기화 타이머
+  StateCheckTimer.Enabled := False;   //장비상태체크 체크 타이머
+  StateSendTimer.Enabled := False; //노드의 상태가 변경 되는 경우 클라이언트 PC에 상태 전송 타이머
+
+  Timer1.Enabled := False;  //처음 화면 감추는 타이머
+
+  ValidExpiredTimer.Enabled := False; //유효기간 지난 카드 삭제 타이머
+
+  WebRelayTimer.Enabled := False;     // 김천 이노닉스 웹 연동 타이머, 김천에서만 동작
+
+
+
   DeviceInfoSendTimer.Enabled := False;
-  SentenceRelayTimer.Enabled := False;
-  FTPSendTimer.Enabled := False;
-  FTPSendProcessChckTimer.Enabled := False;
+
+
+
   ThreadCheckTimer.Enabled := False;
   ClientAckTimer.Enabled := False;
-  ClientStateCheckTimer.Enabled := False;
+  ClientStateCheckTimer.Enabled := False;   
   FireDoorOpenTimer.Enabled := False;
   PersonRelayTimer.Enabled := False;
   LogDirectoryDeleteTimer.Enabled := False;
@@ -15285,11 +15487,11 @@ begin
   AdoConnectCheckTimer.Enabled := False;
   PCScheduleTimer.Enabled := False;
   STRTimer.Enabled := False;
-  WebRelayTimer.Enabled := False;
+
   CheckKTTSenderTimer.Enabled := False;
   CheckFPSystemTimer.Enabled := False;
-  DeviceLoadTimer.Enabled := False;
-  ValidExpiredTimer.Enabled := False;
+
+
   DaemonStateCheckTimer.Enabled := False;
 
   ConnectTimer.Free;
@@ -15299,6 +15501,7 @@ begin
   LogDeleteTime.Free;
   DataBaseBackupTimer.Free;
   CardAutoDownTimer.Free;
+  CardDownLoadCheckTimer.Free;
   SyncTimer.Free;
   fdmsRelyTimer.Free;
   StateCheckTimer.Free;
@@ -17715,7 +17918,11 @@ var
   stTemp : string;
 begin
   inherited;
-  ATEventList.SaveToFile(ExeFolder + '\..\log\ATEvent'+ FormatDateTIme('yyyymmdd',Now)+'.log');
+  if Not ADOfdmsConnection.Connected then fdmsConnect;
+  if Not ADOfdmsConnection.Connected then Exit;
+
+  //ShIntiFdmsUserAdd('2','2','2', 'test','01012341234', '부서', '직위','ABABABAC','1','001') ;
+(*  ATEventList.SaveToFile(ExeFolder + '\..\log\ATEvent'+ FormatDateTIme('yyyymmdd',Now)+'.log');
   stTemp := '00120000000000000001400000000000268702625211a002001019T120057                       1이혜림';
           TdmAttendEvent(WorkTypeList.Objects[0]).Process_EmployeeATEvent(copy(stTemp,4,14),copy(stTemp,18,3),copy(stTemp,21,2),Trim(copy(stTemp,23,20)),
                          copy(stTemp,46,3),Trim(copy(stTemp,55,30)),copy(stTemp,49,3),copy(stTemp,52,3),Trim(copy(stTemp,86,100)),copy(stTemp,43,1),copy(stTemp,44,1),copy(stTemp,45,1),copy(stTemp,85,1));
@@ -17724,6 +17931,7 @@ begin
 //  Application.MessageBox(PChar('해당MCU에 기본 항목으로 출입문을 사용하시겠습니까?'),'정보',MB_OKCANCEL);
 //  Registration_DeviceTimeSync('');
   //
+  *)
 end;
 
 procedure TfmMain.MemoryInitialize;
@@ -17817,6 +18025,8 @@ begin
   AntiGroupList := TstringList.create;
   ATEventList := TStringList.Create;
   ArmAreaRelayModeList := TStringList.Create;  //방범구역 모드 리스트
+  ArmAreaCodeList := TStringList.Create;
+  BuildingCodeList := TStringList.Create;
   CardEmployeeInfoList := TStringList.Create;
   ClientReceiveDataList := TStringList.Create;
   ClientSendList := TStringList.Create;  //클라이언트에 전문 송신 리스트
@@ -18284,8 +18494,8 @@ var
 begin
   //Exit;
   StatusBar1.Panels[2].Text := 'StateSendTimerTimer';
-  StateSendTimer.Interval := 200;
   if ClientSendList.Count > 0 then Exit; //전송건수가 1건 이상인 경우에는 나중에 전송하자.
+  StateSendTimer.Interval := G_nStateCheckTimerInterval;
   Try
     StateSendTimer.Enabled := False;
     for i := 0 to L_nMaxNodeNo do
@@ -19398,6 +19608,8 @@ var
   stSql : String;
   nNodeNo  : Integer;
   aDevice     : TDevice;
+  aArmArea : TRelayArmAreaCode;
+  stArmAreaNo : string;
   TempAdoQuery : TADOQuery;
   nDeviceIndex : integer;
   i : integer;
@@ -19405,6 +19617,11 @@ begin
   Result := False;
   if aFirst then
   begin
+    for i:= ArmAreaCodeList.count - 1 downto 0 do
+    begin
+      TRelayArmAreaCode(ArmAreaCodeList.Objects[i]).Free;
+    end;
+    ArmAreaCodeList.clear;
     for i := 0 to DeviceList.Count - 1 do     //구역경계 메모리 초기화
     begin
       TDevice(DeviceList.Objects[i]).ArmAreaUseInitialize;
@@ -19456,6 +19673,26 @@ begin
           TDevice(DeviceList.Objects[nDeviceIndex]).SetArmAreaDisArmCheckTime1From(FindField('AR_AREANO').AsInteger,FindField('AR_DISARMCHECKTIME1FROM').AsString);
           TDevice(DeviceList.Objects[nDeviceIndex]).SetArmAreaDisArmCheckTime1To(FindField('AR_AREANO').AsInteger,FindField('AR_DISARMCHECKTIME1TO').AsString);
         end;
+        stArmAreaNo := FillZeroNumber(nNodeNo,3) +  FindField('AC_ECUID').AsString + FillZeroNumber(FindField('AR_AREANO').AsInteger,2);
+        nDeviceIndex:= ArmAreaCodeList.Indexof(stArmAreaNo);
+        if nDeviceIndex > -1 then
+        begin
+          TRelayArmAreaCode(ArmAreaCodeList.Objects[nDeviceIndex]).ArmRelayCode :=  FindField('AR_RelayCode').asString;
+          TRelayArmAreaCode(ArmAreaCodeList.Objects[nDeviceIndex]).ArmAreaName :=  FindField('AR_NAME').asString;
+          TRelayArmAreaCode(ArmAreaCodeList.Objects[nDeviceIndex]).BuildingCode :=  FindField('LO_DONGCODE').AsString + FindField('LO_FLOORCODE').AsString + FindField('LO_AREACODE').AsString;
+
+        end else
+        begin
+          aArmArea := TRelayArmAreaCode.Create(Self);
+          aArmArea.ArmAreaCode :=  stArmAreaNo;
+          aArmArea.ArmRelayCode :=  FindField('AR_RelayCode').asString;
+          aArmArea.ArmAreaName :=  FindField('AR_NAME').asString;
+          aArmArea.BuildingCode :=  FindField('LO_DONGCODE').AsString + FindField('LO_FLOORCODE').AsString + FindField('LO_AREACODE').AsString;
+          aArmArea.Vacancy := ' ';
+          aArmArea.OnArmAreaStatusChange := ArmAreaStatusChange;
+          ArmAreaCodeList.addobject(stArmAreaNo,aArmArea);
+        end;
+
         dmDBFunction.UpdateTB_ARMAREA_Field_StringValue(inttostr(nNodeNo),FindField('AC_ECUID').AsString,FindField('AR_AREANO').AsString,'AR_MEMLOAD','Y');
         next;
       end;
@@ -19867,7 +20104,7 @@ begin
                             copy(stTemp,45,1), //ReceiveData[37],
                             copy(stTemp,46,1), //ReceiveData[36],
                             copy(stTemp,47,1), //cPermit,
-                            copy(stTemp,48,14), //FormatdateTime('yyyymmddHHMMSS',Now),
+                            copy(stTemp,48,14), //FormatdateTime('yyyymmddHHMMSSzzz',Now),
                             copy(stTemp,62,3), //stCompanyCode,
                             Trim(copy(stTemp,65,30)), //stEmCode,
                             copy(stTemp,95,3), //stJijumCode,
@@ -19972,7 +20209,7 @@ begin
           ATSendClientData(Self,stClientSendData,strtoint(copy(stTemp,18,3)));
         end else
         begin
-  StatusBar1.Panels[2].Text := inttostr(ATEventList.Count) + '\' + stTemp;
+//  StatusBar1.Panels[2].Text := inttostr(ATEventList.Count) + '\' + stTemp;
           TdmAttendEvent(WorkTypeList.Objects[nWorkTypeIndex]).Process_EmployeeATEvent(copy(stTemp,4,14),copy(stTemp,18,3),copy(stTemp,21,2),Trim(copy(stTemp,23,20)),
                          copy(stTemp,46,3),Trim(copy(stTemp,55,30)),copy(stTemp,49,3),copy(stTemp,52,3),Trim(copy(stTemp,86,100)),copy(stTemp,43,1),copy(stTemp,44,1),copy(stTemp,45,1),copy(stTemp,85,1));
         end;
@@ -20393,6 +20630,7 @@ var
   nCount : integer;
 begin
 
+
   stSql := 'Select ';
   stSql := stSql + 'a.ac_nodeno,a.ac_ecuid,a.ca_cardno,';
   stSql := stSql + 'a.de_door1,a.de_door2,a.de_useaccess,a.de_usealarm,';
@@ -20414,7 +20652,8 @@ begin
     if DBTYPE = 'PG' then stSql := stSql + ' AND Length(a.CA_CARDNO) = ' + inttostr(G_nCardFixedLength) + ' '
     else stSql := stSql + ' AND Len(a.CA_CARDNO) = ' + inttostr(G_nCardFixedLength) + ' ';
   end;
-  if aCardNo <> '' then stSql := stSql + ' AND a.CA_CARDNO = ''' + aCardNo + ''' ';
+  if aCardNo <> '' then stSql := stSql + ' AND a.CA_CARDNO = ''' + aCardNo + ''' '
+  else stSql := stSql + ' AND a.DE_MEMLOAD <> ''Y'' ';
   stSql := stSql + ' order by a.de_permit,a.ca_cardno ';
 
   Try
@@ -20750,7 +20989,7 @@ begin
   stSql := stSql + '''' + aDoorMode + ''',';    //운영/개방
   stSql := stSql + '''' + aPermitMode + ''',';  //Posi/Nega
   stSql := stSql + '''' + aPermitCode + ''',';
-  stSql := stSql + '''' + formatDateTime('yyyymmddhhnnss',now) + ''')';
+  stSql := stSql + '''' + formatDateTime('yyyymmddhhnnsszzz',now) + ''')';
 
   DataModule1.ProcessEventExecSQL(stSql);  //일단 카드 태그 입력
 
@@ -21077,7 +21316,7 @@ begin
                               copy(stTemp,45,1), //ReceiveData[37],
                               copy(stTemp,46,1), //ReceiveData[36],
                               copy(stTemp,47,1), //cPermit,
-                              copy(stTemp,48,14), //FormatdateTime('yyyymmddHHMMSS',Now),
+                              copy(stTemp,48,14), //FormatdateTime('yyyymmddHHMMSSzzz',Now),
                               copy(stTemp,62,3), //stCompanyCode,
                               Trim(copy(stTemp,65,30)), //stEmCode,
                               copy(stTemp,95,3), //stJijumCode,
@@ -21352,6 +21591,8 @@ begin
   if G_bApplicationTerminate then Exit;
   if Not L_bDaemonStart then Exit;
   FoodTimer.Enabled := False;
+  FoodTimer.Interval := G_nFoodTimerInterval;
+  
   Try
     if G_bApplicationTerminate then Exit;
     FoodTimeSetting;
@@ -21412,7 +21653,7 @@ begin
   stSql := stSql + '''' + aDoorMode + ''',';    //운영/개방
   stSql := stSql + '''' + aCardManageMode + ''',';  //Posi/Nega
   stSql := stSql + '''' + aPermitCode + ''',';
-  stSql := stSql + '''' + formatDateTime('yyyymmddhhnnss',now) + ''')';
+  stSql := stSql + '''' + formatDateTime('yyyymmddhhnnsszzz',now) + ''')';
 
   DataModule1.ProcessEventExecSQL(stSql);  //일단 카드 태그 입력
 
@@ -22109,7 +22350,7 @@ begin
   inherited;
   if G_bApplicationTerminate then Exit;
   StatusBar1.Panels[2].Text := 'DeviceInfoSearchTimer';
-  DeviceInfoSearch.Interval := 2000; //2초에 한번씩...
+  DeviceInfoSearch.Interval := G_nDeviceInfoSearchTimerInterval; //2초에 한번씩...
   DeviceInfoSearch.Enabled := False;
 
   if L_nDeviceInfoSearchNo >= DeviceList.count - 1 then L_nDeviceInfoSearchNo := 0; 
@@ -22497,6 +22738,7 @@ begin
     LoadECU(False);       //기기 정보 로드
     LoadDoor(False);      //출입문 정보 로드
     LoadArmArea(False);   //방범구역 정보 로드
+    LoadBuildingCode(False);
   Finally
     L_bDeviceLoading := False;
   End;
@@ -23931,7 +24173,487 @@ begin
   L_bCardDownLoad := False;
   CardAutoDownTimer.Enabled := Not G_bApplicationTerminate;
   CardDownLoadCheckTimer.Enabled := False;
-  StatusBar1.Panels[2].Text := 'ConnectTimerTimer';
+  StatusBar1.Panels[2].Text := 'CardDownLoadCheckTimer';
+end;
+
+function TfmMain.LoadBuildingCode(aFirst: Boolean): Boolean;
+var
+  stSql : String;
+  aBuilding     : TRelayBuildingCode;
+  TempAdoQuery : TADOQuery;
+  stBuildingCode : string;
+  nIndex : integer;
+  i : integer;
+begin
+  Result := False;
+  if (aFirst) then
+  begin
+    for i := 0 to BuildingCodeList.Count - 1 do     //구역경계 메모리 초기화
+    begin
+      TRelayBuildingCode(BuildingCodeList.Objects[i]).Free;
+    end;
+    BuildingCodeList.Clear;
+  end;
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.DisableControls;
+    // 위치정보 로드
+    stSql := ' select * from TB_LOCATION ';
+    stSql := stSql + ' where GROUP_CODE = ''' + GROUPCODE + '''';
+    if ( Not aFirst ) then  stSql := stSql + ' AND LO_CHANGE = ''Y''';
+    stSql := stSql + ' order by LO_DONGCODE,LO_FLOORCODE,LO_AREACODE ';
+
+    // 기기
+    with TempAdoQuery do
+    begin
+      Close;
+      //sql.Clear;
+      sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        //에러처리
+        Exit;
+      End;
+      First;
+      while not eof do
+      begin
+        if G_bApplicationTerminate then Exit;
+        stBuildingCode:= FindField('LO_DONGCODE').Asstring + FindField('LO_FLOORCODE').Asstring + FindField('LO_AREACODE').Asstring;
+        nIndex:= BuildingCodeList.Indexof(stBuildingCode);
+        if nIndex > -1 then
+        begin
+          TRelayBuildingCode(BuildingCodeList.Objects[nIndex]).RelayBuildingCode := FindField('LO_RelayCODE').Asstring ;
+        end else
+        begin
+          aBuilding:= TRelayBuildingCode.Create(Self);
+          aBuilding.BuildingCode := stBuildingCode;
+          aBuilding.RelayBuildingCode := FindField('LO_RelayCODE').Asstring;
+          BuildingCodeList.AddObject(stBuildingCode,aBuilding);
+        end;
+
+        dmDBFunction.UpdateTB_LOCATION_Field_StringValue(FindField('LO_DONGCODE').Asstring,FindField('LO_FLOORCODE').Asstring,FindField('LO_AREACODE').Asstring,'LO_CHANGE','N');
+        next;
+      end;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+  result := True;
+end;
+
+procedure TfmMain.ArmAreaStatusChange(Sender: TObject; aArmAreaCode,
+  aArmRelayCode, aArmAreaName, aBuildingCode, aArmStatus,
+  aVacancy: string);
+var
+  stNodeNo : string;
+  stEcuID : string;
+  stArmArea : string;
+  stRelayBuilding : string;
+  nIndex : integer;
+begin
+(*
+  stNodeNo := copy(aArmAreaCode,1,3);
+  stEcuID := copy(aArmAreaCode,4,2);
+  stArmArea := copy(aArmAreaCode,6,2);
+*)
+(*  if Not dmRelayDB.HURelayDBConnected then
+  begin
+    if Not dmRelayDB.HURelayAdoConnect(DBTYPE,DBServer,DBPort,'ZMOS',DBUser,DBUserPw) then Exit;
+  end;
+*)
+  if aArmRelayCode = '' then Exit; //연동 코드가 없으면 넣을 수 없다.
+  
+  stRelayBuilding := '';
+  nIndex := BuildingCodeList.Indexof(aBuildingCode);
+  if nIndex > -1 then
+  begin
+    stRelayBuilding := TRelayBuildingCode(BuildingCodeList.Objects[nIndex]).RelayBuildingCode;
+  end;
+  dmDBFunction.InsertIntoTB_HURELAY_Value(aArmRelayCode, aArmAreaName, stRelayBuilding,aArmStatus, aVacancy);
+end;
+
+procedure TfmMain.mn_UpdateClick(Sender: TObject);
+begin
+  inherited;
+  if Not FileExists(ExeFolder + '\ZDaemon\SmartUpdate.exe') then
+  begin
+    showmessage('업데이트 도구가 설치되어 있지 않습니다.');
+    Exit;
+  end;
+
+  My_RunDosCommand(ExeFolder + '\ZDaemon\SmartUpdate.exe',False,False);
+  Close;
+
+end;
+
+(*
+function TfmMain.InsertShFdmsUser(aFdmsKey, aEmCode, aFDMS_ID, aEM_NAME,
+  aHandPhone, aDEPART_NAME, aPO_NAME, aCA_CARDNO, aMode,
+  aJijumCode: string): Boolean;
+var
+  ADOStoredProc1 : TADOStoredProc;
+  stCardNo : string;
+begin
+  stCardNo := aCA_CARDNO;
+  if (G_nSpecialProgram = 1) then  //KT사옥이면 시리얼 카드번호는 4바이트 HEX값으로 넘겨 주고 사번인 경우는 HEX로 풀어서 넘겨주자.
+  begin
+    if( isDigit(copy(stCardNo,1,11)) ) then
+    begin
+      stCardNo := AsciiLen2Hex(stCardNo,11);
+    end else
+    begin
+      stCardNo := copy(stCardNo,1,8);
+    end;
+  end;
+  stCardNo:='3034'+stCardNo;
+
+  ADOStoredProc1 := TADOStoredProc.Create(nil);
+  with ADOStoredProc1 do
+  begin
+    Connection := DataModule1.ADOConnection;
+    ProcedureName := 'SP_USER_CLIENT_SAVE';
+    Parameters.Clear;
+    Parameters.CreateParameter('RETURN_VALUE', ftInteger, pdReturnValue, 0, null);
+    Parameters.CreateParameter('@savetype', ftInteger, pdInput, 0, 1);
+    Parameters.CreateParameter('@userID', ftString, pdInput, 0, FillZeroStrNum(aFDMS_ID,16));
+    Parameters.CreateParameter('@userName', ftString, pdInput, 0, aEM_NAME);
+    Parameters.CreateParameter('@userNumber', ftString, pdInput, 0, aEmCode);
+    Parameters.CreateParameter('@userTelNumber', ftString, pdInput, 0, aHandPhone);
+    Parameters.CreateParameter('@departmentID', ftInteger, pdInput, 0, 1);
+    Parameters.CreateParameter('@positionID', ftInteger, pdInput, 0, -1);
+    Parameters.CreateParameter('@authMethod', ftInteger, pdInput, 0, 2816);
+    Parameters.CreateParameter('@userInDay', ftDateTime, pdInput, 0, now);
+    Parameters.CreateParameter('@userOutDay', ftDateTime, pdInput, 0, now + 100000);
+    Parameters.CreateParameter('@userType', ftInteger, pdInput, 0, 0);
+    Parameters.CreateParameter('@userStatus', ftInteger, pdInput, 0, 0);
+    Parameters.CreateParameter('@userStatus', ftInteger, pdInput, 0, 0);
+    Parameters.CreateParameter('@userCardNo1', ftTypedBinary, pdInput, 0, Hex2Ascii(stCardNo));
+    Parameters.CreateParameter('@userCardNo2', ftTypedBinary, pdInput, 0, '');
+    Parameters.CreateParameter('@userFpdata1', ftTypedBinary, pdInput, 0, '');
+    Parameters.CreateParameter('@userFpdata2', ftTypedBinary, pdInput, 0, '');
+    Parameters.CreateParameter('@userImage', ftTypedBinary, pdInput, 0, '');
+    Parameters.CreateParameter('@loginAuthID', ftInteger, pdInput, 0, 3);
+    Parameters.CreateParameter('@loginID', ftString, pdInput, 0, '');
+    Parameters.CreateParameter('@loginPW', ftString, pdInput, 0, '');
+    Parameters.CreateParameter('@authPW', ftString, pdInput, 0, '');
+    Parameters.CreateParameter('@uniquePW', ftInteger, pdInput, 0, 0);
+    Parameters.CreateParameter('@userEmail', ftString, pdInput, 0, '');
+    Parameters.CreateParameter('@guardType', ftInteger, pdInput, 0, 0);
+    Parameters.CreateParameter('@timetableUse', ftInteger, pdInput, 0, 4);
+    Parameters.CreateParameter('@VaildTimeStart', ftDateTime, pdInput, 0, now);
+    Parameters.CreateParameter('@VaildTimeEnd', ftDateTime, pdInput, 0, now+ 100000);
+    Parameters.CreateParameter('@useInfo', ftInteger, pdInput, 0, 0);
+    Parameters.CreateParameter('@infoname', ftString, pdInput, 0, 'kttelecop');
+    Parameters.CreateParameter('@infoip', ftString, pdInput, 0, '000.000.000.000');
+    Parameters.CreateParameter('@mobileip', ftString, pdInput, 0, '000.000.000.000');
+    Parameters.CreateParameter('@videoport', ftInteger, pdInput, 0, 11142);
+    Parameters.CreateParameter('@audioport', ftInteger, pdInput, 0, 11152);
+    Parameters.CreateParameter('@isinfo', ftInteger, pdInput, 0, 0);
+    Parameters.CreateParameter('@officephone', ftString, pdInput, 0, '');
+    Parameters.CreateParameter('@memo', ftString, pdInput, 0, '');
+    Parameters.CreateParameter('@userEngName', ftString, pdInput, 0, '');
+    Parameters.CreateParameter('@damdang', ftInteger, pdInput, 0,0);
+    Parameters.CreateParameter('@workexclude', ftInteger, pdInput, 0,1);
+    Parameters.CreateParameter('@workstartda', ftDateTime, pdInput, 0,now);
+    Parameters.CreateParameter('@workendday', ftDateTime, pdInput, 0,now+100000);
+    Parameters.CreateParameter('@PhoneSort', ftInteger, pdInput, 0,1);
+    Parameters.CreateParameter('@crc', ftInteger, pdInput, 0,0);
+    Parameters.CreateParameter('@reguserid', ftString, pdInput, 0,'zeron');
+    ExecProc;
+    showmessage(inttostr(Parameters[0].Value));
+
+  end;
+
+end;
+*)
+
+function TfmMain.ShIntiFdmsUserAdd(aEmCode,aFDMS_ID, aEM_NAME,aHandPhone, aDEPART_NAME, aPO_NAME, aCA_CARDNO,aMode,aJijumCode: string): Boolean;
+var
+  stFdmsKey,stFdmsCardNo : string;
+begin
+  aFDMS_ID := FillZeroStrNum(aFDMS_ID,16);
+  if (G_nSpecialProgram = 1) then  //KT사옥이면 시리얼 카드번호는 4바이트 HEX값으로 넘겨 주고 사번인 경우는 HEX로 풀어서 넘겨주자.
+  begin
+    if( aCA_CARDNO[10] <> '*') then //if( isDigit(copy(aCA_CARDNO,1,11)) ) then
+    begin
+      aCA_CARDNO := AsciiLen2Hex(aCA_CARDNO,11);
+    end else
+    begin
+      aCA_CARDNO := copy(aCA_CARDNO,1,8);
+    end;
+  end;
+  aCA_CARDNO:='3034'+aCA_CARDNO;
+  if Not ShIntiCheckFdmsUser(aFDMS_ID) then
+  begin
+    if ShIntiCheckFdmsVISITOR(aFDMS_ID) then
+    begin
+      //연동 안됨
+      Result := True;
+      Exit;
+    end;
+    if CheckIntiFdmsMEMBER(aFDMS_ID) then
+    begin
+      //연동 안됨
+      Result := True;
+      Exit;
+    end;
+    Result := ShIntiInsertFdmsMEMBER(aEmCode,aFDMS_ID, aEM_NAME,aHandPhone, aDEPART_NAME, aPO_NAME, aCA_CARDNO,aMode,aJijumCode);
+  end else
+  begin
+    Result := ShIntiUpdateFdmsMEMBER(aEmCode,aFDMS_ID, aEM_NAME,aHandPhone, aDEPART_NAME, aPO_NAME, aCA_CARDNO,aMode,aJijumCode);
+  end;
+
+end;
+
+function TfmMain.ShIntiCheckFdmsUser(aFDMS_ID: string): Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+  stSql := ' select * from TB_USER ';
+  stSql := stSql + 'where userID = '''+ FillZeroNumber(strtoint(aFDMS_ID),16)+''' ';
+
+  With ADOfdms do
+  begin
+    Close;
+    //Sql.Clear;
+    Sql.Text := stSql;
+
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordCount > 0 then
+    begin
+      result := True;
+
+    end;
+  End;
+end;
+
+function TfmMain.ShIntiInsertFdmsMEMBER(aEmCode,aFDMS_ID, aEM_NAME,aHandPhone, aDEPART_NAME, aPO_NAME, aCA_CARDNO,aMode,aJijumCode: string): Boolean;
+begin
+  ShIntiInsertTB_PATTERNDAY(aFDMS_ID);
+  ShIntiInsertTB_USERPATTERNLINK(aFDMS_ID);
+  ShIntiInsertTB_USERSICKLEAVE(aFDMS_ID);
+  result := ShIntiInsertTB_USER(aEmCode,aFDMS_ID, aEM_NAME,aHandPhone, aDEPART_NAME, aPO_NAME, aCA_CARDNO,aMode,aJijumCode);
+end;
+
+function TfmMain.ShIntiCheckFdmsVISITOR(aFDMS_ID: string): Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+  stSql := ' select * from TB_VISITOR ';
+  stSql := stSql + 'where visitID = '''+ FillZeroNumber(strtoint(aFDMS_ID),16)+''' ';
+
+  With ADOfdms do
+  begin
+    Close;
+    //Sql.Clear;
+    Sql.Text := stSql;
+
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordCount > 0 then
+    begin
+      result := True;
+
+    end;
+  End;
+end;
+
+function TfmMain.CheckIntiFdmsMEMBER(aFDMS_ID: string): Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+  stSql := ' select * from TB_MEMBER ';
+  stSql := stSql + 'where memberID = '''+ FillZeroNumber(strtoint(aFDMS_ID),16)+''' ';
+
+  With ADOfdms do
+  begin
+    Close;
+    //Sql.Clear;
+    Sql.Text := stSql;
+
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordCount > 0 then
+    begin
+      result := True;
+
+    end;
+  End;
+end;
+
+function TfmMain.ShIntiInsertTB_PATTERNDAY(aFDMS_ID: string): Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+  stSql := 'Insert Into TB_PATTERNDAY(userID,workPatternDay,workDayID,regdate,reguserid,moddate,moduserid) ';
+  stSql := stSql + ' select ''' + aFDMS_ID + ''',workPatternDay,workDayID,GETDATE(),NULL,NULL,NULL from TB_PATTERNDAY_TEMP ';
+  stSql := stSql + ' where userID = ''' + '0000000000000000' + '''';
+  if SHF_ProcessExecSQL(stSql) > 0 then result := True;
+
+end;
+
+function TfmMain.ShIntiInsertTB_USERPATTERNLINK(aFDMS_ID: string): Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+  stSql := 'Insert Into TB_USERPATTERNLINK(userID,schedulePatternID,regdate,reguserid) ';
+  stSql := stSql + ' Values(''' + aFDMS_ID + ''',1,GETDATE(),NULL )';
+  if SHF_ProcessExecSQL(stSql) > 0 then result := True;
+
+end;
+
+function TfmMain.ShIntiInsertTB_USERSICKLEAVE(aFDMS_ID: string): Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+  stSql := 'Insert Into TB_USERSICKLEAVE(userID,sickleave,sickleaveSecond,regdate,reguserid) ';
+  stSql := stSql + ' Values(''' + aFDMS_ID + ''',30,30*28800,GETDATE(),NULL )';
+  if SHF_ProcessExecSQL(stSql) > 0 then result := True;
+end;
+
+function TfmMain.ShIntiInsertTB_USER(aEmCode,aFDMS_ID, aEM_NAME,aHandPhone, aDEPART_NAME, aPO_NAME, aCA_CARDNO,aMode,aJijumCode: string): Boolean;
+var
+  stSql : string;
+  TempQuery :TADOQuery;
+  bArr : byDynamicArr;
+begin
+  result := False;
+  stSql := 'Insert Into TB_USER(userID,userName,userNumber,userTelNumber,departmentID,positionID,authMethod, ';
+  stSql := stSql + 'userInDay,userOutDay,VaildTimeStart,VaildTimeEnd,userType,userStatus,userCardNo1,userCardNo2,';
+  stSql := stSql + 'userFpdata1,userFpdata2,loginAuthID,uniquePW,guardType,';
+  stSql := stSql + 'timeTableUse,multiAuth,infoip,mobileip,videoport,audioport,isinfo,infoname,crc,';
+  stSql := stSql + 'useInfo,saveAccess, damdang,workexclude,workstartday,workendday,PhoneSort,regdate,reguserid) ';
+  stSql := stSql + ' Values(''' + aFDMS_ID + ''',''' + aEM_NAME + ''',''' + aEmCode + ''',''' + aHandPhone + ''',';
+  stSql := stSql + '1,-1,2816,GETDATE(),''2037-12-31 23:59:59'',GETDATE(),''2037-12-31 23:59:59'',0,';
+  stSql := stSql + '0,:Card_No1,:Card_No2,:Fpdata1,:Fpdata2,3,0,0,4,0,''000.000.000.000'',''000.000.000.000'',11142,11152,0,';
+  stSql := stSql + '''kttelecop'',0,0,''Y'',0,1,GETDATE(),''2037-12-31 23:59:59'',1,GETDATE(),''ZERON'')';
+  Try
+    CoInitialize(nil);
+    TempQuery := TADOQuery.Create(nil);
+    TempQuery.Connection := ADOfdmsConnection;
+    TempQuery.DisableControls;
+    with TempQuery do
+    begin
+      Close;
+      SQL.Text:= stSql;
+      try
+        bArr := Hex2ByteArray(aCA_CARDNO);
+        Parameters.ParamByName('Card_No1').Value := bArr;//Hex2Ascii(aCA_CARDNO);
+        bArr := Hex2ByteArray('00');
+        Parameters.ParamByName('Card_No2').Value := bArr;
+        Parameters.ParamByName('Fpdata1').Value := bArr;
+        Parameters.ParamByName('Fpdata2').Value := bArr;
+        ExecSQL;
+        result := True;
+      except
+      ON E: Exception do
+        begin
+          LogSave(ExeFolder + '\..\Log\DB' + FormatDateTime('yyyymmdd',Now) + '.log','DBError('+ E.Message + ')' + stSql);
+
+          Exit;
+        end
+      end;
+    end;
+  Finally
+    TempQuery.EnableControls;
+    TempQuery.Free;
+    CoUninitialize;
+  End;
+
+end;
+
+function TfmMain.ShIntiUpdateFdmsMEMBER(aEmCode,aFDMS_ID, aEM_NAME,aHandPhone, aDEPART_NAME, aPO_NAME, aCA_CARDNO,aMode,aJijumCode: string): Boolean;
+var
+  stSql : string;
+  TempQuery :TADOQuery;
+  bArr : byDynamicArr;
+begin
+  result := False;
+  stSql := 'Update TB_USER set userName = ''' + aEM_NAME + ''',';
+  stSql := stSql + 'userNumber = ''' + aEmCode + ''',';
+  stSql := stSql + 'userTelNumber= ''' + aHandPhone + ''',';
+  stSql := stSql + 'userCardNo1=:Card_No1 ';
+  stSql := stSql + ' where userID =''' + aFDMS_ID + ''' ';
+  Try
+    CoInitialize(nil);
+    TempQuery := TADOQuery.Create(nil);
+    TempQuery.Connection := ADOfdmsConnection;
+    TempQuery.DisableControls;
+    with TempQuery do
+    begin
+      Close;
+      SQL.Text:= stSql;
+      try
+        bArr := Hex2ByteArray(aCA_CARDNO);
+        Parameters.ParamByName('Card_No1').Value := bArr;//Hex2Ascii(aCA_CARDNO);
+        ExecSQL;
+        result := True;
+      except
+      ON E: Exception do
+        begin
+          LogSave(ExeFolder + '\..\Log\DB' + FormatDateTime('yyyymmdd',Now) + '.log','DBError('+ E.Message + ')' + stSql);
+
+          Exit;
+        end
+      end;
+    end;
+  Finally
+    TempQuery.EnableControls;
+    TempQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+procedure TfmMain.mn_fdmsResendClick(Sender: TObject);
+var
+  stSql : string;
+begin
+  stSql := ' Update TB_EMPHIS set SEND_STATUS = ''N'' ';
+
+  DataModule1.ProcessExecSQL(stSql);
+end;
+
+procedure TfmMain.RcvCardBufferFull(Sender: TObject; aData: string;
+  NodeNO: integer);
+var
+  stAlarmData : String;
+  stEcuID : string;
+begin
+  if Not G_bCardFullUse then Exit; //옵션이 설정되어 있지 않다면 이벤트 발생시키지 말자.
+  stEcuID := TDevice(Sender).ECUID;
+  if(aData='1') then
+  begin
+    stAlarmData := '058 K10000000' + stEcuID + 'AJn'+ FormatDateTime('yyyymmddhhnnss',now) +'D' + '0' +'0000n' + 'CF' + '*************B8';
+    DeviceRcvAlarmData(Sender,'A',stAlarmData,NodeNo,'001');
+  end else
+  begin
+    stAlarmData := '058 K10000000' + stEcuID + 'AJn'+ FormatDateTime('yyyymmddhhnnss',now) +'D' + '0' +'0000n' + 'C0' + '*************B8';
+    DeviceRcvAlarmData(Sender,'A',stAlarmData,NodeNo,'001');
+  end;
+  dmDBFunction.UpdateTB_ACCESSDEVICE_Field_StringValue(inttostr(NodeNo),stEcuID,'AC_CARDFULL',aData);
 end;
 
 end.

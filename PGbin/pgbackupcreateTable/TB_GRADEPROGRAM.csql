@@ -1,0 +1,2 @@
+CREATE TABLE TB_GRADEPROGRAM (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , gr_gradecode VARCHAR(3) NOT NULL , pr_programid VARCHAR(10) NOT NULL  DEFAULT  '0000000000' , pr_groupcode VARCHAR(10), gr_gubun CHAR(1), ac_updatedate VARCHAR(14), ac_updateoperator VARCHAR(10), gr_update CHAR(1) DEFAULT  'Y' , gr_insert CHAR(1) DEFAULT  'Y' , gr_delete CHAR(1) DEFAULT  'Y'  ); 
+ ALTER TABLE TB_GRADEPROGRAM   ADD CONSTRAINT TB_GRADEPROGRAM_pkey PRIMARY KEY (group_code, gr_gradecode, pr_programid);

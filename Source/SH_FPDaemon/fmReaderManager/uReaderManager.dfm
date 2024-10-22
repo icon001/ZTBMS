@@ -4,6 +4,7 @@ inherited fmReaderManager: TfmReaderManager
   Width = 1110
   Height = 771
   Caption = #51648#47928#47532#45908#44288#47532
+  Color = clWhite
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   FormStyle = fsMDIChild
@@ -18,14 +19,14 @@ inherited fmReaderManager: TfmReaderManager
   TextHeight = 13
   object StatusBar1: TStatusBar [0]
     Left = 0
-    Top = 710
+    Top = 717
     Width = 1102
     Height = 27
     Panels = <>
   end
   object GroupBox8: TGroupBox [1]
     Left = 0
-    Top = 645
+    Top = 652
     Width = 1102
     Height = 65
     Align = alBottom
@@ -213,7 +214,7 @@ inherited fmReaderManager: TfmReaderManager
     Align = alTop
     BevelOuter = bvNone
     Caption = #51648#47928#47532#45908#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -226,21 +227,22 @@ inherited fmReaderManager: TfmReaderManager
     Left = 0
     Top = 33
     Width = 1102
-    Height = 612
+    Height = 619
     Align = alClient
     TabOrder = 3
     object Splitter1: TSplitter
       Left = 729
       Top = 15
-      Height = 595
+      Height = 602
       Align = alRight
     end
     object Panel2: TPanel
       Left = 2
       Top = 15
       Width = 727
-      Height = 595
+      Height = 602
       Align = alClient
+      Color = clWhite
       TabOrder = 0
       object GroupBox14: TGroupBox
         Left = 1
@@ -407,7 +409,7 @@ inherited fmReaderManager: TfmReaderManager
         Left = 1
         Top = 81
         Width = 725
-        Height = 513
+        Height = 520
         Cursor = crDefault
         Align = alClient
         ColCount = 6
@@ -490,6 +492,7 @@ inherited fmReaderManager: TfmReaderManager
         PrintSettings.FooterFont.Name = 'MS Sans Serif'
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
+        ScrollWidth = 16
         SearchFooter.FindNextCaption = 'Find next'
         SearchFooter.FindPrevCaption = 'Find previous'
         SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -519,14 +522,15 @@ inherited fmReaderManager: TfmReaderManager
       Left = 732
       Top = 15
       Width = 368
-      Height = 595
+      Height = 602
       Align = alRight
+      Color = clWhite
       TabOrder = 1
       object GroupBox7: TGroupBox
         Left = 1
         Top = 1
         Width = 366
-        Height = 593
+        Height = 600
         Align = alClient
         TabOrder = 0
         object lb_McuIp: TLabel

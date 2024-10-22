@@ -126,7 +126,8 @@ implementation
 uses
 uDataModule1,
 uLomosUtil,
-uCompanyGrade, uAdminGrade, uAdminDoorGrade;
+uCompanyGrade, uAdminGrade, uAdminDoorGrade,
+uDBFunction;
 
 {$R *.dfm}
 
@@ -233,7 +234,7 @@ begin
   LoadGradeCode;
   //sg_Admin.ColWidths[2] := 0;
   //sg_Admin.ColWidths[3] := 0;
-  GridInit(sg_Admin,3);
+  GridInit(sg_Admin,4);
   AdminSearch('',ed_sUsername.Text);
   ed_sUsername.SetFocus;
 
@@ -249,6 +250,7 @@ var
 begin
   GridInitialize(sg_Admin); //스트링그리드 초기화
 
+  sg_Admin.ColWidths[2] := 0;
   State := 'SEARCH';
   FormClear;
   FormEnable(State);
@@ -289,15 +291,16 @@ begin
           cells[0,nRow] := FindField('AD_USERID').AsString;
           cells[1,nRow] := FindField('AD_USERNAME').AsString;
           cells[2,nRow] := FindField('AD_USERPW').AsString;
-          cells[3,nRow] := FindField('GR_GRADECODE').AsString;
-          cells[4,nRow] := FindField('AD_MASTER').AsString;
-          cells[5,nRow] := FindField('CO_COMPANYCODE').AsString;
-          cells[6,nRow] := FindField('CO_JIJUMCODE').AsString;
-          cells[7,nRow] := FindField('CO_DEPARTCODE').AsString;
-          cells[8,nRow] := FindField('AD_BUILDINGGRADE').AsString;
-          cells[9,nRow] := FindField('LO_DONGCODE').AsString;
-          cells[10,nRow] := FindField('LO_FLOORCODE').AsString;
-          cells[11,nRow] := FindField('LO_AREACODE').AsString;
+          cells[3,nRow] := '****';
+          cells[4,nRow] := FindField('GR_GRADECODE').AsString;
+          cells[5,nRow] := FindField('AD_MASTER').AsString;
+          cells[6,nRow] := FindField('CO_COMPANYCODE').AsString;
+          cells[7,nRow] := FindField('CO_JIJUMCODE').AsString;
+          cells[8,nRow] := FindField('CO_DEPARTCODE').AsString;
+          cells[9,nRow] := FindField('AD_BUILDINGGRADE').AsString;
+          cells[10,nRow] := FindField('LO_DONGCODE').AsString;
+          cells[11,nRow] := FindField('LO_FLOORCODE').AsString;
+          cells[12,nRow] := FindField('LO_AREACODE').AsString;
           if FindField('AD_USERID').AsString = aCode then
           begin
             SelectRows(nRow,1);
@@ -485,11 +488,18 @@ begin
   end;
 
   if UpperCase(State) = 'INSERT' then
+  begin
     bResult := InsertTB_Admin(ed_userid.Text,ed_username.Text,ed_userPw.Text,GradeCodeList.Strings[cmb_Grade.ItemIndex],
-                              stMaster,stCompanyCode,stJijumCode,stDepartCode,stBuildingGrade,stDongCode,stFloorCode,stAreaCode)
-  else if UpperCase(State) = 'UPDATE' then
+                              stMaster,stCompanyCode,stJijumCode,stDepartCode,stBuildingGrade,stDongCode,stFloorCode,stAreaCode);
+    dmDBFunction.InsertIntoTB_LOGINCREATEHIS(ed_userid.Text,ed_username.Text,ed_userPw.Text,GradeCodeList.Strings[cmb_Grade.ItemIndex],
+                              stMaster,stCompanyCode,stJijumCode,stDepartCode,stBuildingGrade,stDongCode,stFloorCode,stAreaCode,'1');
+  end else if UpperCase(State) = 'UPDATE' then
+  begin
     bResult := UpdateTB_Admin(ed_userid.Text,ed_username.Text,ed_userPw.Text,GradeCodeList.Strings[cmb_Grade.ItemIndex],
                               stMaster,stCompanyCode,stJijumCode,stDepartCode,stBuildingGrade,stDongCode,stFloorCode,stAreaCode);
+    dmDBFunction.InsertIntoTB_LOGINCREATEHIS(ed_userid.Text,ed_username.Text,ed_userPw.Text,GradeCodeList.Strings[cmb_Grade.ItemIndex],
+                              stMaster,stCompanyCode,stJijumCode,stDepartCode,stBuildingGrade,stDongCode,stFloorCode,stAreaCode,'2');
+  end;
 
   if bResult then AdminSearch(ed_userid.Text,ed_sUserName.text)
   else showmessage('저장실패');
@@ -586,6 +596,7 @@ var
 begin
   if (Application.MessageBox(PChar('데이터를 삭제하시겠습니까?'),'삭제',MB_OKCANCEL) = ID_CANCEL)  then Exit;
 
+  dmDBFunction.InsertIntoTB_LOGINCREATEHIS(ed_userid.Text,ed_username.Text,ed_userPw.Text,'','','','','','','','','','3');
   bResult := DeleteTB_Admin(ed_UserId.Text);
   DeleteTB_AdminGrade(ed_UserId.Text);
   if bResult then AdminSearch('',ed_sUserName.text)
@@ -635,56 +646,56 @@ begin
     ed_userid.Text := cells[0,Row];
     ed_username.Text := cells[1,Row];
     ed_userPw.Text := cells[2,Row];
-    nIndex := GradeCodeList.IndexOf( cells[3,Row]);
+    nIndex := GradeCodeList.IndexOf( cells[4,Row]);
     if nIndex > -1 then
       cmb_Grade.ItemIndex := nIndex
     else cmb_Grade.ItemIndex := 0;
-    if cells[4,Row] = 'Y' then
+    if cells[5,Row] = 'Y' then
     begin
       chk_Master.Checked := True;
     end else
     begin
-      if Not IsDigit(cells[4,Row]) then cmb_companyGrade.ItemIndex := 0
-      else cmb_companyGrade.ItemIndex := strtoint(cells[4,Row]);
+      if Not IsDigit(cells[5,Row]) then cmb_companyGrade.ItemIndex := 0
+      else cmb_companyGrade.ItemIndex := strtoint(cells[5,Row]);
     end;
-    if Cells[5,Row] <> '' then
-    begin
-      nIndex := CompanyCodeList.IndexOf(Cells[5,Row]);
-      if nIndex > -1 then cmb_Company.ItemIndex := nIndex;
-    end;
-    LoadJijumCode(Cells[5,Row],cmb_Jijum);
     if Cells[6,Row] <> '' then
     begin
-      nIndex := JijumCodeList.IndexOf(Cells[5,Row] + Cells[6,Row]);
-      if nIndex > -1 then cmb_Jijum.ItemIndex := nIndex;
+      nIndex := CompanyCodeList.IndexOf(Cells[6,Row]);
+      if nIndex > -1 then cmb_Company.ItemIndex := nIndex;
     end;
-    LoadDepartCode(Cells[5,Row],Cells[5,Row],cmb_Depart);
+    LoadJijumCode(Cells[6,Row],cmb_Jijum);
     if Cells[7,Row] <> '' then
     begin
-      nIndex := DepartCodeList.IndexOf(Cells[5,Row] + Cells[6,Row] + Cells[7,Row]);
+      nIndex := JijumCodeList.IndexOf(Cells[6,Row] + Cells[7,Row]);
+      if nIndex > -1 then cmb_Jijum.ItemIndex := nIndex;
+    end;
+    LoadDepartCode(Cells[6,Row],Cells[7,Row],cmb_Depart);
+    if Cells[8,Row] <> '' then
+    begin
+      nIndex := DepartCodeList.IndexOf(Cells[6,Row] + Cells[7,Row] + Cells[8,Row]);
       if nIndex > -1 then cmb_Depart.ItemIndex := nIndex;
     end;
-    if isDigit(Cells[8,Row]) then
+    if isDigit(Cells[9,Row]) then
     begin
-      cmb_Building.ItemIndex := strtoint(Cells[8,Row]);
+      cmb_Building.ItemIndex := strtoint(Cells[9,Row]);
     end;
-    if BuildingCodeList.IndexOf(cells[9,Row]) > -1 then
+    if BuildingCodeList.IndexOf(cells[10,Row]) > -1 then
     begin
-      cmb_AdminBuildingCode.ItemIndex := BuildingCodeList.IndexOf(cells[9,Row]);
+      cmb_AdminBuildingCode.ItemIndex := BuildingCodeList.IndexOf(cells[10,Row]);
     end;
     if cmb_AdminBuildingCode.ItemIndex > 0 then
     begin
-      LoadFloorCode(cells[9,Row],cmb_AdminFloorCode);
-      if FloorCodeList.IndexOf(cells[10,Row]) > -1 then
+      LoadFloorCode(cells[10,Row],cmb_AdminFloorCode);
+      if FloorCodeList.IndexOf(cells[11,Row]) > -1 then
       begin
-        cmb_AdminFloorCode.ItemIndex := FloorCodeList.IndexOf(cells[10,Row]);
+        cmb_AdminFloorCode.ItemIndex := FloorCodeList.IndexOf(cells[11,Row]);
       end;
       if cmb_AdminFloorCode.ItemIndex > 0 then
       begin
-        LoadAreaCode(cells[9,Row],cells[10,Row],cmb_AdminAreaCode);
-        if AreaCodeList.IndexOf(cells[11,Row]) > -1 then
+        LoadAreaCode(cells[10,Row],cells[11,Row],cmb_AdminAreaCode);
+        if AreaCodeList.IndexOf(cells[12,Row]) > -1 then
         begin
-          cmb_AdminAreaCode.ItemIndex := AreaCodeList.IndexOf(cells[11,Row]);
+          cmb_AdminAreaCode.ItemIndex := AreaCodeList.IndexOf(cells[12,Row]);
         end;
       end;
     end;

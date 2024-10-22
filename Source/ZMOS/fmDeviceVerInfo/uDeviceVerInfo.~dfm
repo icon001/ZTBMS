@@ -1,6 +1,6 @@
 inherited fmDeviceVerInfo: TfmDeviceVerInfo
-  Left = 135
-  Top = 191
+  Left = 590
+  Top = 190
   Width = 1019
   Height = 702
   Caption = #44592#44592#48260#51260' '#51221#48372' '#51312#54924
@@ -217,6 +217,7 @@ inherited fmDeviceVerInfo: TfmDeviceVerInfo
     Height = 579
     Cursor = crDefault
     Align = alClient
+    ColCount = 7
     DefaultColWidth = 90
     DefaultRowHeight = 21
     FixedCols = 0
@@ -241,7 +242,9 @@ inherited fmDeviceVerInfo: TfmDeviceVerInfo
       'Node No'
       'ECU ID'
       #44592#44592#47749#52845
-      #44592#44592' '#48260#51260' '#51221#48372)
+      #44592#44592' '#48260#51260' '#51221#48372
+      #44592#44592#53076#46300
+      #44592#44592#53440#51077)
     ControlLook.FixedGradientHoverFrom = clGray
     ControlLook.FixedGradientHoverTo = clWhite
     ControlLook.FixedGradientDownFrom = clGray
@@ -318,7 +321,9 @@ inherited fmDeviceVerInfo: TfmDeviceVerInfo
       97
       119
       224
-      426)
+      229
+      109
+      97)
     object pan_gauge: TPanel
       Left = 328
       Top = 96

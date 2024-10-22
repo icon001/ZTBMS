@@ -183,6 +183,8 @@ type
     btn_AlarmConfirm: TSpeedButton;
     st_Message: TStaticText;
     mn_FireRecovery: TMenuItem;
+    N1: TMenuItem;
+    mn_DeviceChange: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Action_LoctionLoadExecute(Sender: TObject);
@@ -236,6 +238,7 @@ type
     procedure mn_AlarmConfirmClick(Sender: TObject);
     procedure Image1DblClick(Sender: TObject);
     procedure mn_FireRecoveryClick(Sender: TObject);
+    procedure mn_DeviceChangeClick(Sender: TObject);
   private
     L_bFirst : Boolean;
     L_bClose : Boolean;
@@ -4151,6 +4154,28 @@ begin
     self.FindSubForm('Main').FindCommand('SendData').Execute;
   end;
 
+end;
+
+procedure TfmAlarmMapMonitoring.mn_DeviceChangeClick(Sender: TObject);
+var
+  stNodeNo : string;
+  stEcuID : string;
+  stDeviceID: string;
+  stCaption : string;
+begin
+  stCaption := TreeView_Device.Selected.Text;
+  stDeviceID := DeviceCodeList.Strings[ DeviceCaptionList.IndexOf(stCaption)];
+  Delete(stDeviceID,1,1);
+
+  stNodeNo := copy(stDeviceID,1,3);
+  stEcuID := copy(stDeviceID,4,2);
+
+  dmDBFunction.UpdateTB_ACCESSDEVICE_Field_StringValue(stNodeNo,stEcuID,'AC_DEVICECODE','');
+  dmDBFunction.UpdateTB_DEVICESCHEDULE_Field_StringValue(stNodeNo,stEcuID,'','','DE_RCVACK','N');
+
+  self.FindSubForm('Main').FindCommand('SendData').Params.Values['VALUE'] := 'CARDDOWNLOAD'+ DATADELIMITER + stDeviceID + DATADELIMITER + 'Y' + DATADELIMITER;
+  self.FindSubForm('Main').FindCommand('SendData').Execute;
+  DataModule1.TB_SYSTEMLOGInsert('0','00','0','0',stDeviceID , '컨트롤러교체');
 end;
 
 initialization

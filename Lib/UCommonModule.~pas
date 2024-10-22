@@ -37,6 +37,9 @@ type
     Function  GetNextJijumCode(aCompanyCode:string):string;
     Function  GetNextPosiCode(aCompanyCode:string):string;
     function  GetNextTB_ANTIGROUPCODE_ID : string;
+
+    function GetNextEmCode():string;
+
   public
     Function InsertTB_ATTEND_INCode(aATDate,aNowTime,aCompanyCode,aEMCode:String;nWeekCode:integer;aAtInsert:Boolean):Boolean;
     Function InsertIntoTB_EMPHIS(aCompanyCode,aEmCode,afdmsID,aMode,aCardNo,aCardType,aEmName,aHandPhone,aCompanyName,aJijumName,aDepartName,aPosiName:string):Boolean;
@@ -499,7 +502,7 @@ begin
     stSql := stSql + ' ON (a.GROUP_CODE = b.GROUP_CODE ';
     stSql := stSql + ' AND a.CO_COMPANYCODE = b.CO_COMPANYCODE ';
     stSql := stSql + ' AND a.EM_CODE = b.EM_CODE) ';
-   stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
+    stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
     stSql := stSql + ' AND a.CA_CARDNO = ''' + aCardNo + ''' ' ;
   end
   else   //비밀번호인경우
@@ -662,6 +665,51 @@ begin
     if recordCount < 1 then Exit;
     result := inttostr(FindField('FDMS_ID').AsInteger + 1);
   end;
+end;
+
+function TCommonModule.GetNextEmCode: string;
+var
+  stSql: string;
+  //TempAdoQuery : TADOQuery;
+  stSabun : string;
+begin
+  Result := '';
+  stSql := 'select Max(EM_CODE) as EM_CODE from TB_EMPLOYEE ';
+  stSql := stSql + ' where GROUP_CODE = ''1234567890'' ';
+  stSql := stSql + ' AND EM_CODE Like ''Z-%'' ';
+  stSql := stSql + ' AND Len(EM_CODE) = 7 ';
+
+  //CoInitialize(nil);
+  //TempAdoQuery := TADOQuery.Create(nil);
+  //TempAdoQuery.Connection := TargetADOConnection;
+  with DataModule1.ADOTmpQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+
+    Try
+      Open;
+    Except
+      //TempAdoQuery.Free;
+      //CoUninitialize;
+      Exit;
+    End;
+    if (recordCount < 1) or (Trim(FindField('EM_CODE').AsString) = '') then
+    begin
+      inc(AutoSabun);
+      result := 'Z-' + FillZeroNumber(AutoSabun,5);
+    end else
+    begin
+      stSabun := FindField('EM_CODE').AsString;
+      stSabun := copy(stSabun,3,Length(stSabun) - 2);
+      AutoSabun := strtoint(stSabun) + 1;
+      result := 'Z-' + FillZeroNumber(AutoSabun,5);
+    end;
+
+  end;
+  //TempAdoQuery.Free;
+  //CoUninitialize;
 end;
 
 function TCommonModule.GetNextJijumCode(aCompanyCode: string): string;

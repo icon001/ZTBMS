@@ -1,0 +1,2 @@
+CREATE TABLE TB_BASEPAY (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , co_companycode VARCHAR(3) NOT NULL , em_code VARCHAR(20) NOT NULL , pa_code VARCHAR(3) NOT NULL , pa_gubun VARCHAR(1), pa_amt VARCHAR(20) ); 
+ ALTER TABLE TB_BASEPAY   ADD CONSTRAINT TB_BASEPAY_pkey PRIMARY KEY (group_code, co_companycode, em_code, pa_code);

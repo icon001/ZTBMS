@@ -1,6 +1,6 @@
 inherited fmEmployeeBranch: TfmEmployeeBranch
-  Left = 304
-  Top = 147
+  Left = 729
+  Top = 81
   Width = 688
   Height = 725
   Caption = #49324#50896#48516#47448
@@ -19,8 +19,9 @@ inherited fmEmployeeBranch: TfmEmployeeBranch
     Width = 680
     Height = 33
     Align = alTop
+    BevelOuter = bvNone
     Caption = #49324#50896#48516#47448
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -37,11 +38,13 @@ inherited fmEmployeeBranch: TfmEmployeeBranch
     Height = 49
     Align = alTop
     Caption = #51089#50629#44396#48516#49440#53469
+    Color = clWhite
     Columns = 2
     ItemIndex = 0
     Items.Strings = (
       #44592#48516#47448' '#48320#44221
       #48120#48516#47448' '#48320#44221)
+    ParentColor = False
     TabOrder = 1
     OnClick = rg_WorkGubunClick
   end
@@ -49,8 +52,9 @@ inherited fmEmployeeBranch: TfmEmployeeBranch
     Left = 0
     Top = 82
     Width = 680
-    Height = 510
+    Height = 517
     Align = alClient
+    Color = clWhite
     TabOrder = 2
     object Panel3: TPanel
       Left = 1
@@ -58,6 +62,8 @@ inherited fmEmployeeBranch: TfmEmployeeBranch
       Width = 678
       Height = 104
       Align = alTop
+      BevelOuter = bvNone
+      Color = clWhite
       TabOrder = 0
       object lb_CompanyName: TLabel
         Left = 16
@@ -310,7 +316,7 @@ inherited fmEmployeeBranch: TfmEmployeeBranch
       Left = 1
       Top = 105
       Width = 678
-      Height = 404
+      Height = 411
       Cursor = crDefault
       Align = alClient
       ColCount = 10
@@ -399,6 +405,7 @@ inherited fmEmployeeBranch: TfmEmployeeBranch
       PrintSettings.FooterFont.Style = []
       PrintSettings.PageNumSep = '/'
       ScrollSynch = True
+      ScrollWidth = 16
       SearchFooter.FindNextCaption = 'Find next'
       SearchFooter.FindPrevCaption = 'Find previous'
       SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -440,10 +447,11 @@ inherited fmEmployeeBranch: TfmEmployeeBranch
   end
   object Panel2: TPanel [3]
     Left = 0
-    Top = 592
+    Top = 599
     Width = 680
     Height = 99
     Align = alBottom
+    Color = clWhite
     TabOrder = 3
     object lb_CompanyName1: TLabel
       Left = 16
@@ -523,9 +531,9 @@ inherited fmEmployeeBranch: TfmEmployeeBranch
       TabOrder = 3
     end
     object btn_WorkBranch: TBitBtn
-      Left = 568
+      Left = 560
       Top = 16
-      Width = 97
+      Width = 105
       Height = 41
       Caption = #48516#47448#48320#44221
       TabOrder = 4
@@ -594,6 +602,16 @@ inherited fmEmployeeBranch: TfmEmployeeBranch
       ImeName = 'Microsoft IME 2003'
       ItemHeight = 12
       TabOrder = 5
+    end
+    object btnDelete: TBitBtn
+      Left = 560
+      Top = 64
+      Width = 105
+      Height = 25
+      Caption = #49440#53469#49324#50896#49325#51228
+      TabOrder = 6
+      OnClick = btnDeleteClick
+      NumGlyphs = 2
     end
   end
   object OpenDialog1: TOpenDialog

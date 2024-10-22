@@ -171,6 +171,9 @@ type
     mn_BuildingClose: TMenuItem;
     mn_BuildingMaster: TMenuItem;
     EST1: TMenuItem;
+    N26: TMenuItem;
+    mn_DeviceChange: TMenuItem;
+    Panel17: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Action_LoctionLoadExecute(Sender: TObject);
@@ -281,6 +284,7 @@ type
       Params: TStringList);
     procedure CommandArrayCommandsTZONEMAPCLOSEExecute(Command: TCommand;
       Params: TStringList);
+    procedure mn_DeviceChangeClick(Sender: TObject);
   private
     L_bFirst : Boolean;
     L_bClose : Boolean;
@@ -6978,6 +6982,30 @@ begin
     TfmZoneMap(ZoneFormDisplayList.Objects[nIndex]).Free;
     ZoneFormDisplayList.Delete(nIndex);
   end;
+
+end;
+
+procedure TfmKTTypeMonitoring.mn_DeviceChangeClick(Sender: TObject);
+var
+  stNodeNo : string;
+  stEcuID : string;
+  stDeviceID: string;
+  stCaption  : string;
+begin
+  stCaption := TreeView_Device.Selected.Text;
+  stDeviceID := DeviceCodeList.Strings[ DeviceCaptionList.IndexOf(stCaption)];
+  Delete(stDeviceID,1,1);
+
+
+  stNodeNo := copy(stDeviceID,1,3);
+  stEcuID := copy(stDeviceID,4,2);
+
+  dmDBFunction.UpdateTB_ACCESSDEVICE_Field_StringValue(stNodeNo,stEcuID,'AC_DEVICECODE','');
+  dmDBFunction.UpdateTB_DEVICESCHEDULE_Field_StringValue(stNodeNo,stEcuID,'','','DE_RCVACK','N');
+
+  self.FindSubForm('Main').FindCommand('SendData').Params.Values['VALUE'] := 'CARDDOWNLOAD'+ DATADELIMITER + stDeviceID + DATADELIMITER + 'Y' + DATADELIMITER;
+  self.FindSubForm('Main').FindCommand('SendData').Execute;
+  DataModule1.TB_SYSTEMLOGInsert('0','00','0','0',stDeviceID , '컨트롤러교체');
 
 end;
 

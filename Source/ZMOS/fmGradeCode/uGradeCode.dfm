@@ -14,10 +14,11 @@ inherited fmGradeCode: TfmGradeCode
   TextHeight = 12
   object Panel1: TPanel [0]
     Left = 0
-    Top = 230
+    Top = 237
     Width = 508
     Height = 106
     Align = alBottom
+    Color = clWhite
     TabOrder = 0
     object Label8: TLabel
       Left = 16
@@ -237,14 +238,14 @@ inherited fmGradeCode: TfmGradeCode
     Left = 0
     Top = 33
     Width = 508
-    Height = 197
+    Height = 204
     Align = alClient
     TabOrder = 1
     object sg_GradeCode: TAdvStringGrid
       Left = 1
       Top = 1
       Width = 506
-      Height = 195
+      Height = 202
       Cursor = crDefault
       Align = alClient
       ColCount = 2
@@ -267,14 +268,41 @@ inherited fmGradeCode: TfmGradeCode
       ActiveCellFont.Height = -11
       ActiveCellFont.Name = 'Tahoma'
       ActiveCellFont.Style = [fsBold]
-      SearchFooter.FindNextCaption = 'Find next'
-      SearchFooter.FindPrevCaption = 'Find previous'
-      SearchFooter.HighLightCaption = 'Highlight'
-      SearchFooter.HintClose = 'Close'
-      SearchFooter.HintFindNext = 'Find next occurence'
-      SearchFooter.HintFindPrev = 'Find previous occurence'
-      SearchFooter.HintHighlight = 'Highlight occurences'
-      SearchFooter.MatchCaseCaption = 'Match case'
+      ColumnHeaders.Strings = (
+        #44428#54620#53076#46300
+        #44428#54620#47749#52845)
+      ControlLook.FixedGradientHoverFrom = clGray
+      ControlLook.FixedGradientHoverTo = clWhite
+      ControlLook.FixedGradientDownFrom = clGray
+      ControlLook.FixedGradientDownTo = clSilver
+      ControlLook.DropDownHeader.Font.Charset = DEFAULT_CHARSET
+      ControlLook.DropDownHeader.Font.Color = clWindowText
+      ControlLook.DropDownHeader.Font.Height = -11
+      ControlLook.DropDownHeader.Font.Name = 'Tahoma'
+      ControlLook.DropDownHeader.Font.Style = []
+      ControlLook.DropDownHeader.Visible = True
+      ControlLook.DropDownHeader.Buttons = <>
+      ControlLook.DropDownFooter.Font.Charset = DEFAULT_CHARSET
+      ControlLook.DropDownFooter.Font.Color = clWindowText
+      ControlLook.DropDownFooter.Font.Height = -11
+      ControlLook.DropDownFooter.Font.Name = 'MS Sans Serif'
+      ControlLook.DropDownFooter.Font.Style = []
+      ControlLook.DropDownFooter.Visible = True
+      ControlLook.DropDownFooter.Buttons = <>
+      Filter = <>
+      FilterDropDown.Font.Charset = DEFAULT_CHARSET
+      FilterDropDown.Font.Color = clWindowText
+      FilterDropDown.Font.Height = -11
+      FilterDropDown.Font.Name = 'MS Sans Serif'
+      FilterDropDown.Font.Style = []
+      FilterDropDownClear = '(All)'
+      FixedColWidth = 150
+      FixedFont.Charset = DEFAULT_CHARSET
+      FixedFont.Color = clWindowText
+      FixedFont.Height = -11
+      FixedFont.Name = 'Tahoma'
+      FixedFont.Style = [fsBold]
+      FloatFormat = '%.2f'
       PrintSettings.DateFormat = 'dd/mm/yyyy'
       PrintSettings.Font.Charset = DEFAULT_CHARSET
       PrintSettings.Font.Color = clWindowText
@@ -298,18 +326,21 @@ inherited fmGradeCode: TfmGradeCode
       PrintSettings.FooterFont.Style = []
       PrintSettings.PageNumSep = '/'
       ScrollSynch = True
-      FixedColWidth = 150
-      FixedFont.Charset = DEFAULT_CHARSET
-      FixedFont.Color = clWindowText
-      FixedFont.Height = -11
-      FixedFont.Name = 'Tahoma'
-      FixedFont.Style = [fsBold]
-      FloatFormat = '%.2f'
-      ColumnHeaders.Strings = (
-        #44428#54620#53076#46300
-        #44428#54620#47749#52845)
-      Filter = <>
-      Version = '3.3.0.1'
+      ScrollWidth = 16
+      SearchFooter.FindNextCaption = 'Find next'
+      SearchFooter.FindPrevCaption = 'Find previous'
+      SearchFooter.Font.Charset = DEFAULT_CHARSET
+      SearchFooter.Font.Color = clWindowText
+      SearchFooter.Font.Height = -11
+      SearchFooter.Font.Name = 'MS Sans Serif'
+      SearchFooter.Font.Style = []
+      SearchFooter.HighLightCaption = 'Highlight'
+      SearchFooter.HintClose = 'Close'
+      SearchFooter.HintFindNext = 'Find next occurence'
+      SearchFooter.HintFindPrev = 'Find previous occurence'
+      SearchFooter.HintHighlight = 'Highlight occurences'
+      SearchFooter.MatchCaseCaption = 'Match case'
+      Version = '6.0.4.4'
       ColWidths = (
         150
         323)
@@ -317,9 +348,10 @@ inherited fmGradeCode: TfmGradeCode
   end
   object StatusBar1: TStatusBar [2]
     Left = 0
-    Top = 336
+    Top = 343
     Width = 508
     Height = 26
+    Color = clWhite
     Panels = <>
   end
   object Panel12: TPanel [3]
@@ -329,7 +361,7 @@ inherited fmGradeCode: TfmGradeCode
     Height = 33
     Align = alTop
     Caption = #44428#54620#53076#46300#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16

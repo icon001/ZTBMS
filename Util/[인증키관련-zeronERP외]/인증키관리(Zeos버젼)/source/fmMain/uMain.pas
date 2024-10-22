@@ -137,6 +137,8 @@ type
     N69: TMenuItem;
     N70: TMenuItem;
     N71: TMenuItem;
+    N72: TMenuItem;
+    N73: TMenuItem;
     procedure mn_CloseClick(Sender: TObject);
     procedure Action_CompanyAdminExecute(Sender: TObject);
     procedure Action_CustoumerKeyExecute(Sender: TObject);
@@ -208,7 +210,8 @@ type
     procedure N68Click(Sender: TObject);
     procedure N69Click(Sender: TObject);
     procedure N71Click(Sender: TObject);
-  private
+    procedure N72Click(Sender: TObject);
+  public
     FLogined: Boolean;
     FPrivileges: String;
     L_bClose : Boolean;
@@ -287,7 +290,8 @@ uses
   uCotrolerType, uCotrolerRomType, uCardReaderType, uManagerAdminN,
   uSendMemo, uMemoSearch, uMemoSendSearch, uMasterID, uDeviceName,
   uDeviceModelCode, uDeviceType, uErrorList, uProcessTime, uErrorTarget,
-  uDeviceFunctionGroup,uDeviceFunctionCode;
+  uDeviceFunctionGroup,uDeviceFunctionCode,
+  uStartReg;
   
 {$R *.dfm}
 
@@ -1614,6 +1618,14 @@ begin
   inherited;
   MDIChildShow('TfmControlerInfomation');
 
+end;
+
+procedure TfmMain.N72Click(Sender: TObject);
+begin
+  inherited;
+  fmStartReg := TfmStartReg.Create(self);
+  fmStartReg.ShowModal;
+  fmStartReg.Free;
 end;
 
 end.

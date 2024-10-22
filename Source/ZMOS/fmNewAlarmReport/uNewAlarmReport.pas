@@ -845,12 +845,7 @@ begin
 
 end;
 
-procedure TfmNewAlarmReport.cmb_PositionExit(Sender: TObject);
-begin
-  inherited;
-  if L_bKeyPress then SearchAlarmNameList(cmb_Position.Text);
-  if AlarmList.Visible then AlarmList.SetFocus;
-end;
+
 
 procedure TfmNewAlarmReport.AlarmListDblClick(Sender: TObject);
 begin
@@ -908,10 +903,17 @@ begin
   inherited;
   if Key = 13 then
   begin
-    if L_bKeyPress then SearchAlarmNameList(cmb_Position.Text);
+    SearchAlarmNameList(cmb_Position.Text);
     if AlarmList.Visible then AlarmList.SetFocus;
   end;
 
+end;
+
+procedure TfmNewAlarmReport.cmb_PositionExit(Sender: TObject);
+begin
+  inherited;
+  if L_bKeyPress then SearchAlarmNameList(cmb_Position.Text);
+  if AlarmList.Visible then AlarmList.SetFocus;
 end;
 
 initialization

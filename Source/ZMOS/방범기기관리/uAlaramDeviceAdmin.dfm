@@ -1,9 +1,10 @@
 inherited fmAlaramDeviceAdmin: TfmAlaramDeviceAdmin
-  Left = 477
-  Top = 114
+  Left = 779
+  Top = 187
   Width = 763
-  Height = 580
+  Height = 581
   Caption = #48169#48276#44396#50669#44288#47532
+  Color = clWhite
   Font.Charset = HANGEUL_CHARSET
   Font.Height = -12
   OldCreateOrder = True
@@ -15,17 +16,18 @@ inherited fmAlaramDeviceAdmin: TfmAlaramDeviceAdmin
   TextHeight = 12
   object StatusBar1: TStatusBar [0]
     Left = 0
-    Top = 512
+    Top = 520
     Width = 755
     Height = 34
     Panels = <>
   end
   object Panel1: TPanel [1]
     Left = 0
-    Top = 448
+    Top = 456
     Width = 755
     Height = 64
     Align = alBottom
+    Color = clWhite
     TabOrder = 1
     object btn_Insert: TSpeedButton
       Left = 32
@@ -208,7 +210,7 @@ inherited fmAlaramDeviceAdmin: TfmAlaramDeviceAdmin
     Height = 41
     Align = alTop
     Caption = #48169#48276#44396#50669#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = HANGEUL_CHARSET
     Font.Color = clBlack
     Font.Height = -13
@@ -221,26 +223,27 @@ inherited fmAlaramDeviceAdmin: TfmAlaramDeviceAdmin
     Left = 0
     Top = 41
     Width = 755
-    Height = 407
+    Height = 415
     Align = alClient
     TabOrder = 3
     object Splitter2: TSplitter
       Left = 369
       Top = 14
-      Height = 391
+      Height = 399
     end
     object Panel6: TPanel
       Left = 372
       Top = 14
       Width = 381
-      Height = 391
+      Height = 399
       Align = alClient
+      Color = clWhite
       TabOrder = 0
       object GroupBox10: TGroupBox
         Left = 1
         Top = 1
         Width = 379
-        Height = 389
+        Height = 397
         Align = alClient
         TabOrder = 0
         object Label7: TLabel
@@ -363,6 +366,13 @@ inherited fmAlaramDeviceAdmin: TfmAlaramDeviceAdmin
           Width = 72
           Height = 12
           Caption = #48169#48276#44396#50669#48264#54840
+        end
+        object Label17: TLabel
+          Left = 16
+          Top = 240
+          Width = 48
+          Height = 12
+          Caption = #50672#46041#53076#46300
         end
         object ed_regAlarmName: TEdit
           Left = 120
@@ -626,7 +636,7 @@ inherited fmAlaramDeviceAdmin: TfmAlaramDeviceAdmin
           Left = 120
           Top = 192
           Width = 217
-          Height = 49
+          Height = 41
           ImeName = 'Microsoft Office IME 2007'
           TabOrder = 19
           OnKeyPress = mem_etcKeyPress
@@ -650,14 +660,24 @@ inherited fmAlaramDeviceAdmin: TfmAlaramDeviceAdmin
           TabOrder = 21
           Value = 1
         end
+        object ed_RelayCode: TEdit
+          Left = 120
+          Top = 236
+          Width = 217
+          Height = 20
+          ImeName = 'Microsoft IME 2003'
+          MaxLength = 30
+          TabOrder = 22
+        end
       end
     end
     object Panel5: TPanel
       Left = 2
       Top = 14
       Width = 367
-      Height = 391
+      Height = 399
       Align = alLeft
+      Color = clWhite
       TabOrder = 1
       object GroupBox11: TGroupBox
         Left = 1
@@ -782,10 +802,10 @@ inherited fmAlaramDeviceAdmin: TfmAlaramDeviceAdmin
         Left = 1
         Top = 169
         Width = 365
-        Height = 221
+        Height = 229
         Cursor = crDefault
         Align = alClient
-        ColCount = 23
+        ColCount = 25
         DefaultColWidth = 90
         DefaultRowHeight = 21
         FixedCols = 0
@@ -882,6 +902,7 @@ inherited fmAlaramDeviceAdmin: TfmAlaramDeviceAdmin
         PrintSettings.FooterFont.Name = 'MS Sans Serif'
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
+        ScrollWidth = 16
         SearchFooter.FindNextCaption = 'Find next'
         SearchFooter.FindPrevCaption = 'Find previous'
         SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -900,6 +921,8 @@ inherited fmAlaramDeviceAdmin: TfmAlaramDeviceAdmin
           119
           128
           71
+          90
+          90
           90
           90
           90

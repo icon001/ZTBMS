@@ -1,6 +1,6 @@
 inherited fmMDICardAdmin: TfmMDICardAdmin
-  Left = 338
-  Top = 119
+  Left = 309
+  Top = 70
   Width = 1364
   Height = 888
   Caption = #44060#51064#48324' '#52852#46300#44428#54620#44288#47532
@@ -19,7 +19,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
   TextHeight = 12
   object StatusBar1: TStatusBar [0]
     Left = 0
-    Top = 825
+    Top = 832
     Width = 1356
     Height = 29
     Panels = <
@@ -31,7 +31,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
     Left = 0
     Top = 33
     Width = 1356
-    Height = 792
+    Height = 799
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
@@ -39,15 +39,16 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
       Left = 733
       Top = 0
       Width = 1
-      Height = 792
+      Height = 799
       Align = alRight
     end
     object Panel3: TPanel
       Left = 0
       Top = 0
       Width = 733
-      Height = 792
+      Height = 799
       Align = alClient
+      Color = clWhite
       TabOrder = 0
       object GroupBox2: TGroupBox
         Left = 1
@@ -233,8 +234,8 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
           NumGlyphs = 2
         end
         object chk_CardReg: TCheckBox
-          Left = 256
-          Top = 35
+          Left = 360
+          Top = 16
           Width = 129
           Height = 17
           Caption = #52852#46300#46321#47197#44592' '#51312#54924
@@ -366,12 +367,20 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
             #52852#46300#48264#54840
             #52852#46300#44396#48516)
         end
+        object chk_Add: TCheckBox
+          Left = 256
+          Top = 34
+          Width = 113
+          Height = 17
+          Caption = #52628#44032#51312#54924
+          TabOrder = 11
+        end
       end
       object sg_Card: TAdvStringGrid
         Left = 1
         Top = 193
         Width = 731
-        Height = 598
+        Height = 605
         Cursor = crDefault
         Align = alClient
         ColCount = 10
@@ -459,6 +468,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
         ScrollSynch = True
+        ScrollWidth = 16
         SearchFooter.FindNextCaption = 'Find next'
         SearchFooter.FindPrevCaption = 'Find previous'
         SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -493,15 +503,15 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
       Left = 734
       Top = 0
       Width = 622
-      Height = 792
+      Height = 799
       Align = alRight
       TabOrder = 1
       object PageControl1: TPageControl
         Left = 1
         Top = 1
         Width = 620
-        Height = 790
-        ActivePage = DoorTab
+        Height = 797
+        ActivePage = AlarmTab
         Align = alClient
         TabOrder = 0
         OnChange = PageControl1Change
@@ -511,20 +521,21 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
             Left = 233
             Top = 105
             Width = 2
-            Height = 658
+            Height = 665
           end
           object Panel4: TPanel
             Left = 347
             Top = 105
             Width = 265
-            Height = 658
+            Height = 665
             Align = alClient
+            Color = clWhite
             TabOrder = 0
             object sg_GradeDoor: TAdvStringGrid
               Left = 1
               Top = 34
               Width = 263
-              Height = 623
+              Height = 630
               Cursor = crDefault
               Align = alClient
               ColCount = 4
@@ -541,7 +552,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
               ParentFont = False
               ScrollBars = ssVertical
               TabOrder = 0
-              OnCheckBoxClick = CheckBoxClick
+              OnCheckBoxClick = sg_GradeDoorCheckBoxClick
               ActiveCellFont.Charset = DEFAULT_CHARSET
               ActiveCellFont.Color = clWindowText
               ActiveCellFont.Height = -11
@@ -609,6 +620,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
               PrintSettings.FooterFont.Style = []
               PrintSettings.PageNumSep = '/'
               ScrollSynch = True
+              ScrollWidth = 16
               SearchFooter.FindNextCaption = 'Find next'
               SearchFooter.FindPrevCaption = 'Find previous'
               SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -651,8 +663,9 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
             Left = 235
             Top = 105
             Width = 112
-            Height = 658
+            Height = 665
             Align = alLeft
+            Color = clWhite
             TabOrder = 1
             object btn_GradeInsert: TSpeedButton
               Left = 16
@@ -720,14 +733,15 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
             Left = 0
             Top = 105
             Width = 233
-            Height = 658
+            Height = 665
             Align = alLeft
+            Color = clWhite
             TabOrder = 2
             object sg_Door: TAdvStringGrid
               Left = 1
               Top = 34
               Width = 231
-              Height = 623
+              Height = 630
               Cursor = crDefault
               Align = alClient
               ColCount = 4
@@ -744,6 +758,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
               ParentFont = False
               ScrollBars = ssVertical
               TabOrder = 0
+              OnCheckBoxChange = sg_DoorCheckBoxChange
               OnCheckBoxClick = CheckBoxClick
               ActiveCellFont.Charset = DEFAULT_CHARSET
               ActiveCellFont.Color = clWindowText
@@ -812,6 +827,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
               PrintSettings.FooterFont.Style = []
               PrintSettings.PageNumSep = '/'
               ScrollSynch = True
+              ScrollWidth = 16
               SearchFooter.FindNextCaption = 'Find next'
               SearchFooter.FindPrevCaption = 'Find previous'
               SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -856,6 +872,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
             Width = 612
             Height = 105
             Align = alTop
+            Color = clWhite
             TabOrder = 3
             object GroupBox3: TGroupBox
               Left = 1
@@ -864,6 +881,8 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
               Height = 96
               Align = alTop
               Caption = #52636#51077#47928' '#47785#47197#51312#54924
+              Color = clWhite
+              ParentColor = False
               TabOrder = 0
               object lb_Building1: TLabel
                 Left = 16
@@ -964,14 +983,15 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
             Left = 0
             Top = 105
             Width = 233
-            Height = 658
+            Height = 665
             Align = alLeft
+            Color = clWhite
             TabOrder = 0
             object sg_Alarm: TAdvStringGrid
               Left = 1
               Top = 34
               Width = 231
-              Height = 623
+              Height = 630
               Cursor = crDefault
               Align = alClient
               ColCount = 9
@@ -988,6 +1008,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
               ParentFont = False
               ScrollBars = ssVertical
               TabOrder = 0
+              OnCheckBoxChange = sg_DoorCheckBoxChange
               OnCheckBoxClick = CheckBoxClick
               ActiveCellFont.Charset = DEFAULT_CHARSET
               ActiveCellFont.Color = clWindowText
@@ -1055,6 +1076,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
               PrintSettings.FooterFont.Name = 'MS Sans Serif'
               PrintSettings.FooterFont.Style = []
               PrintSettings.PageNumSep = '/'
+              ScrollWidth = 16
               SearchFooter.FindNextCaption = 'Find next'
               SearchFooter.FindPrevCaption = 'Find previous'
               SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -1102,8 +1124,9 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
             Left = 233
             Top = 105
             Width = 112
-            Height = 658
+            Height = 665
             Align = alLeft
+            Color = clWhite
             TabOrder = 1
             object btn_AlarmGradeInsert: TSpeedButton
               Left = 16
@@ -1171,14 +1194,15 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
             Left = 345
             Top = 105
             Width = 267
-            Height = 658
+            Height = 665
             Align = alClient
+            Color = clWhite
             TabOrder = 2
             object sg_GradeAlarm: TAdvStringGrid
               Left = 1
               Top = 34
               Width = 265
-              Height = 623
+              Height = 630
               Cursor = crDefault
               Align = alClient
               ColCount = 9
@@ -1195,7 +1219,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
               ParentFont = False
               ScrollBars = ssVertical
               TabOrder = 0
-              OnCheckBoxClick = CheckBoxClick
+              OnCheckBoxClick = sg_GradeDoorCheckBoxClick
               ActiveCellFont.Charset = DEFAULT_CHARSET
               ActiveCellFont.Color = clWindowText
               ActiveCellFont.Height = -11
@@ -1263,6 +1287,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
               PrintSettings.FooterFont.Name = 'MS Sans Serif'
               PrintSettings.FooterFont.Style = []
               PrintSettings.PageNumSep = '/'
+              ScrollWidth = 16
               SearchFooter.FindNextCaption = 'Find next'
               SearchFooter.FindPrevCaption = 'Find previous'
               SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -1312,6 +1337,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
             Width = 612
             Height = 105
             Align = alTop
+            Color = clWhite
             TabOrder = 3
             object GroupBox6: TGroupBox
               Left = 1
@@ -1355,7 +1381,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
                 Width = 145
                 Height = 20
                 ImeName = 'Microsoft IME 2003'
-                ItemHeight = 0
+                ItemHeight = 12
                 TabOrder = 0
                 OnChange = cmb_BuildingCode1Change
               end
@@ -1365,7 +1391,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
                 Width = 145
                 Height = 20
                 ImeName = 'Microsoft IME 2003'
-                ItemHeight = 0
+                ItemHeight = 12
                 TabOrder = 1
                 OnChange = cmb_FloorCode1Change
               end
@@ -1375,7 +1401,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
                 Width = 145
                 Height = 20
                 ImeName = 'Microsoft IME 2003'
-                ItemHeight = 0
+                ItemHeight = 12
                 TabOrder = 2
                 OnChange = cmb_AreaCode1Change
               end
@@ -1404,7 +1430,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
             Left = 233
             Top = 105
             Width = 112
-            Height = 218
+            Height = 658
             Align = alLeft
             TabOrder = 0
             object SpeedButton4: TSpeedButton
@@ -1473,7 +1499,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
             Left = 0
             Top = 105
             Width = 233
-            Height = 218
+            Height = 658
             Align = alLeft
             TabOrder = 1
             object sg_Food: TAdvStringGrid
@@ -1563,6 +1589,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
               PrintSettings.FooterFont.Name = 'MS Sans Serif'
               PrintSettings.FooterFont.Style = []
               PrintSettings.PageNumSep = '/'
+              ScrollWidth = 16
               SearchFooter.FindNextCaption = 'Find next'
               SearchFooter.FindPrevCaption = 'Find previous'
               SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -1605,7 +1632,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
             Left = 345
             Top = 105
             Width = 267
-            Height = 218
+            Height = 658
             Align = alClient
             TabOrder = 2
             object sg_GradeFood: TAdvStringGrid
@@ -1694,6 +1721,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
               PrintSettings.FooterFont.Name = 'MS Sans Serif'
               PrintSettings.FooterFont.Style = []
               PrintSettings.PageNumSep = '/'
+              ScrollWidth = 16
               SearchFooter.FindNextCaption = 'Find next'
               SearchFooter.FindPrevCaption = 'Find previous'
               SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -1812,7 +1840,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
     Height = 33
     Align = alTop
     Caption = #44060#51064#48324' '#52852#46300#44428#54620#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -1870,6 +1898,7 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
     Width = 329
     Height = 65
     BiDiMode = bdLeftToRight
+    Color = clWhite
     ParentBiDiMode = False
     ParentBackground = False
     TabOrder = 3
@@ -1890,6 +1919,52 @@ inherited fmMDICardAdmin: TfmMDICardAdmin
       BevelKind = bkSoft
       Caption = #8553
       TabOrder = 0
+    end
+  end
+  object pan_Message: TPanel [4]
+    Left = -50
+    Top = 528
+    Width = 761
+    Height = 129
+    BiDiMode = bdLeftToRight
+    Color = clWhite
+    ParentBiDiMode = False
+    ParentBackground = False
+    TabOrder = 4
+    Visible = False
+    object btn_message: TSpeedButton
+      Left = 288
+      Top = 96
+      Width = 129
+      Height = 25
+      Caption = #54869#51064
+      OnClick = btn_messageClick
+    end
+    object StaticText2: TStaticText
+      Left = 744
+      Top = 0
+      Width = 16
+      Height = 16
+      BevelKind = bkSoft
+      Caption = #8553
+      TabOrder = 0
+      OnClick = StaticText2Click
+    end
+    object st_Message: TStaticText
+      Left = 16
+      Top = 16
+      Width = 737
+      Height = 57
+      Alignment = taCenter
+      AutoSize = False
+      Caption = #54868#51116' '#48156#49373' !!!'
+      Font.Charset = HANGEUL_CHARSET
+      Font.Color = clRed
+      Font.Height = -27
+      Font.Name = #44404#47548#52404
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 1
     end
   end
   inherited CommandArray: TCommandArray

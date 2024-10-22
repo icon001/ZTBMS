@@ -15,9 +15,11 @@ type
     Function AlterTB_ACCESSDEVICE_HO2USE_Add : Boolean;
     Function AlterTB_ACCESSDEVICE_HO3USE_Add : Boolean;
     Function AlterTB_ACCESSDEVICE_HOSENDYEAR_Add : Boolean;
+    Function AlterTB_ArmArea_Change_Add : Boolean;
     Function AlterTB_ARMAREA_DISARMCHECKUSE_Add : Boolean;
     Function AlterTB_ARMAREA_DISARMCHECKTIME1FROM_Add : Boolean;
     Function AlterTB_ARMAREA_DISARMCHECKTIME1TO_Add : Boolean;
+    Function AlterTB_ArmArea_RelayCode_Add : Boolean;
     Function AlterTB_ATEVENT_LASTINTIME_Add : Boolean;
     Function AlterTB_ATEVENT_LASTOUTTIME_Add : Boolean;
     Function AlterTB_ATEVENT_NIGHTWORKTIME_Add : Boolean;
@@ -25,10 +27,13 @@ type
     Function AlterTB_ATEVENT_WORKSTARTTIME_Add : Boolean;
     Function AlterTB_ATEVENT_WORKTIME_Add : Boolean;
     Function AlterTB_CARD_GUEST_Add : Boolean; //방문자 카드 유무 체크
+    Function AlterTB_CARD_STICK_Add : Boolean; //수동 카드 등록 유무 체크
     Function AlterTB_DOOR_SchIgnore_Add : Boolean; //스케줄사용유무무시
     Function AlterTB_EMPLOYEE_GRADETYPE_Add : Boolean;
     Function AlterTB_GUEST_NOTAUTCONTENT_Add : Boolean;
     Function AlterTB_HOLIDAY_HOTYPE_Add : Boolean;
+    Function AlterTB_LOCATION_Change_Add : Boolean;
+    Function AlterTB_LOCATION_RelayCode_Add : Boolean;
 
     Function CreateTB_DEVICECARDNO_Idx01 : Boolean;
     Function CreateTB_EMMAPPING:Boolean;
@@ -36,6 +41,8 @@ type
     Function CreateTB_GUEST_Idx01 : Boolean;
     Function CreateTB_GUESTDEVICECARDNO : Boolean;
     Function CreateTB_GUESTEVENT : Boolean;
+    Function CreateTB_HURELAY:Boolean;  //홍익 세종 연동 테이블
+    Function CreateTB_LOGINCREATEHIS: Boolean;
     Function CreateTB_LOGINCOUNT : Boolean;
     Function CreateTB_RELAYCONTROLDOOR : Boolean;
     Function CreateTB_TIMECODEBUILDING:Boolean;
@@ -542,5 +549,138 @@ begin
   result := DataModule1.ProcessExecSQL(stSql);
 
 end;
+
+function TdmDBCreate.AlterTB_LOCATION_RelayCode_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_LOCATION ADD LO_RelayCode varchar(10) ';  
+  if DBTYPE = 'MDB' then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ArmArea_RelayCode_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ArmArea ADD AR_RelayCode varchar(10) ';  
+  if DBTYPE = 'MDB' then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_ArmArea_Change_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_ArmArea ADD AR_Change char(1) ';  
+  if DBTYPE = 'MDB' then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_LOCATION_Change_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_LOCATION ADD LO_CHANGE char(1) ';  
+  if DBTYPE = 'MDB' then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_HURELAY: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'CREATE TABLE TB_HURELAY ( ';
+  stSql := stSql + '  HR_SEQ int IDENTITY   NOT NULL,';
+  stSql := stSql + '  HR_ID varchar(10)    NULL,';
+  stSql := stSql + '  HR_NAME varchar(100)   NULL,';
+  stSql := stSql + '  HR_LOCCODE varchar(10)   NULL,';
+  stSql := stSql + '  HR_STATUS varchar(5)   NULL,';
+  stSql := stSql + '  HR_VACANCY varchar(20)   NULL, ';
+  stSql := stSql + '  PRIMARY KEY (HR_SEQ) ';
+  stSql := stSql + ') ';
+  if DBTYPE = 'MDB' then
+  begin
+    stSql := StringReplace(stSql,'image','OLEObject',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'int IDENTITY','AUTOINCREMENT',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end else if DBTYPE = 'PG' then
+  begin
+    stSql := StringReplace(stSql,'image','oid',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'int IDENTITY','serial',[rfReplaceAll]);
+  end else if DBTYPE = 'FB' then
+  begin
+    stSql := StringReplace(stSql,'int IDENTITY','integer',[rfReplaceAll]);
+  end;  
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.AlterTB_CARD_STICK_Add: Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'ALTER TABLE TB_CARD ADD CA_STICK char(1) DEFAULT ''N'' NULL ';
+  if DBTYPE = 'MDB' then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBCreate.CreateTB_LOGINCREATEHIS: Boolean;  //로그인 변경 이력
+var
+  stSql : string;
+begin
+  stSql := 'Create Table TB_LOGINCREATEHIS (';
+  stSql := stSql + ' GROUP_CODE varchar(10) DEFAULT ''1234567890''  NOT NULL,';
+  stSql := stSql + ' LC_DATE varchar(8) NOT NULL,';
+  stSql := stSql + ' LC_SEQ integer NOT NULL,';
+	stSql := stSql + ' AD_USERID varchar(20) NULL,';
+	stSql := stSql + ' AD_USERPW varchar(20) NULL,';
+	stSql := stSql + ' AD_USERNAME varchar(50) NULL,';
+	stSql := stSql + ' GR_GRADECODE varchar(3) NULL,';
+	stSql := stSql + ' AD_UPDATETIME varchar(14) NULL,';
+	stSql := stSql + ' AD_UPDATEOPERATER varchar(10) NULL,';
+	stSql := stSql + ' AD_MASTER char(1) NULL,';
+	stSql := stSql + ' CO_COMPANYCODE varchar(3) NULL,';
+	stSql := stSql + ' CO_JIJUMCODE varchar(3) NULL,';
+	stSql := stSql + ' CO_DEPARTCODE varchar(3) NULL,';
+	stSql := stSql + ' AD_BUILDINGGRADE char(1) NULL ,';
+	stSql := stSql + ' LO_DONGCODE varchar(3) NULL , ';
+	stSql := stSql + ' LO_FLOORCODE varchar(3) NULL ,';
+	stSql := stSql + ' LO_AREACODE varchar(3) NULL ,';
+	stSql := stSql + ' LC_MODE int NULL ,';   //1.입력,2.수정,3.삭제
+  stSql := stSql + ' LC_PCIP varchar(30),';
+  stSql := stSql + ' PRIMARY KEY (GROUP_CODE,LC_DATE,LC_SEQ) ';
+  stSql := stSql + ' ) ';
+
+  if DBTYPE = 'MDB' then
+  begin
+    stSql := StringReplace(stSql,'varchar','text',[rfReplaceAll]);
+    stSql := StringReplace(stSql,'char','text',[rfReplaceAll]);
+  end;
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
 
 end.

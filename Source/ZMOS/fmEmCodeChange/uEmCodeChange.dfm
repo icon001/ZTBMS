@@ -2,8 +2,9 @@ inherited fmEmCodeChange: TfmEmCodeChange
   Left = 192
   Top = 114
   Width = 436
-  Height = 358
+  Height = 332
   Caption = #49324#50896#48264#54840#48320#44221
+  Color = clWhite
   Font.Charset = HANGEUL_CHARSET
   Font.Height = -12
   Font.Name = #44404#47548
@@ -269,6 +270,7 @@ inherited fmEmCodeChange: TfmEmCodeChange
     Top = 40
     Width = 345
     Height = 209
+    Color = clWhite
     TabOrder = 2
     Visible = False
     object Label1: TLabel
@@ -407,6 +409,7 @@ inherited fmEmCodeChange: TfmEmCodeChange
       PrintSettings.FooterFont.Style = []
       PrintSettings.PageNumSep = '/'
       ScrollSynch = True
+      ScrollWidth = 16
       SearchFooter.FindNextCaption = 'Find next'
       SearchFooter.FindPrevCaption = 'Find previous'
       SearchFooter.Font.Charset = DEFAULT_CHARSET

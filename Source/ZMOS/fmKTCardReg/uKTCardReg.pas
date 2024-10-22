@@ -162,7 +162,6 @@ type
     Function CheckTB_CARDCardNo(aCardNo:string):Boolean;
     Function CheckTB_CARD(aCardNo,aCompanyCode,aEmpID,aCardType :string;var Mode:string) : Boolean;
     Function CheckTB_KTCARDISSUE(aEmCode:string;var aCardSeq:string):Boolean;
-    Function GetFdmsID:string;
     Function GetEmployeeFdmsID(aCompanyCode,aEmpID:string):string;
     Function GetMaxPositionNum : integer;
 
@@ -210,7 +209,7 @@ uses
   uLomosUtil,
   uDataModule1, uZipCode, uMssql, uPostGreSql, uMDBSql, uCommonSql,
   uFireBird, uKTCardCreate,
-  DIMime;
+  DIMime, UCommonModule;
 {$R *.dfm}
 
 
@@ -1433,7 +1432,7 @@ begin
                                  '1',ed_CardNo.Text,ed_EmpImg.Text,stEmTypeCode);
   end else
   begin
-    stFdmsId := GetFdmsID;
+    stFdmsId := CommonModule.GetNextFdmsID;
     bResult := InsertTB_EMPLOYEE(stEmCode,ed_sEmpNM.Text,stCompanyCode,stJijumCode,
                                  stDepartCode,stPosiCode,stCophone,
                                  FormatDateTime('yyyymmdd',dt_sJoinDt.Date),FormatDateTime('yyyymmdd',dt_sRetireDt.Date),
@@ -1703,33 +1702,7 @@ begin
 
 end;
 
-function TfmKTCardReg.GetFdmsID: string;
-var
-  stSql : string;
-  nFdms_id : integer;
-begin
-  result := '31';
-  stSql := 'select Max(Fdms_id) as fdms_id from TB_EMPLOYEE ';
-  with fdmsADOQuery do
-  begin
-    Close;
-    Sql.Clear;
-    Sql.Text := stSql;
-    Try
-      Open;
-    Except
-      Exit;
-    End;
-    if recordCount < 1 then Exit;
-    Try
-      nFdms_id := FindField('fdms_id').AsInteger;
-      if nFdms_id = 0 then Exit;
-    Except
-      Exit;
-    End;
-    result := inttostr(nFdms_id + 1);
-  end;
-end;
+
 
 function TfmKTCardReg.CheckTB_CARD(aCardNo, aCompanyCode, aEmpID,
   aCardType: string; var Mode: string): Boolean;

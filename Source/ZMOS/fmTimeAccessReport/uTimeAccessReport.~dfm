@@ -483,7 +483,7 @@ inherited fmTimeAccessReport: TfmTimeAccessReport
         Width = 89
         Height = 20
         ImeName = 'Microsoft IME 2003'
-        TabOrder = 4
+        TabOrder = 8
       end
       object cmb_AccessPermit: TComboBox
         Left = 672
@@ -492,7 +492,7 @@ inherited fmTimeAccessReport: TfmTimeAccessReport
         Height = 20
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
-        TabOrder = 5
+        TabOrder = 9
         OnChange = cmb_AccessPermitChange
       end
       object cmb_Type: TComboBox
@@ -526,7 +526,7 @@ inherited fmTimeAccessReport: TfmTimeAccessReport
         Items.Strings = (
           #52636#51077#47928
           #52636#51077#47928#44396#48516)
-        TabOrder = 8
+        TabOrder = 4
         OnClick = rg_GubunClick
       end
       object cmb_Position: TRzComboBox
@@ -543,7 +543,7 @@ inherited fmTimeAccessReport: TfmTimeAccessReport
         ImeName = 'Microsoft IME 2003'
         ItemHeight = 12
         ParentCtl3D = False
-        TabOrder = 9
+        TabOrder = 5
         OnChange = cmb_PositionChange
       end
     end

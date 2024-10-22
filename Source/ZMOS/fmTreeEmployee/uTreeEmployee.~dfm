@@ -1,6 +1,6 @@
 inherited fmTreeEmployee: TfmTreeEmployee
-  Left = 206
-  Top = 234
+  Left = 207
+  Top = 214
   Width = 1024
   Height = 640
   Caption = #44060#48324#49324#50896#44288#47532

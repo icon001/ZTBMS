@@ -36,7 +36,7 @@ const
 
 const
   //COMMANDDATA_SEND = 60;
-  CARDDATA_SEND = 100;
+  CARDDATA_SEND = 100;  //20190604 전송시간을 6초로 변경 후 응답이 오면 즉시전송
 
 type
 
@@ -50,6 +50,7 @@ type
     FOldConnected: integer;
     NodeDisConnectedCheckTimer : TTimer;
     FServerEnqCount: integer;
+    FOldSendTime: TDateTime;
     function GetHandle: THandle;
     procedure SetWinSockServerPacket(const Value: string);
     procedure NodeDisConnectedCheckTimerTimer(Sender: TObject);
@@ -158,6 +159,7 @@ type
     Property StateEvent : Boolean read FStateEvent write FStateEvent;
     property WinSockServerPacket : string read FWinSockServerPacket write SetWinSockServerPacket;
     property ServerEnqCount : integer read FServerEnqCount write FServerEnqCount;
+    property OldSendTime : TDateTime Read FOldSendTime write FOldSendTime;
   public
     KTTAlarmSendDataList : TStringList; //관제 센터에 보낼 목록 50개
 
@@ -242,6 +244,8 @@ type
     ArmAreaUse: Array [0..con_nFIXMAXAREANO] of Boolean; //방범구역 사용유무
     ArmAreaName: Array [0..con_nFIXMAXAREANO] of string; //방범구역 명칭
     ArmAreaState: Array [0..con_nFIXMAXAREANO] of TWatchMode; //방범구역 상태
+    ArmAreaRelayCode: Array [0..con_nFIXMAXAREANO] of string; //방범구역 연동코드
+    ArmAreaRelayBuildingCode: Array [0..con_nFIXMAXAREANO] of string; //방범구역 연동위치코드
     ArmAreaDisArmCheckUse: Array [0..con_nFIXMAXAREANO] of integer; //방범구역 미경계 체크 유무
     ArmAreaDisArmCheckTime1From: Array [0..con_nFIXMAXAREANO] of string; //방범구역 미경계 체크 시작 시간
     ArmAreaDisArmCheckTime1To: Array [0..con_nFIXMAXAREANO] of string; //방범구역 미경계 체크 종료 시간
@@ -330,6 +334,10 @@ type
     FHO2USE: Boolean;
     FMaxLockCount: integer;
     FScheduleSkill: Boolean;
+    FOnSendData: TNotifyReceive;
+    FOldSendTime: TDateTime;
+    FCardBufferFull: Boolean;
+    FOnRcvCardBufferFull: TNotifyReceive;
 
     procedure ArmAreaDisArmCheckTimerTimer(Sender: TObject);
 
@@ -363,6 +371,7 @@ type
     procedure SetDeviceCode(const Value: String);
     procedure SetDeviceType(const Value: String);
     procedure SetDoorScheduleUse(const Value: Boolean);
+    procedure SetCardBufferFull(const Value: Boolean);
   protected
     Procedure DataPacektProcess(aData: string; NodeNo:integer;aFireGubunCode:string);
     Procedure SendAckforaccess(aMsgCount:String);
@@ -418,6 +427,7 @@ type
     procedure  Search_PortState;
     procedure  Search_ZoneExtendPortState;
     procedure  MemoryCardClear; //메모리 카드 하루에 한번씩은 지워주자.
+    procedure  CardDownLoadClear; //카드 다운로드 정지 시키자.
   public
     procedure  SendCardDataExecute;
     procedure  CardDataSendPacket(aSendData:string;aSeq:integer);
@@ -483,7 +493,8 @@ type
     Property PTtype: TDevicetype Read FPTtype write SetPtType;
     Property CommNode: TCommNode Read FCommNode write SetCommNode;
     Property FoodAmtPer : integer Read FFDAMTPER write SetFoodAmt;
-    property CardDataSendSleepCount : integer Read FCardDataSendSleepCount write FCardDataSendSleepCount;
+//    property CardDataSendSleepCount : integer Read FCardDataSendSleepCount write FCardDataSendSleepCount;
+    property OldSendTime : TDateTime Read FOldSendTime write FOldSendTime;
 
     Property Connected: Boolean Read FConnected write SetConnected;
     property ArmAreaUsed : Boolean read FArmAreaUsed write FArmAreaUsed;
@@ -516,6 +527,8 @@ type
     property MaxLockCount : integer read FMaxLockCount write FMaxLockCount;
     property ScheduleSkill : Boolean read FScheduleSkill write FScheduleSkill;
 
+    property CardBufferFull : Boolean read FCardBufferFull write SetCardBufferFull;
+
 
     property OnRcvAlarmData:      TAlarmEvent read FOnRcvAlarmData       write FOnRcvAlarmData;
     property OnRcvInitAckData:    TNotifyReceive read FOnRcvInitAckData     write FOnRcvInitAckData;
@@ -532,6 +545,7 @@ type
     property OnRcvRegSchedule:    TNotifyReceive read FOnRcvRegSchedule     write FOnRcvRegSchedule;
     property OnRcvRegTimeCode:    TNotifyReceive read FOnRcvRegTimeCode     write FOnRcvRegTimeCode;
     Property OnErrorData:         TNotifyReceive read FOnRcvERRORData       write FOnRcvERRORData;
+    property OnCardBufferFull:    TNotifyReceive read FOnRcvCardBufferFull     write FOnRcvCardBufferFull;
     Property OnConnected:         TConnectType   read FOnConnected          write FOnConnected;
     Property OnDoorManageModeChange:         TDoorManageModeChangeType   read FOnDoorManageModeChange          write FOnDoorManageModeChange;
     Property OnDoorPNModeChange:         TDoorPNModeChangeType   read FOnDoorPNModeChange          write FOnDoorPNModeChange;
@@ -542,6 +556,7 @@ type
     property OnDeviceTypeChange : TDeviceTypeChange read FOnDeviceTypeChange write FOnDeviceTypeChange;
     property OnDeviceCodeChange : TDeviceTypeChange read FOnDeviceCodeChange write FOnDeviceCodeChange;
     property OnDeviceArmAreaDisArmEvent : TDevicePacketData read FOnDeviceArmAreaDisArmEvent write FOnDeviceArmAreaDisArmEvent;
+    ProPerty OnSendData : TNotifyReceive read FOnSendData write FOnSendData;
   end;
 
   TComModule = class(TDataModule)
@@ -603,7 +618,8 @@ begin
   SocketType := 1;
   l_c_reception_buffer:= c_byte_buffer.create_byte_buffer('reception_buffer', k_buffer_max);
 
-  ServerEnqCount := 0;      
+  ServerEnqCount := 0;
+  OldSendTime := now;      
 
   NodeDisConnectedCheckTimer := TTimer.Create(nil);
   NodeDisConnectedCheckTimer.Interval := G_nNodeDisConnectDelayTime * 1000;
@@ -915,7 +931,8 @@ var
   I: Integer;
   st: string;
 begin
-  inc(CardDataSendSleepCount);
+  //inc(CardDataSendSleepCount);
+  CardDataSendSleepCount := CardDataSendSleepCount + 1;
 
   if not Open then  Exit;
   if not SocketConnected then Exit;
@@ -948,9 +965,31 @@ begin
     L_nCardDataSend := 0;
     Exit;
   end;
+  if(CardDataSendSleepCount < CARDDATA_SEND ) then
+  begin
+    //if OldSendTime + CARDDATA_SEND > now then Exit;   //메인별로 6000ms 씩 쉬었다 보내자 2019-06-04
+    Exit;
+  end;
+  //CardDataSendSleepCount := 0;
+  OldSendTime := now;
+
+  ///전송후 다음 장비로 장비 위치 변경하자
   L_nSendDeviceSeq := L_nSendDeviceSeq + 1;
-  if L_nSendDeviceSeq > Devices.Count - 1 then L_nSendDeviceSeq := 0;
-  TDevice(Devices.Objects[L_nSendDeviceSeq]).SendCardDataExecute;
+  if L_nSendDeviceSeq > Devices.Count - 1 then
+  begin
+    L_nSendDeviceSeq := 0;
+    //CardDataSendSleepCount := 0;  ///한 메인에서 한 사이클을 돌면 2500ms(sendTimer 50ms, 100 이 되면 전송) 쉬자.
+                                                  ///2020년 경희대에서 컨트롤러 하나로 전송시에 카드리더가 동작 하지 않는 현상이 있었음
+    //Exit;
+  end;
+  //if CardDataSendSleepCount < CARDDATA_SEND then Exit;
+  if(TDevice(Devices.Objects[L_nSendDeviceSeq]).Connected) then       ///20200622 확장기 통신이 안되는 경우 6초씩 쉬는 부분 수정
+  begin
+    CardDataSendSleepCount  := 0;
+    TDevice(Devices.Objects[L_nSendDeviceSeq]).SendCardDataExecute;
+  end;
+
+
   (*
   if CardDataSendSleepCount < CARDDATA_SEND then Exit;
 
@@ -1038,7 +1077,7 @@ var
   i,j : integer;
 begin
   CommNode := nil;
-  CardDataSendSleepCount := CARDDATA_SEND;
+//  CardDataSendSleepCount := CARDDATA_SEND;
   DeviceID:= '000000000000';
   ATtype:= dtnothing;
   ACtype:= dtnothing;
@@ -1067,6 +1106,8 @@ begin
   //Door1Use := False;
   //Door2Use := False;
 
+  CardBufferFull := False;
+
   ArmAreaUseInitialize;
   ArmAreaNameInitialize;
   ArmAreaStateInitialize;
@@ -1091,6 +1132,8 @@ begin
   ArmAreaDisArmCheckTimer.Interval := 60 * 1000;     //1분에 한번씩만 돌아 가자.
   ArmAreaDisArmCheckTimer.OnTimer := ArmAreaDisArmCheckTimerTimer;
   ArmAreaDisArmCheckTimer.Enabled := False;
+
+  OldSendTime := Now;
 
   for i:=0 to 12 do
   begin
@@ -1265,7 +1308,7 @@ begin
              'l','m','n','j','f':// 카드 데이터 등록 응답
                 begin
                   FCommNode.CardDataSendSleepCount := CARDDATA_SEND;
-                  CardDataSendSleepCount := CARDDATA_SEND;
+                  //CardDataSendSleepCount := CARDDATA_SEND;
                   if Assigned(FOnRcvRegCardData) then
                   begin
                     OnRcvRegCardData(Self,aData,NodeNO,TCommNode(CommNode).CardFixType);
@@ -1481,8 +1524,8 @@ begin
 
   if G_bGlobalAntiPass and (DeviceAntiGropList.Count > 0) then
   begin
-    dmAdoQuery.CardRCV_ACKUpdate(aCardNo,inttostr(NodeNo),ECUID,'Y');
-    Exit;  //AntiPass 사용하는 컨트롤러이면 카드 권한 전송하지 말자.
+    //dmAdoQuery.CardRCV_ACKUpdate(aCardNo,inttostr(NodeNo),ECUID,'Y');   //20190829 안티패스에서 통신 이상시 자체 동작하는 것으로 변경에 따라서  권한을 다운로드 해야 됨
+    //Exit;  //AntiPass 사용하는 컨트롤러이면 카드 권한 전송하지 말자.
   end;
   if G_nSpecialProgram = 5 then //송호대학교 식수 이면
   begin
@@ -3544,7 +3587,23 @@ begin
     HO3USE := True;
     MaxLockCount := 8;
     ScheduleSkill := True;
-  end else if UpperCase(Value) = 'ECU-110' then   //MCU300
+  end else if UpperCase(Value) = 'ECU-110' then   //ECU300
+  begin
+    DeviceType := '1';
+    HO1USE := True;
+    HO2USE := True;
+    HO3USE := True;
+    MaxLockCount := 8;
+    ScheduleSkill := True;
+  end else if UpperCase(Value) = 'MCU-500' then   //MCU500
+  begin
+    DeviceType := '1';
+    HO1USE := True;
+    HO2USE := True;
+    HO3USE := True;
+    MaxLockCount := 8;
+    ScheduleSkill := True;
+  end else if UpperCase(Value) = 'ECU-500' then   //ECU500
   begin
     DeviceType := '1';
     HO1USE := True;
@@ -3553,6 +3612,22 @@ begin
     MaxLockCount := 8;
     ScheduleSkill := True;
   end else if UpperCase(Value) = 'ICU-300' then   //ICU300
+  begin
+    DeviceType := '4';
+    HO1USE := True;
+    HO2USE := True;
+    HO3USE := True;
+    MaxLockCount := 1;
+    ScheduleSkill := True;
+  end else if UpperCase(Value) = 'ICU-340' then   //ICU340
+  begin
+    DeviceType := '4';
+    HO1USE := True;
+    HO2USE := True;
+    HO3USE := True;
+    MaxLockCount := 1;
+    ScheduleSkill := True;
+  end else if UpperCase(Value) = 'ICU-350' then   //ICU350
   begin
     DeviceType := '4';
     HO1USE := True;
@@ -4499,39 +4574,65 @@ var
   stSendData : string;
   i : integer;
 begin
-  CardDataSendSleepCount := CardDataSendSleepCount + 1;
-  if CardDataSendSleepCount < CARDDATA_SEND then Exit;
+  //CardDataSendSleepCount := CardDataSendSleepCount + 1;
+
+    (*if Assigned(FOnSendData) then
+  begin
+    OnSendData(CommNode,'SendCardDataExecute1(' + inttostr(CardDataSendSleepCount) + ')',NodeNo);
+  end;
+  *)
+  //if CardDataSendSleepCount < CARDDATA_SEND then Exit;
+
+  //if OldSendTime + CARDDATA_SEND < now then Exit;     //카드 데이터 전송을 횟수로 세니까 들어오는 시간이 늦으면 너무 오래 있다가 전송되는 현상이 발생 됨. 일정한 시간 이후에 전송하도록 처리 함 20190528
+
+  (*if Assigned(FOnSendData) then
+  begin
+    OnSendData(CommNode,'SendCardDataExecute2(' + inttostr(SendCardDataList1.Count) + '/' + inttostr(SendCardDataList2.Count) + ')',NodeNo);
+  end;
+  *)
   if SendCardDataList1.Count > 0 then   //먼저 보내야 할 카드데이터가 있으면... 보내자
   begin
-    CardDataSendSleepCount := 0;
-    stTemp := SendCardDataList1.Strings[0];
-    SendCardDataList1.Delete(0);
-    cCmd := stTemp[1];
-    Delete(stTemp,1,1);
-    stSendData := stTemp;
-    SendPacket(cCmd,stSendData,True,-1);
+    Try
+      OldSendTime := now;
+      //CardDataSendSleepCount := 0;
+      stTemp := SendCardDataList1.Strings[0];
+      SendCardDataList1.Delete(0);
+      cCmd := stTemp[1];
+      Delete(stTemp,1,1);
+      stSendData := stTemp;
+      SendPacket(cCmd,stSendData,True,-1);
+    Except
+      exit;
+    End;
   end else if SendCardDataList2.Count > 0 then
   begin
-    CardDataSendSleepCount := 0;
-    stTemp := SendCardDataList2.Strings[0];
-    SendCardDataList2.Delete(0);
-    cCmd := stTemp[1];
-    Delete(stTemp,1,1);
-    stSendData := stTemp;
-    SendPacket(cCmd,stSendData,True,-1);
+    Try
+      OldSendTime := now;
+      //CardDataSendSleepCount := 0;
+      stTemp := SendCardDataList2.Strings[0];
+      SendCardDataList2.Delete(0);
+      cCmd := stTemp[1];
+      Delete(stTemp,1,1);
+      stSendData := stTemp;
+      SendPacket(cCmd,stSendData,True,-1);
+    Except
+      Exit;
+    End;
   end else  //보낼 카드 데이터가 없으면 카드 리스트 중에서 수신을 못한 카드리스트를 메모리에 적재 시키자.
   begin
-    CardDataSendSleepCount := CARDDATA_SEND;
+    CommNode.CardDataSendSleepCount := CARDDATA_SEND;   //보낼 카드 없으면 다음거 보내자.
     if L_bMemoryCardClear then Exit;
     if CardDataList.Count > 0 then
     begin
       L_nCardSendSeq := L_nCardSendSeq + 1;
       if L_nCardSendSeq > CardDataList.Count - 1 then L_nCardSendSeq := 0;
+
       for i := L_nCardSendSeq to CardDataList.Count - 1 do
       begin
         L_nCardSendSeq := i;
         if TCardGrade(CardDataList.Objects[i]).RcvState <> 'Y' then
         begin
+          
           CD_Download(CardDataList.Strings[i],
                       TCardGrade(CardDataList.Objects[i]).ValidDay,
                       TCardGrade(CardDataList.Objects[i]).CARDTYPE,
@@ -4970,6 +5071,23 @@ begin
 
 
   SendPacket('c',stData,True);
+end;
+
+procedure TDevice.CardDownLoadClear;
+begin
+  SendCardDataList1.Clear;
+  SendCardDataList2.Clear;
+end;
+
+procedure TDevice.SetCardBufferFull(const Value: Boolean);
+begin
+  if FCardBufferFull = Value then Exit;
+  FCardBufferFull := Value;
+  if Assigned(FOnRcvCardBufferFull) then
+  begin
+    if Value then OnCardBufferFull(Self,'1',NodeNO)
+    else OnCardBufferFull(Self,'0',NodeNO);
+  end;
 end;
 
 end.

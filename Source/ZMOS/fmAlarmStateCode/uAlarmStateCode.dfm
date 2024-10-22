@@ -1,7 +1,7 @@
 inherited fmAlarmStateCode: TfmAlarmStateCode
-  Left = 836
-  Top = 237
-  Width = 510
+  Left = 246
+  Top = 254
+  Width = 543
   Height = 480
   Caption = #50508#46988#49345#53468#53076#46300' '#44288#47532
   Font.Height = -12
@@ -15,18 +15,18 @@ inherited fmAlarmStateCode: TfmAlarmStateCode
   object Panel2: TPanel [0]
     Left = 0
     Top = 33
-    Width = 502
-    Height = 249
+    Width = 535
+    Height = 256
     Align = alClient
     TabOrder = 0
     object sg_AlarmStateCode: TAdvStringGrid
       Left = 1
       Top = 1
-      Width = 500
-      Height = 247
+      Width = 533
+      Height = 254
       Cursor = crDefault
       Align = alClient
-      ColCount = 7
+      ColCount = 8
       DefaultColWidth = 150
       DefaultRowHeight = 21
       FixedCols = 0
@@ -53,7 +53,8 @@ inherited fmAlarmStateCode: TfmAlarmStateCode
         #44221#48372#46321#44553
         #44221#48372#48156#49373
         #44396#48516#53076#46300
-        #44221#48372#49353#44628)
+        #44221#48372#49353#44628
+        #44221#44228#51473#50508#46988)
       ControlLook.FixedGradientHoverFrom = clGray
       ControlLook.FixedGradientHoverTo = clWhite
       ControlLook.FixedGradientDownFrom = clGray
@@ -109,6 +110,7 @@ inherited fmAlarmStateCode: TfmAlarmStateCode
       PrintSettings.FooterFont.Style = []
       PrintSettings.PageNumSep = '/'
       ScrollSynch = True
+      ScrollWidth = 16
       SearchFooter.FindNextCaption = 'Find next'
       SearchFooter.FindPrevCaption = 'Find previous'
       SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -130,15 +132,17 @@ inherited fmAlarmStateCode: TfmAlarmStateCode
         150
         150
         150
+        150
         150)
     end
   end
   object Panel1: TPanel [1]
     Left = 0
-    Top = 282
-    Width = 502
+    Top = 289
+    Width = 535
     Height = 142
     Align = alBottom
+    Color = clWhite
     TabOrder = 1
     object Label8: TLabel
       Left = 16
@@ -400,22 +404,32 @@ inherited fmAlarmStateCode: TfmAlarmStateCode
       Visible = False
       OnClick = panColorClick
     end
+    object chk_ArmEvent: TCheckBox
+      Left = 328
+      Top = 8
+      Width = 121
+      Height = 17
+      Hint = '24'#49884#44036#52840#51077#49888#54840#51473' '#44221#44228#51473#50640#47564#49888#54840#48156#49373
+      Caption = #44221#44228#51473#50640#47564#48156#49373
+      TabOrder = 6
+    end
   end
   object StatusBar1: TStatusBar [2]
     Left = 0
-    Top = 424
-    Width = 502
+    Top = 431
+    Width = 535
     Height = 22
+    Color = clWhite
     Panels = <>
   end
   object Panel12: TPanel [3]
     Left = 0
     Top = 0
-    Width = 502
+    Width = 535
     Height = 33
     Align = alTop
     Caption = #50508#46988#49345#53468#53076#46300#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16

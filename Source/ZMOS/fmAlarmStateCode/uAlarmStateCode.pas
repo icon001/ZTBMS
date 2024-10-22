@@ -30,6 +30,7 @@ type
     chk_Alarm: TCheckBox;
     panColor: TPanel;
     ColorDialog1: TColorDialog;
+    chk_ArmEvent: TCheckBox;
     procedure StringGrideDrawCell(Sender: TObject; ACol,
   ARow: Integer; Rect: TRect; State: TGridDrawState);
     procedure FormActivate(Sender: TObject);
@@ -52,9 +53,9 @@ type
     procedure FormClear;
     procedure FormEnable(aState:string);
     procedure ButtonEnable(aState:string);
-    procedure ShowAlarmStateCode(aCode:string);
-    Function InsertTB_ALARMSTATUSCODE(aAlarmStateCode,aAlarmStateName,aAlarmCheck,aAlarmGrade,aAlarmSound,aColor:string):Boolean;
-    Function UpdateTB_ALARMSTATUSCODE(aAlarmStateCode,aAlarmStateName,aAlarmCheck,aAlarmGrade,aAlarmSound,aColor:string):Boolean;
+    procedure ShowAlarmStateCode(aCode:string;aTop:integer=0);
+    Function InsertTB_ALARMSTATUSCODE(aAlarmStateCode,aAlarmStateName,aAlarmCheck,aAlarmGrade,aAlarmSound,aColor:string;aArmEvent:string='0'):Boolean;
+    Function UpdateTB_ALARMSTATUSCODE(aAlarmStateCode,aAlarmStateName,aAlarmCheck,aAlarmGrade,aAlarmSound,aColor:string;aArmEvent:string='0'):Boolean;
     Function DeleteTB_ALARMSTATUSCODE(aAlarmStateCode:string):Boolean;
   public
     { Public declarations }
@@ -112,7 +113,7 @@ begin
 
 end;
 
-procedure TfmAlarmStateCode.ShowAlarmStateCode(aCode:string);
+procedure TfmAlarmStateCode.ShowAlarmStateCode(aCode:string;aTop:integer=0);
 var
   stSql : string;
   nRow : integer;
@@ -167,6 +168,7 @@ begin
         cells[4,nRow] := FindField('AL_ALARMSOUND').AsString;
         cells[5,nRow] := FindField('AL_GUBUN').AsString;
         cells[6,nRow] := inttostr(FindField('AL_COLOR').AsInteger);
+        cells[7,nRow] := FindField('AL_ARMEVENT').AsString;
         if FindField('AL_ALARMSTATUSCODE').AsString  = aCode then
         begin
           SelectRows(nRow,1);
@@ -176,6 +178,7 @@ begin
         Next;
       end;
     end;
+    if(aTop <> 0) then sg_AlarmStateCode.TopRow := aTop;
 
   end;
   TempAdoQuery.Free;
@@ -205,6 +208,8 @@ begin
     panColor.Visible := chk_Alarm.Checked;
     if isdigit(cells[6,Row]) then
       panColor.Color := strtoint(cells[6,Row]);
+    if cells[7,Row] = '1' then  chk_ArmEvent.Checked := True
+    else chk_ArmEvent.Checked := False;
 
     cmb_AlarmGrade.ItemIndex := cmb_AlarmGrade.Items.IndexOf(cells[3,Row]);
 
@@ -249,6 +254,7 @@ var
   stEventCheck : string;
   stAlarm : string;
   stColor : string;
+  stArmEvent : string;
 begin
 
   if chk_Event.Checked then stEventCheck := '1'
@@ -257,14 +263,17 @@ begin
   if chk_Alarm.Checked then stAlarm := '1'
   else stAlarm := '0';
 
+  if chk_ArmEvent.Checked  then stArmEvent := '1'
+  else stArmEvent := '0';
+
   stColor := inttostr(panColor.Color);
 
   if UpperCase(State) = 'INSERT' then
-    bResult := InsertTB_ALARMSTATUSCODE(ed_AlarmStateCode.Text,ed_AlarmStateName.Text,stEventCheck,cmb_AlarmGrade.Text,stAlarm,stColor)
+    bResult := InsertTB_ALARMSTATUSCODE(ed_AlarmStateCode.Text,ed_AlarmStateName.Text,stEventCheck,cmb_AlarmGrade.Text,stAlarm,stColor,stArmEvent)
   else if UpperCase(State) = 'UPDATE' then
-    bResult := UpdateTB_ALARMSTATUSCODE(ed_AlarmStateCode.Text,ed_AlarmStateName.Text,stEventCheck,cmb_AlarmGrade.Text,stAlarm,stColor);
+    bResult := UpdateTB_ALARMSTATUSCODE(ed_AlarmStateCode.Text,ed_AlarmStateName.Text,stEventCheck,cmb_AlarmGrade.Text,stAlarm,stColor,stArmEvent);
 
-  if bResult then ShowAlarmStateCode(ed_AlarmStateCode.Text)
+  if bResult then ShowAlarmStateCode(ed_AlarmStateCode.Text,sg_AlarmStateCode.TopRow)
   else showmessage('저장실패');
 end;
 
@@ -309,10 +318,11 @@ begin
 end;
 
 function TfmAlarmStateCode.InsertTB_ALARMSTATUSCODE(aAlarmStateCode,
-  aAlarmStateName, aAlarmCheck, aAlarmGrade,aAlarmSound,aColor: string): Boolean;
+  aAlarmStateName, aAlarmCheck, aAlarmGrade,aAlarmSound,aColor: string;aArmEvent:string='0'): Boolean;
 var
   stSql : string;
 begin
+  if(aArmEvent='') then aArmEvent := '0';
   result := False;
   stSql := ' Insert Into TB_ALARMSTATUSCODE( ';
   stSql := stSql + ' GROUP_CODE,';
@@ -321,7 +331,8 @@ begin
   stSql := stSql + ' AL_ALARMVIEW,';
   stSql := stSql + ' AL_ALARMSOUND, ';
   stSql := stSql + ' AL_ALARMGRADE,' ;
-  stSql := stSql + ' AL_COLOR )' ;
+  stSql := stSql + ' AL_COLOR ,' ;
+  stSql := stSql + ' AL_ARMEVENT )' ;
   stSql := stSql + ' values( ';
   stSql := stSql + '''' + GROUPCODE + ''',';
   stSql := stSql + '''' + aAlarmStateCode + ''',';
@@ -329,24 +340,27 @@ begin
   stSql := stSql +  aAlarmCheck + ',';
   stSql := stSql +  aAlarmSound + ',';
   stSql := stSql +  aAlarmGrade + ',';
-  stSql := stSql +  aColor ;
+  stSql := stSql +  aColor + ',';
+  stSql := stSql +  aArmEvent ;
   stSql := stSql + ')';
 
   result := DataModule1.ProcessExecSQL(stSql);
 end;
 
 function TfmAlarmStateCode.UpdateTB_ALARMSTATUSCODE(aAlarmStateCode,
-  aAlarmStateName, aAlarmCheck, aAlarmGrade,aAlarmSound,aColor: string): Boolean;
+  aAlarmStateName, aAlarmCheck, aAlarmGrade,aAlarmSound,aColor: string;aArmEvent:string='0'): Boolean;
 var
   stSql : string;
 begin
+  if(aArmEvent='') then aArmEvent := '0';
   result := False;
   stSql := ' Update TB_ALARMSTATUSCODE set ';
   stSql := stSql + ' AL_ALARMNAME = ''' + aAlarmStateName + ''', ';
   stSql := stSql + ' AL_ALARMVIEW = ' + aAlarmCheck + ', ';
   stSql := stSql + ' AL_ALARMSOUND = ' + aAlarmSound + ', ';
   stSql := stSql + ' AL_ALARMGRADE = ' + aAlarmGrade + ', ';
-  stSql := stSql + ' AL_COLOR = ' + aColor ;
+  stSql := stSql + ' AL_COLOR = ' + aColor + ',';
+  stSql := stSql + ' AL_ARMEVENT = ' + aArmEvent ;
   stSql := stSql + ' where GROUP_CODE =''' + GROUPCODE + '''';
   stSql := stSql + ' AND AL_ALARMSTATUSCODE = ''' + aAlarmStateCode + '''';
 
@@ -408,6 +422,7 @@ begin
   ed_AlarmStateName.Text := '';
   chk_Event.Checked := False;
   chk_Alarm.Checked := False;
+  chk_ArmEvent.Checked := False;
   panColor.Visible := False;
   cmb_AlarmGrade.ItemIndex := 0;
 end;
@@ -421,6 +436,7 @@ begin
     ed_AlarmStateName.Enabled  := true;
     chk_Event.Enabled := true;
     chk_Alarm.Enabled := True;
+    chk_ArmEvent.Enabled := True;
     panColor.Enabled := True;
     cmb_AlarmGrade.Enabled := True;
   end else if upperCase(aState) = 'SEARCH' then
@@ -430,6 +446,7 @@ begin
     ed_AlarmStateName.Enabled  := False;
     chk_Event.Enabled := False;
     chk_Alarm.Enabled := False;
+    chk_ArmEvent.Enabled := False;
     panColor.Enabled := False;
     cmb_AlarmGrade.Enabled := False;
   end else if upperCase(aState) = 'UPDATE' then
@@ -439,6 +456,7 @@ begin
     ed_AlarmStateName.Enabled  := true;
     chk_Event.Enabled := true;
     chk_Alarm.Enabled := True;
+    chk_ArmEvent.Enabled := True;
     panColor.Enabled := True;
     cmb_AlarmGrade.Enabled := True;
   end;

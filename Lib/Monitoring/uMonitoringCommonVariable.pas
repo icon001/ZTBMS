@@ -69,6 +69,7 @@ var
   AlarmEventViewStatusCode : TStringList;  //알람 발생 코드
   AlarmEventSoundStatusCode : TStringList;  //소리 발생 코드
   AlarmEventSoundColor : TStringList;       //경보 색깔
+  AlarmEventArmStateEvent : TStringList;       //경계중에만 알람발생유무
   AlarmSoundFileList : TStringList;         //알람 발생 파일 적제 리스트
   AccessHeaderNameList : TStringList;       //Access Header Name List
   AlarmHeaderNameList : TStringList;        //Alarm Header Name List
@@ -86,7 +87,8 @@ var
 
   G_bAlarmRefreshStart : Boolean;           //알람 리프레쉬 - 모니터 화면 클리어 할때까지 대기
   G_nAlarmRefreshDate : integer = 2;
-  
+  G_nEmCodeLength : integer = 5;
+
 implementation
 
 {$R *.dfm}

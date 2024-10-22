@@ -1,9 +1,10 @@
 inherited fmEmploy: TfmEmploy
-  Left = 202
-  Top = 167
-  Width = 1515
-  Height = 767
+  Left = 446
+  Top = 160
+  Width = 1368
+  Height = 801
   Caption = #49324#50896#44288#47532
+  Color = clWhite
   Font.Height = -12
   FormStyle = fsMDIChild
   OldCreateOrder = True
@@ -18,29 +19,31 @@ inherited fmEmploy: TfmEmploy
   object Panel1: TPanel [0]
     Left = 0
     Top = 33
-    Width = 1507
-    Height = 644
+    Width = 1360
+    Height = 685
     Align = alClient
     BevelOuter = bvNone
+    Color = clWhite
     TabOrder = 0
     object Splitter1: TSplitter
-      Left = 958
+      Left = 811
       Top = 0
       Width = 1
-      Height = 644
+      Height = 685
       Align = alRight
     end
     object Panel3: TPanel
       Left = 0
       Top = 0
-      Width = 958
-      Height = 644
+      Width = 811
+      Height = 685
       Align = alClient
+      Color = clWhite
       TabOrder = 0
       object GroupBox2: TGroupBox
         Left = 1
         Top = 1
-        Width = 956
+        Width = 809
         Height = 168
         Align = alTop
         TabOrder = 0
@@ -320,15 +323,23 @@ inherited fmEmploy: TfmEmploy
           OnClick = chk_CardRegClick
           OnKeyPress = chk_CardRegKeyPress
         end
+        object chk_Add: TCheckBox
+          Left = 400
+          Top = 138
+          Width = 113
+          Height = 17
+          Caption = #52628#44032#51312#54924
+          TabOrder = 9
+        end
       end
       object sg_Employ: TAdvStringGrid
         Left = 1
         Top = 169
-        Width = 956
-        Height = 474
+        Width = 809
+        Height = 515
         Cursor = crDefault
         Align = alClient
-        ColCount = 32
+        ColCount = 40
         DefaultColWidth = 90
         DefaultRowHeight = 21
         FixedCols = 0
@@ -338,11 +349,12 @@ inherited fmEmploy: TfmEmploy
         Font.Height = -12
         Font.Name = 'Tahoma'
         Font.Style = []
-        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing, goRowSelect]
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing, goColMoving, goRowSelect]
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 1
         OnClick = sg_EmployClick
+        OnColumnMoved = sg_EmployColumnMoved
         ActiveCellFont.Charset = DEFAULT_CHARSET
         ActiveCellFont.Color = clWindowText
         ActiveCellFont.Height = -11
@@ -435,6 +447,7 @@ inherited fmEmploy: TfmEmploy
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
         ScrollSynch = True
+        ScrollWidth = 16
         SearchFooter.FindNextCaption = 'Find next'
         SearchFooter.FindPrevCaption = 'Find previous'
         SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -484,10 +497,18 @@ inherited fmEmploy: TfmEmploy
           90
           90
           90
+          90
+          90
+          90
+          90
+          90
+          90
+          90
+          90
           90)
         object pan_gauge: TPanel
-          Left = 34
-          Top = 96
+          Left = 130
+          Top = 112
           Width = 329
           Height = 73
           TabOrder = 3
@@ -511,11 +532,12 @@ inherited fmEmploy: TfmEmploy
       end
     end
     object pn_Employ: TPanel
-      Left = 959
+      Left = 812
       Top = 0
       Width = 548
-      Height = 644
+      Height = 685
       Align = alRight
+      Color = clWhite
       TabOrder = 1
       object lb_sabun: TLabel
         Left = 16
@@ -706,7 +728,7 @@ inherited fmEmploy: TfmEmploy
       end
       object GroupBox3: TGroupBox
         Left = 1
-        Top = 562
+        Top = 603
         Width = 546
         Height = 81
         Align = alBottom
@@ -941,7 +963,7 @@ inherited fmEmploy: TfmEmploy
       end
       object gb_TimeCode: TGroupBox
         Left = 1
-        Top = 488
+        Top = 529
         Width = 546
         Height = 74
         Align = alBottom
@@ -954,6 +976,7 @@ inherited fmEmploy: TfmEmploy
           Height = 58
           Align = alClient
           BevelOuter = bvLowered
+          Color = clWhite
           TabOrder = 0
           Visible = False
           object Panel7: TPanel
@@ -962,6 +985,7 @@ inherited fmEmploy: TfmEmploy
             Width = 445
             Height = 26
             Align = alClient
+            Color = clWhite
             TabOrder = 0
             object chk_TimeSun: TCheckBox
               Left = 8
@@ -1033,6 +1057,7 @@ inherited fmEmploy: TfmEmploy
             Width = 445
             Height = 30
             Align = alTop
+            Color = clWhite
             TabOrder = 1
             object chk_Time1: TCheckBox
               Left = 8
@@ -1079,6 +1104,7 @@ inherited fmEmploy: TfmEmploy
           Height = 58
           Align = alLeft
           BevelOuter = bvLowered
+          Color = clWhite
           TabOrder = 1
           object rg_TimeCodeNotUse: TRadioButton
             Left = 8
@@ -1156,14 +1182,25 @@ inherited fmEmploy: TfmEmploy
         TabOrder = 25
         Visible = False
       end
+      object chk_Stick: TCheckBox
+        Left = 440
+        Top = 423
+        Width = 81
+        Height = 17
+        Caption = #49688#46041#46321#47197
+        TabOrder = 26
+        Visible = False
+        OnClick = chk_MasterClick
+      end
     end
   end
   object Panel2: TPanel [1]
     Left = 0
-    Top = 677
-    Width = 1507
+    Top = 718
+    Width = 1360
     Height = 56
     Align = alBottom
+    Color = clWhite
     TabOrder = 1
     OnResize = Panel2Resize
     object btn_Insert: TSpeedButton
@@ -1340,11 +1377,11 @@ inherited fmEmploy: TfmEmploy
   object Panel12: TPanel [2]
     Left = 0
     Top = 0
-    Width = 1507
+    Width = 1360
     Height = 33
     Align = alTop
     Caption = #49324#50896#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -1370,7 +1407,7 @@ inherited fmEmploy: TfmEmploy
       end>
   end
   object RzOpenDialog1: TOpenDialog
-    Left = 844
+    Left = 884
     Top = 220
   end
   object ADOQuery: TADOQuery
@@ -1401,8 +1438,8 @@ inherited fmEmploy: TfmEmploy
   object ADOQuery1: TADOQuery
     Connection = DataModule1.ADOConnection
     Parameters = <>
-    Left = 440
-    Top = 160
+    Left = 520
+    Top = 112
   end
   object TempADOQuery: TADOQuery
     Connection = DataModule1.ADOConnection

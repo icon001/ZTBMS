@@ -33,6 +33,7 @@ type
   public
     { Public declarations }
     Function ProcessExecSQL(aSql:String): Boolean;
+    Function ProcessExecSQL1(aSql:String): Boolean;
     Function AdoRelayConnected(aDataBaseType,aServerIP,aServerPort,aUserID,aUserPw,aDataBaseName:string):Boolean;
     Function AdoRelay1Connected(aDataBaseType,aServerIP,aServerPort,aUserID,aUserPw,aDataBaseName:string):Boolean;
     Function AdoRelay2Connected(aDataBaseType,aServerIP,aServerPort,aUserID,aUserPw,aDataBaseName:string):Boolean;
@@ -658,6 +659,62 @@ begin
   begin
     OnAdoConnected2(Self,Value);
   end;
+end;
+
+function TdmAdoRelay.ProcessExecSQL1(aSql: String): Boolean;
+var
+  ExecQuery :TADOQuery;
+begin
+  Result:= False;
+  Try
+    OleInitialize(nil);
+    ExecQuery := TADOQuery.Create(nil);
+    ExecQuery.Connection := ADOConnection1;
+    with ExecQuery do
+    begin
+      Close;
+      //SQL.Clear;
+      SQL.Text:= aSql;
+      try
+        ExecSQL;
+      except
+      ON E: Exception do
+        begin
+          if Assigned(FOnAdoEvent) then
+          begin
+            OnAdoEvent(Self,'DBError('+ E.Message + ')' + aSql);
+          end;
+          SQLErrorLog('DBError('+ E.Message + ')' + aSql);
+
+          if Pos('no connection to the server',E.Message) > 0 then
+          begin
+            DBConnected1 := False;
+          end else if Pos('out of memory',E.Message) > 0 then
+          begin
+            DBConnected1 := False;
+          end else if Pos('server closed the connection',E.Message) > 0 then
+          begin
+            DBConnected1 := False;
+          end else if Pos('connection dead',E.Message) > 0 then
+          begin
+            DBConnected1 := False;
+          end else if Pos('연결을 실패했습니다',E.Message) > 0 then
+          begin
+            DBConnected1 := False;
+          end;
+          Exit;
+        end
+      end;
+      if Assigned(FOnAdoEvent) then
+      begin
+        OnAdoEvent(Self,aSql);
+      end;
+    end;
+  Finally
+    ExecQuery.Free;
+    OleUninitialize;
+  End;
+  Result:= True;
 end;
 
 end.

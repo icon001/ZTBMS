@@ -1,7 +1,7 @@
 object CommonModule: TCommonModule
   OldCreateOrder = False
-  Left = 129
-  Top = 131
+  Left = 130
+  Top = 120
   Height = 150
   Width = 215
 end

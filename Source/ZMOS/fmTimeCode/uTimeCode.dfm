@@ -4,7 +4,7 @@ object fmTimeCode: TfmTimeCode
   Width = 526
   Height = 271
   Caption = #53440#51076#53076#46300#44288#47532
-  Color = clBtnFace
+  Color = clWhite
   Font.Charset = HANGEUL_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
@@ -104,7 +104,7 @@ object fmTimeCode: TfmTimeCode
     Height = 33
     Align = alTop
     Caption = #53440#51076#53076#46300#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16

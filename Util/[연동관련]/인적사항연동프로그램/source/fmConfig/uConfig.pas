@@ -108,7 +108,7 @@ uses
   uCommonVariable,
   uDBModule,
   udmAdoRelay,
-  uQueryTest;
+  uQueryTest, uDBFunction, uCommon, uHoniK;
 {$R *.dfm}
 
 procedure TfmConfig.FormCreate(Sender: TObject);
@@ -191,76 +191,152 @@ var
 begin
   if( (cmb_ProgramType.ItemIndex + 1) = 15) or ((cmb_ProgramType.ItemIndex + 1) = 16) then
   begin
-    if Not CheckHonikTempTable() then CreateHonikTempTable();
+    dmDBFunction.UpdateTB_CONFIG('EMPCONV','LASTTIME',formatDateTime('yyyymmddhhnnsszzz',now)); //바로 연동 안되도록 처리하자.
+
+    if Not CheckHonikTempTable() then
+    begin
+      CreateHonikTempTable();
+
+      dmDBFunction.InsertIntoTB_WORKGUBUN('4','2','제적');
+      dmDBFunction.InsertIntoTB_WORKGUBUN('5','2','수료');
+    end;
+    if (cmb_ProgramType.ItemIndex + 1) = 15 then dmHoniK.InitSeoulRelay();  ///초기화 작업으로 직위코드 가져 오자.
   end;
   stSql := UpdateTB_CONFIG('EMPCONV','PGTYPE',inttostr(cmb_ProgramType.ItemIndex + 1));
   dmDBModule.ProcessExecSQL(stSql);
   stSql := UpdateTB_CONFIG('EMPCONV','DBTYPE',inttostr(cmb_DBType.ItemIndex + 1));
   dmDBModule.ProcessExecSQL(stSql);
-  stSql := InsertIntoTB_CONFIG('EMPCONV','DBTYPE2',inttostr(cmb_DBType2.ItemIndex + 1));
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := UpdateTB_CONFIG('EMPCONV','DBTYPE2',inttostr(cmb_DBType2.ItemIndex + 1));
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := InsertIntoTB_CONFIG('EMPCONV','DBTYPE3',inttostr(cmb_DBType3.ItemIndex + 1));
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := UpdateTB_CONFIG('EMPCONV','DBTYPE3',inttostr(cmb_DBType3.ItemIndex + 1));
-  dmDBModule.ProcessExecSQL(stSql);
 
+  if Not dmCommon.CheckTB_CONFIG('EMPCONV','DBTYPE2') then
+  begin
+    stSql := InsertIntoTB_CONFIG('EMPCONV','DBTYPE2',inttostr(cmb_DBType2.ItemIndex + 1));
+    dmDBModule.ProcessExecSQL(stSql);
+  end else
+  begin
+    stSql := UpdateTB_CONFIG('EMPCONV','DBTYPE2',inttostr(cmb_DBType2.ItemIndex + 1));
+    dmDBModule.ProcessExecSQL(stSql);
+  end;
+
+  if Not dmCommon.CheckTB_CONFIG('EMPCONV','DBTYPE3') then
+  begin
+    stSql := InsertIntoTB_CONFIG('EMPCONV','DBTYPE3',inttostr(cmb_DBType3.ItemIndex + 1));
+    dmDBModule.ProcessExecSQL(stSql);
+  end else
+  begin
+    stSql := UpdateTB_CONFIG('EMPCONV','DBTYPE3',inttostr(cmb_DBType3.ItemIndex + 1));
+    dmDBModule.ProcessExecSQL(stSql);
+  end;
 
   stSql := UpdateTB_CONFIG('EMPCONV','DBIP',ed_dbip.Text);
   dmDBModule.ProcessExecSQL(stSql);
-  stSql := InsertIntoTB_CONFIG('EMPCONV','DBIP2',ed_dbip2.Text);
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := UpdateTB_CONFIG('EMPCONV','DBIP2',ed_dbip2.Text);
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := InsertIntoTB_CONFIG('EMPCONV','DBIP3',ed_dbip3.Text);
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := UpdateTB_CONFIG('EMPCONV','DBIP3',ed_dbip3.Text);
-  dmDBModule.ProcessExecSQL(stSql);
+  if Not dmCommon.CheckTB_CONFIG('EMPCONV','DBIP2') then
+  begin
+    stSql := InsertIntoTB_CONFIG('EMPCONV','DBIP2',ed_dbip2.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end else
+  begin
+    stSql := UpdateTB_CONFIG('EMPCONV','DBIP2',ed_dbip2.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end;
+  if Not dmCommon.CheckTB_CONFIG('EMPCONV','DBIP3') then
+  begin
+    stSql := InsertIntoTB_CONFIG('EMPCONV','DBIP3',ed_dbip3.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end else
+  begin
+    stSql := UpdateTB_CONFIG('EMPCONV','DBIP3',ed_dbip3.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end;
 
   stSql := UpdateTB_CONFIG('EMPCONV','DBPORT',ed_dbport.Text);
   dmDBModule.ProcessExecSQL(stSql);
-  stSql := InsertIntoTB_CONFIG('EMPCONV','DBPORT2',ed_dbport2.Text);
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := UpdateTB_CONFIG('EMPCONV','DBPORT2',ed_dbport2.Text);
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := InsertIntoTB_CONFIG('EMPCONV','DBPORT3',ed_dbport3.Text);
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := UpdateTB_CONFIG('EMPCONV','DBPORT3',ed_dbport3.Text);
-  dmDBModule.ProcessExecSQL(stSql);
+
+  if Not dmCommon.CheckTB_CONFIG('EMPCONV','DBPORT2') then
+  begin
+    stSql := InsertIntoTB_CONFIG('EMPCONV','DBPORT2',ed_dbport2.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end else
+  begin
+    stSql := UpdateTB_CONFIG('EMPCONV','DBPORT2',ed_dbport2.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end;
+
+  if Not dmCommon.CheckTB_CONFIG('EMPCONV','DBPORT3') then
+  begin
+    stSql := InsertIntoTB_CONFIG('EMPCONV','DBPORT3',ed_dbport3.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end else
+  begin
+    stSql := UpdateTB_CONFIG('EMPCONV','DBPORT3',ed_dbport3.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end;
 
   stSql := UpdateTB_CONFIG('EMPCONV','DBUSERID',ed_dbuserid.Text);
   dmDBModule.ProcessExecSQL(stSql);
-  stSql := InsertIntoTB_CONFIG('EMPCONV','DBUSERID2',ed_dbuserid2.Text);
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := UpdateTB_CONFIG('EMPCONV','DBUSERID2',ed_dbuserid2.Text);
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := InsertIntoTB_CONFIG('EMPCONV','DBUSERID3',ed_dbuserid3.Text);
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := UpdateTB_CONFIG('EMPCONV','DBUSERID3',ed_dbuserid3.Text);
-  dmDBModule.ProcessExecSQL(stSql);
+  if Not dmCommon.CheckTB_CONFIG('EMPCONV','DBUSERID2') then
+  begin
+    stSql := InsertIntoTB_CONFIG('EMPCONV','DBUSERID2',ed_dbuserid2.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end else
+  begin
+    stSql := UpdateTB_CONFIG('EMPCONV','DBUSERID2',ed_dbuserid2.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end;
+
+  if Not dmCommon.CheckTB_CONFIG('EMPCONV','DBUSERID3') then
+  begin
+    stSql := InsertIntoTB_CONFIG('EMPCONV','DBUSERID3',ed_dbuserid3.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end else
+  begin
+    stSql := UpdateTB_CONFIG('EMPCONV','DBUSERID3',ed_dbuserid3.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end;
 
   stSql := UpdateTB_CONFIG('EMPCONV','DBUSERPW',ed_dbpw.Text);
   dmDBModule.ProcessExecSQL(stSql);
-  stSql := InsertIntoTB_CONFIG('EMPCONV','DBUSERPW2',ed_dbpw2.Text);
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := UpdateTB_CONFIG('EMPCONV','DBUSERPW2',ed_dbpw2.Text);
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := InsertIntoTB_CONFIG('EMPCONV','DBUSERPW3',ed_dbpw3.Text);
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := UpdateTB_CONFIG('EMPCONV','DBUSERPW3',ed_dbpw3.Text);
-  dmDBModule.ProcessExecSQL(stSql);
+
+  if Not dmCommon.CheckTB_CONFIG('EMPCONV','DBUSERPW2') then
+  begin
+    stSql := InsertIntoTB_CONFIG('EMPCONV','DBUSERPW2',ed_dbpw2.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end else
+  begin
+    stSql := UpdateTB_CONFIG('EMPCONV','DBUSERPW2',ed_dbpw2.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end;
+
+  if Not dmCommon.CheckTB_CONFIG('EMPCONV','DBUSERPW3') then
+  begin
+    stSql := InsertIntoTB_CONFIG('EMPCONV','DBUSERPW3',ed_dbpw3.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end else
+  begin
+    stSql := UpdateTB_CONFIG('EMPCONV','DBUSERPW3',ed_dbpw3.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end;
 
   stSql := UpdateTB_CONFIG('EMPCONV','DBNAME',ed_dbname.Text);
   dmDBModule.ProcessExecSQL(stSql);
-  stSql := InsertIntoTB_CONFIG('EMPCONV','DBNAME2',ed_dbname2.Text);
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := UpdateTB_CONFIG('EMPCONV','DBNAME2',ed_dbname2.Text);
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := InsertIntoTB_CONFIG('EMPCONV','DBNAME3',ed_dbname3.Text);
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := UpdateTB_CONFIG('EMPCONV','DBNAME3',ed_dbname3.Text);
-  dmDBModule.ProcessExecSQL(stSql);
+  if Not dmCommon.CheckTB_CONFIG('EMPCONV','DBNAME2') then
+  begin
+    stSql := InsertIntoTB_CONFIG('EMPCONV','DBNAME2',ed_dbname2.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end else
+  begin
+    stSql := UpdateTB_CONFIG('EMPCONV','DBNAME2',ed_dbname2.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end;
+
+  if Not dmCommon.CheckTB_CONFIG('EMPCONV','DBNAME3') then
+  begin
+    stSql := InsertIntoTB_CONFIG('EMPCONV','DBNAME3',ed_dbname3.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end else
+  begin
+    stSql := UpdateTB_CONFIG('EMPCONV','DBNAME3',ed_dbname3.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end;
 
   stSql := UpdateTB_CONFIG('EMPCONV','RELAYTIME',ed_RelayTime.Text);
   dmDBModule.ProcessExecSQL(stSql);
@@ -273,11 +349,16 @@ begin
   stSql := UpdateTB_CONFIG('EMPCONV','POSICD',ed_BasicPosiCode.Text);
   dmDBModule.ProcessExecSQL(stSql);
 
-  stSql := InsertIntoTB_CONFIG('EMPCONV','EMGCD',ed_EmergencyCode.Text);
-  dmDBModule.ProcessExecSQL(stSql);
-  stSql := UpdateTB_CONFIG('EMPCONV','EMGCD',ed_EmergencyCode.Text);
-  dmDBModule.ProcessExecSQL(stSql);
-
+  if Not dmCommon.CheckTB_CONFIG('EMPCONV','EMGCD') then
+  begin
+    stSql := InsertIntoTB_CONFIG('EMPCONV','EMGCD',ed_EmergencyCode.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end else
+  begin
+    stSql := UpdateTB_CONFIG('EMPCONV','EMGCD',ed_EmergencyCode.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end;
+ 
 
   Close;
 end;
@@ -400,7 +481,7 @@ var
   TempAdoQuery : TADOQuery;
 begin
   result := False;
-  stSql := 'select * from TB_HonikTempTable ';
+  stSql := 'select * from TB_HonikTempTable2 ';
 
   Try
     CoInitialize(nil);
@@ -428,6 +509,7 @@ function TfmConfig.CreateHonikTempTable: Boolean;
 var
   stSql : string;
 begin
+(*
   stSql := 'CREATE TABLE TB_HonikTempTable ( ';
   stSql := stSql + '  K_CAMPUS integer  NULL,';    //캠퍼스 구분 1:서울 2:세종
   stSql := stSql + '  K_LEVEL1 varchar(6)   NULL,';        //단과대코드( 소속 )
@@ -438,12 +520,30 @@ begin
   stSql := stSql + '  K_GUBUN_NAME varchar(100)  NULL, ';   //구분명 ( 1:교수, 2:강사, 3:조교, 4: 대학원생, 5:학부생, 6:직원 )
   stSql := stSql + '  K_NAME varchar(100)    NULL,';        //성명
   stSql := stSql + '  K_KEY varchar(50)    NULL,';       //학번 ( 종번 )
+  stSql := stSql + '  K_STATUS integer    NULL,';       //구성원 상태(1:재학(재직), 2:휴학(휴직), 3:졸업(퇴직), 4:제적, 5:수료)
+  stSql := stSql + '  K_UPDT integer    NULL,';       //발령일(상태변경일)
   stSql := stSql + '  K_CARD_CNT varchar(10)   NULL,';      //카드발급차수
   stSql := stSql + '  K_SEND char(10)   NULL';      //연동 유무
   stSql := stSql + ') ';
 
 
   result := dmDBModule.ProcessExecSQL(stSql);
+
+
+  stSql := 'CREATE TABLE TB_HonikMCardTempTable ( ';
+  stSql := stSql + '  M_KEY varchar(40)  NULL,';    //학번
+  stSql := stSql + '  M_CARDTYPE varchar(1)   NULL,';        //카드구분(0:모바일신분증, 1:카드신분증)
+  stSql := stSql + '  M_CARDCNT varchar(2)   NULL,';  //발급차수
+  stSql := stSql + '  M_CARDSTOP varchar(6)  NULL,';         //분실여부코드(0:정상, 1:분실, 2:정지)
+  stSql := stSql + '  M_UPDT varchar(14)   NULL,';  //트랜잭션시간(YYYYMMDDHHMMSS)
+  stSql := stSql + '  K_GUBUN char(10) NULL,';               //구분
+  stSql := stSql + '  K_CARD_CNT varchar(2) NULL,';          //실물카드 발급 차수
+  stSql := stSql + '  M_CARD_GUBUN varchar(2) NULL';        //인증수단 구분(0.NFC,1.BLE)
+  stSql := stSql + ') ';
+
+
+  result := dmDBModule.ProcessExecSQL(stSql);   *)
+
 
   stSql := 'CREATE TABLE TB_HonikTempTable2 ( ';
   stSql := stSql + '  K_CAMPUS integer  NULL,';    //캠퍼스 구분 1:서울 2:세종
@@ -453,12 +553,18 @@ begin
   stSql := stSql + '  K_LEVEL2_NAME varchar(100)   NULL,';  //학과명칭 (소속2명)
   stSql := stSql + '  K_GUBUN char(10) NULL,';               //구분
   stSql := stSql + '  K_GUBUN_NAME varchar(100)  NULL, ';   //구분명 ( 1:교수, 2:강사, 3:조교, 4: 대학원생, 5:학부생, 6:직원 )
+  stSql := stSql + '  K_GUBUN_CHANGE varchar(1)  NULL, ';   //구분 변경 유무
   stSql := stSql + '  K_NAME varchar(100)    NULL,';        //성명
   stSql := stSql + '  K_KEY varchar(50)    NULL,';       //학번 ( 종번 )
+  stSql := stSql + '  M_CARDTYPE varchar(10)   NULL,';      //카드구분
   stSql := stSql + '  K_CARD_CNT varchar(10)   NULL,';      //카드발급차수
+  stSql := stSql + '  M_CARDSTOP varchar(10)   NULL,';      //0:정상, 1:분실, 2:정지
+  stSql := stSql + '  K_STATUS integer    NULL,';       //구성원 상태(1:재학(재직), 2:휴학(휴직), 3:졸업(퇴직), 4:제적, 5:수료)
+  stSql := stSql + '  K_UPDT integer    NULL,';       //발령일(상태변경일)
   stSql := stSql + '  K_STATE integer   NULL,';      //상태,1.신규,2.업데이트,3,삭제
   stSql := stSql + '  K_CHANGE char(10)   NULL,';      //변경유무
   stSql := stSql + '  K_RELAY char(10)   NULL,';      //연동 유무
+  stSql := stSql + '  M_UPDT varchar(14)    NULL,';       //트랜잭션 시간
   stSql := stSql + '  K_CHANGEDATE datetime   NULL';      //변경일
   stSql := stSql + ') ';
 

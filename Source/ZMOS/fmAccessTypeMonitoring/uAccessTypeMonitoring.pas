@@ -123,6 +123,9 @@ type
     N25: TMenuItem;
     N26: TMenuItem;
     N27: TMenuItem;
+    N28: TMenuItem;
+    mn_DeviceChange: TMenuItem;
+    Panel17: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure SocketWatchTimerTimer(Sender: TObject);
@@ -203,6 +206,7 @@ type
     procedure N21Click(Sender: TObject);
     procedure N16Click(Sender: TObject);
     procedure N25Click(Sender: TObject);
+    procedure mn_DeviceChangeClick(Sender: TObject);
   private
     L_bFirst : Boolean;
     L_bClose : Boolean;
@@ -3693,6 +3697,25 @@ begin
     end;
   end;
 
+end;
+
+procedure TfmAccessTypeMonitoring.mn_DeviceChangeClick(Sender: TObject);
+var
+  stNodeNo : string;
+  stEcuID : string;
+  stDeviceID: string;
+begin
+  stNodeNo := sg_Ecu.Cells[3,sg_Ecu.Row];
+  if Not isDigit(stNodeNo) then Exit;
+  stEcuID := sg_Ecu.Cells[1,sg_Ecu.Row];
+  stDeviceID := FillZeroNumber(strtoint(stNodeNo),3) + stEcuID;
+
+  dmDBFunction.UpdateTB_ACCESSDEVICE_Field_StringValue(stNodeNo,stEcuID,'AC_DEVICECODE','');
+  dmDBFunction.UpdateTB_DEVICESCHEDULE_Field_StringValue(stNodeNo,stEcuID,'','','DE_RCVACK','N');
+
+  self.FindSubForm('Main').FindCommand('SendData').Params.Values['VALUE'] := 'CARDDOWNLOAD'+ DATADELIMITER + stDeviceID + DATADELIMITER + 'Y' + DATADELIMITER;
+  self.FindSubForm('Main').FindCommand('SendData').Execute;
+  DataModule1.TB_SYSTEMLOGInsert('0','00','0','0',stDeviceID , '컨트롤러교체');
 end;
 
 initialization

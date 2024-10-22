@@ -36,7 +36,10 @@ uses
   uDBFunction in 'Lib\uDBFunction.pas' {dmDBFunction: TDataModule},
   uYounseUniversityCurrentState in 'fmYounseUniversityCurrentState\uYounseUniversityCurrentState.pas' {fmYounseUniversityCurrentState},
   uHongikCurrentState in 'fmHongikCurrentState\uHongikCurrentState.pas' {fmHongikCurrentState},
-  uJUNNAMCurrentState in 'fmJUNNAMCurrentState\uJUNNAMCurrentState.pas' {fmJUNNAMCurrentState};
+  uJUNNAMCurrentState in 'fmJUNNAMCurrentState\uJUNNAMCurrentState.pas' {fmJUNNAMCurrentState},
+  uDBRelayFunction in 'Lib\uDBRelayFunction.pas' {dmDBRelayFunction: TDataModule},
+  uHoniK in 'Lib\uHoniK.pas' {dmHoniK: TDataModule},
+  uCommon in 'Lib\uCommon.pas' {dmCommon: TDataModule};
 
 {$R *.res}
 {$R manifest.RES}
@@ -62,5 +65,8 @@ begin
   Application.CreateForm(TfmQueryTest, fmQueryTest);
   Application.CreateForm(TdmData, dmData);
   Application.CreateForm(TdmDBFunction, dmDBFunction);
+  Application.CreateForm(TdmDBRelayFunction, dmDBRelayFunction);
+  Application.CreateForm(TdmHoniK, dmHoniK);
+  Application.CreateForm(TdmCommon, dmCommon);
   Application.Run;
 end.

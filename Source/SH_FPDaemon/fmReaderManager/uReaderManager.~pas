@@ -364,9 +364,9 @@ var
 begin
   inherited;
   if (Application.MessageBox(PChar('데이터를 삭제하시겠습니까?'),'삭제',MB_OKCANCEL) = ID_CANCEL)  then Exit;
-  stSql := ' Delete From TB_FINGERDEVICE where FD_DEVICEID = ' + sg_Reader.Cells[3,sg_Reader.Row] + '';
+  stSql := ' Delete From TB_FINGERDEVICE where FD_DEVICEID = ' + sg_Reader.Cells[4,sg_Reader.Row] + '';
   DataModule1.ProcessExecSQL(stSql);
-  stSql := ' Delete From TB_FINGERDEVICECARD where FD_DEVICEID = ' + sg_Reader.Cells[3,sg_Reader.Row] + ' ';
+  stSql := ' Delete From TB_FINGERDEVICECARD where FD_DEVICEID = ' + sg_Reader.Cells[4,sg_Reader.Row] + ' ';
   DataModule1.ProcessExecSQL(stSql);
   SearchReader('',sg_Reader.TopRow);
 end;

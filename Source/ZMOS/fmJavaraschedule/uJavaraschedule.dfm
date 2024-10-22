@@ -4,6 +4,7 @@ inherited fmJavaraschedule: TfmJavaraschedule
   Width = 917
   Height = 484
   Caption = #51088#48148#46972' '#49828#52992#51460
+  Color = clWhite
   Font.Charset = HANGEUL_CHARSET
   Font.Name = #44404#47548
   Position = poMainFormCenter
@@ -19,7 +20,7 @@ inherited fmJavaraschedule: TfmJavaraschedule
     Height = 33
     Align = alTop
     Caption = #51088#48148#46972' '#49828#52992#51460' '#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -30,17 +31,19 @@ inherited fmJavaraschedule: TfmJavaraschedule
   end
   object StatusBar1: TStatusBar [1]
     Left = 0
-    Top = 416
+    Top = 423
     Width = 909
     Height = 34
+    Color = clWhite
     Panels = <>
   end
   object Panel1: TPanel [2]
     Left = 0
-    Top = 352
+    Top = 359
     Width = 909
     Height = 64
     Align = alBottom
+    Color = clWhite
     TabOrder = 2
     object btn_Save: TSpeedButton
       Left = 272
@@ -129,26 +132,27 @@ inherited fmJavaraschedule: TfmJavaraschedule
     Left = 0
     Top = 33
     Width = 909
-    Height = 319
+    Height = 326
     Align = alClient
     TabOrder = 3
     object Splitter2: TSplitter
       Left = 385
       Top = 15
-      Height = 302
+      Height = 309
     end
     object Panel6: TPanel
       Left = 388
       Top = 15
       Width = 519
-      Height = 302
+      Height = 309
       Align = alClient
+      Color = clWhite
       TabOrder = 0
       object GroupBox10: TGroupBox
         Left = 1
         Top = 1
         Width = 517
-        Height = 300
+        Height = 307
         Align = alClient
         TabOrder = 0
         object Label2: TLabel
@@ -358,7 +362,7 @@ inherited fmJavaraschedule: TfmJavaraschedule
         end
         object GroupBox1: TGroupBox
           Left = 2
-          Top = 56
+          Top = 63
           Width = 513
           Height = 242
           Align = alBottom
@@ -797,14 +801,15 @@ inherited fmJavaraschedule: TfmJavaraschedule
       Left = 2
       Top = 15
       Width = 383
-      Height = 302
+      Height = 309
       Align = alLeft
+      Color = clWhite
       TabOrder = 1
       object sg_Door: TAdvStringGrid
         Left = 1
         Top = 105
         Width = 381
-        Height = 196
+        Height = 203
         Cursor = crDefault
         Align = alClient
         ColCount = 21
@@ -827,15 +832,42 @@ inherited fmJavaraschedule: TfmJavaraschedule
         ActiveCellFont.Height = -11
         ActiveCellFont.Name = 'Tahoma'
         ActiveCellFont.Style = [fsBold]
-        SortSettings.Show = True
-        SearchFooter.FindNextCaption = 'Find next'
-        SearchFooter.FindPrevCaption = 'Find previous'
-        SearchFooter.HighLightCaption = 'Highlight'
-        SearchFooter.HintClose = 'Close'
-        SearchFooter.HintFindNext = 'Find next occurence'
-        SearchFooter.HintFindPrev = 'Find previous occurence'
-        SearchFooter.HintHighlight = 'Highlight occurences'
-        SearchFooter.MatchCaseCaption = 'Match case'
+        ColumnHeaders.Strings = (
+          #51088#48148#46972' '#47749#52845
+          #44592#44592' '#47749#52845
+          #47928' '#48264#54840)
+        ControlLook.FixedGradientHoverFrom = clGray
+        ControlLook.FixedGradientHoverTo = clWhite
+        ControlLook.FixedGradientDownFrom = clGray
+        ControlLook.FixedGradientDownTo = clSilver
+        ControlLook.DropDownHeader.Font.Charset = DEFAULT_CHARSET
+        ControlLook.DropDownHeader.Font.Color = clWindowText
+        ControlLook.DropDownHeader.Font.Height = -11
+        ControlLook.DropDownHeader.Font.Name = 'Tahoma'
+        ControlLook.DropDownHeader.Font.Style = []
+        ControlLook.DropDownHeader.Visible = True
+        ControlLook.DropDownHeader.Buttons = <>
+        ControlLook.DropDownFooter.Font.Charset = DEFAULT_CHARSET
+        ControlLook.DropDownFooter.Font.Color = clWindowText
+        ControlLook.DropDownFooter.Font.Height = -11
+        ControlLook.DropDownFooter.Font.Name = 'MS Sans Serif'
+        ControlLook.DropDownFooter.Font.Style = []
+        ControlLook.DropDownFooter.Visible = True
+        ControlLook.DropDownFooter.Buttons = <>
+        Filter = <>
+        FilterDropDown.Font.Charset = DEFAULT_CHARSET
+        FilterDropDown.Font.Color = clWindowText
+        FilterDropDown.Font.Height = -11
+        FilterDropDown.Font.Name = 'MS Sans Serif'
+        FilterDropDown.Font.Style = []
+        FilterDropDownClear = '(All)'
+        FixedColWidth = 339
+        FixedFont.Charset = DEFAULT_CHARSET
+        FixedFont.Color = clWindowText
+        FixedFont.Height = -11
+        FixedFont.Name = 'Tahoma'
+        FixedFont.Style = [fsBold]
+        FloatFormat = '%.2f'
         PrintSettings.DateFormat = 'dd/mm/yyyy'
         PrintSettings.Font.Charset = DEFAULT_CHARSET
         PrintSettings.Font.Color = clWindowText
@@ -858,19 +890,22 @@ inherited fmJavaraschedule: TfmJavaraschedule
         PrintSettings.FooterFont.Name = 'MS Sans Serif'
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
-        FixedColWidth = 339
-        FixedFont.Charset = DEFAULT_CHARSET
-        FixedFont.Color = clWindowText
-        FixedFont.Height = -11
-        FixedFont.Name = 'Tahoma'
-        FixedFont.Style = [fsBold]
-        FloatFormat = '%.2f'
-        ColumnHeaders.Strings = (
-          #51088#48148#46972' '#47749#52845
-          #44592#44592' '#47749#52845
-          #47928' '#48264#54840)
-        Filter = <>
-        Version = '3.3.0.1'
+        ScrollWidth = 16
+        SearchFooter.FindNextCaption = 'Find next'
+        SearchFooter.FindPrevCaption = 'Find previous'
+        SearchFooter.Font.Charset = DEFAULT_CHARSET
+        SearchFooter.Font.Color = clWindowText
+        SearchFooter.Font.Height = -11
+        SearchFooter.Font.Name = 'MS Sans Serif'
+        SearchFooter.Font.Style = []
+        SearchFooter.HighLightCaption = 'Highlight'
+        SearchFooter.HintClose = 'Close'
+        SearchFooter.HintFindNext = 'Find next occurence'
+        SearchFooter.HintFindPrev = 'Find previous occurence'
+        SearchFooter.HintHighlight = 'Highlight occurences'
+        SearchFooter.MatchCaseCaption = 'Match case'
+        SortSettings.Show = True
+        Version = '6.0.4.4'
         ColWidths = (
           339
           150

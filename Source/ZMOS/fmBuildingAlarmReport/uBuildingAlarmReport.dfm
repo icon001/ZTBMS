@@ -21,6 +21,8 @@ inherited fmBuildingAlarmReport: TfmBuildingAlarmReport
     Width = 1016
     Height = 121
     Align = alTop
+    Color = clWhite
+    ParentColor = False
     TabOrder = 0
     object GroupBox2: TGroupBox
       Left = 2
@@ -435,7 +437,7 @@ inherited fmBuildingAlarmReport: TfmBuildingAlarmReport
     Left = 0
     Top = 121
     Width = 1016
-    Height = 512
+    Height = 519
     Cursor = crDefault
     Align = alClient
     ColCount = 17
@@ -532,6 +534,7 @@ inherited fmBuildingAlarmReport: TfmBuildingAlarmReport
     PrintSettings.FooterFont.Style = []
     PrintSettings.PageNumSep = '/'
     ScrollSynch = True
+    ScrollWidth = 16
     SearchFooter.FindNextCaption = 'Find next'
     SearchFooter.FindPrevCaption = 'Find previous'
     SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -573,6 +576,7 @@ inherited fmBuildingAlarmReport: TfmBuildingAlarmReport
       Top = 96
       Width = 329
       Height = 73
+      Color = clWhite
       TabOrder = 3
       Visible = False
       object Label5: TLabel
@@ -760,8 +764,8 @@ inherited fmBuildingAlarmReport: TfmBuildingAlarmReport
       000400480F000005004C696E65330002000800000000010000FA030000000000
       000100080002000000000000000000FFFFFF002E020000000000000000000000
       FFFF0000000000020000000100000000FEFEFF000000000000000000000000FC
-      000000000000000000000000000000005800E9E41F70F5B9E24032A8D3E04D18
-      E540}
+      000000000000000000000000000000005800E9E41F70F5B9E24015A38697323D
+      E640}
   end
   object frDBDataSet1: TfrDBDataSet
     DataSet = AdoQuery

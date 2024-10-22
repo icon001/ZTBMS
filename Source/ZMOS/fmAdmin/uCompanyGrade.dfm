@@ -56,15 +56,42 @@ object fmCompanyGrade: TfmCompanyGrade
         ActiveCellFont.Height = -11
         ActiveCellFont.Name = 'Tahoma'
         ActiveCellFont.Style = [fsBold]
+        ColumnHeaders.Strings = (
+          #54924#49324#53076#46300
+          #54924#49324#47749)
+        ControlLook.FixedGradientHoverFrom = clGray
+        ControlLook.FixedGradientHoverTo = clWhite
+        ControlLook.FixedGradientDownFrom = clGray
+        ControlLook.FixedGradientDownTo = clSilver
+        ControlLook.DropDownHeader.Font.Charset = DEFAULT_CHARSET
+        ControlLook.DropDownHeader.Font.Color = clWindowText
+        ControlLook.DropDownHeader.Font.Height = -11
+        ControlLook.DropDownHeader.Font.Name = 'Tahoma'
+        ControlLook.DropDownHeader.Font.Style = []
+        ControlLook.DropDownHeader.Visible = True
+        ControlLook.DropDownHeader.Buttons = <>
+        ControlLook.DropDownFooter.Font.Charset = DEFAULT_CHARSET
+        ControlLook.DropDownFooter.Font.Color = clWindowText
+        ControlLook.DropDownFooter.Font.Height = -11
+        ControlLook.DropDownFooter.Font.Name = 'MS Sans Serif'
+        ControlLook.DropDownFooter.Font.Style = []
+        ControlLook.DropDownFooter.Visible = True
+        ControlLook.DropDownFooter.Buttons = <>
+        Filter = <>
+        FilterDropDown.Font.Charset = DEFAULT_CHARSET
+        FilterDropDown.Font.Color = clWindowText
+        FilterDropDown.Font.Height = -11
+        FilterDropDown.Font.Name = 'MS Sans Serif'
+        FilterDropDown.Font.Style = []
+        FilterDropDownClear = '(All)'
+        FixedColWidth = 85
+        FixedFont.Charset = DEFAULT_CHARSET
+        FixedFont.Color = clWindowText
+        FixedFont.Height = -11
+        FixedFont.Name = 'Tahoma'
+        FixedFont.Style = [fsBold]
+        FloatFormat = '%.2f'
         Multilinecells = True
-        SearchFooter.FindNextCaption = 'Find next'
-        SearchFooter.FindPrevCaption = 'Find previous'
-        SearchFooter.HighLightCaption = 'Highlight'
-        SearchFooter.HintClose = 'Close'
-        SearchFooter.HintFindNext = 'Find next occurence'
-        SearchFooter.HintFindPrev = 'Find previous occurence'
-        SearchFooter.HintHighlight = 'Highlight occurences'
-        SearchFooter.MatchCaseCaption = 'Match case'
         PrintSettings.DateFormat = 'dd/mm/yyyy'
         PrintSettings.Font.Charset = DEFAULT_CHARSET
         PrintSettings.Font.Color = clWindowText
@@ -87,18 +114,20 @@ object fmCompanyGrade: TfmCompanyGrade
         PrintSettings.FooterFont.Name = 'MS Sans Serif'
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
-        FixedColWidth = 85
-        FixedFont.Charset = DEFAULT_CHARSET
-        FixedFont.Color = clWindowText
-        FixedFont.Height = -11
-        FixedFont.Name = 'Tahoma'
-        FixedFont.Style = [fsBold]
-        FloatFormat = '%.2f'
-        ColumnHeaders.Strings = (
-          #54924#49324#53076#46300
-          #54924#49324#47749)
-        Filter = <>
-        Version = '3.3.0.1'
+        SearchFooter.FindNextCaption = 'Find next'
+        SearchFooter.FindPrevCaption = 'Find previous'
+        SearchFooter.Font.Charset = DEFAULT_CHARSET
+        SearchFooter.Font.Color = clWindowText
+        SearchFooter.Font.Height = -11
+        SearchFooter.Font.Name = 'MS Sans Serif'
+        SearchFooter.Font.Style = []
+        SearchFooter.HighLightCaption = 'Highlight'
+        SearchFooter.HintClose = 'Close'
+        SearchFooter.HintFindNext = 'Find next occurence'
+        SearchFooter.HintFindPrev = 'Find previous occurence'
+        SearchFooter.HintHighlight = 'Highlight occurences'
+        SearchFooter.MatchCaseCaption = 'Match case'
+        Version = '6.0.4.4'
         ColWidths = (
           85
           116)
@@ -223,14 +252,41 @@ object fmCompanyGrade: TfmCompanyGrade
         ActiveCellFont.Height = -11
         ActiveCellFont.Name = 'Tahoma'
         ActiveCellFont.Style = [fsBold]
-        SearchFooter.FindNextCaption = 'Find next'
-        SearchFooter.FindPrevCaption = 'Find previous'
-        SearchFooter.HighLightCaption = 'Highlight'
-        SearchFooter.HintClose = 'Close'
-        SearchFooter.HintFindNext = 'Find next occurence'
-        SearchFooter.HintFindPrev = 'Find previous occurence'
-        SearchFooter.HintHighlight = 'Highlight occurences'
-        SearchFooter.MatchCaseCaption = 'Match case'
+        ColumnHeaders.Strings = (
+          #54924#49324#53076#46300
+          #54924#49324#47749)
+        ControlLook.FixedGradientHoverFrom = clGray
+        ControlLook.FixedGradientHoverTo = clWhite
+        ControlLook.FixedGradientDownFrom = clGray
+        ControlLook.FixedGradientDownTo = clSilver
+        ControlLook.DropDownHeader.Font.Charset = DEFAULT_CHARSET
+        ControlLook.DropDownHeader.Font.Color = clWindowText
+        ControlLook.DropDownHeader.Font.Height = -11
+        ControlLook.DropDownHeader.Font.Name = 'Tahoma'
+        ControlLook.DropDownHeader.Font.Style = []
+        ControlLook.DropDownHeader.Visible = True
+        ControlLook.DropDownHeader.Buttons = <>
+        ControlLook.DropDownFooter.Font.Charset = DEFAULT_CHARSET
+        ControlLook.DropDownFooter.Font.Color = clWindowText
+        ControlLook.DropDownFooter.Font.Height = -11
+        ControlLook.DropDownFooter.Font.Name = 'MS Sans Serif'
+        ControlLook.DropDownFooter.Font.Style = []
+        ControlLook.DropDownFooter.Visible = True
+        ControlLook.DropDownFooter.Buttons = <>
+        Filter = <>
+        FilterDropDown.Font.Charset = DEFAULT_CHARSET
+        FilterDropDown.Font.Color = clWindowText
+        FilterDropDown.Font.Height = -11
+        FilterDropDown.Font.Name = 'MS Sans Serif'
+        FilterDropDown.Font.Style = []
+        FilterDropDownClear = '(All)'
+        FixedColWidth = 84
+        FixedFont.Charset = DEFAULT_CHARSET
+        FixedFont.Color = clWindowText
+        FixedFont.Height = -11
+        FixedFont.Name = 'Tahoma'
+        FixedFont.Style = [fsBold]
+        FloatFormat = '%.2f'
         PrintSettings.DateFormat = 'dd/mm/yyyy'
         PrintSettings.Font.Charset = DEFAULT_CHARSET
         PrintSettings.Font.Color = clWindowText
@@ -253,18 +309,20 @@ object fmCompanyGrade: TfmCompanyGrade
         PrintSettings.FooterFont.Name = 'MS Sans Serif'
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
-        FixedColWidth = 84
-        FixedFont.Charset = DEFAULT_CHARSET
-        FixedFont.Color = clWindowText
-        FixedFont.Height = -11
-        FixedFont.Name = 'Tahoma'
-        FixedFont.Style = [fsBold]
-        FloatFormat = '%.2f'
-        ColumnHeaders.Strings = (
-          #54924#49324#53076#46300
-          #54924#49324#47749)
-        Filter = <>
-        Version = '3.3.0.1'
+        SearchFooter.FindNextCaption = 'Find next'
+        SearchFooter.FindPrevCaption = 'Find previous'
+        SearchFooter.Font.Charset = DEFAULT_CHARSET
+        SearchFooter.Font.Color = clWindowText
+        SearchFooter.Font.Height = -11
+        SearchFooter.Font.Name = 'MS Sans Serif'
+        SearchFooter.Font.Style = []
+        SearchFooter.HighLightCaption = 'Highlight'
+        SearchFooter.HintClose = 'Close'
+        SearchFooter.HintFindNext = 'Find next occurence'
+        SearchFooter.HintFindPrev = 'Find previous occurence'
+        SearchFooter.HintHighlight = 'Highlight occurences'
+        SearchFooter.MatchCaseCaption = 'Match case'
+        Version = '6.0.4.4'
         ColWidths = (
           84
           128)

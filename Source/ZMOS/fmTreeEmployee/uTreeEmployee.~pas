@@ -106,7 +106,6 @@ type
     procedure ShowEmployeeCardNo(aCardNo : string);
     procedure FormNameSet;
 
-    Function GetFdmsID:string;
     Function GetMaxPositionNum : integer;
   private
     Function CheckTB_EMPLOYEE(aEmpID,aCompanyCode:string):Boolean;
@@ -169,7 +168,7 @@ uses
   uPostGreSql,
   uMDBSql,
   uFireBird, uCommonSql, uExcelSave, udmAdoQuery,
-  DIMime;
+  DIMime, UCommonModule;
 
 {$R *.dfm}
 
@@ -305,8 +304,8 @@ begin
     if length(cells[13,Row]) = 8 then
       dt_RetireDt.Date := strToDate(copy(cells[13,Row],1,4) + '-' + copy(cells[13,Row],5,2) + '-' + copy(cells[13,Row],7,2) ) ;
     ed_Handphone.Text := cells[18,Row];
-    ed_CardNo.Text := cells[6,Row];
-    L_stOldCardNo := ed_CardNo.Text ;
+    ed_CardNo.Text := Trim(cells[6,Row]);
+    L_stOldCardNo := Trim(ed_CardNo.Text) ;
 
     MapJpg := TJpegImage.Create;
     MapStream := TMemoryStream.Create;
@@ -413,7 +412,7 @@ begin
   if G_bEmployeeCophoneEncrypt then stCophone := MimeEncodeString(stCophone);
   if UpperCase(L_stState) = 'INSERT' then
   begin
-    stFdmsId := GetFdmsID;
+    stFdmsId := CommonModule.GetNextFdmsID;
     if CheckTB_EMPLOYEE(ed_EmpNo.Text,stCompanyCode) then
     begin
       showmessage(ed_EmpNo.Text + FM101 + '은 이미 사용중인 ' + FM101 + '입니다.');
@@ -422,7 +421,7 @@ begin
 
     bResult := InsertTB_EMPLOYEE(ed_EmpNo.Text,ed_Name.Text,stCompanyCode,stJijumCode,
                                  stDepartCode,stPosiCode,stCophone,FormatDateTime('yyyymmdd',Now),FormatDateTime('yyyymmdd',dt_RetireDt.Date),
-                                 '','','','',ed_Handphone.Text,'1',ed_CardNo.Text,ed_EmpImg.Text,stFdmsId,stEmTypeCode);
+                                 '','','','',ed_Handphone.Text,'1',Trim(ed_CardNo.Text),ed_EmpImg.Text,stFdmsId,stEmTypeCode);
   end  else if UpperCase(L_stState) = 'UPDATE' then
   begin
     if ed_EmpNo.Text <> ed_OldEmpNo.Text then
@@ -433,10 +432,10 @@ begin
         Exit;
       end;
     end;
-    bResult := UpdateTB_EMPLOYEE(ed_OldEmpNo.Text,ed_EmpNo.Text,ed_Name.Text,stCompanyCode,stJijumCode,stDepartCode,stPosiCode,FormatDateTime('yyyymmdd',dt_RetireDt.Date),ed_Handphone.Text,'1',ed_CardNo.Text,ed_EmpImg.Text,stEmTypeCode,stCophone);
+    bResult := UpdateTB_EMPLOYEE(ed_OldEmpNo.Text,ed_EmpNo.Text,ed_Name.Text,stCompanyCode,stJijumCode,stDepartCode,stPosiCode,FormatDateTime('yyyymmdd',dt_RetireDt.Date),ed_Handphone.Text,'1',Trim(ed_CardNo.Text),ed_EmpImg.Text,stEmTypeCode,stCophone);
     if L_bValidateUpdate then
     begin
-      UpdateTB_DEVICECARDNORcvAck(ed_CardNo.Text,'N'); //유효기간 변경 된경우 재전송
+      UpdateTB_DEVICECARDNORcvAck(Trim(ed_CardNo.Text),'N'); //유효기간 변경 된경우 재전송
     end;
   end;
   
@@ -1019,33 +1018,6 @@ begin
   lb_OutDate.Caption := FM105;
 end;
 
-function TfmTreeEmployee.GetFdmsID: string;
-var
-  stSql : string;
-  nFdms_id : integer;
-begin
-  result := '31';
-  stSql := 'select Max(Fdms_id) as fdms_id from TB_EMPLOYEE ';
-  with fdmsADOQuery do
-  begin
-    Close;
-    Sql.Clear;
-    Sql.Text := stSql;
-    Try
-      Open;
-    Except
-      Exit;
-    End;
-    if recordCount < 1 then Exit;
-    Try
-      nFdms_id := FindField('fdms_id').AsInteger;
-      if nFdms_id = 0 then Exit;
-    Except
-      Exit;
-    End;
-    result := inttostr(nFdms_id + 1);
-  end;
-end;
 
 function TfmTreeEmployee.InsertTB_EMPLOYEE(aEmpID, aEmpNM, aCompanyCode,
   aJijumCode, aDepartCode, aPosiCode, aCompanyPhone, aJoinDate, aRetireDate,
@@ -1686,6 +1658,7 @@ begin
   else if DBType = 'MDB' then stSql := MDBSql.SelectTB_CARDJoinTBEmployee
   else if DBType = 'FB' then stSql := FireBird.SelectTB_CARDJoinTBEmployee
   else Exit;
+  stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
   stSql := stSql + ' AND a.CA_CARDNO = ''' + aCardNo + ''' ';
 
   Try
@@ -1755,7 +1728,7 @@ begin
   if (UpperCase(L_stState) = 'INSERT') or
      (UpperCase(L_stState) = 'UPDATE') then
   begin
-    ed_CardNo.Text := aCardNo;
+    ed_CardNo.Text := Trim(aCardNo);
   end else
   begin
     ShowEmployeeCardNo(aCardNo);
@@ -2039,8 +2012,8 @@ begin
     if length(cells[13,Row]) = 8 then
       dt_RetireDt.Date := strToDate(copy(cells[13,Row],1,4) + '-' + copy(cells[13,Row],5,2) + '-' + copy(cells[13,Row],7,2) ) ;
     ed_Handphone.Text := cells[18,Row];
-    ed_CardNo.Text := cells[6,Row];
-    L_stOldCardNo := ed_CardNo.Text ;
+    ed_CardNo.Text := Trim(cells[6,Row]);
+    L_stOldCardNo := Trim(ed_CardNo.Text) ;
 
     MapJpg := TJpegImage.Create;
     MapStream := TMemoryStream.Create;
@@ -2146,8 +2119,8 @@ begin
       dt_RetireDt.Date := strToDate(copy(cells[13,Row],1,4) + '-' + copy(cells[13,Row],5,2) + '-' + copy(cells[13,Row],7,2) ) ;
     ed_Handphone.Text := cells[18,Row];
     ed_CompanyPhone.Text := cells[11,Row];
-    ed_CardNo.Text := cells[6,Row];
-    L_stOldCardNo := ed_CardNo.Text ;
+    ed_CardNo.Text := Trim(cells[6,Row]);
+    L_stOldCardNo := Trim(ed_CardNo.Text) ;
 
     MapJpg := TJpegImage.Create;
     MapStream := TMemoryStream.Create;
@@ -2238,8 +2211,8 @@ begin
       dt_RetireDt.Date := strToDate(copy(cells[13,ATop],1,4) + '-' + copy(cells[13,ATop],5,2) + '-' + copy(cells[13,ATop],7,2) ) ;
     ed_Handphone.Text := cells[18,ATop];
     ed_CompanyPhone.Text := cells[11,ATop];
-    ed_CardNo.Text := cells[6,ATop];
-    L_stOldCardNo := ed_CardNo.Text ;
+    ed_CardNo.Text := Trim(cells[6,ATop]);
+    L_stOldCardNo := Trim(ed_CardNo.Text) ;
 
     MapJpg := TJpegImage.Create;
     MapStream := TMemoryStream.Create;

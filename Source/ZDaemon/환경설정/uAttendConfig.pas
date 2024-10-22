@@ -449,6 +449,15 @@ type
     ed_ATTime: TEdit;
     Label149: TLabel;
     rg_schUsepacket: TRadioGroup;
+    ed_PWChange: TEdit;
+    Label150: TLabel;
+    SpeedButton4: TSpeedButton;
+    Label151: TLabel;
+    ed_EmpDel: TEdit;
+    Label152: TLabel;
+    GroupBox43: TGroupBox;
+    chk_CardFull: TCheckBox;
+    Label153: TLabel;
     procedure btn_CloseClick(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -473,6 +482,7 @@ type
     procedure cmb_CardTypeChange(Sender: TObject);
     procedure cmb_SpecialChange(Sender: TObject);
     procedure btn_faceconnectClick(Sender: TObject);
+    procedure SpeedButton4Click(Sender: TObject);
   private
     { Private declarations }
     procedure GetConfig;
@@ -504,7 +514,7 @@ implementation
 uses
   uDataModule1,
   uLomosUtil, uPerRelayConfig, uRelaysentence, uPostGreSql, uMssql,
-  uMDBSql, uFireBird, uRelayDB, uCommonSql;
+  uMDBSql, uFireBird, uRelayDB, uCommonSql, uServerDaemon;
 {$R *.dfm}
 
 procedure TfmAttendConfig.btn_CloseClick(Sender: TObject);
@@ -797,6 +807,9 @@ begin
           end else if FindField('CO_CONFIGCODE').AsString = 'AT_DELETE' then
           begin
             ed_AtDel.Text  := FindField('CO_CONFIGVALUE').AsString;
+          end else if FindField('CO_CONFIGCODE').AsString = 'EMP_DELETE' then
+          begin
+            ed_EmpDel.Text  := FindField('CO_CONFIGVALUE').AsString;
           end else if FindField('CO_CONFIGCODE').AsString = 'FD_DELETE' then
           begin
             ed_FdDel.Text  := FindField('CO_CONFIGVALUE').AsString;
@@ -870,6 +883,9 @@ begin
           begin
             if UpperCase(FindField('CO_CONFIGVALUE').AsString) = 'TRUE' then chk_pwchar.Checked := True
             else chk_pwchar.Checked := False;
+          end else if FindField('CO_CONFIGCODE').AsString = 'PWCHANGE' then
+          begin
+            ed_PWChange.text := FindField('CO_CONFIGVALUE').AsString;
           end;
         end else if Findfield('CO_CONFIGGROUP').AsString = 'MCUCOMM' then
         begin
@@ -1019,6 +1035,10 @@ begin
           end else if FindField('CO_CONFIGCODE').AsString = 'LOGINCOUNT' then
           begin
             ed_LoginLimitCnt.Text := FindField('CO_CONFIGVALUE').AsString;
+          end else if FindField('CO_CONFIGCODE').AsString = 'CARDFULL' then
+          begin
+            if FindField('CO_CONFIGVALUE').AsInteger = 1 then chk_CardFull.Checked := True
+            else chk_CardFull.Checked := False;
           end;
 
         end else if Findfield('CO_CONFIGGROUP').AsString = 'KT' then
@@ -1373,6 +1393,7 @@ begin
   //UpdateTB_CONFIG('DATABASE','BACKDIR',ed_BackDir.Text );
   UpdateTB_CONFIG('DATABASE','AC_DELETE',ed_AcDel.Text );
   UpdateTB_CONFIG('DATABASE','AT_DELETE',ed_AtDel.Text );
+  UpdateTB_CONFIG('DATABASE','EMP_DELETE',ed_EmpDel.Text );
   UpdateTB_CONFIG('DATABASE','FD_DELETE',ed_FdDel.Text );
   UpdateTB_CONFIG('DATABASE','PT_DELETE',ed_PtDel.Text );
 
@@ -1427,10 +1448,13 @@ begin
   if chk_LoginLimitUse.Checked then UpdateTB_CONFIG('COMMON','LOGINLIMIT','1' )
   else UpdateTB_CONFIG('COMMON','LOGINLIMIT','0' );
   UpdateTB_CONFIG('COMMON','LOGINCOUNT',ed_LoginLimitCnt.Text );
+  if chk_CardFull.Checked then UpdateTB_CONFIG('COMMON','CARDFULL','1' )
+  else UpdateTB_CONFIG('COMMON','CARDFULL','0' );
 
   UpdateTB_CONFIG('MOSTYPE','PWLENGTH',ed_PWLength.Text ) ;
   if chk_pwchar.Checked then UpdateTB_CONFIG('MOSTYPE','PWCHAR','TRUE' )
   else UpdateTB_CONFIG('MOSTYPE','PWCHAR','FALSE' );
+  UpdateTB_CONFIG('MOSTYPE','PWCHANGE',ed_PWChange.text );
 
   if cmb_FoodDeviceType.ItemIndex = 0 then  stFoodDeviceType := 'READER'
   else stFoodDeviceType := 'DOOR';
@@ -1862,7 +1886,7 @@ end;
 procedure TfmAttendConfig.rg_readerTypeClick(Sender: TObject);
 begin
   Label15.Visible := False;
-  if (rg_readerType.ItemIndex = 0) or (rg_readerType.ItemIndex = 2) then
+  if (rg_readerType.ItemIndex = 0) or (rg_readerType.ItemIndex = 2) or (rg_readerType.ItemIndex = 3) then
   begin
     rg_fdmsdbtype.Enabled := True;
     if rg_fdmsdbtype.ItemIndex = 0 then
@@ -1893,6 +1917,12 @@ begin
       lb_File.Caption := 'DB IP';
       Label15.Visible := True;
     end;
+    if(rg_readerType.ItemIndex = 3) then
+    begin
+      ed_fdmsDB.Text := 'DigetSystem';
+      //ed_fdmsPw.Text := 'tjdgus123!@';
+    end;
+
   end else
   begin
     lb_fdmsPw.Visible := True;
@@ -2527,6 +2557,12 @@ begin
   DataModule1.ProcessExecSQL(stSql); 
 
   result := True;
+end;
+
+procedure TfmAttendConfig.SpeedButton4Click(Sender: TObject);
+begin
+  if( fmMain.fdmsConnect(true) ) then Exit;
+  showmessage('test');
 end;
 
 end.

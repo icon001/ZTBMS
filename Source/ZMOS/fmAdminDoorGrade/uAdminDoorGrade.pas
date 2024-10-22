@@ -2813,7 +2813,7 @@ begin
   stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
   stSql := stSql + ' AND AC_NODENO = ' + inttostr(strtoint(copy(aAlarmNo,1,3))) ;
   stSql := stSql + ' AND AC_ECUID = ''' + copy(aAlarmNo,4,2) + ''' ';
-  stSql := stSql + ' AND AR_AREANO = ''' + FillZeroStrNum(copy(aAlarmNo,6,1),2) + ''',';
+  stSql := stSql + ' AND AR_AREANO = ''' + FillZeroStrNum(copy(aAlarmNo,6,1),2) + ''' ';
   stSql := stSql + ' AND AD_USERID = ''' + aUserID + ''' ';
 
   with DataModule1.GetObject.ADOExecQuery do

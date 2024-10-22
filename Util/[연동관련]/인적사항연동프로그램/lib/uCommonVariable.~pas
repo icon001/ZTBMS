@@ -37,6 +37,7 @@ var
  MasterFloorCode : string;
  MasterAreaCode : string;
  Master_ID : string;
+ ExeFolder : string;
 
 implementation
 

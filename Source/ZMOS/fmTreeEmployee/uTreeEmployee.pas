@@ -106,7 +106,6 @@ type
     procedure ShowEmployeeCardNo(aCardNo : string);
     procedure FormNameSet;
 
-    Function GetFdmsID:string;
     Function GetMaxPositionNum : integer;
   private
     Function CheckTB_EMPLOYEE(aEmpID,aCompanyCode:string):Boolean;
@@ -169,7 +168,7 @@ uses
   uPostGreSql,
   uMDBSql,
   uFireBird, uCommonSql, uExcelSave, udmAdoQuery,
-  DIMime;
+  DIMime, UCommonModule;
 
 {$R *.dfm}
 
@@ -413,7 +412,7 @@ begin
   if G_bEmployeeCophoneEncrypt then stCophone := MimeEncodeString(stCophone);
   if UpperCase(L_stState) = 'INSERT' then
   begin
-    stFdmsId := GetFdmsID;
+    stFdmsId := CommonModule.GetNextFdmsID;
     if CheckTB_EMPLOYEE(ed_EmpNo.Text,stCompanyCode) then
     begin
       showmessage(ed_EmpNo.Text + FM101 + '은 이미 사용중인 ' + FM101 + '입니다.');
@@ -1019,33 +1018,6 @@ begin
   lb_OutDate.Caption := FM105;
 end;
 
-function TfmTreeEmployee.GetFdmsID: string;
-var
-  stSql : string;
-  nFdms_id : integer;
-begin
-  result := '31';
-  stSql := 'select Max(Fdms_id) as fdms_id from TB_EMPLOYEE ';
-  with fdmsADOQuery do
-  begin
-    Close;
-    Sql.Clear;
-    Sql.Text := stSql;
-    Try
-      Open;
-    Except
-      Exit;
-    End;
-    if recordCount < 1 then Exit;
-    Try
-      nFdms_id := FindField('fdms_id').AsInteger;
-      if nFdms_id = 0 then Exit;
-    Except
-      Exit;
-    End;
-    result := inttostr(nFdms_id + 1);
-  end;
-end;
 
 function TfmTreeEmployee.InsertTB_EMPLOYEE(aEmpID, aEmpNM, aCompanyCode,
   aJijumCode, aDepartCode, aPosiCode, aCompanyPhone, aJoinDate, aRetireDate,
@@ -1681,11 +1653,12 @@ var
   stDepartName : string;
   stPosiName : string;
 begin
-  if DBTYPE = 'MSSQL' then stSql := MSSQL.SelectTB_CARDJoinTBEmployee
-  else if DBType = 'PG' then stSql := PostGreSql.SelectTB_CARDJoinTBEmployee
-  else if DBType = 'MDB' then stSql := MDBSql.SelectTB_CARDJoinTBEmployee
-  else if DBType = 'FB' then stSql := FireBird.SelectTB_CARDJoinTBEmployee
+  if DBTYPE = 'MSSQL' then stSql := MSSQL.SelectTB_CARDJoinTBEmployee(False)
+  else if DBType = 'PG' then stSql := PostGreSql.SelectTB_CARDJoinTBEmployee(False)
+  else if DBType = 'MDB' then stSql := MDBSql.SelectTB_CARDJoinTBEmployee(False)
+  else if DBType = 'FB' then stSql := FireBird.SelectTB_CARDJoinTBEmployee(False)
   else Exit;
+  stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
   stSql := stSql + ' AND a.CA_CARDNO = ''' + aCardNo + ''' ';
 
   Try

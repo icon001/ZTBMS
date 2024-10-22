@@ -2,10 +2,10 @@ object fmReAtInsert: TfmReAtInsert
   Left = 480
   Top = 274
   Width = 349
-  Height = 137
+  Height = 128
   BorderIcons = [biSystemMenu]
   Caption = #44540#53468#51116#51089#50629
-  Color = clBtnFace
+  Color = clWhite
   Font.Charset = HANGEUL_CHARSET
   Font.Color = clWindowText
   Font.Height = -12

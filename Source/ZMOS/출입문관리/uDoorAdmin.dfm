@@ -5,6 +5,7 @@ inherited fmDoorAdmin: TfmDoorAdmin
   Height = 633
   BorderIcons = []
   Caption = #52636#51077#47928#44288#47532
+  Color = clWhite
   Font.Charset = HANGEUL_CHARSET
   Font.Height = -12
   OldCreateOrder = True
@@ -21,7 +22,7 @@ inherited fmDoorAdmin: TfmDoorAdmin
     Height = 41
     Align = alTop
     Caption = #52636#51077#47928' '#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = HANGEUL_CHARSET
     Font.Color = clBlack
     Font.Height = -13
@@ -34,26 +35,27 @@ inherited fmDoorAdmin: TfmDoorAdmin
     Left = 0
     Top = 41
     Width = 754
-    Height = 460
+    Height = 467
     Align = alClient
     TabOrder = 1
     object Splitter2: TSplitter
       Left = 385
       Top = 14
-      Height = 444
+      Height = 451
     end
     object Panel6: TPanel
       Left = 388
       Top = 14
       Width = 364
-      Height = 444
+      Height = 451
       Align = alClient
+      Color = clWhite
       TabOrder = 0
       object GroupBox10: TGroupBox
         Left = 1
         Top = 1
         Width = 362
-        Height = 442
+        Height = 449
         Align = alClient
         TabOrder = 0
         object Label7: TLabel
@@ -210,6 +212,7 @@ inherited fmDoorAdmin: TfmDoorAdmin
           Width = 321
           Height = 41
           Caption = #49324#50857' '#52852#46300#47532#45908' '#51648#51221
+          Color = clWhite
           Columns = 8
           Items.Strings = (
             '01'
@@ -453,8 +456,9 @@ inherited fmDoorAdmin: TfmDoorAdmin
       Left = 2
       Top = 14
       Width = 383
-      Height = 444
+      Height = 451
       Align = alLeft
+      Color = clWhite
       TabOrder = 1
       object GroupBox11: TGroupBox
         Left = 1
@@ -536,7 +540,7 @@ inherited fmDoorAdmin: TfmDoorAdmin
         Left = 1
         Top = 129
         Width = 381
-        Height = 314
+        Height = 321
         Cursor = crDefault
         Align = alClient
         ColCount = 24
@@ -634,6 +638,7 @@ inherited fmDoorAdmin: TfmDoorAdmin
         PrintSettings.FooterFont.Name = 'MS Sans Serif'
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
+        ScrollWidth = 16
         SearchFooter.FindNextCaption = 'Find next'
         SearchFooter.FindPrevCaption = 'Find previous'
         SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -679,10 +684,11 @@ inherited fmDoorAdmin: TfmDoorAdmin
   end
   object Panel1: TPanel [2]
     Left = 0
-    Top = 501
+    Top = 508
     Width = 754
     Height = 64
     Align = alBottom
+    Color = clWhite
     TabOrder = 2
     object btn_Insert: TSpeedButton
       Left = 32
@@ -860,7 +866,7 @@ inherited fmDoorAdmin: TfmDoorAdmin
   end
   object StatusBar1: TStatusBar [3]
     Left = 0
-    Top = 565
+    Top = 572
     Width = 754
     Height = 34
     Panels = <>

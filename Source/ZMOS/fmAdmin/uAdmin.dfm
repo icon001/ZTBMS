@@ -17,21 +17,22 @@ inherited fmAdmin: TfmAdmin
     Left = 385
     Top = 33
     Width = 2
-    Height = 484
+    Height = 491
   end
   object StatusBar1: TStatusBar [1]
     Left = 0
-    Top = 562
+    Top = 569
     Width = 725
     Height = 24
     Panels = <>
   end
   object Panel3: TPanel [2]
     Left = 0
-    Top = 517
+    Top = 524
     Width = 725
     Height = 45
     Align = alBottom
+    Color = clWhite
     TabOrder = 1
     OnResize = Panel3Resize
     object btn_Insert: TSpeedButton
@@ -209,8 +210,9 @@ inherited fmAdmin: TfmAdmin
     Left = 0
     Top = 33
     Width = 385
-    Height = 484
+    Height = 491
     Align = alLeft
+    Color = clWhite
     TabOrder = 2
     object GroupBox1: TGroupBox
       Left = 1
@@ -301,14 +303,14 @@ inherited fmAdmin: TfmAdmin
       Left = 1
       Top = 58
       Width = 383
-      Height = 425
+      Height = 432
       Align = alClient
       TabOrder = 1
       object sg_Admin: TAdvStringGrid
         Left = 1
         Top = 1
         Width = 381
-        Height = 423
+        Height = 430
         Cursor = crDefault
         Align = alClient
         ColCount = 12
@@ -334,6 +336,7 @@ inherited fmAdmin: TfmAdmin
         ColumnHeaders.Strings = (
           #50868#50689#51088#50500#51060#46356
           #50868#50689#51088#51060#47492
+          #50868#50689#51088#48708#48128#48264#54840
           #50868#50689#51088#48708#48128#48264#54840
           #50868#50689#51088#44428#54620
           #47560#49828#53552#50976#47924
@@ -394,6 +397,7 @@ inherited fmAdmin: TfmAdmin
         PrintSettings.FooterFont.Name = 'MS Sans Serif'
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
+        ScrollWidth = 16
         SearchFooter.FindNextCaption = 'Find next'
         SearchFooter.FindPrevCaption = 'Find previous'
         SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -428,8 +432,9 @@ inherited fmAdmin: TfmAdmin
     Left = 387
     Top = 33
     Width = 338
-    Height = 484
+    Height = 491
     Align = alClient
+    Color = clWhite
     TabOrder = 3
     object Label8: TLabel
       Left = 16
@@ -756,7 +761,7 @@ inherited fmAdmin: TfmAdmin
     Height = 33
     Align = alTop
     Caption = #49884#49828#53596#50868#50689#51088#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16

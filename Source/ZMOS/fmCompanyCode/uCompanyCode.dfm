@@ -1,6 +1,6 @@
 inherited fmCompanyCode: TfmCompanyCode
-  Left = 413
-  Top = 144
+  Left = 698
+  Top = 233
   Width = 577
   Height = 446
   Caption = #54924#49324#53076#46300#44288#47532
@@ -19,8 +19,8 @@ inherited fmCompanyCode: TfmCompanyCode
     Left = 0
     Top = 33
     Width = 569
-    Height = 290
-    ActivePage = CompanyTab
+    Height = 297
+    ActivePage = ZipTab
     Align = alClient
     TabOrder = 0
     OnChange = pc_WorkChange
@@ -30,20 +30,21 @@ inherited fmCompanyCode: TfmCompanyCode
       object Splitter1: TSplitter
         Left = 217
         Top = 0
-        Height = 263
+        Height = 270
       end
       object Panel2: TPanel
         Left = 0
         Top = 0
         Width = 217
-        Height = 263
+        Height = 270
         Align = alLeft
+        Color = clWhite
         TabOrder = 0
         object sg_CompanyCode: TAdvStringGrid
           Left = 1
           Top = 1
           Width = 215
-          Height = 261
+          Height = 268
           Cursor = crDefault
           Align = alClient
           ColCount = 4
@@ -126,6 +127,7 @@ inherited fmCompanyCode: TfmCompanyCode
           PrintSettings.FooterFont.Style = []
           PrintSettings.PageNumSep = '/'
           ScrollSynch = True
+          ScrollWidth = 16
           SearchFooter.FindNextCaption = 'Find next'
           SearchFooter.FindPrevCaption = 'Find previous'
           SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -146,14 +148,16 @@ inherited fmCompanyCode: TfmCompanyCode
         Left = 220
         Top = 0
         Width = 341
-        Height = 263
+        Height = 270
         Align = alClient
+        BevelOuter = bvNone
+        Color = clWhite
         TabOrder = 1
         object GroupBox2: TGroupBox
-          Left = 1
-          Top = 1
-          Width = 339
-          Height = 261
+          Left = 0
+          Top = 0
+          Width = 341
+          Height = 270
           Align = alClient
           TabOrder = 0
           object lb_CompanyCode: TLabel
@@ -243,20 +247,21 @@ inherited fmCompanyCode: TfmCompanyCode
       object Splitter4: TSplitter
         Left = 209
         Top = 0
-        Height = 263
+        Height = 270
       end
       object Panel1: TPanel
         Left = 0
         Top = 0
         Width = 209
-        Height = 263
+        Height = 270
         Align = alLeft
+        Color = clWhite
         TabOrder = 0
         object sg_jijumCode: TAdvStringGrid
           Left = 1
           Top = 57
           Width = 207
-          Height = 205
+          Height = 212
           Cursor = crDefault
           Align = alClient
           DefaultColWidth = 90
@@ -339,6 +344,7 @@ inherited fmCompanyCode: TfmCompanyCode
           PrintSettings.FooterFont.Style = []
           PrintSettings.PageNumSep = '/'
           ScrollSynch = True
+          ScrollWidth = 16
           SearchFooter.FindNextCaption = 'Find next'
           SearchFooter.FindPrevCaption = 'Find previous'
           SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -385,14 +391,16 @@ inherited fmCompanyCode: TfmCompanyCode
         Left = 212
         Top = 0
         Width = 349
-        Height = 263
+        Height = 270
         Align = alClient
+        BevelOuter = bvNone
+        Color = clWhite
         TabOrder = 1
         object GroupBox7: TGroupBox
-          Left = 1
-          Top = 1
-          Width = 347
-          Height = 261
+          Left = 0
+          Top = 0
+          Width = 349
+          Height = 270
           Align = alClient
           TabOrder = 0
           object lb_CompanyCode2: TLabel
@@ -497,20 +505,22 @@ inherited fmCompanyCode: TfmCompanyCode
       object Splitter2: TSplitter
         Left = 209
         Top = 0
-        Height = 263
+        Height = 270
       end
       object Panel4: TPanel
         Left = 212
         Top = 0
         Width = 349
-        Height = 263
+        Height = 270
         Align = alClient
+        BevelOuter = bvNone
+        Color = clWhite
         TabOrder = 0
         object GroupBox3: TGroupBox
-          Left = 1
-          Top = 1
-          Width = 347
-          Height = 261
+          Left = 0
+          Top = 0
+          Width = 349
+          Height = 270
           Align = alClient
           TabOrder = 0
           object lb_CompanyCode4: TLabel
@@ -630,14 +640,16 @@ inherited fmCompanyCode: TfmCompanyCode
         Left = 0
         Top = 0
         Width = 209
-        Height = 263
+        Height = 270
         Align = alLeft
+        BevelOuter = bvNone
+        Color = clWhite
         TabOrder = 1
         object sg_DepartCode: TAdvStringGrid
-          Left = 1
-          Top = 89
-          Width = 207
-          Height = 173
+          Left = 0
+          Top = 88
+          Width = 209
+          Height = 182
           Cursor = crDefault
           Align = alClient
           ColCount = 6
@@ -722,6 +734,7 @@ inherited fmCompanyCode: TfmCompanyCode
           PrintSettings.FooterFont.Style = []
           PrintSettings.PageNumSep = '/'
           ScrollSynch = True
+          ScrollWidth = 16
           SearchFooter.FindNextCaption = 'Find next'
           SearchFooter.FindPrevCaption = 'Find previous'
           SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -738,11 +751,13 @@ inherited fmCompanyCode: TfmCompanyCode
           Version = '6.0.4.4'
         end
         object GroupBox4: TGroupBox
-          Left = 1
-          Top = 1
-          Width = 207
+          Left = 0
+          Top = 0
+          Width = 209
           Height = 88
           Align = alTop
+          Color = clWhite
+          ParentColor = False
           TabOrder = 1
           object lb_CompanyCode3: TLabel
             Left = 16
@@ -788,20 +803,22 @@ inherited fmCompanyCode: TfmCompanyCode
       object Splitter3: TSplitter
         Left = 217
         Top = 0
-        Height = 263
+        Height = 270
       end
       object Panel6: TPanel
         Left = 220
         Top = 0
         Width = 341
-        Height = 263
+        Height = 270
         Align = alClient
+        BevelOuter = bvNone
+        Color = clWhite
         TabOrder = 0
         object GroupBox5: TGroupBox
-          Left = 1
-          Top = 1
-          Width = 339
-          Height = 261
+          Left = 0
+          Top = 0
+          Width = 341
+          Height = 270
           Align = alClient
           TabOrder = 0
           object lb_PosiCode: TLabel
@@ -851,7 +868,7 @@ inherited fmCompanyCode: TfmCompanyCode
             Width = 201
             Height = 20
             ImeName = 'Microsoft IME 2003'
-            ItemHeight = 0
+            ItemHeight = 12
             TabOrder = 2
             OnChange = cmb_sCompanyCode3Change
           end
@@ -872,14 +889,16 @@ inherited fmCompanyCode: TfmCompanyCode
         Left = 0
         Top = 0
         Width = 217
-        Height = 263
+        Height = 270
         Align = alLeft
+        BevelOuter = bvNone
+        Color = clWhite
         TabOrder = 1
         object sg_Posi: TAdvStringGrid
-          Left = 1
-          Top = 57
-          Width = 215
-          Height = 205
+          Left = 0
+          Top = 56
+          Width = 217
+          Height = 214
           Cursor = crDefault
           Align = alClient
           ColCount = 3
@@ -961,6 +980,7 @@ inherited fmCompanyCode: TfmCompanyCode
           PrintSettings.FooterFont.Style = []
           PrintSettings.PageNumSep = '/'
           ScrollSynch = True
+          ScrollWidth = 16
           SearchFooter.FindNextCaption = 'Find next'
           SearchFooter.FindPrevCaption = 'Find previous'
           SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -977,9 +997,9 @@ inherited fmCompanyCode: TfmCompanyCode
           Version = '6.0.4.4'
         end
         object GroupBox8: TGroupBox
-          Left = 1
-          Top = 1
-          Width = 215
+          Left = 0
+          Top = 0
+          Width = 217
           Height = 56
           Align = alTop
           TabOrder = 1
@@ -997,7 +1017,7 @@ inherited fmCompanyCode: TfmCompanyCode
             Height = 20
             Style = csDropDownList
             ImeName = 'Microsoft IME 2003'
-            ItemHeight = 0
+            ItemHeight = 12
             TabOrder = 0
             OnChange = cmb_CompanyCode3Change
           end
@@ -1013,6 +1033,7 @@ inherited fmCompanyCode: TfmCompanyCode
         Width = 561
         Height = 41
         Align = alTop
+        Color = clWhite
         TabOrder = 0
         object btn_zipcodesearch: TSpeedButton
           Left = 376
@@ -1120,14 +1141,15 @@ inherited fmCompanyCode: TfmCompanyCode
         Left = 0
         Top = 41
         Width = 561
-        Height = 132
+        Height = 139
         Align = alClient
+        Color = clWhite
         TabOrder = 1
         object sg_Zipcode: TAdvStringGrid
           Left = 1
           Top = 1
           Width = 559
-          Height = 130
+          Height = 137
           Cursor = crDefault
           Align = alClient
           DefaultColWidth = 90
@@ -1210,6 +1232,7 @@ inherited fmCompanyCode: TfmCompanyCode
           PrintSettings.FooterFont.Style = []
           PrintSettings.PageNumSep = '/'
           ScrollSynch = True
+          ScrollWidth = 16
           SearchFooter.FindNextCaption = 'Find next'
           SearchFooter.FindPrevCaption = 'Find previous'
           SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -1234,10 +1257,11 @@ inherited fmCompanyCode: TfmCompanyCode
       end
       object Panel10: TPanel
         Left = 0
-        Top = 173
+        Top = 180
         Width = 561
         Height = 90
         Align = alBottom
+        Color = clWhite
         TabOrder = 2
         object Gauge1: TGauge
           Left = 16
@@ -1363,17 +1387,20 @@ inherited fmCompanyCode: TfmCompanyCode
   end
   object StatusBar1: TStatusBar [1]
     Left = 0
-    Top = 389
+    Top = 396
     Width = 569
     Height = 23
+    Color = clWhite
     Panels = <>
   end
   object GroupBox6: TGroupBox [2]
     Left = 0
-    Top = 323
+    Top = 330
     Width = 569
     Height = 66
     Align = alBottom
+    Color = clWhite
+    ParentColor = False
     TabOrder = 2
     object btn_Insert: TSpeedButton
       Left = 24
@@ -1553,7 +1580,7 @@ inherited fmCompanyCode: TfmCompanyCode
     Height = 33
     Align = alTop
     Caption = #54924#49324#53076#46300#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16

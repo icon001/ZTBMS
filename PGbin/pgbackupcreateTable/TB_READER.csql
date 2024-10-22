@@ -1,0 +1,2 @@
+CREATE TABLE TB_READER (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , ac_nodeno INTEGER NOT NULL , ac_ecuid VARCHAR(2) NOT NULL , re_readerno VARCHAR(1) NOT NULL , do_doorno VARCHAR(1), re_use VARCHAR(1), send_ack VARCHAR(1), re_inoutcount INTEGER NOT NULL  DEFAULT 0, door_posi VARCHAR(1) DEFAULT  '0' , build_posi VARCHAR(1) DEFAULT  '0' , reg_send VARCHAR(1), re_ver VARCHAR(50) ); 
+ ALTER TABLE TB_READER   ADD CONSTRAINT TB_READER_pkey PRIMARY KEY (group_code, ac_nodeno, ac_ecuid, re_readerno);

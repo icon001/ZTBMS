@@ -17,10 +17,12 @@ inherited fmComMonitoring: TfmComMonitoring
   TextHeight = 12
   object AdvPanel1: TAdvPanel [0]
     Left = 0
-    Top = 0
+    Top = 9
     Width = 1016
     Height = 65
     Align = alTop
+    BevelOuter = bvNone
+    Color = clWhite
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -193,9 +195,9 @@ inherited fmComMonitoring: TfmComMonitoring
   end
   object sg_ComState: TAdvStringGrid [1]
     Left = 0
-    Top = 65
+    Top = 74
     Width = 1016
-    Height = 515
+    Height = 513
     Cursor = crDefault
     Align = alClient
     ColCount = 3
@@ -268,6 +270,7 @@ inherited fmComMonitoring: TfmComMonitoring
     PrintSettings.FooterFont.Name = 'MS Sans Serif'
     PrintSettings.FooterFont.Style = []
     PrintSettings.PageNumSep = '/'
+    ScrollWidth = 16
     SearchFooter.FindNextCaption = 'Find next'
     SearchFooter.FindPrevCaption = 'Find previous'
     SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -286,6 +289,16 @@ inherited fmComMonitoring: TfmComMonitoring
       104
       83
       1087)
+  end
+  object Panel17: TPanel [2]
+    Left = 0
+    Top = 0
+    Width = 1016
+    Height = 9
+    Align = alTop
+    BevelOuter = bvNone
+    Color = clSilver
+    TabOrder = 2
   end
   inherited CommandArray: TCommandArray
     Commands = <

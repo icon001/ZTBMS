@@ -1,0 +1,2 @@
+CREATE TABLE TB_CARD (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , ca_cardno VARCHAR(20) NOT NULL , ca_gubun CHAR(1) DEFAULT  '1' , ca_cardtype CHAR(1), em_code VARCHAR(20), co_companycode VARCHAR(3), ca_lastuse VARCHAR(8), ca_updatetime VARCHAR(14), ca_updateoperator VARCHAR(10), ca_status VARCHAR(1) DEFAULT  'Y' , positionnum INTEGER, ca_doorgrade CHAR(1) DEFAULT  'N'  ); 
+ ALTER TABLE TB_CARD   ADD CONSTRAINT TB_CARD_pkey PRIMARY KEY (group_code, ca_cardno);

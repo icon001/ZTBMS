@@ -1,6 +1,6 @@
 object fmAlarmSet: TfmAlarmSet
-  Left = 489
-  Top = 208
+  Left = 1174
+  Top = 375
   Width = 381
   Height = 274
   Caption = #50508#46988' '#54869#51064' '#49483#54021

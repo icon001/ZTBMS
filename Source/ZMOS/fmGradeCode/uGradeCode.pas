@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Buttons, StdCtrls, Grids, BaseGrid, AdvGrid, ExtCtrls, ComCtrls,ADODB,
-  uSubForm, CommandArray,ActiveX, DB;
+  uSubForm, CommandArray,ActiveX, DB, AdvObj;
 
 type
   TfmGradeCode = class(TfmASubForm)

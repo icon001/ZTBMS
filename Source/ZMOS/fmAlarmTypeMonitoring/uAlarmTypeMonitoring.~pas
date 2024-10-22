@@ -124,6 +124,8 @@ type
     N7: TMenuItem;
     mn_BuildingArmControl: TMenuItem;
     mn_BuildingDisArmControl: TMenuItem;
+    N10: TMenuItem;
+    mn_DeviceChange: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure SocketWatchTimerTimer(Sender: TObject);
@@ -207,6 +209,7 @@ type
     procedure N24Click(Sender: TObject);
     procedure mn_BuildingArmControlClick(Sender: TObject);
     procedure mn_BuildingDisArmControlClick(Sender: TObject);
+    procedure mn_DeviceChangeClick(Sender: TObject);
   private
     L_bFirst : Boolean;
     L_bClose : Boolean;
@@ -2396,7 +2399,9 @@ begin
   begin
     if aState <> 'N' then
     begin
-      stPortName := GetPortName(FillZeroNumber(NodeNo,3),ECUID,aPortNo);
+      //stPortName := GetPortName(FillZeroNumber(NodeNo,3),ECUID,aPortNo);
+      if aSubCLass <> 'EL' then stPortName := GetPortName(FillZeroNumber(NodeNo,3),ECUID,aPortNo)
+      else stPortName := dmDBFunction.GetDeviceName(FillZeroNumber(NodeNo,3),ECUID) + '_' + aSubAddr;
       //stPortName := '[' + aSubAddr + ']' + stPortName;
       if stStatusName = '' then
       begin
@@ -3291,6 +3296,26 @@ begin
     self.FindSubForm('Main').FindCommand('SendData').Execute;
     DataModule1.TB_SYSTEMLOGInsert(copy(stAlarmAreaID,1,3),copy(stAlarmAreaID,4,2),ALARMTYPE,copy(stAlarmAreaID,6,1),'0000000000','해제모드')
   end;
+end;
+
+procedure TfmAlarmTypeMonitoring.mn_DeviceChangeClick(Sender: TObject);
+var
+  stNodeNo : string;
+  stEcuID : string;
+  stDeviceID: string;
+  stCaption  : string;
+begin
+  stNodeNo := sg_Ecu.Cells[3,sg_Ecu.Row];
+  if Not isDigit(stNodeNo) then Exit;
+  stEcuID := sg_Ecu.Cells[1,sg_Ecu.Row];
+  stDeviceID := FillZeroNumber(strtoint(stNodeNo),3) + stEcuID;
+
+  dmDBFunction.UpdateTB_ACCESSDEVICE_Field_StringValue(stNodeNo,stEcuID,'AC_DEVICECODE','');
+  dmDBFunction.UpdateTB_DEVICESCHEDULE_Field_StringValue(stNodeNo,stEcuID,'','','DE_RCVACK','N');
+
+  self.FindSubForm('Main').FindCommand('SendData').Params.Values['VALUE'] := 'CARDDOWNLOAD'+ DATADELIMITER + stDeviceID + DATADELIMITER + 'Y' + DATADELIMITER;
+  self.FindSubForm('Main').FindCommand('SendData').Execute;
+  DataModule1.TB_SYSTEMLOGInsert('0','00','0','0',stDeviceID , '컨트롤러교체');
 end;
 
 initialization

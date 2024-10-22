@@ -396,7 +396,7 @@ inherited fmAdminDoorGrade: TfmAdminDoorGrade
               Width = 145
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 0
               OnChange = cmb_Company1Change
             end
@@ -1102,7 +1102,7 @@ inherited fmAdminDoorGrade: TfmAdminDoorGrade
               Width = 145
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 0
               OnChange = cmb_Company2Change
             end
@@ -1112,7 +1112,7 @@ inherited fmAdminDoorGrade: TfmAdminDoorGrade
               Width = 145
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 1
               OnChange = cmb_Jijum2Change
             end
@@ -1573,7 +1573,7 @@ inherited fmAdminDoorGrade: TfmAdminDoorGrade
               Width = 145
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 0
               OnChange = cmb_BuildingCode1Change
             end
@@ -1583,7 +1583,7 @@ inherited fmAdminDoorGrade: TfmAdminDoorGrade
               Width = 145
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 1
               OnChange = cmb_FloorCode1Change
             end
@@ -1593,7 +1593,7 @@ inherited fmAdminDoorGrade: TfmAdminDoorGrade
               Width = 145
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 2
               OnChange = cmb_AreaCode1Change
             end
@@ -2392,7 +2392,7 @@ inherited fmAdminDoorGrade: TfmAdminDoorGrade
               Width = 145
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 0
               OnChange = cmb_BuildingCode3Change
             end
@@ -2402,7 +2402,7 @@ inherited fmAdminDoorGrade: TfmAdminDoorGrade
               Width = 145
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 1
               OnChange = cmb_FloorCode3Change
             end
@@ -2412,7 +2412,7 @@ inherited fmAdminDoorGrade: TfmAdminDoorGrade
               Width = 145
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 2
               OnChange = cmb_AreaCode3Change
             end

@@ -427,6 +427,12 @@ inherited fmCardAdminReport: TfmCardAdminReport
         CommandKind = 0
         Name = 'TCommand0'
         OnExecute = CommandArrayCommandsTCommand0Execute
+      end
+      item
+        CommandName = 'Close'
+        CommandKind = 0
+        Name = 'TClose'
+        OnExecute = CommandArrayCommandsTCloseExecute
       end>
   end
   object AdoQuery: TADOQuery
@@ -560,7 +566,7 @@ inherited fmCardAdminReport: TfmCardAdminReport
       444E4F225D00000000FFFF00000000000200000001000000000400B1BCB8B200
       09000000000000000000080000000000020000000000FFFFFF00000000020000
       0000000000FEFEFF000000000000000000000000FC0000000000000000000000
-      00000000005800E9E41F70F5B9E2403AE138734DD8E440}
+      00000000005800E9E41F70F5B9E2403CF174B758D8E440}
   end
   object frDBDataSet1: TfrDBDataSet
     DataSet = AdoQuery

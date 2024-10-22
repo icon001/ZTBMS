@@ -294,6 +294,12 @@ inherited fmComMonitoring: TfmComMonitoring
         CommandKind = 0
         Name = 'TCommand0'
         OnExecute = CommandArrayCommandsTCommand0Execute
+      end
+      item
+        CommandName = 'Close'
+        CommandKind = 0
+        Name = 'TClose'
+        OnExecute = CommandArrayCommandsTCloseExecute
       end>
   end
   object SaveDialog1: TSaveDialog

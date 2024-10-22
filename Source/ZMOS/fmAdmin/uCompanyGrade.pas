@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Buttons, Grids, BaseGrid, AdvGrid, ExtCtrls, StdCtrls,ADODB,ActiveX;
+  Dialogs, Buttons, Grids, BaseGrid, AdvGrid, ExtCtrls, StdCtrls,ADODB,ActiveX,
+  AdvObj;
 
 type
   TfmCompanyGrade = class(TForm)

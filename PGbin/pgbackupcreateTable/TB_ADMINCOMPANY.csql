@@ -1,0 +1,2 @@
+CREATE TABLE TB_ADMINCOMPANY (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , ad_userid VARCHAR(20) NOT NULL , co_companycode VARCHAR(3) NOT NULL , co_jijumcode VARCHAR(3) NOT NULL , co_departcode VARCHAR(3) NOT NULL  DEFAULT  '000' , co_gubun CHAR(1), ad_updatetime VARCHAR(14), ad_updateoperator VARCHAR(10) ); 
+ ALTER TABLE TB_ADMINCOMPANY   ADD CONSTRAINT TB_ADMINCOMPANY_pkey PRIMARY KEY (group_code, ad_userid, co_companycode, co_jijumcode, co_departcode);

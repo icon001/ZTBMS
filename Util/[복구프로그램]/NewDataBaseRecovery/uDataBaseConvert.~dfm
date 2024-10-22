@@ -231,7 +231,7 @@ object Form1: TForm1
         Height = 20
         ImeName = 'Microsoft IME 2003'
         TabOrder = 0
-        Text = 'sapasswd'
+        Text = 'sapasswd123@@'
       end
       object ed_targetUserName: TEdit
         Left = 112

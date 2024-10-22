@@ -764,6 +764,7 @@ begin
   if L_bApplicationTerminate then Exit;
   StatusBar1.Panels[2].Text := 'AdoConnectCheckTimer';
   AdoConnectCheckTimer.Enabled := False;
+  TDataBaseConfig.GetObject.DBConnected := False;
   TDataBaseConfig.GetObject.DataBaseConnect;
   if Not TDataBaseConfig.GetObject.DBConnected then
   begin
@@ -1003,9 +1004,14 @@ begin
 
   Try
     RelayTimer.Enabled:=False;
+    if Not dmAdoRelay.DBConnected then
+    begin
+      tbi.Hint := '예약시스템 접속 실패';
+      RelayAdoConnectCheckTimer.Enabled := True;
+      Exit;
+    end;
     tbi.Hint := '예약정보 연동 시스템 작업중';
-    if Not dmAdoRelay.DBConnected then RelayAdoConnectCheckTimer.Enabled := True
-    else YSReserveRelay;
+    YSReserveRelay;
     ReserveGradeSetting;
     AccessEventReserveSeverSend;
 

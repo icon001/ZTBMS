@@ -1,6 +1,6 @@
 inherited fmAccessReport: TfmAccessReport
-  Left = 670
-  Top = 210
+  Left = 507
+  Top = 192
   Width = 1024
   Height = 618
   Caption = #44592#44036#48324#52636#51077#51060#47141#48372#44256#49436
@@ -18,9 +18,9 @@ inherited fmAccessReport: TfmAccessReport
   TextHeight = 12
   object sg_AccessReport: TAdvStringGrid [0]
     Left = 0
-    Top = 89
+    Top = 98
     Width = 1016
-    Height = 495
+    Height = 493
     Cursor = crDefault
     Align = alClient
     ColCount = 15
@@ -114,6 +114,7 @@ inherited fmAccessReport: TfmAccessReport
     PrintSettings.FooterFont.Style = []
     PrintSettings.PageNumSep = '/'
     ScrollSynch = True
+    ScrollWidth = 16
     SearchFooter.FindNextCaption = 'Find next'
     SearchFooter.FindPrevCaption = 'Find previous'
     SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -151,6 +152,7 @@ inherited fmAccessReport: TfmAccessReport
       Top = 96
       Width = 329
       Height = 73
+      Color = clWhite
       TabOrder = 3
       Visible = False
       object Label1: TLabel
@@ -172,10 +174,11 @@ inherited fmAccessReport: TfmAccessReport
   end
   object Panel1: TPanel [1]
     Left = 0
-    Top = 0
+    Top = 9
     Width = 1016
     Height = 89
     Align = alTop
+    Color = clWhite
     TabOrder = 1
     object GroupBox5: TGroupBox
       Left = 768
@@ -635,6 +638,15 @@ inherited fmAccessReport: TfmAccessReport
       end
     end
   end
+  object Panel2: TPanel [2]
+    Left = 0
+    Top = 0
+    Width = 1016
+    Height = 9
+    Align = alTop
+    Color = clSilver
+    TabOrder = 2
+  end
   inherited CommandArray: TCommandArray
     Commands = <
       item
@@ -807,7 +819,7 @@ inherited fmAccessReport: TfmAccessReport
       45524D49544E414D45225D00000000FFFF000000000002000000010000000004
       00B1BCB8B20009000000000000000000080000000000020000000000FFFFFF00
       0000000200000000000000FEFEFF000000000000000000000000FC0000000000
-      00000000000000000000005800E9E41F70F5B9E240715C644E5018E540}
+      00000000000000000000005800E9E41F70F5B9E240F0C2EA57303DE640}
   end
   object frDBDataSet1: TfrDBDataSet
     DataSet = AdoQuery

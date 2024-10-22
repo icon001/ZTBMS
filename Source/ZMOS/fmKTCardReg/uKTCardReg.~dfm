@@ -1,8 +1,8 @@
 inherited fmKTCardReg: TfmKTCardReg
-  Left = 265
-  Top = 134
+  Left = 266
+  Top = 0
   Width = 1184
-  Height = 975
+  Height = 968
   Caption = 'KT'#44592#52852#46300#48156#44553#52852#46300#46321#47197
   Font.Charset = HANGEUL_CHARSET
   Font.Height = -12
@@ -35,7 +35,7 @@ inherited fmKTCardReg: TfmKTCardReg
   end
   object Panel2: TPanel [1]
     Left = 0
-    Top = 885
+    Top = 878
     Width = 1176
     Height = 56
     Align = alBottom
@@ -111,7 +111,7 @@ inherited fmKTCardReg: TfmKTCardReg
     Left = 0
     Top = 33
     Width = 1176
-    Height = 852
+    Height = 845
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
@@ -127,7 +127,7 @@ inherited fmKTCardReg: TfmKTCardReg
       Left = 0
       Top = 1
       Width = 1176
-      Height = 553
+      Height = 546
       Align = alClient
       TabOrder = 0
       object GroupBox2: TGroupBox
@@ -362,7 +362,7 @@ inherited fmKTCardReg: TfmKTCardReg
         Left = 1
         Top = 73
         Width = 1174
-        Height = 479
+        Height = 472
         Cursor = crDefault
         Align = alClient
         ColCount = 21
@@ -504,7 +504,7 @@ inherited fmKTCardReg: TfmKTCardReg
     end
     object pn_Employ: TPanel
       Left = 0
-      Top = 554
+      Top = 547
       Width = 1176
       Height = 298
       Align = alBottom

@@ -1,8 +1,8 @@
 inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
-  Left = 200
-  Top = 114
+  Left = 481
+  Top = 0
   Width = 1409
-  Height = 802
+  Height = 786
   Caption = #44288#51228#49884#49828#53596
   Font.Charset = HANGEUL_CHARSET
   Font.Height = -12
@@ -21,14 +21,14 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
   TextHeight = 12
   object Splitter1: TSplitter [0]
     Left = 217
-    Top = 0
-    Height = 768
+    Top = 9
+    Height = 750
   end
   object Panel1: TPanel [1]
     Left = 0
-    Top = 0
+    Top = 9
     Width = 217
-    Height = 768
+    Height = 750
     Align = alLeft
     TabOrder = 0
     OnResize = Panel1Resize
@@ -36,7 +36,7 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
       Left = 1
       Top = 1
       Width = 215
-      Height = 766
+      Height = 748
       ActivePage = tbLOCATE
       Align = alClient
       TabOrder = 0
@@ -47,14 +47,16 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
           Left = 0
           Top = 0
           Width = 207
-          Height = 739
+          Height = 721
           Align = alClient
+          Color = clWhite
+          ParentColor = False
           TabOrder = 0
           object TreeView_Location: TTreeView
             Left = 2
             Top = 23
             Width = 203
-            Height = 714
+            Height = 696
             Align = alClient
             BorderStyle = bsNone
             HotTrack = True
@@ -87,9 +89,10 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
             Width = 203
             Height = 9
             Align = alTop
+            Color = clWhite
             TabOrder = 1
-            FromColor = 15591915
-            ToColor = clSilver
+            FromColor = clWhite
+            ToColor = clWhite
             Direction = False
             Version = '1.4.0.0'
           end
@@ -131,14 +134,14 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
           Left = 0
           Top = 0
           Width = 207
-          Height = 739
+          Height = 721
           Align = alClient
           TabOrder = 0
           object TreeView_Device: TTreeView
             Left = 2
             Top = 23
             Width = 203
-            Height = 714
+            Height = 696
             Align = alClient
             BorderStyle = bsNone
             HotTrack = True
@@ -176,9 +179,9 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
   end
   object Panel2: TPanel [2]
     Left = 220
-    Top = 0
+    Top = 9
     Width = 1181
-    Height = 768
+    Height = 750
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -191,7 +194,7 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
       Left = 1
       Top = 1
       Width = 1179
-      Height = 766
+      Height = 748
       ActivePage = IntegrationTab
       Align = alClient
       TabOrder = 0
@@ -211,7 +214,7 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
           Left = 0
           Top = 274
           Width = 1171
-          Height = 465
+          Height = 447
           Align = alClient
           TabOrder = 0
           object Splitter7: TSplitter
@@ -327,6 +330,7 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
               PrintSettings.FooterFont.Style = []
               PrintSettings.PageNumSep = '/'
               ScrollSynch = True
+              ScrollWidth = 16
               SearchFooter.FindNextCaption = 'Find next'
               SearchFooter.FindPrevCaption = 'Find previous'
               SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -365,14 +369,14 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
             Left = 1
             Top = 146
             Width = 1169
-            Height = 318
+            Height = 300
             Align = alClient
             TabOrder = 1
             object sg_IntAlarm: TAdvStringGrid
               Left = 1
               Top = 1
               Width = 1167
-              Height = 316
+              Height = 298
               Cursor = crDefault
               Align = alClient
               ColCount = 8
@@ -460,6 +464,7 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
               PrintSettings.FooterFont.Style = []
               PrintSettings.PageNumSep = '/'
               ScrollSynch = True
+              ScrollWidth = 16
               SearchFooter.FindNextCaption = 'Find next'
               SearchFooter.FindPrevCaption = 'Find previous'
               SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -517,7 +522,7 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
               Height = 231
               Align = alClient
               Caption = #52636#51077#47928#49345#53468
-              Color = clBtnFace
+              Color = clWhite
               ParentColor = False
               TabOrder = 0
               object IntDoorListView: TListView
@@ -569,8 +574,8 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
                 Height = 11
                 Align = alTop
                 TabOrder = 1
-                FromColor = 15591915
-                ToColor = clSilver
+                FromColor = clWhite
+                ToColor = clWhite
                 Direction = False
                 Version = '1.4.0.0'
               end
@@ -581,12 +586,16 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
               Width = 718
               Height = 40
               Align = alTop
+              BevelOuter = bvNone
+              Color = clWhite
               TabOrder = 1
               object pan_SmallIntro: TPanel
                 Left = 87
                 Top = -1
                 Width = 537
                 Height = 41
+                BevelOuter = bvNone
+                Color = clWhite
                 TabOrder = 0
                 object Image6: TImage
                   Left = 352
@@ -886,6 +895,8 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
                 Top = 1
                 Width = 594
                 Height = 38
+                BevelOuter = bvNone
+                Color = clWhite
                 TabOrder = 1
                 object Image4: TImage
                   Left = 8
@@ -1485,7 +1496,7 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
               Height = 231
               Align = alClient
               Caption = #48169#48276#44396#50669#49345#53468
-              Color = clBtnFace
+              Color = clWhite
               ParentColor = False
               TabOrder = 0
               object Shader6: TShader
@@ -1495,8 +1506,8 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
                 Height = 9
                 Align = alTop
                 TabOrder = 1
-                FromColor = 15591915
-                ToColor = clSilver
+                FromColor = clWhite
+                ToColor = clWhite
                 Direction = False
                 Version = '1.4.0.0'
               end
@@ -1550,6 +1561,8 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
                 Width = 445
                 Height = 38
                 Align = alClient
+                BevelOuter = bvNone
+                Color = clWhite
                 TabOrder = 0
                 object Image1: TImage
                   Left = 8
@@ -1801,6 +1814,7 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
     Width = 761
     Height = 105
     BiDiMode = bdLeftToRight
+    Color = clWhite
     ParentBiDiMode = False
     ParentBackground = False
     TabOrder = 2
@@ -1829,6 +1843,16 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
       ParentFont = False
       TabOrder = 0
     end
+  end
+  object Panel17: TPanel [4]
+    Left = 0
+    Top = 0
+    Width = 1401
+    Height = 9
+    Align = alTop
+    BevelOuter = bvNone
+    Color = clSilver
+    TabOrder = 3
   end
   inherited CommandArray: TCommandArray
     Commands = <
@@ -2037,6 +2061,13 @@ inherited fmKTTypeMonitoring: TfmKTTypeMonitoring
     object Menu_DeviceReboot: TMenuItem
       Caption = #44208#54633#51109#52824#47532#49483
       OnClick = Menu_DeviceRebootClick
+    end
+    object N26: TMenuItem
+      Caption = '-'
+    end
+    object mn_DeviceChange: TMenuItem
+      Caption = #52968#53944#47204#47084#44368#52404
+      OnClick = mn_DeviceChangeClick
     end
   end
   object Popup_Locate: TPopupMenu

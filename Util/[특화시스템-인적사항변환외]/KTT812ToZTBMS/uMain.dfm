@@ -132,6 +132,7 @@ object fmMain: TfmMain
     Width = 560
     Height = 360
     Align = alTop
+    PageIndex = 1
     TabOrder = 0
     OnPageChanged = Notebook1PageChanged
     object TPage
@@ -481,6 +482,7 @@ object fmMain: TfmMain
               Width = 377
               Height = 25
               ForeColor = clBlue
+              MaxValue = 110
               Progress = 0
             end
             object StatusBar1: TStatusBar

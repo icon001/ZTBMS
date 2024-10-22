@@ -77,7 +77,7 @@ var
 begin
   GridInitialize(sg_DeviceInfo);
 
-  stSql := 'Select a.AC_NODENO,a.AC_ECUID,a.AC_DEVICENAME,a.AC_VER,b.ac_mcuip as NodeIP ';
+  stSql := 'Select a.AC_NODENO,a.AC_ECUID,a.AC_DEVICENAME,a.AC_VER,a.AC_DEVICECODE,a.AC_DEVICETYPE,b.ac_mcuip as NodeIP ';
   stSql := stSql + ' From TB_ACCESSDEVICE a ';
   stSql := stSql + ' Left Join (select * from TB_ACCESSDEVICE ';
   stSql := stSql + ' Where ac_gubun = ''0'') b ';
@@ -114,6 +114,8 @@ begin
         cells[2,nRow] := FindField('AC_ECUID').AsString;
         cells[3,nRow] := FindField('AC_DEVICENAME').AsString;
         cells[4,nRow] := FindField('AC_VER').AsString;
+        cells[5,nRow] := FindField('AC_DEVICECODE').AsString;
+        cells[6,nRow] := FindField('AC_DEVICETYPE').AsString;
       end;
       nRow := nRow + 1;
       Next;

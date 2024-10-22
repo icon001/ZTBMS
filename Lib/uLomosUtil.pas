@@ -46,7 +46,36 @@ const
   MB_TIMEDOUT = 32000;
 
 type
+  TAlarmState = class(TComponent)
+  private
+    FAlarmAreaNo: integer;
+    FNodeNo: integer;
+    FEcuID: string;
+    FState: string;
+    { Private declarations }
+  public
+    { Public declarations }
+    property NodeNo : integer read FNodeNo write FNodeNo;
+    property EcuID : string read FEcuID write FEcuID;
+    property AlarmAreaNo : integer read FAlarmAreaNo write FAlarmAreaNo;
+    property State : string read FState write FState;
+  end;
+  TAccessState = class(TComponent)
+  private
+    FNumber: integer;
+    FNodeNo: integer;
+    FEcuID: string;
+
+    { Private declarations }
+  public
+    { Public declarations }
+    property NodeNo : integer read FNodeNo write FNodeNo;
+    property EcuID : string read FEcuID write FEcuID;
+    property Number : integer read FNumber write FNumber;
+  end;
+type
  TNBLanaResources = (lrAlloc, lrFree);
+ byDynamicArr = array of Byte;
 type
  PMACAddress = ^TMACAddress;
  TMACAddress = array[0..5] of Byte;
@@ -66,6 +95,7 @@ type CString = string[100];
   Function ByteCopy(p:pAnsiChar;n:cardinal):String;
   procedure CDLogSave(aFileName: String;ast:string);
   function char2Hex(aData:char):string;
+  function charToByte(Achar : char):byte;
   function CheckDataPacket(aData:String; var bData:String):string;
   function CheckSumCheck(aBuff:string):Boolean;
   procedure ClearBitB(var b:byte; BitToClear: integer);
@@ -117,6 +147,7 @@ type CString = string[100];
   procedure GridtoFile(adbGrid: TDBGrid; aFileName: string);
   function Hex2Ascii(St: String;bConvert:Boolean=False;aConvertDec:integer=30): String;
   procedure Hex2BinFile(aFilName,aHeader,aHexData:string);
+  function Hex2ByteArray(aData:string):byDynamicArr;
   function Hex2Dec(const S: string): Longint;
   function Hex2Dec64(const S: string): int64;
   Function Hex2DecStr(S:String):String;
@@ -426,6 +457,14 @@ begin
   nOrd := Ord(aData);
   stHex := Dec2Hex(nOrd,2);
   result := stHex;
+end;
+
+function charToByte(Achar : char):byte;
+begin
+  if ((Achar >= '0') and (Achar <= '9')) then
+    Result := byte(Ord(AChar) - Ord('0'))
+  else
+    Result := byte(10+Ord(AChar) - Ord('A'));
 end;
 
 function Ascii2Hex(aData:string;bReverse:Boolean = False;bConvert:Boolean=False;aConvertDec:integer=30):string;
@@ -1409,6 +1448,21 @@ begin
     Result := IntToHex(N, A);
 end;
 
+function Hex2ByteArray(aData:string):byDynamicArr;
+var
+  i :integer;
+  bData : byDynamicArr;
+begin
+  aData := stringreplace(aData,' ','',[rfReplaceAll]);
+  aData := UpperCase(aData);
+  setLength(bData,trunc(length(aData)/2) );
+  fillchar(bData[0],sizeof(bData),0);
+  for i:=1 to trunc(length(aData)/2) do
+  begin
+    bData[i-1]  := charToByte(aData[i*2-1])*16 + charToByte(aData[i*2]);
+  end;
+  result := bData;
+end;
 Function Hex2DecStr(S:String):String;
 var
   i: longint;

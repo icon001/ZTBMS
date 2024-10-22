@@ -22,6 +22,8 @@ inherited fmAlarmAdminReport: TfmAlarmAdminReport
     Width = 1033
     Height = 65
     Align = alTop
+    Color = clWhite
+    ParentColor = False
     TabOrder = 0
     object Label1: TLabel
       Left = 16
@@ -246,7 +248,7 @@ inherited fmAlarmAdminReport: TfmAlarmAdminReport
     Left = 0
     Top = 65
     Width = 1033
-    Height = 422
+    Height = 429
     Cursor = crDefault
     Align = alClient
     ColCount = 7
@@ -331,6 +333,7 @@ inherited fmAlarmAdminReport: TfmAlarmAdminReport
     PrintSettings.FooterFont.Style = []
     PrintSettings.PageNumSep = '/'
     ScrollSynch = True
+    ScrollWidth = 16
     SearchFooter.FindNextCaption = 'Find next'
     SearchFooter.FindPrevCaption = 'Find previous'
     SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -484,7 +487,7 @@ inherited fmAlarmAdminReport: TfmAlarmAdminReport
       00FA030000000000000100080002000000000000000000FFFFFF002E02000000
       0000000000000000FFFF0000000000020000000100000000FEFEFF0000000000
       00000000000000FC000000000000000000000000000000005800E9E41F70F5B9
-      E2406B3771034E18E540}
+      E240633DC89D323DE640}
   end
   object frDBDataSet1: TfrDBDataSet
     DataSet = AdoQuery

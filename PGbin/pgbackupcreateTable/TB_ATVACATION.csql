@@ -1,0 +1,2 @@
+CREATE TABLE TB_ATVACATION (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , va_date VARCHAR(8) NOT NULL , co_companycode VARCHAR(3) NOT NULL , em_code VARCHAR(20) NOT NULL , at_vacode VARCHAR(3), va_etc VARCHAR(100) ); 
+ ALTER TABLE TB_ATVACATION   ADD CONSTRAINT TB_ATVACATION_pkey PRIMARY KEY (group_code, va_date, co_companycode, em_code);

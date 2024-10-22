@@ -177,6 +177,7 @@ type
     FOnDeviceSetupData: TDevicePacketData;
     FOnDeviceTypeChange: TDeviceTypeChange;
     FDeviceVersion: string;
+    FCardBufferFull: Boolean;
     procedure SetConnected(const Value: Boolean);
     procedure SetLastAccessData(const Value: string);
     procedure SetLastAlarmData(const Value: string);
@@ -200,6 +201,7 @@ type
     Property ECUID : string read FECUID write FECUID;
     property DeviceName : string read FDeviceName write FDeviceName;
 
+    property CardBufferFull : Boolean read FCardBufferFull write FCardBufferFull;
     property Connected : Boolean read FConnected write SetConnected;
     property LastAlarmStatus : string read FLastAlarmStatus write SetLastAlarmStatus;
     property LastNewAlarmStatus : string read FLastNewAlarmStatus write SetLastNewAlarmStatus; //새로 생성한 코드
@@ -737,6 +739,9 @@ begin
     else SetAlarmEventState(nArmAreaNo,aeNormalEvent);
   end else SetAlarmEventState(nArmAreaNo,aeNormal);
 
+  if aStatusCode = 'CF' then CardBufferFull := True
+  else if aStatusCode = 'C0' then CardBufferFull := False;
+
   if Assigned(FOnAlarmEventAnalysis) then
   begin
     OnAlarmEventAnalysis(Self,NodeNo,EcuID,inttostr(nArmAreaNo),aCmd,aMsgNo,aTime,aSubClass,aSubAddr,
@@ -1190,6 +1195,7 @@ var
   nIndex : integer;
   nOperLenth : integer;
   nOperStartPoint : integer;
+  bArmStateEvent : Boolean; //경계중에만 이벤트 발생
 begin
   if FLastAlarmData = Value then Exit;
   FLastAlarmData := Value;
@@ -1284,7 +1290,12 @@ begin
     nTempIndex := AlarmEventViewStatusCode.Indexof(stNewStateCode);
   end;
   if nTempIndex < 0 then bAlarmView := False
-  else bAlarmView := True;
+  else
+  begin
+    if( AlarmEventArmStateEvent.Strings[nTempIndex] = '1' ) then bArmStateEvent := True
+    else bArmStateEvent := False;
+    bAlarmView := True;
+  end;
 
   nTempIndex := AlarmEventSoundStatusCode.Indexof(stStatusCode);
   if nTempIndex < 0 then
@@ -1296,6 +1307,18 @@ begin
   begin
     stAlarmColor := AlarmEventSoundColor.Strings[nTempIndex];
     bAlarmSound := True;
+  end;
+  case UpperCase(stMode)[1] of
+   'A': begin
+          SetAlarmMode(nArmAreaNo,cmArm);
+          bArmStateEvent := False;      ///경계중이므로 이 옵션은 체크 할 필요 없다.
+        end;
+   'D': begin SetAlarmMode(nArmAreaNo,cmDisarm) end;
+   'T': begin SetAlarmMode(nArmAreaNo,cmTest) end;
+   'I': begin SetAlarmMode(nArmAreaNo,cmInit) end;
+   'P': begin SetAlarmMode(nArmAreaNo,cmPatrol) end;
+   'E': begin SetAlarmMode(nArmAreaNo,cmJaejung) end;
+  else  begin  end;
   end;
 
   if stPortNo <> '**' then    //포트 감지 인경우 무조건 뿌리자.
@@ -1309,16 +1332,14 @@ begin
       bAlarmSound := False; //존 복구는 알람 울리지 말자...
     end;
   end;
-
-  case UpperCase(stMode)[1] of
-   'A': begin SetAlarmMode(nArmAreaNo,cmArm) end;
-   'D': begin SetAlarmMode(nArmAreaNo,cmDisarm) end;
-   'T': begin SetAlarmMode(nArmAreaNo,cmTest) end;
-   'I': begin SetAlarmMode(nArmAreaNo,cmInit) end;
-   'P': begin SetAlarmMode(nArmAreaNo,cmPatrol) end;
-   'E': begin SetAlarmMode(nArmAreaNo,cmJaejung) end;
-  else  begin  end;
+  
+  if bArmStateEvent then  ///경계중에만 알림 신호 발생시 해제중이면 알람 울리지 말자.
+  begin
+    bAlarmSound := False;
+    bAlarmView := False;
   end;
+
+
 
   if (stSubCLass = 'MN') or (stSubCLass = 'EX')then
   begin
@@ -1333,6 +1354,9 @@ begin
     if bAlarmSound then SetAlarmEventState(nArmAreaNo,aeAlarmEvent)
     else SetAlarmEventState(nArmAreaNo,aeNormalEvent);
   end else SetAlarmEventState(nArmAreaNo,aeNormal);
+
+  if stStatusCode = 'CF' then CardBufferFull := True
+  else if stStatusCode = 'C0' then CardBufferFull := False;
 
   if Assigned(FOnAlarmEventAnalysis) then
   begin

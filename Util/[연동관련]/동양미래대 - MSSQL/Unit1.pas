@@ -82,6 +82,7 @@ type
     SpeedButton2: TSpeedButton;
     DBGrid1: TDBGrid;
     Label7: TLabel;
+    btn_queryCreate: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure SpeedButton2Click(Sender: TObject);
@@ -104,6 +105,7 @@ type
     procedure OracleConnectCheckTimerTimer(Sender: TObject);
     procedure SpeedButton5Click(Sender: TObject);
     procedure SpeedButton6Click(Sender: TObject);
+    procedure btn_queryCreateClick(Sender: TObject);
   private
     FDBConnected: Boolean;
     FRelayDBConnected: Boolean;
@@ -1942,7 +1944,7 @@ procedure TfmMain.Button1Click(Sender: TObject);
 var
   stSql : string;
 begin
-  Memo2.Text :=  'Select * from MFC_HUB Where HUB_IDNO = ''  '' order by HUB_SEQNO ';
+  Memo2.Text :=  'select  * from MFC_VTUSM where USM_IDNO = '''' order by USM_ISFG desc';
 
 (*  stSql := ' Insert Into MFC_HUB(HUB_UNNM,HUB_PSNM,HUB_IDDI,HUB_NAME,HUB_IDNO,HUB_ISFG,HUB_LSFG,HUB_SDCO,hub_chipserno)';
   stSql := stSql + ' Values(''테스트'',''테스트'',''3'',''테스트직원'',''TEST02'',''0'',''0'',''0'',''499602D3'') ';
@@ -2657,6 +2659,11 @@ begin
 
   result := ZmosProcessExecSQL(stSql);
   if Not result then Memo1.Lines.Add(stSql);
+end;
+
+procedure TfmMain.btn_queryCreateClick(Sender: TObject);
+begin
+Memo3.Text :=  'Select * from MFC_BAS where BAS_IDNO = '''' ';
 end;
 
 end.

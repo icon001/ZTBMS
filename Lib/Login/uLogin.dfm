@@ -1,12 +1,13 @@
 object fmLogin: TfmLogin
-  Left = 571
-  Top = 274
-  Width = 247
-  Height = 186
+  Left = 555
+  Top = 101
   ActiveControl = edUserID
   BorderIcons = []
+  BorderStyle = bsNone
   Caption = #44288#47532#51088#47196#44536#51064
-  Color = clBtnFace
+  ClientHeight = 139
+  ClientWidth = 239
+  Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -13

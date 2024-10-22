@@ -1,10 +1,11 @@
 object fmDeviceTimeCode: TfmDeviceTimeCode
   Left = 520
   Top = 352
-  Width = 526
-  Height = 271
+  BorderStyle = bsNone
   Caption = #53440#51076#53076#46300#44288#47532
-  Color = clBtnFace
+  ClientHeight = 234
+  ClientWidth = 518
+  Color = clWhite
   Font.Charset = HANGEUL_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
@@ -104,7 +105,7 @@ object fmDeviceTimeCode: TfmDeviceTimeCode
     Height = 33
     Align = alTop
     Caption = #53440#51076#53076#46300#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16

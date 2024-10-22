@@ -1,6 +1,6 @@
 inherited fmKHUEmpInitialize: TfmKHUEmpInitialize
-  Left = 362
-  Top = 92
+  Left = 363
+  Top = 84
   Width = 752
   Height = 615
   Caption = #44221#55148#45824#49324#50896#52488#44592#54868

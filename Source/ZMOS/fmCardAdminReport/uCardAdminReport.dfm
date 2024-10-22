@@ -22,6 +22,8 @@ inherited fmCardAdminReport: TfmCardAdminReport
     Width = 1016
     Height = 65
     Align = alTop
+    Color = clWhite
+    ParentColor = False
     TabOrder = 0
     object Label1: TLabel
       Left = 16
@@ -140,6 +142,7 @@ inherited fmCardAdminReport: TfmCardAdminReport
       Height = 49
       Align = alRight
       BevelOuter = bvNone
+      Color = clWhite
       TabOrder = 3
       object btn_Close: TSpeedButton
         Left = 296
@@ -309,7 +312,7 @@ inherited fmCardAdminReport: TfmCardAdminReport
     Left = 0
     Top = 65
     Width = 1016
-    Height = 422
+    Height = 429
     Cursor = crDefault
     Align = alClient
     ColCount = 8
@@ -395,6 +398,7 @@ inherited fmCardAdminReport: TfmCardAdminReport
     PrintSettings.FooterFont.Style = []
     PrintSettings.PageNumSep = '/'
     ScrollSynch = True
+    ScrollWidth = 16
     SearchFooter.FindNextCaption = 'Find next'
     SearchFooter.FindPrevCaption = 'Find previous'
     SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -566,7 +570,7 @@ inherited fmCardAdminReport: TfmCardAdminReport
       444E4F225D00000000FFFF00000000000200000001000000000400B1BCB8B200
       09000000000000000000080000000000020000000000FFFFFF00000000020000
       0000000000FEFEFF000000000000000000000000FC0000000000000000000000
-      00000000005800E9E41F70F5B9E2403CF174B758D8E440}
+      00000000005800E9E41F70F5B9E2402296BAA1323DE640}
   end
   object frDBDataSet1: TfrDBDataSet
     DataSet = AdoQuery

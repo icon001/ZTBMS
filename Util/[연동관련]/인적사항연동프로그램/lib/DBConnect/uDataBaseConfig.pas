@@ -1077,7 +1077,7 @@ function TDataBaseConfig.Table3VersionMake: Boolean;
 var
   stSql : string;
 begin
-  stSql := InsertIntoTB_CONFIG('EMPCONV','LASTTIME','','최종연동시간');
+  stSql := InsertIntoTB_CONFIG('EMPCONV','LASTTIME',formatDateTime('yyyymmddhhnnsszzz',now),'최종연동시간'); ///오늘 날짜로 해서 바로 연동되지 않도록 셋팅
   dmDBModule.ProcessExecSQL(stSql);
 
   stSql := UpdateTB_CONFIG('EMPCONV','TABLE_VER','3');

@@ -1,0 +1,2 @@
+CREATE TABLE TB_POSI (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , co_companycode VARCHAR(3) NOT NULL , po_posicode VARCHAR(3) NOT NULL , po_name VARCHAR(30), po_updatecheck CHAR(1) DEFAULT  'N'  ); 
+ ALTER TABLE TB_POSI   ADD CONSTRAINT TB_POSI_pkey PRIMARY KEY (group_code, co_companycode, po_posicode);

@@ -1,6 +1,6 @@
 inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
-  Left = 960
-  Top = 288
+  Left = 377
+  Top = 222
   Width = 1269
   Height = 612
   Caption = #44288#51228#49884#49828#53596
@@ -20,14 +20,14 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
   TextHeight = 12
   object Splitter1: TSplitter [0]
     Left = 217
-    Top = 0
-    Height = 578
+    Top = 9
+    Height = 576
   end
   object pan_device: TPanel [1]
     Left = 0
-    Top = 0
+    Top = 9
     Width = 217
-    Height = 578
+    Height = 576
     Align = alLeft
     TabOrder = 0
     OnResize = pan_deviceResize
@@ -35,7 +35,7 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
       Left = 1
       Top = 1
       Width = 215
-      Height = 576
+      Height = 574
       ActivePage = tbDEVICE
       Align = alClient
       TabOrder = 0
@@ -47,14 +47,16 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
           Left = 0
           Top = 0
           Width = 207
-          Height = 549
+          Height = 547
           Align = alClient
+          Color = clWhite
+          ParentColor = False
           TabOrder = 0
           object TreeView_Location: TTreeView
             Left = 2
             Top = 23
             Width = 203
-            Height = 524
+            Height = 522
             Align = alClient
             BorderStyle = bsNone
             HotTrack = True
@@ -87,9 +89,10 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
             Width = 203
             Height = 9
             Align = alTop
+            Color = clWhite
             TabOrder = 1
-            FromColor = 15591915
-            ToColor = clSilver
+            FromColor = clWhite
+            ToColor = clWhite
             Direction = False
             Version = '1.4.0.0'
           end
@@ -130,8 +133,10 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
           Left = 0
           Top = 0
           Width = 207
-          Height = 549
+          Height = 547
           Align = alClient
+          Color = clWhite
+          ParentColor = False
           TabOrder = 0
           object Shader2: TShader
             Left = 2
@@ -139,9 +144,11 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
             Width = 203
             Height = 9
             Align = alTop
+            Color = clWhite
             TabOrder = 0
-            FromColor = 15591915
-            ToColor = clSilver
+            FromColor = clWhite
+            ToColor = clWhite
+            FromColorMirror = clWhite
             Direction = False
             Version = '1.4.0.0'
           end
@@ -149,7 +156,7 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
             Left = 2
             Top = 23
             Width = 203
-            Height = 524
+            Height = 522
             Cursor = crDefault
             Align = alClient
             ColCount = 3
@@ -234,6 +241,7 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
             ScrollSynch = True
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -265,8 +273,10 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
           Left = 0
           Top = 0
           Width = 207
-          Height = 549
+          Height = 547
           Align = alClient
+          Color = clWhite
+          ParentColor = False
           TabOrder = 0
           object Shader3: TShader
             Left = 2
@@ -274,9 +284,10 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
             Width = 203
             Height = 9
             Align = alTop
+            Color = clWhite
             TabOrder = 0
-            FromColor = 15591915
-            ToColor = clSilver
+            FromColor = clWhite
+            ToColor = clWhite
             Direction = False
             Version = '1.4.0.0'
           end
@@ -292,7 +303,7 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
             Left = 2
             Top = 23
             Width = 203
-            Height = 524
+            Height = 522
             Cursor = crDefault
             Align = alClient
             DefaultColWidth = 90
@@ -376,6 +387,7 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
             ScrollSynch = True
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -441,9 +453,9 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
   end
   object Panel5: TPanel [3]
     Left = 220
-    Top = 0
+    Top = 9
     Width = 1041
-    Height = 578
+    Height = 576
     Align = alClient
     TabOrder = 2
     object Splitter7: TSplitter
@@ -458,7 +470,7 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
       Left = 1
       Top = 380
       Width = 1039
-      Height = 197
+      Height = 195
       Align = alClient
       TabOrder = 0
       OnResize = Panel15Resize
@@ -466,7 +478,7 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
         Left = 1
         Top = 1
         Width = 1037
-        Height = 195
+        Height = 193
         Cursor = crDefault
         Align = alClient
         ColCount = 16
@@ -558,6 +570,7 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
         ScrollSynch = True
+        ScrollWidth = 16
         SearchFooter.FindNextCaption = 'Find next'
         SearchFooter.FindPrevCaption = 'Find previous'
         SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -641,7 +654,7 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
                 Height = 305
                 Align = alClient
                 Caption = #52636#51077#47928#49345#53468
-                Color = clBtnFace
+                Color = clWhite
                 ParentColor = False
                 TabOrder = 0
                 object Shader6: TShader
@@ -650,9 +663,10 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
                   Width = 1023
                   Height = 9
                   Align = alTop
+                  Color = clWhite
                   TabOrder = 1
-                  FromColor = 15591915
-                  ToColor = clSilver
+                  FromColor = clWhite
+                  ToColor = clWhite
                   Direction = False
                   Version = '1.4.0.0'
                 end
@@ -707,6 +721,8 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
                   Width = 1025
                   Height = 38
                   Align = alClient
+                  BevelOuter = bvNone
+                  Color = clWhite
                   TabOrder = 0
                   object Image4: TImage
                     Left = 8
@@ -1295,6 +1311,16 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
         end
       end
     end
+  end
+  object Panel17: TPanel [4]
+    Left = 0
+    Top = 0
+    Width = 1261
+    Height = 9
+    Align = alTop
+    BevelOuter = bvNone
+    Color = clSilver
+    TabOrder = 3
   end
   inherited CommandArray: TCommandArray
     Commands = <
@@ -6442,6 +6468,13 @@ inherited fmAccessTypeMonitoring: TfmAccessTypeMonitoring
     object mn_DeviceReset: TMenuItem
       Caption = #44592#44592#47532#49483
       OnClick = mn_DeviceResetClick
+    end
+    object N28: TMenuItem
+      Caption = '-'
+    end
+    object mn_DeviceChange: TMenuItem
+      Caption = #52968#53944#47204#47084#44368#52404
+      OnClick = mn_DeviceChangeClick
     end
   end
   object PopupMenu_IntAccess: TPopupMenu

@@ -3,8 +3,8 @@ program NewDataBaseRecovery;
 uses
   Forms,
   uDataBaseConvert in 'uDataBaseConvert.pas' {Form1},
-  DIMime in '..\..\Lib\DIMime.pas',
-  uLomosUtil in '..\..\..\Lib\uLomosUtil.pas';
+  uLomosUtil in '..\..\..\Lib\uLomosUtil.pas',
+  DIMime in '..\..\..\Lib\DIMime.pas';
 
 {$R *.res}
 

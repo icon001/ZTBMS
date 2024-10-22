@@ -63,7 +63,7 @@ var
   BuildingList : TStringList;          //빌딩별 기기 정보
   BuildingNameList : TStringList;          //빌딩명칭 기기 정보
   ArmAreaStateList : TStringList;       //방범구역 상태 정보
-  DoorStateList : TStringList;       //방범구역 상태 정보
+  DoorStateList : TStringList;       //출입문 상태 정보
   DeviceStateList : TStringList;       //기기별 상태 정보
   DaemonState : TDaemonState;          //데몬 상태
   AlarmEventViewStatusCode : TStringList;  //알람 발생 코드
@@ -86,7 +86,8 @@ var
 
   G_bAlarmRefreshStart : Boolean;           //알람 리프레쉬 - 모니터 화면 클리어 할때까지 대기
   G_nAlarmRefreshDate : integer = 2;
-  
+  G_nEmCodeLength : integer = 5;
+
 implementation
 
 {$R *.dfm}

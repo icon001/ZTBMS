@@ -1,9 +1,10 @@
 inherited DoorscheduleRegForm: TDoorscheduleRegForm
-  Left = 486
-  Top = 146
+  Left = 446
+  Top = 123
   Width = 1248
   Height = 858
   Caption = #52636#51077#47928' '#49828#52992#51572' '#44288#47532
+  Color = clWhite
   Font.Height = -12
   Font.Name = #44404#47548
   FormStyle = fsMDIChild
@@ -19,7 +20,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
     Left = 478
     Top = 33
     Width = 2
-    Height = 791
+    Height = 798
     Align = alRight
   end
   object Panel57: TPanel [1]
@@ -29,7 +30,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
     Height = 33
     Align = alTop
     Caption = #52636#51077#47928' '#49828#52992#51572' '#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -42,22 +43,24 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
     Left = 0
     Top = 33
     Width = 478
-    Height = 791
+    Height = 798
     Align = alClient
+    Color = clWhite
     TabOrder = 1
     object RzGroupBox4: TRzGroupBox
       Left = 1
       Top = 129
       Width = 476
-      Height = 661
+      Height = 668
       Align = alClient
       Caption = #46321#47197#46108' '#52636#51077#47928
+      Color = clWhite
       TabOrder = 0
       object sg_DoorList: TAdvStringGrid
         Left = 1
         Top = 13
         Width = 474
-        Height = 647
+        Height = 654
         Cursor = crDefault
         Align = alClient
         ColCount = 15
@@ -145,6 +148,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
         ScrollSynch = True
+        ScrollWidth = 16
         SearchFooter.FindNextCaption = 'Find next'
         SearchFooter.FindPrevCaption = 'Find previous'
         SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -325,15 +329,16 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
     Left = 480
     Top = 33
     Width = 760
-    Height = 791
+    Height = 798
     Align = alRight
+    Color = clWhite
     TabOrder = 2
     object PageControl1: TPageControl
       Left = 1
       Top = 33
       Width = 758
-      Height = 757
-      ActivePage = TabSheet2
+      Height = 764
+      ActivePage = TabSheet1
       Align = alClient
       TabOrder = 0
       object TabSheet1: TTabSheet
@@ -342,9 +347,13 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
           Left = 0
           Top = 0
           Width = 750
-          Height = 730
+          Height = 737
           Align = alClient
+          Color = clWhite
           TabOrder = 0
+          DesignSize = (
+            750
+            737)
           object RzGroupBox1: TRzGroupBox
             Left = 1
             Top = 1
@@ -352,6 +361,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
             Height = 110
             Align = alTop
             Caption = #54217#51068' '#49828#52992#51572
+            Color = clWhite
             TabOrder = 0
             object PaintBox1: TPaintBox
               Left = 9
@@ -638,6 +648,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
             Height = 110
             Align = alTop
             Caption = ' '#48152#55092#51068' '#49828#52992#51572' '
+            Color = clWhite
             TabOrder = 1
             object PaintBox2: TPaintBox
               Left = 9
@@ -737,7 +748,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 0
-                OnDblClick = Panel8DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel8DragDrop
                 OnDragOver = Panel8DragOver
                 OnResize = Panel8Resize
@@ -767,7 +778,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 1
-                OnDblClick = Panel8DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel8DragDrop
                 OnDragOver = Panel8DragOver
                 OnResize = Panel8Resize
@@ -797,7 +808,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 2
-                OnDblClick = Panel8DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel8DragDrop
                 OnDragOver = Panel8DragOver
                 OnResize = Panel8Resize
@@ -815,7 +826,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 3
-                OnDblClick = Panel8DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel8DragDrop
                 OnDragOver = Panel8DragOver
                 OnResize = Panel8Resize
@@ -845,7 +856,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 4
-                OnDblClick = Panel8DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel8DragDrop
                 OnDragOver = Panel8DragOver
                 OnResize = Panel8Resize
@@ -924,6 +935,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
             Height = 110
             Align = alTop
             Caption = ' '#51068#50836#51068' '#49828#52992#51572' '
+            Color = clWhite
             TabOrder = 2
             object PaintBox3: TPaintBox
               Left = 9
@@ -1023,7 +1035,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 0
-                OnDblClick = Panel22DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel22DragDrop
                 OnDragOver = Panel22DragOver
                 OnResize = Panel22Resize
@@ -1053,7 +1065,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 1
-                OnDblClick = Panel22DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel22DragDrop
                 OnDragOver = Panel22DragOver
                 OnResize = Panel22Resize
@@ -1083,7 +1095,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 2
-                OnDblClick = Panel22DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel22DragDrop
                 OnDragOver = Panel22DragOver
                 OnResize = Panel22Resize
@@ -1101,7 +1113,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 3
-                OnDblClick = Panel22DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel22DragDrop
                 OnDragOver = Panel22DragOver
                 OnResize = Panel22Resize
@@ -1131,7 +1143,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 4
-                OnDblClick = Panel22DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel22DragDrop
                 OnDragOver = Panel22DragOver
                 OnResize = Panel22Resize
@@ -1210,6 +1222,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
             Height = 110
             Align = alTop
             Caption = #53945#51221#51068'1 '#49828#52992#51572
+            Color = clWhite
             TabOrder = 3
             object PaintBox4: TPaintBox
               Left = 9
@@ -1309,7 +1322,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 0
-                OnDblClick = Panel44DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel44DragDrop
                 OnDragOver = Panel44DragOver
                 OnResize = Panel44Resize
@@ -1339,7 +1352,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 1
-                OnDblClick = Panel44DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel44DragDrop
                 OnDragOver = Panel44DragOver
                 OnResize = Panel44Resize
@@ -1369,7 +1382,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 2
-                OnDblClick = Panel44DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel44DragDrop
                 OnDragOver = Panel44DragOver
                 OnResize = Panel44Resize
@@ -1387,7 +1400,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 3
-                OnDblClick = Panel44DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel44DragDrop
                 OnDragOver = Panel44DragOver
                 OnResize = Panel44Resize
@@ -1417,7 +1430,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 4
-                OnDblClick = Panel44DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel44DragDrop
                 OnDragOver = Panel44DragOver
                 OnResize = Panel44Resize
@@ -1494,6 +1507,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
             Top = 665
             Width = 87
             Height = 30
+            Anchors = [akLeft, akBottom]
             Caption = #51201#50857
             Color = 15791348
             HighlightColor = 16026986
@@ -1561,6 +1575,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
             Height = 110
             Align = alTop
             Caption = #53945#51221#51068'2 '#49828#52992#51572
+            Color = clWhite
             TabOrder = 5
             object PaintBox5: TPaintBox
               Left = 9
@@ -1660,7 +1675,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 0
-                OnDblClick = pan_h21DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h21DragDrop
                 OnDragOver = pan_h21DragOver
                 OnResize = pan_h21Resize
@@ -1690,7 +1705,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 1
-                OnDblClick = pan_h21DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h21DragDrop
                 OnDragOver = pan_h21DragOver
                 OnResize = pan_h21Resize
@@ -1720,7 +1735,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 2
-                OnDblClick = pan_h21DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h21DragDrop
                 OnDragOver = pan_h21DragOver
                 OnResize = pan_h21Resize
@@ -1738,7 +1753,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 3
-                OnDblClick = pan_h21DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h21DragDrop
                 OnDragOver = pan_h21DragOver
                 OnResize = pan_h21Resize
@@ -1768,7 +1783,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 4
-                OnDblClick = pan_h21DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h21DragDrop
                 OnDragOver = pan_h21DragOver
                 OnResize = pan_h21Resize
@@ -1847,6 +1862,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
             Height = 110
             Align = alTop
             Caption = #53945#51221#51068'3 '#49828#52992#51572
+            Color = clWhite
             TabOrder = 6
             object PaintBox6: TPaintBox
               Left = 9
@@ -1946,7 +1962,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 0
-                OnDblClick = pan_h31DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h31DragDrop
                 OnDragOver = pan_h31DragOver
                 OnResize = pan_h31Resize
@@ -1976,7 +1992,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 1
-                OnDblClick = pan_h31DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h31DragDrop
                 OnDragOver = pan_h31DragOver
                 OnResize = pan_h31Resize
@@ -2006,7 +2022,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 2
-                OnDblClick = pan_h31DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h31DragDrop
                 OnDragOver = pan_h31DragOver
                 OnResize = pan_h31Resize
@@ -2024,7 +2040,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 3
-                OnDblClick = pan_h31DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h31DragDrop
                 OnDragOver = pan_h31DragOver
                 OnResize = pan_h31Resize
@@ -2054,7 +2070,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 4
-                OnDblClick = pan_h31DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h31DragDrop
                 OnDragOver = pan_h31DragOver
                 OnResize = pan_h31Resize
@@ -2136,7 +2152,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
           Top = 0
           Width = 750
           Height = 193
-          ActivePage = tb_holiday2
+          ActivePage = tb_holiday3
           Align = alTop
           TabOrder = 0
           object tb_week: TTabSheet
@@ -2151,8 +2167,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label166: TLabel
                 Left = 16
                 Top = 24
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '1'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -2200,7 +2216,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 24
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -2212,8 +2228,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label173: TLabel
                 Left = 16
                 Top = 48
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '2'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -2261,7 +2277,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 48
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -2273,8 +2289,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label180: TLabel
                 Left = 16
                 Top = 72
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '3'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -2322,7 +2338,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 72
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -2334,8 +2350,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label187: TLabel
                 Left = 16
                 Top = 96
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '4'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -2383,7 +2399,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 96
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -2395,8 +2411,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label194: TLabel
                 Left = 16
                 Top = 120
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '5'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -2444,7 +2460,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 120
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -2543,6 +2559,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -2654,6 +2671,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -2765,6 +2783,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -2876,6 +2895,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -2987,6 +3007,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -3021,8 +3042,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label131: TLabel
                 Left = 16
                 Top = 24
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '1'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -3070,7 +3091,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 24
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -3082,8 +3103,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label138: TLabel
                 Left = 16
                 Top = 48
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '2'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -3131,7 +3152,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 48
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -3143,8 +3164,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label145: TLabel
                 Left = 16
                 Top = 72
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '3'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -3192,7 +3213,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 72
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -3204,8 +3225,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label152: TLabel
                 Left = 16
                 Top = 96
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '4'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -3253,7 +3274,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 96
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -3265,8 +3286,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label159: TLabel
                 Left = 16
                 Top = 120
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '5'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -3314,7 +3335,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 120
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -3415,6 +3436,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -3526,6 +3548,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -3637,6 +3660,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -3748,6 +3772,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -3859,6 +3884,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -3893,8 +3919,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label96: TLabel
                 Left = 16
                 Top = 24
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '1'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -3942,7 +3968,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 24
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -3954,8 +3980,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label103: TLabel
                 Left = 16
                 Top = 48
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '2'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -4003,7 +4029,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 48
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -4015,8 +4041,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label110: TLabel
                 Left = 16
                 Top = 72
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '3'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -4064,7 +4090,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 72
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -4076,8 +4102,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label117: TLabel
                 Left = 16
                 Top = 96
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '4'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -4125,7 +4151,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 96
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -4137,8 +4163,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label124: TLabel
                 Left = 16
                 Top = 120
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '5'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -4186,7 +4212,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 120
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -4287,6 +4313,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -4398,6 +4425,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -4509,6 +4537,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -4620,6 +4649,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -4731,6 +4761,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -4765,8 +4796,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label60: TLabel
                 Left = 16
                 Top = 24
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '1'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -4814,7 +4845,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 24
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -4826,8 +4857,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label67: TLabel
                 Left = 16
                 Top = 48
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '2'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -4875,7 +4906,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 48
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -4887,8 +4918,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label74: TLabel
                 Left = 16
                 Top = 72
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '3'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -4936,7 +4967,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 72
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -4948,8 +4979,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label81: TLabel
                 Left = 16
                 Top = 96
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '4'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -4997,7 +5028,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 96
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -5009,8 +5040,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label89: TLabel
                 Left = 16
                 Top = 120
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '5'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -5058,7 +5089,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 120
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -5159,6 +5190,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -5270,6 +5302,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -5381,6 +5414,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -5492,6 +5526,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -5603,6 +5638,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -5637,8 +5673,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label201: TLabel
                 Left = 16
                 Top = 24
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '1'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -5686,7 +5722,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 24
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -5698,8 +5734,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label208: TLabel
                 Left = 16
                 Top = 48
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '2'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -5747,7 +5783,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 48
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -5759,8 +5795,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label215: TLabel
                 Left = 16
                 Top = 72
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '3'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -5808,7 +5844,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 72
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -5820,8 +5856,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label222: TLabel
                 Left = 16
                 Top = 96
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '4'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -5869,7 +5905,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 96
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -5881,8 +5917,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label229: TLabel
                 Left = 16
                 Top = 120
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '5'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -5930,7 +5966,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 120
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -6031,6 +6067,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -6142,6 +6179,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -6253,6 +6291,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -6364,6 +6403,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -6475,6 +6515,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -6509,8 +6550,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object lb_Section11: TLabel
                 Left = 16
                 Top = 24
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '1'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -6558,7 +6599,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 24
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -6570,8 +6611,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label32: TLabel
                 Left = 16
                 Top = 48
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '2'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -6619,7 +6660,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 48
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -6631,8 +6672,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label39: TLabel
                 Left = 16
                 Top = 72
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '3'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -6680,7 +6721,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 72
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -6692,8 +6733,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label46: TLabel
                 Left = 16
                 Top = 96
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '4'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -6741,7 +6782,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 96
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -6753,8 +6794,8 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
               object Label53: TLabel
                 Left = 16
                 Top = 120
-                Width = 31
-                Height = 15
+                Width = 30
+                Height = 12
                 Caption = '5'#44396#44036
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -6802,7 +6843,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Left = 387
                 Top = 120
                 Width = 48
-                Height = 15
+                Height = 12
                 Caption = #46041#51089#47784#46300
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -6903,6 +6944,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -7014,6 +7056,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -7125,6 +7168,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -7236,6 +7280,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -7347,6 +7392,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 Color = clWindow
                 Version = '1.4.0.0'
                 Visible = True
+                ButtonWidth = 18
                 Style = csOwnerDrawFixed
                 DropWidth = 0
                 Enabled = True
@@ -7375,6 +7421,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
           Width = 750
           Height = 56
           Align = alTop
+          Color = clWhite
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -12
@@ -7472,6 +7519,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
       Height = 32
       Align = alTop
       BevelOuter = bvNone
+      Color = clWhite
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12

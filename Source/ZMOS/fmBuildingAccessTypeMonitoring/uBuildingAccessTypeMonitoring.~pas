@@ -74,19 +74,6 @@ type
     smallDoorImageList1: TImageList;
     LargeDoorImageList: TImageList;
     Pan_Remark1: TPanel;
-    pan_LargeIntro: TPanel;
-    Image4: TImage;
-    Image5: TImage;
-    Image12: TImage;
-    Image13: TImage;
-    Image14: TImage;
-    Image15: TImage;
-    StaticText4: TStaticText;
-    StaticText5: TStaticText;
-    StaticText12: TStaticText;
-    StaticText13: TStaticText;
-    StaticText14: TStaticText;
-    StaticText15: TStaticText;
     sg_Access: TAdvStringGrid;
     PopupMenu_Door: TPopupMenu;
     pm_modechange: TMenuItem;
@@ -102,19 +89,6 @@ type
     N8: TMenuItem;
     N3: TMenuItem;
     N4: TMenuItem;
-    pan_SmallIntro: TPanel;
-    Image6: TImage;
-    Image7: TImage;
-    Image8: TImage;
-    Image9: TImage;
-    Image2: TImage;
-    Image3: TImage;
-    StaticText6: TStaticText;
-    StaticText7: TStaticText;
-    StaticText8: TStaticText;
-    StaticText9: TStaticText;
-    StaticText2: TStaticText;
-    StaticText3: TStaticText;
     pm_JavarOpen: TMenuItem;
     pm_JavaraClose: TMenuItem;
     pm_MasterMode: TMenuItem;
@@ -138,6 +112,33 @@ type
     N9: TMenuItem;
     N10: TMenuItem;
     N12: TMenuItem;
+    Panel1: TPanel;
+    pan_LargeIntro: TPanel;
+    Image2: TImage;
+    Image3: TImage;
+    Image4: TImage;
+    Image5: TImage;
+    Image12: TImage;
+    Image13: TImage;
+    StaticText2: TStaticText;
+    StaticText3: TStaticText;
+    StaticText4: TStaticText;
+    StaticText5: TStaticText;
+    StaticText12: TStaticText;
+    StaticText13: TStaticText;
+    pan_SmallIntro: TPanel;
+    Image6: TImage;
+    Image7: TImage;
+    Image8: TImage;
+    Image9: TImage;
+    Image10: TImage;
+    Image11: TImage;
+    StaticText6: TStaticText;
+    StaticText7: TStaticText;
+    StaticText8: TStaticText;
+    StaticText9: TStaticText;
+    StaticText10: TStaticText;
+    StaticText11: TStaticText;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure SocketWatchTimerTimer(Sender: TObject);
@@ -225,6 +226,10 @@ type
     procedure N7Click(Sender: TObject);
     procedure N9Click(Sender: TObject);
     procedure N10Click(Sender: TObject);
+    procedure PageControl1DrawTab(Control: TCustomTabControl;
+      TabIndex: Integer; const Rect: TRect; Active: Boolean);
+    procedure PageControl2DrawTab(Control: TCustomTabControl;
+      TabIndex: Integer; const Rect: TRect; Active: Boolean);
   private
     L_bFirst : Boolean;
     L_bClose : Boolean;
@@ -1892,7 +1897,14 @@ begin
   stSql := 'select * from TB_LOCATION ';
   stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
   stSql := stSql + ' AND LO_GUBUN = ''' + BuildingStep + ''' ';
-  stSql := stSql + ' Order by LO_DONGCODE,LO_FLOORCODE,LO_AREACODE ';
+  //stSql := stSql + ' Order by LO_DONGCODE,LO_FLOORCODE,LO_AREACODE ';
+  if G_nBuildingSearchIndex = 0 then
+  begin
+    stSql := stSql + ' Order by LO_DONGCODE,LO_FLOORCODE,LO_AREACODE ';
+  end else
+  begin
+    stSql := stSql + ' Order by LO_NAME ';
+  end;
 
   Try
     CoInitialize(nil);
@@ -2247,12 +2259,12 @@ begin
       end else
       begin
         stDoorName:= dmDBFunction.GetArmAreaName(inttostr(NodeNo),aEcuID,aArmAreaNo); //방범 구역 명
-        if stDoorName = '' then stDoorName:= dmDBFunction.GetDeviceName(NodeNo,aEcuID); // 컨트롤러명
+        if stDoorName = '' then stDoorName:= dmDBFunction.GetDeviceName(inttostr(NodeNo),aEcuID); // 컨트롤러명
       end;
     end else
     begin
       stDoorName:= dmDBFunction.GetArmAreaName(inttostr(NodeNo),aEcuID,aArmAreaNo); //방범 구역 명
-      if stDoorName = '' then stDoorName:= dmDBFunction.GetDeviceName(NodeNo,aEcuID); // 컨트롤러명
+      if stDoorName = '' then stDoorName:= dmDBFunction.GetDeviceName(inttostr(NodeNo),aEcuID); // 컨트롤러명
     end;
   end;
 
@@ -3540,6 +3552,50 @@ begin
     TempAdoQuery.Free;
     CoUninitialize;
   End;
+end;
+
+procedure TfmBuildingAccessTypeMonitoring.PageControl1DrawTab(
+  Control: TCustomTabControl; TabIndex: Integer; const Rect: TRect;
+  Active: Boolean);
+begin
+  inherited;
+  with Control.Canvas do
+  begin
+    if Active then
+    begin
+      Brush.Color := $0099C1FD; // 선택된 탭의 배경색
+      Font.Color := clWhite; // 선택된 탭의 글자색
+    end
+    else
+    begin
+      Brush.Color := clWhite; // 선택되지 않은 탭의 배경색
+      Font.Color := clBlack; // 선택되지 않은 탭의 글자색
+    end;
+    FillRect(Rect); // Canvas.FillRect 메서드 사용
+    TextOut(Rect.Left + 8, Rect.Top + 3, TPageControl(Control).Pages[TabIndex].Caption);
+  end;
+end;
+
+procedure TfmBuildingAccessTypeMonitoring.PageControl2DrawTab(
+  Control: TCustomTabControl; TabIndex: Integer; const Rect: TRect;
+  Active: Boolean);
+begin
+  inherited;
+  with Control.Canvas do
+  begin
+    if Active then
+    begin
+      Brush.Color := $0099C1FD; // 선택된 탭의 배경색
+      Font.Color := clWhite; // 선택된 탭의 글자색
+    end
+    else
+    begin
+      Brush.Color := clWhite; // 선택되지 않은 탭의 배경색
+      Font.Color := clBlack; // 선택되지 않은 탭의 글자색
+    end;
+    FillRect(Rect); // Canvas.FillRect 메서드 사용
+    TextOut(Rect.Left + 8, Rect.Top + 3, TPageControl(Control).Pages[TabIndex].Caption);
+  end;
 end;
 
 initialization

@@ -1,0 +1,2 @@
+CREATE TABLE TB_ADMINDOOR (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , ad_userid VARCHAR(20) NOT NULL , ac_nodeno INTEGER NOT NULL  DEFAULT 0, ac_ecuid VARCHAR(2) NOT NULL , do_doorno CHAR(1) NOT NULL  DEFAULT  '1' , ad_gubun CHAR(1), ad_updatetime VARCHAR(14), ad_updateoperator VARCHAR(10), ac_mcuid VARCHAR(7) ); 
+ ALTER TABLE TB_ADMINDOOR   ADD CONSTRAINT TB_ADMINDOOR_pkey PRIMARY KEY (group_code, ad_userid, ac_nodeno, do_doorno, ac_ecuid);

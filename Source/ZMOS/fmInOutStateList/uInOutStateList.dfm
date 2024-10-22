@@ -1,6 +1,6 @@
 inherited fmInOutStateList: TfmInOutStateList
-  Left = 212
-  Top = 149
+  Left = 294
+  Top = 162
   Width = 1016
   Height = 614
   Caption = #51116#49892#54788#54889#48372#44256#49436
@@ -22,6 +22,8 @@ inherited fmInOutStateList: TfmInOutStateList
     Width = 1008
     Height = 65
     Align = alTop
+    Color = clWhite
+    ParentColor = False
     TabOrder = 0
     object Label1: TLabel
       Left = 16
@@ -264,7 +266,7 @@ inherited fmInOutStateList: TfmInOutStateList
     Left = 0
     Top = 65
     Width = 1008
-    Height = 515
+    Height = 522
     Cursor = crDefault
     Align = alClient
     ColCount = 4
@@ -346,6 +348,7 @@ inherited fmInOutStateList: TfmInOutStateList
     PrintSettings.FooterFont.Name = 'MS Sans Serif'
     PrintSettings.FooterFont.Style = []
     PrintSettings.PageNumSep = '/'
+    ScrollWidth = 16
     SearchFooter.FindNextCaption = 'Find next'
     SearchFooter.FindPrevCaption = 'Find previous'
     SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -372,6 +375,7 @@ inherited fmInOutStateList: TfmInOutStateList
       Top = 96
       Width = 329
       Height = 73
+      Color = clWhite
       TabOrder = 3
       Visible = False
       object Label4: TLabel

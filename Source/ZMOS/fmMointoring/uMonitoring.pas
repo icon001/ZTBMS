@@ -219,6 +219,10 @@ type
     pm_initPosiNega: TMenuItem;
     Positive: TMenuItem;
     Negaitve1: TMenuItem;
+    N23: TMenuItem;
+    mn_DeviceChange: TMenuItem;
+    Panel17: TPanel;
+    mn_CardNoCopy: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Action_LoctionLoadExecute(Sender: TObject);
@@ -351,6 +355,12 @@ type
     procedure Negative1Click(Sender: TObject);
     procedure PositiveClick(Sender: TObject);
     procedure Negaitve1Click(Sender: TObject);
+    procedure mn_DeviceChangeClick(Sender: TObject);
+    procedure PageControl1DrawTab(Control: TCustomTabControl;
+      TabIndex: Integer; const Rect: TRect; Active: Boolean);
+    procedure PageControl2DrawTab(Control: TCustomTabControl;
+      TabIndex: Integer; const Rect: TRect; Active: Boolean);
+    procedure mn_CardNoCopyClick(Sender: TObject);
   private
     L_bFirst : Boolean;
     L_bClose : Boolean;
@@ -7617,6 +7627,82 @@ begin
     showmessage('전송실패');
     Exit;
   End;
+end;
+
+procedure TfmMonitoring.mn_DeviceChangeClick(Sender: TObject);
+var
+  stNodeNo : string;
+  stEcuID : string;
+  stDeviceID: string;
+  stCaption : string;
+begin
+  stCaption := TreeView_Device.Selected.Text;
+  stDeviceID := DeviceCodeList.Strings[ DeviceCaptionList.IndexOf(stCaption)];
+  Delete(stDeviceID,1,1);
+
+  stNodeNo := copy(stDeviceID,1,3);
+  stEcuID := copy(stDeviceID,4,2);
+
+  dmDBFunction.UpdateTB_ACCESSDEVICE_Field_StringValue(stNodeNo,stEcuID,'AC_DEVICECODE','');
+  dmDBFunction.UpdateTB_DEVICESCHEDULE_Field_StringValue(stNodeNo,stEcuID,'','','DE_RCVACK','N');
+
+  self.FindSubForm('Main').FindCommand('SendData').Params.Values['VALUE'] := 'CARDDOWNLOAD'+ DATADELIMITER + stDeviceID + DATADELIMITER + 'Y' + DATADELIMITER;
+  self.FindSubForm('Main').FindCommand('SendData').Execute;
+  DataModule1.TB_SYSTEMLOGInsert('0','00','0','0',stDeviceID , '컨트롤러교체');
+
+end;
+
+procedure TfmMonitoring.PageControl1DrawTab(Control: TCustomTabControl;
+  TabIndex: Integer; const Rect: TRect; Active: Boolean);
+
+begin
+  inherited;
+  with Control.Canvas do
+  begin
+    if Active then
+    begin
+      Brush.Color := $0099C1FD; // 선택된 탭의 배경색
+      Font.Color := clWhite; // 선택된 탭의 글자색
+    end
+    else
+    begin
+      Brush.Color := clWhite; // 선택되지 않은 탭의 배경색
+      Font.Color := clBlack; // 선택되지 않은 탭의 글자색
+    end;
+    FillRect(Rect); // Canvas.FillRect 메서드 사용
+    TextOut(Rect.Left + 8, Rect.Top + 3, TPageControl(Control).Pages[TabIndex].Caption);
+  end;
+end;
+
+procedure TfmMonitoring.PageControl2DrawTab(Control: TCustomTabControl;
+  TabIndex: Integer; const Rect: TRect; Active: Boolean);
+begin
+  inherited;
+  with Control.Canvas do
+  begin
+    if Active then
+    begin
+      Brush.Color := $0099C1FD; // 선택된 탭의 배경색
+      Font.Color := clWhite; // 선택된 탭의 글자색
+    end
+    else
+    begin
+      Brush.Color := clWhite; // 선택되지 않은 탭의 배경색
+      Font.Color := clBlack; // 선택되지 않은 탭의 글자색
+    end;
+    FillRect(Rect); // Canvas.FillRect 메서드 사용
+    TextOut(Rect.Left + 8, Rect.Top + 3, TPageControl(Control).Pages[TabIndex].Caption);
+  end;
+end;
+
+procedure TfmMonitoring.mn_CardNoCopyClick(Sender: TObject);
+var
+  st : string;
+begin
+  inherited;
+  st := sg_IntAccess.Cells[IntDoorIndexArray[5],sg_IntAccess.Row];
+
+  if st <> '' then ClipBoard.SetTextBuf(PChar(st));
 end;
 
 initialization

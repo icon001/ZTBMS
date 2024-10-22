@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Buttons, Gauges, DB, ADODB;
+  Dialogs, StdCtrls, ExtCtrls, Buttons, Gauges, DB, ADODB,ActiveX;
 
 type
   TForm1 = class(TForm)
@@ -63,10 +63,12 @@ type
     orgADOExeQuery: TADOQuery;
     OrgTempADOQuery: TADOQuery;
     Label15: TLabel;
+    btnStop: TSpeedButton;
     procedure btn_CloseClick(Sender: TObject);
     procedure rg_orgDBTypeClick(Sender: TObject);
     procedure rg_targetDBTypeClick(Sender: TObject);
     procedure btn_ConversionClick(Sender: TObject);
+    procedure btnStopClick(Sender: TObject);
   private
 
     { Private declarations }
@@ -78,6 +80,14 @@ type
     L_stCompanyCode : string;
     L_stBuildingCode : string;
     L_stFloorCode : string;
+    L_bStop : Boolean;
+    function targetProcessExec(aSql:string):Boolean;
+    procedure AlterTB_ACCESSDEVICE_NameChange;
+    procedure AlterTB_ACCESSDEVICE_JAVARATypeAdd;
+    procedure AlterTB_ACCESSDEVICE_MCUIDChange;
+    procedure AlterTB_ACCESSDEVICE_VerChange;
+    procedure AlterTB_ACCESSDEVICE_CARDREADERTYPEChange;
+    procedure AlterTB_ALARMDEVICE_INDEXChange;
     Function AllTableConvert:Boolean;
     Function TB_ACCESSDEVICEConvert:Boolean;
     Function TB_ACCESSEVENTConvert:Boolean;
@@ -116,6 +126,12 @@ type
     Function tb_foodeventConvert : Boolean;
     Function tb_foodeventConvertProcess:Boolean;
     Function TB_DEVICESCHEDULEConvert:Boolean;
+    Function TB_ARMAREAConvert : Boolean;
+
+    Function InsertIntoTB_ARMAREA(aGroup_Code,aAC_NODENO,aAc_ecuid,aAR_AREANO,aAR_NAME,aAR_USE,aAr_lastmode,aAr_viewseq,
+        aAr_locateuse,aAr_totwidth,aAr_totheight,aAr_curx,aAr_cury,aLo_dongcode,aLo_floorcode,aLo_areacode,aAr_update,
+        aAr_telno,aAr_memo,aAg_armcode,aAr_memload,aAr_disarmcheckuse,aAr_disarmchecktime1from,aAr_disarmchecktime1to,
+        aAr_change,aAr_relaycode:string):Boolean;
 
     Function  InsertIntoTB_ATEVENT(aGROUP_CODE,aAt_date,aco_companycode,
         aem_code,aca_gubun,aca_cardno,aat_atcode,aat_weekcode,
@@ -148,7 +164,7 @@ type
         aLO_AREACODE,aAC_LOCATEUSE,aAC_TOTWIDTH,aAC_TOTHEIGHT,aAC_CURX,aAC_CURY,
         aAC_LOCALRELAY,aAC_MCUIP,aAC_MCUPORT,aAC_MCUID,aAC_SUBNET,aAC_GATEWAY,
         aAC_CARDREADERTYPE,aAC_VER,aAC_FTPUSE,aAC_CONNECTED,aAC_LASTCONNECTED,
-        aAC_NETTYPE,aAC_COMPORT,aAC_GUBUN,aSEND_ACK,aAC_DAEMONGUBUN:string
+        aAC_NETTYPE,aAC_COMPORT,aAC_GUBUN,aSEND_ACK,aJavaraType:string
         ):Boolean;
     Function InsertIntoTB_ACCESSEVENT(
         aGROUP_CODE,aAC_DATE,aAC_TIME,aAC_NODENO,aAC_ECUID,aDO_DOORNO,aCA_CARDNO,
@@ -175,6 +191,8 @@ type
         aGROUP_CODE,aco_configgroup,aco_configcode,aco_configvalue,aco_configdetail:string):Boolean;
     Function InsertIntoTB_DEVICECARDNO(
         aGROUP_CODE,aAC_NODENO,aAC_ECUID,aCA_CARDNO,aDE_DOOR1,aDE_DOOR2,
+        aDE_DOOR3,aDE_DOOR4,aDE_DOOR5,aDE_DOOR6,aDE_DOOR7,aDE_DOOR8,
+        aDE_ARARM0,aDE_ARARM1,aDE_ARARM2,aDE_ARARM3,aDE_ARARM4,aDE_ARARM5,aDE_ARARM6,aDE_ARARM7,aDE_ARARM8,
         aDE_USEACCESS,aDE_USEALARM,aDE_TIMECODE,aDE_PERMIT,aDE_RCVACK,
         aDE_UPDATETIME,aDE_UPDATEOPERATOR,aAC_MCUID:string):Boolean;
     Function InsertIntoTB_DOOR(
@@ -255,13 +273,13 @@ begin
     ed_orgDBPort.Text := '1433';
     ed_orgDBPort.Visible := True;
     ed_orgUserName.Text := 'sa';
-    ed_orgUserPw.Text := 'sapasswd';
+    ed_orgUserPw.Text := 'sapasswd123@@';
   end else
   begin
     ed_orgDBPort.Text := '5432';
     ed_orgDBPort.Visible := False;
     ed_orgUserName.Text := 'postgres';
-    ed_orgUserPw.Text := '1';
+    ed_orgUserPw.Text := 'postgres';
   end;
 end;
 
@@ -272,13 +290,13 @@ begin
     ed_targetDBPort.Text := '1433';
     ed_targetDBPort.Visible := True;
     ed_targetUserName.Text := 'sa';
-    ed_targetUserPw.Text := 'sapasswd';
+    ed_targetUserPw.Text := 'sapasswd123@@';
   end else
   begin
     ed_targetDBPort.Text := '5432';
     ed_targetDBPort.Visible := False;
     ed_targetUserName.Text := 'postgres';
-    ed_targetUserPw.Text := '1';
+    ed_targetUserPw.Text := 'postgres';
   end;
 
 end;
@@ -330,6 +348,14 @@ begin
   if (Application.MessageBox(PChar('타겟테이블의 기존 정보가 모두 삭제됩니다.계속하시겠습니까?'),'경고',MB_OKCANCEL) = ID_CANCEL)  then Exit;
 
   btn_Conversion.Enabled := False;
+  L_bStop := False;
+  btnStop.Enabled := True;
+  AlterTB_ACCESSDEVICE_NameChange;
+  AlterTB_ACCESSDEVICE_JAVARATypeAdd;
+  AlterTB_ACCESSDEVICE_MCUIDChange;
+  AlterTB_ACCESSDEVICE_CARDREADERTYPEChange;
+  AlterTB_ALARMDEVICE_INDEXChange;
+
 
   if cmb_table.ItemIndex = 0 then AllTableConvert
   else if cmb_table.ItemIndex = 1 then TB_ACCESSDEVICEConvert
@@ -353,10 +379,11 @@ begin
   else if cmb_table.ItemIndex = 19 then tb_atmonthsummaryConvert
   else if cmb_table.ItemIndex = 20 then tb_foodeventConvert
   else if cmb_table.ItemIndex = 21 then TB_DEVICESCHEDULEConvert
+  else if cmb_table.ItemIndex = 22 then TB_ARMAREAConvert
   ;
   btn_Conversion.Enabled := True;
+  btnStop.Enabled := False;
 
-  TableVersionInitialize;
 
 end;
 
@@ -489,7 +516,7 @@ end;
 
 function TForm1.AllTableConvert: Boolean;
 begin
-  Gauge1.MaxValue := 17;
+  Gauge1.MaxValue := 18;
   Gauge1.Progress := 0;
   TB_ACCESSDEVICEConvert;
   Gauge1.Progress := Gauge1.Progress + 1;
@@ -525,7 +552,9 @@ begin
   Gauge1.Progress := Gauge1.Progress + 1;
   TB_DEVICESCHEDULEConvert;
   Gauge1.Progress := Gauge1.Progress + 1;
-
+  TB_ARMAREAConvert;
+  Gauge1.Progress := Gauge1.Progress + 1;
+  TableVersionInitialize;
 end;
 
 function TForm1.TB_ACCESSDEVICEConvert: Boolean;
@@ -557,12 +586,14 @@ begin
     Gauge2.MaxValue := recordcount;
     while Not Eof do
     begin
+      if(L_bStop) then Exit;
       nViewSeq := 0;
       nTotWith := 0;
       nTotHeigh := 0;
       nCurX := 0;
       nCurY := 0;
       nDaemonGubun := 0;
+
       stBuildingCode := FindField('LO_DONGCODE').AsString;
       if chk_Building.Checked then
         stBuildingCode := L_stBuildingCode;
@@ -579,11 +610,12 @@ begin
         nCurX := FindField('AC_CURX').AsInteger;
       if not FindField('AC_CURY').IsNull then
         nCurY := FindField('AC_CURY').AsInteger;
-      Try
+
+      (*Try
         if not FindField('AC_DAEMONGUBUN').IsNull then
           nDaemonGubun := FindField('AC_DAEMONGUBUN').AsInteger;
       Except
-      End;
+      End;    *)
 
       InsertIntoTB_ACCESSDEVICE(
         FindField('GROUP_CODE').AsString,
@@ -618,7 +650,7 @@ begin
         FindField('AC_COMPORT').AsString,
         FindField('AC_GUBUN').AsString,
         FindField('SEND_ACK').AsString,
-        inttostr(nDaemonGubun)
+        FindField('AC_JAVARATYPE').AsString
         );
       Gauge2.Progress := Gauge2.Progress + 1;
       Application.ProcessMessages;
@@ -635,6 +667,7 @@ var
   i : integer;
   nLoopCount : integer;
 begin
+  if rg_orgDBType.ItemIndex = 2 then Exit;
   result := False;
   //if Not CheckTB_ACCESSEVENT_RELAY then
   //begin
@@ -674,6 +707,7 @@ begin
     nLoopCount := (FindField('cnt').AsInteger div 1000) + 1;
     for i := 0 to nLoopCount do
     begin
+      if(L_bStop) then Exit;
       nStartPoint := i * 1000;
       nEndPoint := ((i+1) * 1000) - 1;
       if nStartPoint > FindField('cnt').AsInteger then break;
@@ -718,6 +752,7 @@ begin
     Gauge2.MaxValue := recordcount;
     while Not Eof do
     begin
+      if(L_bStop) then Exit;
       nViewSeq := 0;
       nTotWith := 0;
       nTotHeigh := 0;
@@ -775,6 +810,7 @@ var
   i : integer;
   nLoopCount : integer;
 begin
+  if rg_orgDBType.ItemIndex = 2 then Exit;
   result := False;
   //if Not CheckTB_ALARMEVENT_RELAY then
   //begin
@@ -941,6 +977,7 @@ begin
     Gauge2.MaxValue := recordcount;
     while Not Eof do
     begin
+      if(L_bStop) then Exit;
       stCompanyCode := FindField('CO_COMPANYCODE').AsString;
       if chk_Company.Checked then
         stCompanyCode := L_stCompanyCode;
@@ -989,6 +1026,7 @@ begin
     Gauge2.MaxValue := recordcount;
     while Not Eof do
     begin
+      if(L_bStop) then Exit;
       InsertIntoTB_CONFIG(
         FindField('GROUP_CODE').AsString,
         FindField('co_configgroup').AsString,
@@ -1049,6 +1087,7 @@ begin
     nLoopCount := (FindField('cnt').AsInteger div 1000) + 1;
     for i := 0 to nLoopCount do
     begin
+      if(L_bStop) then Exit;
       nStartPoint := i * 1000;
       nEndPoint := ((i+1) * 1000) - 1;
       if nStartPoint > FindField('cnt').AsInteger then break;
@@ -1132,6 +1171,7 @@ begin
     Gauge2.MaxValue := recordcount;
     while Not Eof do
     begin
+      if(L_bStop) then Exit;
       nViewSeq := 0;
       nTotWith := 0;
       nTotHeigh := 0;
@@ -1434,6 +1474,7 @@ begin
     Gauge2.MaxValue := recordcount;
     while Not Eof do
     begin
+      if(L_bStop) then Exit;
       nCardSeq := 0;
       if not FindField('CARD_SEQ').IsNull then
         nCardSeq := FindField('CARD_SEQ').AsInteger;
@@ -1473,6 +1514,7 @@ begin
     Gauge2.MaxValue := recordcount;
     while Not Eof do
     begin
+      if(L_bStop) then Exit;
       stBuildingCode := FindField('LO_DONGCODE').AsString;
       if chk_Building.Checked then
         stBuildingCode := L_stBuildingCode;
@@ -1517,6 +1559,7 @@ begin
     Gauge2.MaxValue := recordcount;
     while Not Eof do
     begin
+      if(L_bStop) then Exit;
       stCompanyCode := FindField('CO_COMPANYCODE').AsString;
       if chk_Company.Checked then
         stCompanyCode := L_stCompanyCode;
@@ -1557,6 +1600,7 @@ begin
     Gauge2.MaxValue := recordcount;
     while Not Eof do
     begin
+      if(L_bStop) then Exit;
       InsertIntoTB_READER(
         FindField('GROUP_CODE').AsString,
         inttostr(FindField('AC_NODENO').AsInteger + L_IncNodeNo),
@@ -1601,6 +1645,7 @@ begin
     Gauge2.MaxValue := recordcount;
     while Not Eof do
     begin
+      if(L_bStop) then Exit;
       nTotWith := 0;
       nTotHeigh := 0;
       nCurX := 0;
@@ -1654,8 +1699,7 @@ function TForm1.InsertIntoTB_ACCESSDEVICE(aGROUP_CODE, aAC_NODENO,
   aAC_LOCATEUSE, aAC_TOTWIDTH, aAC_TOTHEIGHT, aAC_CURX, aAC_CURY,
   aAC_LOCALRELAY, aAC_MCUIP, aAC_MCUPORT, aAC_MCUID, aAC_SUBNET,
   aAC_GATEWAY, aAC_CARDREADERTYPE, aAC_VER, aAC_FTPUSE, aAC_CONNECTED,
-  aAC_LASTCONNECTED, aAC_NETTYPE, aAC_COMPORT, aAC_GUBUN, aSEND_ACK,
-  aAC_DAEMONGUBUN: string): Boolean;
+  aAC_LASTCONNECTED, aAC_NETTYPE, aAC_COMPORT, aAC_GUBUN, aSEND_ACK,aJavaraType: string): Boolean;
 var
   stSql : string;
 begin
@@ -1663,7 +1707,6 @@ begin
   if Trim(aAC_TOTHEIGHT) = '' then aAC_TOTHEIGHT := '0';
   if Trim(aAC_CURX) = '' then aAC_CURX := '0';
   if Trim(aAC_CURY) = '' then aAC_CURY := '0';
-  if Trim(aAC_DAEMONGUBUN) = '' then aAC_DAEMONGUBUN := '0';
 
   stSql := ' Insert Into TB_ACCESSDEVICE( ';
   stSql := stSql + 'GROUP_CODE, ';
@@ -1697,8 +1740,8 @@ begin
   stSql := stSql + 'AC_NETTYPE,';
   stSql := stSql + 'AC_COMPORT,';
   stSql := stSql + 'AC_GUBUN,';
-  stSql := stSql + 'SEND_ACK,';
-  stSql := stSql + 'AC_DAEMONGUBUN) ';
+  stSql := stSql + 'AC_JAVARATYPE,';
+  stSql := stSql + 'SEND_ACK) ';
   stSql := stSql + ' Values( ';
   stSql := stSql + '''' + aGROUP_CODE + ''',';
   stSql := stSql + '' + aAC_NODENO + ',';
@@ -1731,8 +1774,8 @@ begin
   stSql := stSql + '''' + aAC_NETTYPE + ''',';
   stSql := stSql + '''' + aAC_COMPORT + ''',';
   stSql := stSql + '''' + aAC_GUBUN + ''',';
-  stSql := stSql + '''' + aSEND_ACK + ''',';
-  stSql := stSql + '' + aAC_DAEMONGUBUN + ')';
+  stSql := stSql + '''' + aJavaraType + ''',';
+  stSql := stSql + '''' + aSEND_ACK + ''')';
 
   result := False;
   with targetADOQuery do
@@ -2038,7 +2081,8 @@ begin
 end;
 
 function TForm1.InsertIntoTB_DEVICECARDNO(aGROUP_CODE, aAC_NODENO, aAC_ECUID,
-  aCA_CARDNO, aDE_DOOR1, aDE_DOOR2, aDE_USEACCESS, aDE_USEALARM,
+  aCA_CARDNO, aDE_DOOR1, aDE_DOOR2, aDE_DOOR3,aDE_DOOR4,aDE_DOOR5,aDE_DOOR6,aDE_DOOR7,aDE_DOOR8,
+  aDE_ARARM0,aDE_ARARM1,aDE_ARARM2,aDE_ARARM3,aDE_ARARM4,aDE_ARARM5,aDE_ARARM6,aDE_ARARM7,aDE_ARARM8,aDE_USEACCESS, aDE_USEALARM,
   aDE_TIMECODE, aDE_PERMIT, aDE_RCVACK, aDE_UPDATETIME, aDE_UPDATEOPERATOR,
   aAC_MCUID: string): Boolean;
 var
@@ -2051,6 +2095,21 @@ begin
   stSql := stSql + 'CA_CARDNO, ';
   stSql := stSql + 'DE_DOOR1, ';
   stSql := stSql + 'DE_DOOR2, ';
+  stSql := stSql + 'DE_DOOR3, ';
+  stSql := stSql + 'DE_DOOR4, ';
+  stSql := stSql + 'DE_DOOR5, ';
+  stSql := stSql + 'DE_DOOR6, ';
+  stSql := stSql + 'DE_DOOR7, ';
+  stSql := stSql + 'DE_DOOR8, ';
+  stSql := stSql + 'DE_ALARM0, ';
+  stSql := stSql + 'DE_ALARM1, ';
+  stSql := stSql + 'DE_ALARM2, ';
+  stSql := stSql + 'DE_ALARM3, ';
+  stSql := stSql + 'DE_ALARM4, ';
+  stSql := stSql + 'DE_ALARM5, ';
+  stSql := stSql + 'DE_ALARM6, ';
+  stSql := stSql + 'DE_ALARM7, ';
+  stSql := stSql + 'DE_ALARM8, ';
   stSql := stSql + 'DE_USEACCESS, ';
   stSql := stSql + 'DE_USEALARM, ';
   stSql := stSql + 'DE_TIMECODE, ';
@@ -2066,6 +2125,21 @@ begin
   stSql := stSql + '''' + aCA_CARDNO + ''',';
   stSql := stSql + '''' + aDE_DOOR1 + ''',';
   stSql := stSql + '''' + aDE_DOOR2 + ''',';
+  stSql := stSql + '''' + aDE_DOOR3 + ''',';
+  stSql := stSql + '''' + aDE_DOOR4 + ''',';
+  stSql := stSql + '''' + aDE_DOOR5 + ''',';
+  stSql := stSql + '''' + aDE_DOOR6 + ''',';
+  stSql := stSql + '''' + aDE_DOOR7 + ''',';
+  stSql := stSql + '''' + aDE_DOOR8 + ''',';
+  stSql := stSql + '''' + aDE_ARARM0 + ''',';
+  stSql := stSql + '''' + aDE_ARARM1 + ''',';
+  stSql := stSql + '''' + aDE_ARARM2 + ''',';
+  stSql := stSql + '''' + aDE_ARARM3 + ''',';
+  stSql := stSql + '''' + aDE_ARARM4 + ''',';
+  stSql := stSql + '''' + aDE_ARARM5 + ''',';
+  stSql := stSql + '''' + aDE_ARARM6 + ''',';
+  stSql := stSql + '''' + aDE_ARARM7 + ''',';
+  stSql := stSql + '''' + aDE_ARARM8 + ''',';
   stSql := stSql + '''' + aDE_USEACCESS + ''',';
   stSql := stSql + '''' + aDE_USEALARM + ''',';
   stSql := stSql + '''' + aDE_TIMECODE + ''',';
@@ -2529,6 +2603,7 @@ begin
     End;
     while Not Eof do
     begin
+      if(L_bStop) then Exit;
       InsertIntoTB_ACCESSEVENT(
         FindField('GROUP_CODE').AsString,
         FindField('AC_DATE').AsString,
@@ -2618,6 +2693,7 @@ begin
     End;
     while Not Eof do
     begin
+      if(L_bStop) then Exit;
       InsertIntoTB_ALARMEVENT(
         FindField('GROUP_CODE').AsString,
         FindField('AL_DATE').AsString,
@@ -2692,6 +2768,7 @@ var
   i : integer;
   nLoopCount : integer;
 begin
+  if rg_orgDBType.ItemIndex = 2 then Exit;
   result := False;
   //if Not CheckTB_ATEVENT_RELAY then
   //begin
@@ -2758,7 +2835,7 @@ begin
     Gauge2.MaxValue := recordcount;
     while Not Eof do
     begin
-
+      if(L_bStop) then Exit;
       InsertIntotb_atmonthextra(
         FindField('GROUP_CODE').AsString,
         FindField('at_month').AsString,
@@ -2796,7 +2873,7 @@ begin
     Gauge2.MaxValue := recordcount;
     while Not Eof do
     begin
-
+      if(L_bStop) then Exit;
       InsertIntotb_atmonthsummary(
         FindField('group_code').AsString,
         FindField('at_month').AsString,
@@ -2908,6 +2985,7 @@ begin
     End;
     while Not Eof do
     begin
+      if(L_bStop) then Exit;
       InsertIntoTB_ATEVENT(
         FindField('GROUP_CODE').AsString,
         FindField('at_date').AsString,
@@ -3201,6 +3279,7 @@ begin
     End;
     while Not Eof do
     begin
+      if(L_bStop) then Exit;
       InsertIntotb_foodevent(
         FindField('GROUP_CODE').AsString,
         FindField('fo_date').AsString,
@@ -3629,6 +3708,7 @@ begin
     End;
     while Not Eof do
     begin
+      if(L_bStop) then Exit;
       stCompanyCode := FindField('CO_COMPANYCODE').AsString;
       if chk_Company.Checked then
         stCompanyCode := L_stCompanyCode;
@@ -3752,6 +3832,7 @@ begin
     End;
     while Not Eof do
     begin
+      if(L_bStop) then Exit;
       stCompanyCode := FindField('CO_COMPANYCODE').AsString;
       if chk_Company.Checked then
         stCompanyCode := L_stCompanyCode;
@@ -3850,6 +3931,7 @@ begin
     End;
     while Not Eof do
     begin
+      if(L_bStop) then Exit;
       stCompanyCode := FindField('CO_COMPANYCODE').AsString;
       if chk_Company.Checked then
         stCompanyCode := L_stCompanyCode;
@@ -3966,6 +4048,7 @@ begin
     End;
     while Not Eof do
     begin
+      if(L_bStop) then Exit;
       InsertIntoTB_DEVICECARDNO(
         FindField('GROUP_CODE').AsString,
         inttostr(FindField('AC_NODENO').AsInteger + L_IncNodeNo),
@@ -3973,6 +4056,21 @@ begin
         FindField('CA_CARDNO').AsString,
         FindField('DE_DOOR1').AsString,
         FindField('DE_DOOR2').AsString,
+        FindField('DE_DOOR3').AsString,
+        FindField('DE_DOOR4').AsString,
+        FindField('DE_DOOR5').AsString,
+        FindField('DE_DOOR6').AsString,
+        FindField('DE_DOOR7').AsString,
+        FindField('DE_DOOR8').AsString,
+        FindField('DE_ALARM0').AsString,
+        FindField('DE_ALARM1').AsString,
+        FindField('DE_ALARM2').AsString,
+        FindField('DE_ALARM3').AsString,
+        FindField('DE_ALARM4').AsString,
+        FindField('DE_ALARM5').AsString,
+        FindField('DE_ALARM6').AsString,
+        FindField('DE_ALARM7').AsString,
+        FindField('DE_ALARM8').AsString,
         FindField('DE_USEACCESS').AsString,
         FindField('DE_USEALARM').AsString,
         FindField('DE_TIMECODE').AsString,
@@ -4041,7 +4139,7 @@ begin
     Gauge2.MaxValue := recordcount;
     while Not Eof do
     begin
-
+      if(L_bStop) then Exit;
       InsertIntoTB_DEVICESCHEDULE(
         FindField('GROUP_CODE').AsString,
         inttostr(FindField('ac_nodeno').AsInteger),
@@ -4157,6 +4255,368 @@ begin
   end;
   result := True;
 
+end;
+
+procedure TForm1.AlterTB_ACCESSDEVICE_NameChange;
+var
+  stSql : string;
+begin
+  if (rg_targetDBType.ItemIndex =0) then
+  begin
+    stSql := 'alter table TB_ACCESSDEVICE alter column  AC_CARDREADERTYPE varchar(10) ';
+  end else
+  begin
+    stSql := 'alter table TB_ACCESSDEVICE alter column  AC_CARDREADERTYPE TYPE varchar(10) ';
+  end;
+
+  with targetADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      ExecSql;
+    Except
+      //memo1.Lines.Add(stSql);
+    End;
+  end;
+
+end;
+
+procedure TForm1.AlterTB_ACCESSDEVICE_JAVARATypeAdd;
+var
+  stSql : string;
+begin
+  if (rg_targetDBType.ItemIndex =0) then
+  begin
+    stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_JAVARATYPE varchar(1)  DEFAULT ''0'' NULL ';
+  end else
+  begin
+    stSql := 'ALTER TABLE TB_ACCESSDEVICE ADD AC_JAVARATYPE varchar(1) DEFAULT ''0''  NULL ';
+  end;
+
+  with targetADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      ExecSql;
+    Except
+      //memo1.Lines.Add(stSql);
+    End;
+  end;
+end;
+
+procedure TForm1.AlterTB_ACCESSDEVICE_MCUIDChange;
+var
+  stSql : string;
+begin
+  if (rg_targetDBType.ItemIndex =0) then
+  begin
+    stSql := 'alter table TB_ACCESSDEVICE alter column  AC_MCUID varchar(30) ';
+  end else
+  begin
+    stSql := 'alter table TB_ACCESSDEVICE alter column  AC_MCUID TYPE varchar(30) ';
+  end;
+
+  with targetADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      ExecSql;
+    Except
+      //memo1.Lines.Add(stSql);
+    End;
+  end;
+end;
+
+procedure TForm1.AlterTB_ACCESSDEVICE_VerChange;
+var
+  stSql : string;
+begin
+  if (rg_targetDBType.ItemIndex =0) then
+  begin
+    stSql := 'alter table TB_ACCESSDEVICE alter column  AC_VER varchar(100) ';
+  end else
+  begin
+    stSql := 'alter table TB_ACCESSDEVICE alter column  AC_VER TYPE varchar(100) ';
+  end;
+
+  with targetADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      ExecSql;
+    Except
+      //memo1.Lines.Add(stSql);
+    End;
+  end;
+end;
+
+procedure TForm1.AlterTB_ACCESSDEVICE_CARDREADERTYPEChange;
+var
+  stSql : string;
+begin
+  if (rg_targetDBType.ItemIndex =0) then
+  begin
+    stSql := 'alter table TB_ACCESSDEVICE alter column  AC_VER varchar(100) ';
+  end else
+  begin
+    stSql := 'alter table TB_ACCESSDEVICE alter column  AC_VER TYPE varchar(100) ';
+  end;
+
+  with targetADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      ExecSql;
+    Except
+      //memo1.Lines.Add(stSql);
+    End;
+  end;
+end;
+
+procedure TForm1.AlterTB_ALARMDEVICE_INDEXChange;
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+begin
+  if (rg_targetDBType.ItemIndex =0) then
+  begin
+    stSql := 'alter table tb_alarmdevice alter column al_zonenum varchar(2) NOT NULL ';
+    targetProcessExec(stSql);
+    stSql := ' ALTER TABLE TB_ALARMDEVICE ADD DEFAULT ''00'' FOR AL_ZONENUM ';
+    targetProcessExec(stSql);
+
+    stSql := 'alter table TB_ALARMEVENT alter column AL_ZONECODE varchar(2) NOT NULL ';
+    targetProcessExec(stSql);
+    stSql := ' ALTER TABLE TB_ALARMEVENT ADD DEFAULT ''00'' FOR AL_ZONECODE ';
+    targetProcessExec(stSql);
+
+    Try
+      CoInitialize(nil);
+      TempAdoQuery := TADOQuery.Create(nil);
+      TempAdoQuery.Connection := targetADOConnection;
+      TempAdoQuery.DisableControls;
+      with TempAdoQuery do
+      begin
+        Close;
+        //sql.Clear;
+        stSql := 'select name from sysobjects where xtype= ''PK'' and parent_obj=(select id from sysobjects where name = ''tb_alarmdevice'')';
+        sql.Text := stSql;
+        Try
+          Open;
+        Except
+          //에러처리
+          Exit;
+        End;
+        if recordcount > 0 then
+        begin
+          stSql := 'ALTER TABLE tb_alarmdevice DROP ' + FindField('name').AsString ;
+          targetProcessExec(stSql);
+        end;
+        Close;
+        //sql.Clear;
+        stSql := 'select name from sysobjects where xtype= ''PK'' and parent_obj=(select id from sysobjects where name = ''tb_alarmevent'')';
+        sql.Text := stSql;
+        Try
+          Open;
+        Except
+          //에러처리
+          Exit;
+        End;
+        if recordcount > 0 then
+        begin
+          stSql := 'ALTER TABLE tb_alarmevent DROP ' + FindField('name').AsString ;
+          targetProcessExec(stSql);
+        end;
+      End;
+    Finally
+      TempAdoQuery.EnableControls;
+      TempAdoQuery.Free;
+      CoUninitialize;
+    End;
+    stSql := 'alter table tb_alarmdevice add constraint PK_alarmdevice PRIMARY KEY (GROUP_CODE,AC_NODENO,AC_ECUID,AL_ZONENUM)';
+    targetProcessExec(stSql);
+    stSql := 'alter table tb_alarmevent add constraint PK_alarmevent PRIMARY KEY (group_code, al_date, al_time, ac_nodeno, ac_ecuid, al_msgno,AL_ZONECODE)';
+    targetProcessExec(stSql);
+  end else
+  begin
+    stSql := 'ALTER TABLE tb_alarmdevice ALTER COLUMN al_zonenum SET DEFAULT ''00'' ';
+    targetProcessExec(stSql);
+    stSql := 'ALTER TABLE tb_alarmdevice ALTER COLUMN al_zonenum SET NOT NULL ';
+    targetProcessExec(stSql);
+    stSql := 'alter table tb_alarmdevice drop constraint tb_alarmdevice_pkey ';
+    targetProcessExec(stSql);
+    stSql := 'alter table tb_alarmdevice add primary key (GROUP_CODE,AC_NODENO,AC_ECUID,AL_ZONENUM)';
+    targetProcessExec(stSql);
+    stSql := 'ALTER TABLE TB_ALARMEVENT ALTER COLUMN AL_ZONECODE SET DEFAULT ''00'' ';
+    targetProcessExec(stSql);
+    stSql := 'ALTER TABLE TB_ALARMEVENT ALTER COLUMN AL_ZONECODE SET NOT NULL ';
+    targetProcessExec(stSql);
+    stSql := 'alter table TB_ALARMEVENT drop constraint tb_alarmevent_pkey ';
+    targetProcessExec(stSql);
+    stSql := 'alter table TB_ALARMEVENT add primary key (group_code, al_date, al_time, ac_nodeno, ac_ecuid, al_msgno,AL_ZONECODE)';
+    targetProcessExec(stSql);
+  end;
+
+
+
+
+end;
+
+function TForm1.targetProcessExec(aSql: string): Boolean;
+begin
+  result := False;
+  with targetADOQuery do
+  begin
+    Close;
+    Sql.Text := aSql;
+    Try
+      ExecSql;
+    Except
+      memo1.Lines.Add(aSql);
+      Exit;
+    End;
+  end;
+  result := True;
+end;
+
+function TForm1.TB_ARMAREAConvert: Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+  lb_table.Caption := 'TB_ARMAREA';
+  TargetTableDelete(lb_table.Caption);
+  stSql := 'select * from TB_ARMAREA ';
+  with orgADOQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    Gauge2.Progress := 0;
+    Gauge2.MaxValue := recordcount;
+    while Not Eof do
+    begin
+      if(L_bStop) then Exit;
+      InsertIntoTB_ARMAREA(
+        FindField('group_code').AsString,
+        FindField('AC_NODENO').AsString,
+        FindField('ac_ecuid').AsString,
+        FindField('AR_AREANO').AsString,
+        FindField('AR_NAME').AsString,
+        FindField('AR_USE').AsString,
+        FindField('ar_lastmode').AsString,
+        FindField('ar_viewseq').AsString,
+        FindField('ar_locateuse').AsString,
+        FindField('ar_totwidth').AsString,
+        FindField('ar_totheight').AsString,
+        FindField('ar_curx').AsString,
+        FindField('ar_cury').AsString,
+        FindField('lo_dongcode').AsString,
+        FindField('lo_floorcode').AsString,
+        FindField('lo_areacode').AsString,
+        FindField('ar_update').AsString,
+        FindField('ar_telno').AsString,
+        FindField('ar_memo').AsString,
+        FindField('ag_armcode').AsString,
+        FindField('ar_memload').AsString,
+        FindField('ar_disarmcheckuse').AsString,
+        FindField('ar_disarmchecktime1from').AsString,
+        FindField('ar_disarmchecktime1to').AsString,
+        FindField('ar_change').AsString,
+        FindField('ar_relaycode').AsString);
+
+      Gauge2.Progress := Gauge2.Progress + 1;
+      Application.ProcessMessages;
+      Next;
+    end;
+  end;
+  result := True;
+end;
+
+
+function TForm1.InsertIntoTB_ARMAREA(aGroup_Code, aAC_NODENO, aAc_ecuid,
+  aAR_AREANO, aAR_NAME, aAR_USE, aAr_lastmode, aAr_viewseq, aAr_locateuse,
+  aAr_totwidth, aAr_totheight, aAr_curx, aAr_cury, aLo_dongcode,
+  aLo_floorcode, aLo_areacode, aAr_update, aAr_telno, aAr_memo,
+  aAg_armcode, aAr_memload, aAr_disarmcheckuse, aAr_disarmchecktime1from,
+  aAr_disarmchecktime1to, aAr_change, aAr_relaycode: string): Boolean;
+var
+  stSql : string;
+begin
+
+  if Not isdigit(aAr_disarmcheckuse) then aAr_disarmcheckuse = '0';
+
+  stSql := ' Insert Into TB_ARMAREA( ';
+  stSql := stSql + 'GROUP_CODE, ';
+  stSql := stSql + 'ac_nodeno, ';
+  stSql := stSql + 'ac_ecuid, ';
+  stSql := stSql + 'ar_areano, ';
+  stSql := stSql + 'ar_name, ';
+  stSql := stSql + 'ar_use, ';
+  stSql := stSql + 'ar_lastmode, ';
+  stSql := stSql + 'ar_viewseq, ';
+  stSql := stSql + 'ar_locateuse, ';
+  stSql := stSql + 'ar_totwidth, ';
+  stSql := stSql + 'ar_totheight, ';
+  stSql := stSql + 'ar_curx, ';
+  stSql := stSql + 'ar_cury, ';
+  stSql := stSql + 'lo_dongcode, ';
+  stSql := stSql + 'lo_floorcode, ';
+  stSql := stSql + 'lo_areacode, ';
+  stSql := stSql + 'ar_update, ';
+  stSql := stSql + 'ar_telno, ';
+  stSql := stSql + 'ar_memo, ';
+  stSql := stSql + 'ag_armcode, ';
+  stSql := stSql + 'ar_memload, ';
+  stSql := stSql + 'ar_disarmcheckuse, ';
+  stSql := stSql + 'ar_disarmchecktime1from, ';
+  stSql := stSql + 'ar_disarmchecktime1to, ';
+  stSql := stSql + 'ar_change, ';
+  stSql := stSql + 'ar_relaycode )';
+  stSql := stSql + ' Values( ';
+  stSql := stSql + '''' + aGroup_Code+ ''',';
+  stSql := stSql + '' + aAC_NODENO+ ',';
+  stSql := stSql + '''' + aAc_ecuid + ''',';
+  stSql := stSql + '''' + aAR_AREANO + ''',';
+  stSql := stSql + '''' + aAR_NAME + ''',';
+  stSql := stSql + '''' + aAR_USE + ''',';
+  stSql := stSql + '''' + aAr_lastmode + ''',';
+  stSql := stSql + '' + aAr_viewseq + ',';
+  stSql := stSql + '''' + aAr_locateuse + ''',';
+  stSql := stSql + '' + aAr_totwidth + ',';
+  stSql := stSql + '' + aAr_totheight + ',';
+  stSql := stSql + '' + aAr_curx + ',';
+  stSql := stSql + '' + aAr_cury + ',';
+  stSql := stSql + '''' + aLo_dongcode + ''',';
+  stSql := stSql + '''' + aLo_floorcode + ''',';
+  stSql := stSql + '''' + aLo_areacode + ''',';
+  stSql := stSql + '''' + aAr_update + ''',';
+  stSql := stSql + '''' + aAr_telno + ''',';
+  stSql := stSql + '''' + aAr_memo + ''',';
+  stSql := stSql + '''' + aAg_armcode + ''',';
+  stSql := stSql + '''' + aAr_memload + ''',';
+  stSql := stSql + '' + aAr_disarmcheckuse + ',';
+  stSql := stSql + '''' + aAr_disarmchecktime1from + ''',';
+  stSql := stSql + '''' + aAr_disarmchecktime1to + ''',';
+  stSql := stSql + '''' + aAr_change + ''',';
+  stSql := stSql + '''' + aAr_relaycode + ''')';
+
+
+  targetProcessExec(stSql);
+end;
+
+procedure TForm1.btnStopClick(Sender: TObject);
+begin
+  L_bStop := True;
 end;
 
 end.

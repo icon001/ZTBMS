@@ -21,6 +21,8 @@ inherited fmDeviceListReport: TfmDeviceListReport
     Width = 1011
     Height = 89
     Align = alTop
+    Color = clWhite
+    ParentColor = False
     TabOrder = 0
     object btn_Search: TSpeedButton
       Left = 568
@@ -213,7 +215,7 @@ inherited fmDeviceListReport: TfmDeviceListReport
     Left = 0
     Top = 89
     Width = 1011
-    Height = 516
+    Height = 523
     Cursor = crDefault
     Align = alClient
     ColCount = 7
@@ -298,6 +300,7 @@ inherited fmDeviceListReport: TfmDeviceListReport
     PrintSettings.FooterFont.Style = []
     PrintSettings.PageNumSep = '/'
     ScrollSynch = True
+    ScrollWidth = 16
     SearchFooter.FindNextCaption = 'Find next'
     SearchFooter.FindPrevCaption = 'Find previous'
     SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -327,6 +330,7 @@ inherited fmDeviceListReport: TfmDeviceListReport
       Top = 96
       Width = 329
       Height = 73
+      Color = clWhite
       TabOrder = 3
       Visible = False
       object Label1: TLabel

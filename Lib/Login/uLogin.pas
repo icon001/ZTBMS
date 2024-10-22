@@ -19,10 +19,12 @@ type
     { Public declarations }
     EmpSn : Integer;    //사원번호
     ProgIDs,UserID,UserName,CompanyCode,DepartCode,Grade,UpdateTime : String;
+
     Procedure ShowLoginDlg;
     procedure SetSysAdmin(const Value: Boolean);
     class Function GetObject:TLogin;   //자기자신을 찾는것  class 는 폼생성전에도 사용가능
     Property SYSADMIN : Boolean read FSYSADMIN write SetSYSADMIN;
+
   Published
     { Published declarations }
     Property Logined : Boolean read FLogined write SetLogined;
@@ -86,6 +88,20 @@ begin
 
   stUserID := stringReplace(edUserID.Text,'''','',[rfReplaceAll]);
   stUserPW := stringReplace(edPassword.Text,'''','',[rfReplaceAll]);
+
+  //========================================================== 자동 로그인 추가(2024.04)
+  {*
+  if G_bAutoLoginUse = True then
+  begin
+    stUserID := G_stAutoLoginUserID;
+    stUserPW := G_stAutoLoginUserPW;
+  end else
+  begin
+    stUserID := stringReplace(edUserID.Text,'''','',[rfReplaceAll]);
+    stUserPW := stringReplace(edPassword.Text,'''','',[rfReplaceAll]);
+  end;
+  *}
+  //========================================================== 자동 로그인 추가(2024.04)
 
   Try
     CoInitialize(nil);
@@ -308,7 +324,6 @@ class function TLogin.GetObject: TLogin;
 begin
    If FindSelf = Nil then TLogin.Create(Application);
    Result := TLogin(FindSelf);
-
 end;
 
 procedure TLogin.SetLogined(const Value: Boolean);
@@ -326,11 +341,20 @@ begin
   FLogined := False;
 
   fmLogin:=TfmLogin.Create(Nil);
-  Try
-    fmLogin.ShowModal;
-  Finally
-    fmLogin.Free;
-  End;
+
+  //========================================================== 자동 로그인 추가(2024.04)
+  if G_bAutoLoginUse = True then
+  begin
+    fmLogin.Show;
+    fmLogin.sbLoginClick(nil);
+  end else
+  begin
+    Try
+      fmLogin.ShowModal;
+    Finally
+      fmLogin.Free;
+    End;
+  end;
 end;
 
 procedure TfmLogin.sbCancelClick(Sender: TObject);
@@ -342,6 +366,14 @@ procedure TfmLogin.FormCreate(Sender: TObject);
 begin
   edUserID.Text:= '';
   edPassword.Text := '';
+
+  //========================================================== 자동 로그인 추가(2024.04)
+  if G_bAutoLoginUse = True then
+  begin
+    edUserID.Text := G_stAutoLoginUserID;
+    edPassword.Text := G_stAutoLoginUserPW;
+  end
+
 end;
 
 procedure TfmLogin.edUserIDKeyPress(Sender: TObject; var Key: Char);

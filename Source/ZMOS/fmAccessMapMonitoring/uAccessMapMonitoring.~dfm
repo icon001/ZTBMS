@@ -1,9 +1,10 @@
 inherited fmAccessMapMonitoring: TfmAccessMapMonitoring
   Left = 352
   Top = 149
-  Width = 798
+  Width = 1008
   Height = 568
   Caption = #44288#51228#49884#49828#53596
+  Color = clWhite
   Font.Charset = HANGEUL_CHARSET
   Font.Height = -12
   Font.Name = 'MS Sans Serif'
@@ -21,8 +22,8 @@ inherited fmAccessMapMonitoring: TfmAccessMapMonitoring
   object RzSplitter1: TRzSplitter [0]
     Left = 0
     Top = 0
-    Width = 790
-    Height = 534
+    Width = 1000
+    Height = 541
     Position = 0
     Percent = 0
     UsePercent = True
@@ -37,24 +38,24 @@ inherited fmAccessMapMonitoring: TfmAccessMapMonitoring
       0
       0
       1
-      534)
+      541)
     UpperLeftControls = ()
     LowerRightControls = ()
     object RzPanel3: TRzPanel
       Left = 0
       Top = 0
-      Width = 790
-      Height = 534
+      Width = 1000
+      Height = 541
       Align = alClient
       BorderOuter = fsNone
       TabOrder = 0
       object sp_Location: TRzSplitter
         Left = 0
         Top = 0
-        Width = 790
-        Height = 534
+        Width = 1000
+        Height = 541
         Position = 230
-        Percent = 29
+        Percent = 23
         RealTimeDrag = True
         UpperLeft.BorderOuter = fsFlatRounded
         LowerRight.BorderOuter = fsFlatRounded
@@ -67,7 +68,7 @@ inherited fmAccessMapMonitoring: TfmAccessMapMonitoring
           230
           0
           237
-          534)
+          541)
         UpperLeftControls = (
           PageControl1)
         LowerRightControls = (
@@ -76,7 +77,7 @@ inherited fmAccessMapMonitoring: TfmAccessMapMonitoring
           Left = 2
           Top = 2
           Width = 226
-          Height = 530
+          Height = 537
           ActivePage = tbLOCATE
           Align = alClient
           TabOrder = 0
@@ -86,7 +87,7 @@ inherited fmAccessMapMonitoring: TfmAccessMapMonitoring
               Left = 0
               Top = 0
               Width = 218
-              Height = 503
+              Height = 510
               Align = alClient
               TabOrder = 0
               object Shader2: TShader
@@ -135,7 +136,7 @@ inherited fmAccessMapMonitoring: TfmAccessMapMonitoring
                 Left = 2
                 Top = 23
                 Width = 214
-                Height = 478
+                Height = 485
                 Align = alClient
                 BevelOuter = bvNone
                 BevelKind = bkTile
@@ -210,8 +211,8 @@ inherited fmAccessMapMonitoring: TfmAccessMapMonitoring
         object RzPanel2: TRzPanel
           Left = 2
           Top = 2
-          Width = 549
-          Height = 530
+          Width = 759
+          Height = 537
           Align = alClient
           BorderOuter = fsNone
           BorderWidth = 1
@@ -219,10 +220,10 @@ inherited fmAccessMapMonitoring: TfmAccessMapMonitoring
           object sp_State: TRzSplitter
             Left = 1
             Top = 1
-            Width = 547
-            Height = 528
+            Width = 757
+            Height = 535
             Orientation = orVertical
-            Position = 420
+            Position = 426
             Percent = 80
             UsePercent = True
             RealTimeDrag = True
@@ -234,9 +235,9 @@ inherited fmAccessMapMonitoring: TfmAccessMapMonitoring
             UseGradients = True
             BarSize = (
               0
-              420
-              547
-              427)
+              426
+              757
+              433)
             UpperLeftControls = (
               RzLabel1
               Label_CurentIp
@@ -277,7 +278,7 @@ inherited fmAccessMapMonitoring: TfmAccessMapMonitoring
             object RzPanel4: TRzPanel
               Left = 0
               Top = 0
-              Width = 547
+              Width = 757
               Height = 5
               Align = alTop
               BorderOuter = fsNone
@@ -286,8 +287,8 @@ inherited fmAccessMapMonitoring: TfmAccessMapMonitoring
             object PageControl2: TPageControl
               Left = 0
               Top = 5
-              Width = 547
-              Height = 415
+              Width = 757
+              Height = 421
               ActivePage = BuildingTab
               Align = alClient
               TabOrder = 1
@@ -297,16 +298,16 @@ inherited fmAccessMapMonitoring: TfmAccessMapMonitoring
                 object pan_Map: TPanel
                   Left = 0
                   Top = 0
-                  Width = 539
-                  Height = 388
+                  Width = 749
+                  Height = 394
                   Align = alClient
                   BevelOuter = bvNone
                   TabOrder = 0
                   object ImageMap: TImage
                     Left = 0
                     Top = 0
-                    Width = 539
-                    Height = 388
+                    Width = 749
+                    Height = 394
                     Align = alClient
                     PopupMenu = pm_mapsize
                     Stretch = True
@@ -1565,8 +1566,8 @@ inherited fmAccessMapMonitoring: TfmAccessMapMonitoring
             object RzPageControl1: TRzPageControl
               Left = 0
               Top = 0
-              Width = 547
-              Height = 101
+              Width = 757
+              Height = 102
               ActivePage = TabSheet1
               Align = alClient
               TabIndex = 0
@@ -1577,8 +1578,8 @@ inherited fmAccessMapMonitoring: TfmAccessMapMonitoring
                 object sg_Access: TAdvStringGrid
                   Left = 0
                   Top = 0
-                  Width = 543
-                  Height = 78
+                  Width = 753
+                  Height = 79
                   Cursor = crDefault
                   Align = alClient
                   ColCount = 16
@@ -1669,6 +1670,7 @@ inherited fmAccessMapMonitoring: TfmAccessMapMonitoring
                   PrintSettings.FooterFont.Style = []
                   PrintSettings.PageNumSep = '/'
                   ScrollSynch = True
+                  ScrollWidth = 16
                   SearchFooter.FindNextCaption = 'Find next'
                   SearchFooter.FindPrevCaption = 'Find previous'
                   SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -2530,6 +2532,13 @@ inherited fmAccessMapMonitoring: TfmAccessMapMonitoring
     object Menu_DeviceReboot: TMenuItem
       Caption = #44208#54633#51109#52824#47532#49483
       OnClick = Menu_DeviceRebootClick
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object mn_ControlerChange: TMenuItem
+      Caption = #52968#53944#47204#47084#44368#52404
+      OnClick = mn_ControlerChangeClick
     end
   end
   object Popup_Locate: TPopupMenu

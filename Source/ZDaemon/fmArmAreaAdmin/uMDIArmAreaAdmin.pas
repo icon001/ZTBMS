@@ -76,6 +76,8 @@ type
     ed_DisArmCheckTo: TEdit;
     Label17: TLabel;
     ed_ArmAreaName: TEdit;
+    Label18: TLabel;
+    ed_RelayCode: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -378,6 +380,8 @@ begin
           cells[20,nRow] := FindField('AR_DISARMCHECKUSE').AsString;
           cells[21,nRow] := FindField('AR_DISARMCHECKTIME1FROM').AsString;
           cells[22,nRow] := FindField('AR_DISARMCHECKTIME1TO').AsString;
+          cells[23,nRow] := FindField('AR_RelayCode').AsString;
+
           if (FillZeroNumber(FindField('AC_NODENO').AsInteger,3) + FindField('AC_ECUID').AsString + stArmAreaNo)  = aAlarmNo then
           begin
             SelectRows(nRow,1);
@@ -424,6 +428,7 @@ begin
   chk_DisArmAlarm.Checked := False;
 
   ed_AlarmNo.Text := '';
+  ed_RelayCode.Text := '';
 end;
 
 procedure TfmMDIArmArea.ButtonEnable(aState: string);
@@ -485,6 +490,7 @@ begin
     chk_DisArmAlarm.Enabled := True;
     ed_DisArmCheckFrom.Enabled := True;
     ed_DisArmCheckTo.Enabled := True;
+    ed_RelayCode.Enabled := True;
   end else if UpperCase(aState) = 'UPDATE' then
   begin
     //Alarm Form Enable
@@ -508,6 +514,7 @@ begin
     chk_DisArmAlarm.Enabled := True;
     ed_DisArmCheckFrom.Enabled := True;
     ed_DisArmCheckTo.Enabled := True;
+    ed_RelayCode.Enabled := True;
   end else if UpperCase(aState) = 'SEARCH' then
   begin
     //Alarm Form Enable
@@ -531,6 +538,7 @@ begin
     chk_DisArmAlarm.Enabled := False;
     ed_DisArmCheckFrom.Enabled := False;
     ed_DisArmCheckTo.Enabled := False;
+    ed_RelayCode.Enabled := False;
   end;
 end;
 
@@ -616,6 +624,7 @@ begin
     if cells[20,Row] = '1' then chk_DisArmAlarm.Checked := True;
     ed_DisArmCheckFrom.Text := cells[21,Row];
     ed_DisArmCheckTo.Text := cells[22,Row];
+    ed_RelayCode.Text := cells[23,Row];
 
   end;
 
@@ -1167,7 +1176,10 @@ begin
     stSql := stSql + 'AR_DISARMCHECKUSE = ' + stDisArmEventUse + ', ';
     stSql := stSql + 'AR_DISARMCHECKTIME1FROM = ''' + ed_DisArmCheckFrom.Text + ''',';
     stSql := stSql + 'AR_DISARMCHECKTIME1TO = ''' + ed_DisArmCheckTO.Text + ''',';
-    stSql := stSql + 'AR_MEMLOAD = ''N'' ';
+    stSql := stSql + 'AR_RelayCode = ''' + ed_RelayCode.Text + ''',';
+    stSql := stSql + 'AR_MEMLOAD = ''N'', ';
+    stSql := stSql + 'AR_Change = ''Y'' ';
+
 
     stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
     stSql := stSql + ' AND AC_NODENO = ' + stNodeNo + ' ';
@@ -1193,6 +1205,8 @@ begin
     stSql := stSql + ' AR_CURX,';
     stSql := stSql + ' AR_CURY,';
     stSql := stSql + ' AR_UPDATE,';
+    stSql := stSql + ' AR_RelayCode ,';
+    stSql := stSql + ' AR_Change ,';
     stSql := stSql + ' AR_USE ) ';
     stSql := stSql + ' Values( ';
     stSql := stSql + ' ''' + GROUPCODE + ''', ';
@@ -1209,6 +1223,8 @@ begin
     stSql := stSql + ' ' + stTotY + ',';
     stSql := stSql + ' ' + stX + ',';
     stSql := stSql + ' ' + stY + ', ';
+    stSql := stSql + ' ''Y'', ';
+    stSql := stSql + ' ''' + ed_RelayCode.Text + ''',' ;
     stSql := stSql + ' ''Y'', ';
     stSql := stSql + ' ''Y'') ';
 

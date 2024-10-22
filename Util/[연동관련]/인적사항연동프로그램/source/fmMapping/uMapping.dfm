@@ -35,6 +35,7 @@ object fmMapping: TfmMapping
       Top = 16
       Width = 393
       Height = 21
+      Style = csDropDownList
       ImeName = 'Microsoft IME 2010'
       ItemHeight = 13
       ItemIndex = 0

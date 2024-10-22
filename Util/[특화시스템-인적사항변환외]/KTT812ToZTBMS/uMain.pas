@@ -111,6 +111,7 @@ type
     Function EmployeeConversion:Boolean;
     Function CardConversion:Boolean;
     Function DeviceCardNoConversion:Boolean; //카드권한
+    Function ChangeTB_CONFIG : Boolean;
 
     Function CheckTB_ACCESSDEVICE(aNodeNo,aEcuID:string):Boolean;
     Function InsertIntoTB_ACCESSDEVICE(aNodNo,aEcuID,aDeviceName,
@@ -127,6 +128,9 @@ type
                                       aCurX,aCurY,aIP,aPort,aMcuID,aNetType,
                                       aDeviceGubun,aSendAck,aDaemonGubun,
                                       aHoSend:string):Boolean;
+    Function CheckTB_CONFIG(aGroup,aCode:string):Boolean;
+    Function InsertIntoTB_CONFIG(aGroup,aCode,aValue,aDetail:string):Boolean;
+    Function UpdateTB_CONFIG(aGroup,aCode,aValue:string):Boolean;
     Function CheckTB_DOOR(aNodeNo,aEcuID,aDoorNo:string):Boolean;
     Function InsertIntoTB_DOOR(aNodeNo,aEcuID,aDoorNo,aDoorName,aViewSeq,
                           aBuildingCode,aFloorCode,aAreaCode,aLocateUse,
@@ -147,6 +151,8 @@ type
                           aBuildingCode,aFloorCode,aAreaCode,aLocateUse,
                           atotW,aTotH,aCurX,aCurY,aWatchType,aSendAck,
                           aZoneStop:string):Boolean;
+    Function CheckTB_ZONEDEVICE(aNodeNo,aEcuID,aZoneNum:string):Boolean;
+
     Function CheckTB_FOOD(aNodeNo,aEcuID,aDoorNo:string):Boolean;
     Function InsertIntoTB_FOOD(aNodeNo,aEcuID,aDoorNo,aDoorName,
                           aBuildingCode,aFloorCode,aAreaCode,aLocateUse,
@@ -480,6 +486,9 @@ begin
   EmployeeConversion;
   CardConversion;
   DeviceCardNoConversion; //카드권한
+  ChangeTB_CONFIG;
+
+  UpdateTB_CONFIG('COMMON','TABLE_VER','1');
 
   btn_next.Enabled := True; 
 
@@ -2005,6 +2014,7 @@ function TfmMain.InsertIntoTB_ZONEDEVICE(aNodeNo, aEcuID, aZoneNum,
 var
   stSql : string;
 begin
+  if CheckTB_ZONEDEVICE(aNodeNo,aEcuID,aZoneNum) then Exit;
   result := False;
   stSql := ' Insert Into TB_ZONEDEVICE (';
   stSql := stSql + 'ac_nodeno,';
@@ -2888,6 +2898,139 @@ begin
     result := FindField('POSITIONNUM').AsInteger;
   end;
   
+end;
+
+function TfmMain.ChangeTB_CONFIG: Boolean;
+var
+  stSql : string;
+begin
+  memList.Lines.Add('TB_CONFIG Conversion Start!!!');
+  result := False;
+  stSql := 'Select * ';
+  stSql := stSql + ' from TB_CONFIG ';
+
+  with ADOOrgSelectQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      memList.Lines.Add('TB_CONFIG Select Error');
+      Exit;
+    End;
+    Gauge_Table.MaxValue := recordCount;
+    Gauge_Table.Progress := 0;
+
+    while Not Eof do
+    begin
+      if Not CheckTB_CONFIG(FindField('CO_CONFIGGROUP').AsString,FindField('CO_CONFIGCODE').AsString) then
+      begin
+        InsertIntoTB_CONFIG(FindField('CO_CONFIGGROUP').AsString,
+                                      FindField('CO_CONFIGCODE').AsString,
+                                      FindField('CO_CONFIGVALUE').AsString,
+                                      FindField('CO_CONFIGDETAIL').AsString); //Relay
+
+      end else
+      begin
+        UpdateTB_CONFIG(FindField('CO_CONFIGGROUP').AsString,
+                                      FindField('CO_CONFIGCODE').AsString,
+                                      FindField('CO_CONFIGVALUE').AsString); //Relay
+      end;
+
+      Gauge_Table.Progress :=  Gauge_Table.Progress + 1;
+      Gauge_Tot.Progress := 1000 + Gauge_Table.PercentDone;
+      Application.ProcessMessages;
+      Next;
+    end;
+  end;
+  result := True;
+end;
+
+function TfmMain.CheckTB_CONFIG(aGroup, aCode: string): Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+
+  stSql := ' Select * from TB_CONFIG ';
+  stSql := stSql + ' Where CO_CONFIGGROUP = ''' + aGroup + ''' ';
+  stSql := stSql + ' AND CO_CONFIGCODE = ''' + aCode + ''' ';
+
+  with ADOTargetTempQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordcount < 1 then Exit;
+    result := True;
+  end;
+
+end;
+
+function TfmMain.InsertIntoTB_CONFIG(aGroup, aCode, aValue,
+  aDetail: string): Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+  stSql := ' Insert Into TB_CONFIG (';
+  stSql := stSql + 'CO_CONFIGGROUP,';
+  stSql := stSql + 'CO_CONFIGCODE,';
+  stSql := stSql + 'CO_CONFIGVALUE,';
+  stSql := stSql + 'CO_CONFIGDETAIL)';
+  stSql := stSql + ' Values( ';
+  stSql := stSql + '''' + aGroup + ''',';
+  stSql := stSql + '''' + aCode + ''',';
+  stSql := stSql + '''' + aValue + ''',';
+  stSql := stSql + '''' + aDetail + ''')';
+
+  result := ProcessTargetExecSQL(stSql);
+end;
+
+function TfmMain.UpdateTB_CONFIG(aGroup, aCode, aValue: string): Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+  stSql := ' Update TB_CONFIG Set ';
+  stSql := stSql + 'CO_CONFIGVALUE = ''' + aValue + ''' ';
+  stSql := stSql + ' Where CO_CONFIGGROUP = ''' + aGroup + ''' ';
+  stSql := stSql + ' AND CO_CONFIGCODE = ''' + aCode + ''' ';
+
+  result := ProcessTargetExecSQL(stSql);
+
+end;
+
+function TfmMain.CheckTB_ZONEDEVICE(aNodeNo, aEcuID,
+  aZoneNum: string): Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+
+  stSql := ' Select * from TB_ZONEDEVICE ';
+  stSql := stSql + ' Where AC_NODENO = ' + aNodeNo + ' ';
+  stSql := stSql + ' AND AC_ECUID = ''' + aEcuID + ''' ';
+  stSql := stSql + ' AND AL_ZONENUM = ''' + aZoneNum + ''' ';
+
+  with ADOTargetTempQuery do
+  begin
+    Close;
+    Sql.Text := stSql;
+    Try
+      Open;
+    Except
+      Exit;
+    End;
+    if recordcount < 1 then Exit;
+    result := True;
+  end;
 end;
 
 end.

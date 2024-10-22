@@ -10,21 +10,26 @@ type
     FaceCopADOConnection: TADOConnection;
     ADOQuery: TADOQuery;
     AttendRelayADOConnection: TADOConnection;
+    HUADOConnection: TADOConnection;
   private
     FFaceCopDBConnected: Boolean;
     FRelayDBConnected: Boolean;
     FOnAdoConnected: TAdoConnectedEvent;
+    FHURelayDBConnected: Boolean;
     { Private declarations }
     procedure SetFaceCopDBConnected(const Value: Boolean);
     procedure SetRelayDBConnected(const Value: Boolean);
     procedure SQLErrorLog(aSQL:string);
+    procedure SetHURelayDBConnected(const Value: Boolean);
   public
     { Public declarations }
     Function FaceCopDataBaseConnect(aServerIP,aPort,aDBName,aUserID,aUserPW:string;aMessage:Boolean=True;aOdbc:Boolean=False):Boolean;
     Function RelayAdoConnect(aDataBaseType,aServerIP,aServerPort,aDataBaseName,aUserID,aUserPw:string):Boolean;
+    Function HURelayAdoConnect(aDataBaseType,aServerIP,aServerPort,aDataBaseName,aUserID,aUserPw:string):Boolean;
     Function RelayProcessExecSQL(aSql:String;bUpdateResult:Boolean=False): Boolean;
   public
     property FaceCopDBConnected : Boolean read FFaceCopDBConnected write SetFaceCopDBConnected;
+    property HURelayDBConnected : Boolean read FHURelayDBConnected write SetHURelayDBConnected;
     property RelayDBConnected : Boolean read FRelayDBConnected write SetRelayDBConnected;
     property OnAdoConnected:      TAdoConnectedEvent read FOnAdoConnected       write FOnAdoConnected;
   end;
@@ -97,6 +102,103 @@ begin
   end;
   result := True;
   FaceCopDBConnected := True;
+end;
+
+function TdmRelayDB.HURelayAdoConnect(aDataBaseType, aServerIP,
+  aServerPort, aDataBaseName, aUserID, aUserPw: string): Boolean;
+var
+  conStr : string;
+begin
+  result := False;
+  RelayDBConnected := False;
+  if aDataBaseType = '1' then    //MSSQL
+  begin
+    conStr := constr + 'Provider=SQLOLEDB.1;';
+    conStr := constr + 'Password=' + aUserPw + ';';
+    conStr := constr + 'Persist Security Info=True;';
+    conStr := constr + 'User ID=' + aUserID + ';';
+    conStr := constr + 'Initial Catalog=' + aDataBaseName + ';';
+    conStr := constr + 'Data Source=' + aServerIP  + ',' + aServerPort;
+  end else if aDataBaseType = '2' then  //PostGreSql
+  begin
+    conStr := 'Provider=PostgreSQL.1;';
+    conStr := constr + 'Data Source=' + aServerIP + ',' + aServerPort + ';';
+    conStr := constr + 'location=' + aDataBaseName + ';';
+    conStr := constr + 'User Id='+ aUserID + ';';
+    conStr := constr + 'password=' + aUserPw;
+  end else if aDataBaseType = '3' then  //Oracle
+  begin
+    //conStr := 'Provider=OraOLEDB.Oracle;';
+    //conStr := constr + 'Data Source=(DESCRIPTION=(CID=GTU_APP)(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=' + aServerIP + ')(PORT=' + aServerPort + ')))(CONNECT_DATA=(SID=' + aDataBaseName + ')(SERVER=DEDICATED)));';
+    //conStr := 'Provider=OraOLEDB.Oracle;';
+    //conStr := constr + 'Data Source=(DESCRIPTION=(CID=GTU_APP)(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=' + aServerIP + ')(PORT=' + aServerPort + ')))(CONNECT_DATA=(SERVICE_NAME=' + aDataBaseName + ')(SERVER=DEDICATED)));';
+    //conStr := constr + 'User Id='+ aUserID + ';';
+    //conStr := constr + 'Password=' + aUserPw + '';
+
+    conStr := 'Provider=MSDAORA.1;';
+    //conStr := 'Provider=OraOLEDB.Oracle;';
+    conStr := constr + 'Password=' + aUserPw + ';';
+    conStr := constr + 'User ID='+ aUserID + ';';
+    conStr := constr + 'Data Source=' + aDataBaseName + ';';
+    conStr := constr + 'Persist Security Info=False';   
+    //conStr := constr + 'Persist Security Info=True';  False
+  end else if aDataBaseType = '4' then  //Oracle OleDB
+  begin
+    //conStr := 'Provider=OraOLEDB.Oracle;';
+    //conStr := constr + 'Data Source=(DESCRIPTION=(CID=GTU_APP)(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=' + aServerIP + ')(PORT=' + aServerPort + ')))(CONNECT_DATA=(SID=' + aDataBaseName + ')(SERVER=DEDICATED)));';
+    conStr := 'Provider=OraOLEDB.Oracle;';
+    conStr := constr + 'Data Source=(DESCRIPTION=(CID=GTU_APP)(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=' + aServerIP + ')(PORT=' + aServerPort + ')))(CONNECT_DATA=(SERVICE_NAME=' + aDataBaseName + ')(SERVER=DEDICATED)));';
+    conStr := constr + 'User Id='+ aUserID + ';';
+    conStr := constr + 'Password=' + aUserPw + '';
+  end else if aDataBaseType = '5' then  //ODBC
+  begin
+    constr := 'Provider=MSDASQL.1;';
+    conStr := conStr + 'User ID=' + aUserID + ';';
+    conStr := conStr + 'Password=' + aUserPw + ';';
+    conStr := conStr + 'Persist Security Info=True;';
+    conStr := conStr + 'Data Source=' + aServerIP + ';';
+
+  end else if aDataBaseType = '0' then   //MDB
+  begin
+  {      //if DBName = '' then
+    DBName := stExeFolder + '\..\DB\ZMOS.mdb';
+    conStr := 'Provider=Microsoft.Jet.OLEDB.4.0;';
+    conStr := conStr + 'Data Source=' + DBName + ';';
+    conStr := conStr + 'Persist Security Info=True;';
+    conStr := conStr + 'Jet OLEDB:Database ';
+    //if stuserPW <> '' then  conStr := conStr + ' Password=' + stuserPW;  }
+  end else
+  begin
+    //showmessage('DB Type 이 정확하지 않습니다.');
+    Exit;
+  end;
+
+  with AttendRelayADOConnection do
+  begin
+    Connected := False;
+    ConnectionString := conStr;
+    //ConnectionString := 'Provider=OraOLEDB.Oracle.1;Password=icon002;User ID=icon002;Data Source=OPPRA;Persist Security Info=True';
+    LoginPrompt:= false ;
+    Try
+      Connected := True;
+    Except
+      on E : Exception do
+        begin
+          SQLErrorLog('DBError('+ E.Message + ')' + conStr );
+          // ERROR MESSAGE-BOX DISPLAY
+          //ShowMessage(E.Message );
+          Exit;
+        end;
+      else
+        begin
+          //ShowMessage('데이터베이스 접속 에러' );
+          Exit;
+        end;
+    End;
+    CursorLocation := clUseServer;
+  end;
+  RelayDBConnected := True;
+  result := True;
 end;
 
 function TdmRelayDB.RelayAdoConnect(aDataBaseType, aServerIP, aServerPort,
@@ -284,6 +386,11 @@ end;
 procedure TdmRelayDB.SetFaceCopDBConnected(const Value: Boolean);
 begin
   FFaceCopDBConnected := Value;
+end;
+
+procedure TdmRelayDB.SetHURelayDBConnected(const Value: Boolean);
+begin
+  FHURelayDBConnected := Value;
 end;
 
 procedure TdmRelayDB.SetRelayDBConnected(const Value: Boolean);

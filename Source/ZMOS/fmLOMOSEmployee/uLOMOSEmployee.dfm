@@ -1,6 +1,6 @@
 inherited fmLOMOSEmployee: TfmLOMOSEmployee
-  Left = 311
-  Top = 167
+  Left = 312
+  Top = 153
   Width = 662
   Height = 667
   BorderIcons = [biSystemMenu]

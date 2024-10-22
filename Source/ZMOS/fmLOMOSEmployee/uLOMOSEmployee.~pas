@@ -105,7 +105,6 @@ type
     function EmployeeFormCheck:Boolean;
     function EmployeeInsert:Boolean;
     function CheckCardNo(aCardNo:string; var aCompany,aEmpNo:string):Boolean;
-    Function GetFdmsID:string;
     Function GetEmployeeFdmsID(aCompanyCode,aEmpID:string):string;
 
 
@@ -135,7 +134,7 @@ uses
   uLomosUtil,
   uZipCode,
   uCommonSql,
-  uCompanyCodeLoad;
+  uCompanyCodeLoad, udmAdoQuery;
 
 {$R *.dfm}
 
@@ -1010,7 +1009,7 @@ begin
     if length(stCardNo) <> 10 then continue;
     stRetireDate := '99991231';
 
-    stfdmsID := GetFdmsID;
+    stfdmsID :=CommonModule.GetNextFdmsID;
 
     StatusBar1.Panels[0].Text := inttostr(i) + '/' + inttostr(sg_Employ.RowCount - 1) + FM106 +'정보 입력중...';
     if Not CheckTB_EMPLOYEE(stCompanyCode,stEmCode) then
@@ -1176,33 +1175,6 @@ begin
   end;
 end;
 
-function TfmLOMOSEmployee.GetFdmsID: string;
-var
-  stSql : string;
-  nFdms_id : integer;
-begin
-  result := '31';
-  stSql := 'select Max(Fdms_id) as fdms_id from TB_EMPLOYEE ';
-  with fdmsADOQuery do
-  begin
-    Close;
-    Sql.Clear;
-    Sql.Text := stSql;
-    Try
-      Open;
-    Except
-      Exit;
-    End;
-    if recordCount < 1 then Exit;
-    Try
-      nFdms_id := FindField('fdms_id').AsInteger;
-      if nFdms_id = 0 then Exit;
-    Except
-      Exit;
-    End;
-    result := inttostr(nFdms_id + 1);
-  end;
-end;
 
 function TfmLOMOSEmployee.InsertIntoTB_EMPLOYEE(aEmpID, aEmpNM,
   aCompanyCode, aJijumCode,aDepartCode, aPosiCode, aCompanyPhone, aJoinDate,

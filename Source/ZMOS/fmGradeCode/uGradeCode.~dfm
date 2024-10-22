@@ -297,6 +297,7 @@ inherited fmGradeCode: TfmGradeCode
       PrintSettings.FooterFont.Name = 'MS Sans Serif'
       PrintSettings.FooterFont.Style = []
       PrintSettings.PageNumSep = '/'
+      ScrollSynch = True
       FixedColWidth = 150
       FixedFont.Charset = DEFAULT_CHARSET
       FixedFont.Color = clWindowText

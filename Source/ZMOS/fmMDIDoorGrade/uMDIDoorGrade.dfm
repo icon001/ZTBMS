@@ -1,6 +1,6 @@
 inherited fmMDIDoorGrade: TfmMDIDoorGrade
-  Left = 112
-  Top = 96
+  Left = 310
+  Top = 107
   Width = 1024
   Height = 735
   Caption = #52636#51077#47928#48324#52636#51077#44428#54620#44288#47532
@@ -21,11 +21,11 @@ inherited fmMDIDoorGrade: TfmMDIDoorGrade
     Left = 0
     Top = 161
     Width = 1
-    Height = 511
+    Height = 518
   end
   object StatusBar1: TStatusBar [1]
     Left = 0
-    Top = 672
+    Top = 679
     Width = 1016
     Height = 29
     Panels = <
@@ -39,6 +39,7 @@ inherited fmMDIDoorGrade: TfmMDIDoorGrade
     Width = 1016
     Height = 128
     Align = alTop
+    Color = clWhite
     TabOrder = 1
     object GroupBox3: TGroupBox
       Left = 1
@@ -238,6 +239,7 @@ inherited fmMDIDoorGrade: TfmMDIDoorGrade
           PrintSettings.FooterFont.Style = []
           PrintSettings.PageNumSep = '/'
           ScrollSynch = True
+          ScrollWidth = 16
           SearchFooter.FindNextCaption = 'Find next'
           SearchFooter.FindPrevCaption = 'Find previous'
           SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -399,34 +401,36 @@ inherited fmMDIDoorGrade: TfmMDIDoorGrade
     Left = 1
     Top = 161
     Width = 1015
-    Height = 511
+    Height = 518
     Align = alClient
+    Color = clWhite
     TabOrder = 2
     OnResize = Panel1Resize
     object Splitter2: TSplitter
       Left = 353
       Top = 121
       Width = 1
-      Height = 389
+      Height = 396
     end
     object Splitter3: TSplitter
       Left = 473
       Top = 121
       Width = 1
-      Height = 389
+      Height = 396
     end
     object Panel2: TPanel
       Left = 474
       Top = 121
       Width = 540
-      Height = 389
+      Height = 396
       Align = alClient
+      Color = clWhite
       TabOrder = 0
       object sg_GradeCard: TAdvStringGrid
         Left = 1
         Top = 34
         Width = 538
-        Height = 354
+        Height = 361
         Cursor = crDefault
         Align = alClient
         ColCount = 13
@@ -517,6 +521,7 @@ inherited fmMDIDoorGrade: TfmMDIDoorGrade
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
         ScrollSynch = True
+        ScrollWidth = 16
         SearchFooter.FindNextCaption = 'Find next'
         SearchFooter.FindPrevCaption = 'Find previous'
         SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -555,7 +560,7 @@ inherited fmMDIDoorGrade: TfmMDIDoorGrade
         Height = 33
         Align = alTop
         Caption = #46321#47197#52852#46300
-        Color = clActiveCaption
+        Color = clBlack
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
         Font.Height = -13
@@ -570,14 +575,15 @@ inherited fmMDIDoorGrade: TfmMDIDoorGrade
       Left = 1
       Top = 121
       Width = 352
-      Height = 389
+      Height = 396
       Align = alLeft
+      Color = clWhite
       TabOrder = 1
       object sg_Card: TAdvStringGrid
         Left = 1
         Top = 34
         Width = 350
-        Height = 354
+        Height = 361
         Cursor = crDefault
         Align = alClient
         ColCount = 9
@@ -663,6 +669,7 @@ inherited fmMDIDoorGrade: TfmMDIDoorGrade
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
         ScrollSynch = True
+        ScrollWidth = 16
         SearchFooter.FindNextCaption = 'Find next'
         SearchFooter.FindPrevCaption = 'Find previous'
         SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -696,7 +703,7 @@ inherited fmMDIDoorGrade: TfmMDIDoorGrade
         Height = 33
         Align = alTop
         Caption = #48120#46321#47197#52852#46300
-        Color = clActiveCaption
+        Color = clBlack
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
         Font.Height = -13
@@ -711,8 +718,9 @@ inherited fmMDIDoorGrade: TfmMDIDoorGrade
       Left = 354
       Top = 121
       Width = 119
-      Height = 389
+      Height = 396
       Align = alLeft
+      Color = clWhite
       TabOrder = 2
       object btn_GradeInsert: TSpeedButton
         Left = 6
@@ -765,7 +773,7 @@ inherited fmMDIDoorGrade: TfmMDIDoorGrade
         Height = 33
         Align = alTop
         Caption = #44428#54620#44288#47532
-        Color = clActiveCaption
+        Color = clBlack
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
         Font.Height = -13
@@ -782,6 +790,7 @@ inherited fmMDIDoorGrade: TfmMDIDoorGrade
       Width = 1013
       Height = 120
       Align = alTop
+      Color = clWhite
       TabOrder = 3
       object GroupBox2: TGroupBox
         Left = 1
@@ -927,7 +936,7 @@ inherited fmMDIDoorGrade: TfmMDIDoorGrade
     Height = 33
     Align = alTop
     Caption = #52636#51077#47928#48324#52636#51077#44428#54620#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -942,6 +951,7 @@ inherited fmMDIDoorGrade: TfmMDIDoorGrade
     Top = 480
     Width = 329
     Height = 73
+    Color = clWhite
     TabOrder = 4
     Visible = False
     object Label2: TLabel

@@ -1,6 +1,6 @@
 inherited fmCompanyCode: TfmCompanyCode
-  Left = 413
-  Top = 144
+  Left = 991
+  Top = 259
   Width = 577
   Height = 446
   Caption = #54924#49324#53076#46300#44288#47532
@@ -20,7 +20,7 @@ inherited fmCompanyCode: TfmCompanyCode
     Top = 33
     Width = 569
     Height = 290
-    ActivePage = JijumTab
+    ActivePage = CompanyTab
     Align = alClient
     TabOrder = 0
     OnChange = pc_WorkChange
@@ -375,7 +375,7 @@ inherited fmCompanyCode: TfmCompanyCode
             Height = 20
             Style = csDropDownList
             ImeName = 'Microsoft IME 2003'
-            ItemHeight = 12
+            ItemHeight = 0
             TabOrder = 0
             OnChange = cmb_CompanyCode1Change
           end
@@ -472,7 +472,7 @@ inherited fmCompanyCode: TfmCompanyCode
             Width = 201
             Height = 20
             ImeName = 'Microsoft IME 2003'
-            ItemHeight = 12
+            ItemHeight = 0
             TabOrder = 4
             OnChange = cmb_sCompanyCode1Change
           end
@@ -851,7 +851,7 @@ inherited fmCompanyCode: TfmCompanyCode
             Width = 201
             Height = 20
             ImeName = 'Microsoft IME 2003'
-            ItemHeight = 12
+            ItemHeight = 0
             TabOrder = 2
             OnChange = cmb_sCompanyCode3Change
           end
@@ -997,7 +997,7 @@ inherited fmCompanyCode: TfmCompanyCode
             Height = 20
             Style = csDropDownList
             ImeName = 'Microsoft IME 2003'
-            ItemHeight = 12
+            ItemHeight = 0
             TabOrder = 0
             OnChange = cmb_CompanyCode3Change
           end

@@ -127,6 +127,7 @@ type
     Label3: TLabel;
     ed_SelectCompanyCode: TEdit;
     ed_SelectEmCode: TEdit;
+    chk_Add: TCheckBox;
     procedure btn_CloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -193,6 +194,8 @@ type
     procedure chk_MasterClick(Sender: TObject);
     procedure CommandArrayCommandsTCloseExecute(Command: TCommand;
       Params: TStringList);
+    procedure sg_EmployColumnMoved(Sender: TObject; FromIndex,
+      ToIndex: Integer);
 
   private
     CompanyCodeList : TStringList;
@@ -207,6 +210,7 @@ type
     EmpTypeCodeList : TStringList;
     sEmpTypeCodeList : TStringList;
     sWorkGubunCodeList : TStringList;
+    WorkGubunCodeList : TStringList;
 
     State : string;
     OldCardNo : string;
@@ -215,6 +219,7 @@ type
     L_bValidateUpdate :Boolean;
     L_bCardTypeChange :Boolean;
     L_stSelectFdmsID : string;
+    FShowCount: integer;
     { Private declarations }
 
     procedure FormClear;
@@ -245,14 +250,13 @@ type
                                  aTime1,aTime2,aTime3,aTime4,aTimeWeek,aMaster,aWorkCode:string):Boolean;
     Function CheckTB_CARD(aCardNo,aCompanyCode,aEmpID,aCardType,aCardGubun :string;var Mode:string) : Boolean;
     Function CheckTB_CARDEmployeeType(aCompanyCode,aEmpID,aCardNo,aCardType:string):Boolean;
-    Function InsertTB_CARD(aCardNo,aCardGubun,aCardType,aEmpID,aCompanyCode,aEmpNM,aHandphone,aFdmsID,aCompanyName,aJijumName,aDepartName,aPosiName:string) : Boolean;
-    Function UpdateTB_CARD(aCardNo,aCardGubun,aCardType,aEmpID,aCompanyCode,aEmpNM,aHandphone,aFdmsID,aCompanyName,aJijumName,aDepartName,aPosiName:string) : Boolean;
+    Function InsertTB_CARD(aCardNo,aCardGubun,aCardType,aEmpID,aCompanyCode,aEmpNM,aHandphone,aFdmsID,aCompanyName,aJijumName,aDepartName,aPosiName,aStick:string) : Boolean;
+    Function UpdateTB_CARD(aCardNo,aCardGubun,aCardType,aEmpID,aCompanyCode,aEmpNM,aHandphone,aFdmsID,aCompanyName,aJijumName,aDepartName,aPosiName,aStick:string) : Boolean;
     Function CheckTB_EMPLOYEE(aCompanyCode,aEmpID:string):Boolean;
     Procedure RcvCardDataByReader(aData:String);
     Function UpdateTB_ACCESSEVENTCARDNO(aOldCardNo,aCardNo:string):Boolean;
     Function UpdateTB_ATEVENTCARDNO(aOldCardNo,aCardNo:string):Boolean;
     Function UpdateTB_FoodEventCARDNO(aOldCardNo,aCardNo:string):Boolean;
-    Function GetFdmsID:string;
     Function GetEmployeeFdmsID(aCompanyCode,aEmpID:string):string;
     procedure FormNameSet;
     Function CheckFdmsID(aFdmsNo:string):Boolean;
@@ -262,6 +266,20 @@ type
     Function GetCardNoEmployee(aCompanyCode,aEmpID:string):string;
     Function CardInfoUpdate(aCol,aRow:integer):Boolean;
     Function GetEmCodeFromCardNo(aCardNo:string;var aCompanyCode,aEmcode:string):Boolean;
+    procedure SetShowCount(const Value: integer);
+
+  private
+    EmployeeIndexArray:Array of integer; //사원정보  리스트 순서 배열
+    relEmployeeIndexArray:Array of integer; //사원정보 실제 위치
+    EmployeeHeaderNameList : TStringList;   ///사원관리 Header리스트
+    procedure iniConfigRead;
+    procedure iniConfigWrite;
+    procedure GridSetting;
+    procedure ChangeEmployeeIndex(FromIndex,ToIndex:integer);
+    procedure MemoryCreate;
+    procedure ListHeaderNameSet;
+    procedure EmployeeHeaderNameCreate;
+
   public
     { Public declarations }
     function GetSerialPortList(List : TStringList; const doOpenTest : Boolean = True) : LongWord;
@@ -271,6 +289,7 @@ type
     procedure CardReadProcess(aCardNo:string;aCheckBox:Boolean=True);
     function GetEmployeeInfo(aCardNo:string; var aCompanyCode,aEmCode:string):Boolean;
 
+    property ShowCount : integer read FShowCount write SetShowCount;
   end;
 
 var
@@ -286,11 +305,12 @@ uses uDataModule1,
      uCommonSql,
      uMssql,
      uMDBSql,
+     uMonitoringCommonVariable,
      uPostGreSql,
      uFireBird,
      uExcelSave,
      udmAdoQuery,
-     DIMime;
+     DIMime, UCommonModule;
 
 {$R *.dfm}
 
@@ -303,12 +323,19 @@ procedure TfmDupCardEmploy.FormCreate(Sender: TObject);
 begin
   self.ModuleID := 'Employ';
 
+  MemoryCreate;
+  EmployeeHeaderNameCreate;
+
+  iniConfigRead;
+  ListHeaderNameSet;
 
   L_bVisitEditMode := False;
 end;
 
 procedure TfmDupCardEmploy.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  iniConfigWrite;
+
   CompanyCodeList.Free;
   sCompanyCodeList.Free;
   JijumCodeList.Free;
@@ -320,6 +347,7 @@ begin
   EmpTypeCodeList.Free;
   sEmpTypeCodeList.Free;
   sWorkGubunCodeList.Free;
+  WorkGubunCodeList.Free;
 
   ComPortList.Free;
 //  Delay(500);
@@ -500,67 +528,67 @@ begin
 
   with (Sender as TStringGrid) do
   begin
-    if cells[1,Row] = '' then exit;    //사번
+    if cells[EmployeeIndexArray[1],Row] = '' then exit;    //사번
 
-    ed_sEmpNo.Text := cells[1,Row];
-    ed_SelectEmCode.Text := cells[1,Row];
-    ed_sEmpNM.Text := cells[2,Row];
-    nIndex := sCompanyCodeList.IndexOf(cells[6,Row]);
+    ed_sEmpNo.Text := cells[EmployeeIndexArray[1],Row];
+    ed_SelectEmCode.Text := cells[EmployeeIndexArray[1],Row];
+    ed_sEmpNM.Text := cells[EmployeeIndexArray[2],Row];
+    nIndex := sCompanyCodeList.IndexOf(cells[EmployeeIndexArray[6],Row]);
     if nIndex > -1 then  cmb_sCompany.ItemIndex := nIndex;
-    ed_SelectCompanyCode.Text := cells[6,Row];
+    ed_SelectCompanyCode.Text := cells[EmployeeIndexArray[6],Row];
 
     if cmb_sCompany.ItemIndex > 0 then
     begin
-      LoadsJijumCode(cells[6,Row],sJijumCodeList,cmb_sJijum);
-      nIndex := sJijumCodeList.IndexOf(cells[6,Row] + cells[7,Row]);
+      LoadsJijumCode(cells[EmployeeIndexArray[6],Row],sJijumCodeList,cmb_sJijum);
+      nIndex := sJijumCodeList.IndexOf(cells[EmployeeIndexArray[6],Row] + cells[EmployeeIndexArray[7],Row]);
       if nIndex > -1 then cmb_sJijum.ItemIndex := nIndex;
     end;
 
     if cmb_sJijum.ItemIndex > 0 then
     begin
-      LoadsDepartCode(cells[6,Row],cells[7,Row],sDepartCodeList,cmb_sDepart);
-      nIndex := sDepartCodeList.IndexOf(cells[6,Row] + cells[7,Row] + cells[8,Row]);
+      LoadsDepartCode(cells[EmployeeIndexArray[6],Row],cells[EmployeeIndexArray[7],Row],sDepartCodeList,cmb_sDepart);
+      nIndex := sDepartCodeList.IndexOf(cells[EmployeeIndexArray[6],Row] + cells[EmployeeIndexArray[7],Row] + cells[EmployeeIndexArray[8],Row]);
       if nIndex > -1 then cmb_sDepart.ItemIndex := nIndex;
     end;
 
     if cmb_sCompany.ItemIndex > 0 then
     begin
-      LoadsPosiCode(cells[6,Row],cmb_sPosi);
-      nIndex := sPosiCodeList.IndexOf(cells[6,Row] + cells[9,Row]);
+      LoadsPosiCode(cells[EmployeeIndexArray[6],Row],cmb_sPosi);
+      nIndex := sPosiCodeList.IndexOf(cells[EmployeeIndexArray[6],Row] + cells[EmployeeIndexArray[9],Row]);
       if nIndex > -1 then cmb_sPosi.ItemIndex := nIndex;
     end;
     
-    nIndex := sEmpTypeCodeList.IndexOf(cells[19,Row]);
+    nIndex := sEmpTypeCodeList.IndexOf(cells[EmployeeIndexArray[19],Row]);
     if nIndex > -1 then cmb_emType.ItemIndex := nIndex;
-    nIndex := sWorkGubunCodeList.IndexOf(cells[31,Row]);
+    nIndex := sWorkGubunCodeList.IndexOf(cells[EmployeeIndexArray[29],Row]);
     if nIndex > -1 then cmb_WorkGubun.ItemIndex := nIndex;
 
-    ed_sCompanyPhone.Text := cells[10,Row];
-    if length(cells[11,Row]) >= 8 then
-      dt_sJoinDt.Date := strToDate(copy(cells[11,Row],1,4) + '-' + copy(cells[11,Row],5,2) + '-' + copy(cells[11,Row],7,2) ) ;
-    if length(cells[12,Row]) >= 8 then
-      dt_sRetireDt.Date := strToDate(copy(cells[12,Row],1,4) + '-' + copy(cells[12,Row],5,2) + '-' + copy(cells[12,Row],7,2) ) ;
-    ed_sZipcode.Text := cells[13,Row];
-    ed_sAddr1.Text := cells[14,Row];
-    ed_sAddr2.Text := cells[15,Row];
-    ed_sHomePhone.Text := cells[16,Row];
-    ed_sHandphone.Text := cells[17,Row];
-    ed_fdmsNo.Text := cells[20,Row];
+    ed_sCompanyPhone.Text := cells[EmployeeIndexArray[10],Row];
+    if length(cells[EmployeeIndexArray[11],Row]) >= 8 then
+      dt_sJoinDt.Date := strToDate(copy(cells[EmployeeIndexArray[11],Row],1,4) + '-' + copy(cells[EmployeeIndexArray[11],Row],5,2) + '-' + copy(cells[EmployeeIndexArray[11],Row],7,2) ) ;
+    if length(cells[EmployeeIndexArray[12],Row]) >= 8 then
+      dt_sRetireDt.Date := strToDate(copy(cells[EmployeeIndexArray[12],Row],1,4) + '-' + copy(cells[EmployeeIndexArray[12],Row],5,2) + '-' + copy(cells[EmployeeIndexArray[12],Row],7,2) ) ;
+    ed_sZipcode.Text := cells[EmployeeIndexArray[13],Row];
+    ed_sAddr1.Text := cells[EmployeeIndexArray[14],Row];
+    ed_sAddr2.Text := cells[EmployeeIndexArray[15],Row];
+    ed_sHomePhone.Text := cells[EmployeeIndexArray[16],Row];
+    ed_sHandphone.Text := cells[EmployeeIndexArray[17],Row];
+    ed_fdmsNo.Text := cells[EmployeeIndexArray[20],Row];
     L_stSelectFdmsID := ed_fdmsNo.Text;
 
-    if cells[24,Row] = '0' then rg_TimeGroup1.Checked := True
-    else if cells[24,Row] = '1' then rg_TimeGroup2.Checked := True;
+    if cells[EmployeeIndexArray[22],Row] = '0' then rg_TimeGroup1.Checked := True
+    else if cells[EmployeeIndexArray[22],Row] = '1' then rg_TimeGroup2.Checked := True;
 
-    if cells[23,Row] <> 'Y' then rg_TimeCodeNotUse.Checked := True;
-    if cells[25,Row] = 'Y' then chk_Time1.Checked := True
+    if cells[EmployeeIndexArray[21],Row] <> 'Y' then rg_TimeCodeNotUse.Checked := True;
+    if cells[EmployeeIndexArray[23],Row] = 'Y' then chk_Time1.Checked := True
     else chk_Time1.Checked := False;
-    if cells[26,Row] = 'Y' then chk_Time2.Checked := True
+    if cells[EmployeeIndexArray[24],Row] = 'Y' then chk_Time2.Checked := True
     else chk_Time2.Checked := False;
-    if cells[27,Row] = 'Y' then chk_Time3.Checked := True
+    if cells[EmployeeIndexArray[25],Row] = 'Y' then chk_Time3.Checked := True
     else chk_Time3.Checked := False;
-    if cells[28,Row] = 'Y' then chk_Time4.Checked := True
+    if cells[EmployeeIndexArray[26],Row] = 'Y' then chk_Time4.Checked := True
     else chk_Time4.Checked := False;
-    stTemp := cells[29,Row];
+    stTemp := cells[EmployeeIndexArray[27],Row];
     if stTemp <> '' then
     begin
       if stTemp[7] = '1' then chk_TimeSun.Checked := True
@@ -578,19 +606,19 @@ begin
       if stTemp[1] = '1' then chk_TimeSat.Checked := True
       else chk_TimeSat.Checked := False;
     end;
-    stTemp := cells[30,Row];
+    stTemp := cells[EmployeeIndexArray[28],Row];
     if stTemp = 'Y' then chk_Master.Checked := True
     else chk_Master.Checked := False;
 
-    if  cells[18,Row] = 'Y' then
+    if  cells[EmployeeIndexArray[18],Row] = 'Y' then
     begin
       //여기서 이미지 로딩하자.
       MapJpg := TJpegImage.Create;
       MapStream := TMemoryStream.Create;
       stSql := ' select * from TB_EMPLOYEE ' ;
       stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
-      stSql := stSql + ' AND EM_CODE = ''' + cells[1,Row] + ''' ';
-      stSql := stSql + ' AND CO_COMPANYCODE = ''' + cells[6,Row] + ''' ';
+      stSql := stSql + ' AND EM_CODE = ''' + cells[EmployeeIndexArray[1],Row] + ''' ';
+      stSql := stSql + ' AND CO_COMPANYCODE = ''' + cells[EmployeeIndexArray[6],Row] + ''' ';
 
       CoInitialize(nil);
       TempAdoQuery := TADOQuery.Create(nil);
@@ -628,7 +656,7 @@ begin
 
     end;
 //    ed_CardNo.Text := cells[19,Row];
-    SearchCardList(cells[6,Row],cells[1,Row]);
+    SearchCardList(cells[EmployeeIndexArray[6],Row],cells[EmployeeIndexArray[1],Row]);
 
   end;
 
@@ -646,7 +674,7 @@ begin
   ButtonEnable(State);
   with sg_Employ do
   begin
-    if Cells[0,1] <> '' then
+    if Cells[EmployeeIndexArray[0],1] <> '' then
     begin
       AddRow;
       SelectRows(RowCount - 1,1);
@@ -692,7 +720,7 @@ begin
   end;
 
   if Not fdmsNoAuto then
-    ed_fdmsNo.Text := GetFdmsID;
+    ed_fdmsNo.Text := CommonModule.GetNextFdmsID;
 end;
 
 procedure TfmDupCardEmploy.pn_EmployInSertMode;
@@ -917,7 +945,7 @@ begin
   ButtonEnable(State);
 
 
-  OldCardNo := ed_CardNo.Text ;
+  OldCardNo := Trim(ed_CardNo.Text) ;
 //  pn_EmployUpdateMode;
 end;
 
@@ -962,7 +990,7 @@ begin
   if cmb_sCompany.ItemIndex < 0 then stCompanyCode := '000'
   else stCompanyCode := sCompanyCodeList.Strings[cmb_sCompany.ItemIndex];
   if Trim(stCompanyCode) = '' then stCompanyCode := '000';
-  bResult := dmAdoQuery.DeleteTB_EMPLOYEE(ed_sEmpNo.Text,stCompanyCode,ed_CardNo.Text);
+  bResult := dmAdoQuery.DeleteTB_EMPLOYEE(ed_sEmpNo.Text,stCompanyCode,Trim(ed_CardNo.Text));
 
   if bResult then
   begin
@@ -1130,7 +1158,7 @@ begin
 
   if UpperCase(State) = 'INSERT' then
   begin
-    if fdmsNoAuto then stFdmsId := GetFdmsID
+    if fdmsNoAuto then stFdmsId := CommonModule.GetNextFdmsID
     else
     begin
       if Not IsDigit(ed_fdmsNo.Text) then
@@ -1149,7 +1177,7 @@ begin
                                  stDepartCode,stPosiCode,stCophone,
                                  FormatDateTime('yyyymmdd',dt_sJoinDt.Date),FormatDateTime('yyyymmdd',dt_sRetireDt.Date),
                                  ed_sZipcode.Text,ed_sAddr1.Text,ed_sAddr2.Text,ed_sHomePhone.Text,ed_sHandphone.Text,
-                                 '1',ed_CardNo.Text,ed_EmpImg.Text,stFdmsId,stEmTypeCode,
+                                 '1',Trim(ed_CardNo.Text),ed_EmpImg.Text,stFdmsId,stEmTypeCode,
                                  stTimeCodeUse,stTimeCodeGroup,stTime1,stTime2,stTime3,stTime4,stTimeWeek,stMaster,stWorkCode);
     if bResult then     inc(AutoSabun);
   end  else if UpperCase(State) = 'UPDATE' then
@@ -1181,7 +1209,7 @@ begin
                                  stDepartCode,stPosiCode,stCophone,
                                  FormatDateTime('yyyymmdd',dt_sJoinDt.Date),FormatDateTime('yyyymmdd',dt_sRetireDt.Date),
                                  ed_sZipcode.Text,ed_sAddr1.Text,ed_sAddr2.Text,ed_sHomePhone.Text,ed_sHandphone.Text,
-                                 '1',ed_CardNo.Text,ed_EmpImg.Text,stEmTypeCode,stFdmsId,
+                                 '1',Trim(ed_CardNo.Text),ed_EmpImg.Text,stEmTypeCode,stFdmsId,
                                  stTimeCodeUse,stTimeCodeGroup,stTime1,stTime2,stTime3,stTime4,stTimeWeek,stMaster,stWorkCode);
     if L_bValidateUpdate then
     begin
@@ -1204,10 +1232,17 @@ begin
       ShowEmployee(stCompanyCode + ed_sEmpNo.Text,sg_Employ.TopRow);
   end else
   begin
-    cmb_SearchType.ItemIndex := 0;
-    cmb_SearchTypeChange(self);
-    ed_searchText.Text := ed_sEmpNo.Text;
-    ShowEmployee(stCompanyCode + ed_sEmpNo.Text);
+    if UpperCase(State) = 'INSERT' then
+    begin
+      cmb_SearchType.ItemIndex := 0;
+      cmb_SearchTypeChange(self);
+      ed_searchText.Text := ed_sEmpNo.Text;
+      ShowEmployee(stCompanyCode + ed_sEmpNo.Text);
+    end
+    else
+    begin
+      ShowEmployee(stCompanyCode + ed_sEmpNo.Text,sg_Employ.TopRow);
+    end;
   end;
 
 end;
@@ -1225,6 +1260,7 @@ var
 begin
   Result := False;
   bResult := False;
+  aCardNo := Trim(aCardNo);
   bResult := CheckTB_EMPLOYEE(aCompanyCode,aEmpID);
   if bResult then
   begin
@@ -1267,8 +1303,8 @@ begin
     bResult := CheckTB_CARD(aCardNo,aCompanyCode,aEmpID,aRegGubun,copy(cmb_CardGubun.Text,1,1),stMode);
     if bResult then //카드번호 입력하자.
     begin
-      if stMode = 'Insert' then  bResult := InsertTB_CARD(aCardNo,copy(cmb_CardGubun.Text,1,1),aRegGubun,aEmpID,aCompanyCode,aEmpNM,aHandphone,afdmsID,cmb_sCompany.text,cmb_sJijum.text,cmb_sDepart.text,cmb_sPosi.text)
-      else if stMode = 'Update' then bResult := UpdateTB_CARD(aCardNo,copy(cmb_CardGubun.Text,1,1),aRegGubun,aEmpID,aCompanyCode,aEmpNM,aHandphone,afdmsID,cmb_sCompany.text,cmb_sJijum.text,cmb_sDepart.text,cmb_sPosi.text);
+      if stMode = 'Insert' then  bResult := InsertTB_CARD(aCardNo,copy(cmb_CardGubun.Text,1,1),aRegGubun,aEmpID,aCompanyCode,aEmpNM,aHandphone,afdmsID,cmb_sCompany.text,cmb_sJijum.text,cmb_sDepart.text,cmb_sPosi.text,'Y')
+      else if stMode = 'Update' then bResult := UpdateTB_CARD(aCardNo,copy(cmb_CardGubun.Text,1,1),aRegGubun,aEmpID,aCompanyCode,aEmpNM,aHandphone,afdmsID,cmb_sCompany.text,cmb_sJijum.text,cmb_sDepart.text,cmb_sPosi.text,'Y');
 
       if Not bResult then
       begin
@@ -1414,6 +1450,7 @@ var
 begin
   //stFdmsID := GetEmployeeFdmsID(aCompanyCode,aEmpID);
   Result := False;
+  aCardNo := Trim(aCardNo);
   if Trim(aCardNo)<> '' then
   begin
     bResult := False;
@@ -1448,8 +1485,8 @@ begin
     bResult := CheckTB_CARD(aCardNo,aCompanyCode,aEmpID,aRegGubun,copy(cmb_CardGubun.Text,1,1),stMode);
     if bResult then //카드번호 입력하자.
     begin
-      if stMode = 'Insert' then  bResult := InsertTB_CARD(aCardNo,copy(cmb_CardGubun.Text,1,1),aRegGubun,aEmpID,aCompanyCode,aEmpNM,aHandphone,aFdmsId,cmb_sCompany.text,cmb_sJijum.text,cmb_sDepart.text,cmb_sPosi.text)
-      else if stMode = 'Update' then bResult := UpdateTB_CARD(aCardNo,copy(cmb_CardGubun.Text,1,1),aRegGubun,aEmpID,aCompanyCode,aEmpNM,aHandphone,aFdmsId,cmb_sCompany.text,cmb_sJijum.text,cmb_sDepart.text,cmb_sPosi.text);
+      if stMode = 'Insert' then  bResult := InsertTB_CARD(aCardNo,copy(cmb_CardGubun.Text,1,1),aRegGubun,aEmpID,aCompanyCode,aEmpNM,aHandphone,aFdmsId,cmb_sCompany.text,cmb_sJijum.text,cmb_sDepart.text,cmb_sPosi.text,'Y')
+      else if stMode = 'Update' then bResult := UpdateTB_CARD(aCardNo,copy(cmb_CardGubun.Text,1,1),aRegGubun,aEmpID,aCompanyCode,aEmpNM,aHandphone,aFdmsId,cmb_sCompany.text,cmb_sJijum.text,cmb_sDepart.text,cmb_sPosi.text,'Y');
 
       if Not bResult then
       begin
@@ -1604,10 +1641,10 @@ begin
 
   end;
   
-  stSql := CommonSql.InsertIntoTB_EMPHIS(aCompanyCode,aEmpID,aFdmsId,'2',ed_CardNo.Text,'1',
+  stSql := CommonSql.InsertIntoTB_EMPHIS(aCompanyCode,aEmpID,aFdmsId,'2',Trim(ed_CardNo.Text),'1',
            ed_sEmpNM.text,ed_sHandphone.text,cmb_sCompany.text,cmb_sJijum.text,cmb_sDepart.text,cmb_sPosi.text);//수정
   result := DataModule1.ProcessExecSQL(stSql);
-  stSql := CommonSql.InsertIntoTB_EMPLOYEECHANGE(aCompanyCode,aEmpID,ed_CardNo.Text,'DupEmployee','2');
+  stSql := CommonSql.InsertIntoTB_EMPLOYEECHANGE(aCompanyCode,aEmpID,Trim(ed_CardNo.Text),'DupEmployee','2');
   DataModule1.ProcessExecSQL(stSql);
 
 end;
@@ -1687,7 +1724,7 @@ begin
 end;
 
 function TfmDupCardEmploy.InsertTB_CARD(aCardNo, aCardGubun, aCardType, aEmpID,
-  aCompanyCode,aEmpNM,aHandphone,aFdmsID,aCompanyName,aJijumName,aDepartName,aPosiName: string): Boolean;
+  aCompanyCode,aEmpNM,aHandphone,aFdmsID,aCompanyName,aJijumName,aDepartName,aPosiName,aStick: string): Boolean;
 var
   stSql : string;
   nPositionNum : integer;
@@ -1700,7 +1737,7 @@ begin
 
   Result := False;
   stSql := 'Insert Into TB_CARD(GROUP_CODE,CA_CARDNO,CA_GUBUN,CA_CARDTYPE,';
-  stSql := stSql + 'EM_CODE,CO_COMPANYCODE,CA_UPDATETIME,POSITIONNUM,CA_UPDATEOPERATOR) ';
+  stSql := stSql + 'EM_CODE,CO_COMPANYCODE,CA_UPDATETIME,POSITIONNUM,CA_UPDATEOPERATOR,CA_STICK) ';
   stSql := stSql + ' Values ( ';
   stSql := stSql + '''' +  GROUPCODE + ''',';
   stSql := stSql + '''' + aCardNo + ''',' ;
@@ -1710,7 +1747,8 @@ begin
   stSql := stSql + '''' + aCompanyCode + ''',' ;
   stSql := stSql + '''' + FormatDateTime('yyyymmddHHMMSS',Now) + ''',' ;
   stSql := stSql + inttostr(nPositionNum) + ',' ;
-  stSql := stSql + '''' + MASTER_ID + ''')' ;
+  stSql := stSql + '''' + MASTER_ID + ''',' ;
+  stSql := stSql + '''' + aStick + ''')' ;
 
   result := DataModule1.ProcessExecSQL(stSql);
 {  if result then
@@ -1720,7 +1758,7 @@ begin
       if aCardType = '1' then
       begin
         stFdmsID := GetEmployeeFdmsID(aCompanyCode,aEmpID);
-        if stFdmsID = '0' then stFdmsId := GetFdmsID;
+        if stFdmsID = '0' then stFdmsId := DataModule1.GetNextFdmsID;
 
         stSql := CommonSql.InsertIntoTB_EMPHIS(aCompanyCode,aEmpID,stFdmsID,'1',aCardNo,'1');//입력
         result := DataModule1.ProcessExecSQL(stSql);
@@ -1739,7 +1777,7 @@ begin
 end;
 
 function TfmDupCardEmploy.UpdateTB_CARD(aCardNo, aCardGubun, aCardType, aEmpID,
-  aCompanyCode,aEmpNM,aHandphone,aFdmsID,aCompanyName,aJijumName,aDepartName,aPosiName: string): Boolean;
+  aCompanyCode,aEmpNM,aHandphone,aFdmsID,aCompanyName,aJijumName,aDepartName,aPosiName,aStick: string): Boolean;
 var
   stSql : string;
 begin
@@ -1754,7 +1792,8 @@ begin
   stSql := stSql + ' CO_COMPANYCODE = ''' +  aCompanyCode + ''',';
   stSql := stSql + ' CA_MEMLOAD = ''N'',';
   stSql := stSql + ' CA_UPDATETIME = ''' +  FormatDateTime('yyyymmddHHMMSS',Now) + ''',';
-  stSql := stSql + ' CA_UPDATEOPERATOR = ''' +  MASTER_ID + ''' ';
+  stSql := stSql + ' CA_UPDATEOPERATOR = ''' +  MASTER_ID + ''', ';
+  stSql := stSql + ' CA_STICK = ''' +  aStick + ''' ';
   stSql := stSql + ' Where GROUP_CODE = ''' +  GROUPCODE + ''' ';
   stSql := stSql + ' AND CA_CARDNO = ''' +  aCardNo + ''' ';
 
@@ -2045,7 +2084,7 @@ begin
       if (Application.MessageBox(PChar(stMsg),'변경',MB_OKCANCEL) = ID_CANCEL)  then Exit;
     end;
   end; }
-  ed_CardNo.Text := aCardNo;
+  ed_CardNo.Text := Trim(aCardNo);
 
 end;
 
@@ -2113,34 +2152,11 @@ begin
     Exit;
   end;
   ed_sEmpNo.Enabled := False;
-  stSql := 'select Max(EM_CODE) as EM_CODE from TB_EMPLOYEE ';
-  stSql := stSql + ' where GROUP_CODE = '''  + GROUPCODE + ''' ';
-  stSql := stSql + ' AND EM_CODE Like ''Z-%'' ';
 
-  with AdoQuery do
-  begin
-    Close;
-    Sql.Clear;
-    Sql.Text := stSql;
-    Try
-      Open;
-    Except
-      inc(AutoSabun);
-      ed_sEmpNo.Text := 'Z-' + FillZeroNumber(AutoSabun,5);
-      Exit;
-    End;
-    if (recordCount < 1) or (Trim(FindField('EM_CODE').AsString) = '') then
-    begin
-      inc(AutoSabun);
-      ed_sEmpNo.Text := 'Z-' + FillZeroNumber(AutoSabun,5);
-      Exit;
-    end;
-    stSabun := FindField('EM_CODE').AsString;
-    stSabun := copy(stSabun,3,Length(stSabun) - 2);
-    AutoSabun := strtoint(stSabun) + 1;
-    ed_sEmpNo.Text := 'Z-' + FillZeroNumber(AutoSabun,5);
+  //AutoSabun := DataModule1.GetNextEmCode(AutoSabun, G_nEmCodeLength);
+  //ed_sEmpNo.Text := 'Z-' + FillZeroNumber(AutoSabun,G_nEmCodeLength);
+  ed_sEmpNo.Text := CommonModule.GetNextEmCode(AutoSabun);
 
-  end;
 end;
 
 function TfmDupCardEmploy.UpdateTB_ACCESSEVENTCARDNO(aOldCardNo,
@@ -2390,15 +2406,21 @@ var
   i : integer;
   TempAdoQuery : TADOQuery;
   bWhereSearch : Boolean;
+  selectNum : integer;
 begin
-  GridInitialize(sg_Employ); //스트링그리드 초기화
-  lb_Count.Caption := ' 건';
+  if Not chk_Add.checked then
+  begin
+    GridInitialize(sg_Employ,2); //스트링그리드 초기화
+    ShowCount := 0;
+  end;
+  //lb_Count.Caption := ' 건';
   
   State := 'SEARCH';
   FormClear;
   FormEnable(State);
   ButtonEnable(State);
   bWhereSearch := False;
+  selectNum := 1;
 
   if DBTYPE = 'MSSQL' then stSql := MSSQL.SelectTB_EMPLOYEEDupCardJoinBase
   else if DBType = 'PG' then stSql := PostGreSql.SelectTB_EMPLOYEEDupCardJoinBase
@@ -2451,6 +2473,13 @@ begin
       bWhereSearch := True;
       stSql := stSql + ' AND g.CA_GUBUN = ''' + copy(cmb_regGubun1.Text,1,1) + ''' '
     end;
+  end else if cmb_SearchType.ItemIndex = 11 then
+  begin
+    if cmb_regGubun1.ItemIndex > 0 then
+    begin
+      bWhereSearch := True;
+      stSql := stSql + ' AND a.WG_CODE = ''' + WorkGubunCodeList.Strings[cmb_regGubun1.ItemIndex] + ''' '
+    end;   
   end else
   begin
     if Trim(ed_searchText.Text) <> '' then
@@ -2459,7 +2488,7 @@ begin
 
       bWhereSearch := True;
       if cmb_SearchType.ItemIndex = 0 then //사번
-        stSql := stSql + ' AND a.EM_CODE = ''' + Trim(ed_searchText.Text)  + ''' '
+        stSql := stSql + ' AND a.EM_CODE Like ''%' + Trim(ed_searchText.Text)  + '%'' '
       else if cmb_SearchType.ItemIndex = 1 then //이름
         stSql := stSql + ' AND a.EM_NAME LIKE ''%' + Trim(ed_searchText.Text)  + '%'' '
       else if cmb_SearchType.ItemIndex = 2 then //사내전화번호
@@ -2605,56 +2634,64 @@ begin
       CoUninitialize;
       Exit;
     end;
+    if Not chk_Add.checked then
+    begin
+      sg_Employ.RowCount := RecordCount + 1;
+      ShowCount := RecordCount;
+      nRow := 1;
+    end else
+    begin
+      nRow := sg_Employ.RowCount;
+      ShowCount := ShowCount + RecordCount;
+      sg_Employ.RowCount := sg_Employ.RowCount + RecordCount;
+    end;
 
-    sg_Employ.RowCount := RecordCount + 1;
-    lb_Count.Caption := inttostr(Recordcount) + ' 건';
-
-    nRow := 1;
     First;
     while Not Eof do
     begin
       with sg_Employ do
       begin
-        cells[0,nRow] := FindField('COMPANYNAME').AsString;
-        cells[1,nRow] := FindField('EM_CODE').AsString;
-        cells[2,nRow] := FindField('EM_NAME').AsString;
-        cells[3,nRow] := FindField('JIJUMNAME').AsString;
-        cells[4,nRow] := FindField('DEPARTNAME').AsString;
-        cells[5,nRow] := FindField('PO_NAME').AsString;
-        cells[6,nRow] := FindField('CO_COMPANYCODE').AsString;
-        cells[7,nRow] := FindField('CO_JIJUMCODE').AsString;
-        cells[8,nRow] := FindField('CO_DEPARTCODE').AsString;
-        cells[9,nRow] := FindField('PO_POSICODE').AsString;
+        cells[EmployeeIndexArray[0],nRow] := FindField('COMPANYNAME').AsString;
+        cells[EmployeeIndexArray[1],nRow] := FindField('EM_CODE').AsString;
+        cells[EmployeeIndexArray[2],nRow] := FindField('EM_NAME').AsString;
+        cells[EmployeeIndexArray[3],nRow] := FindField('JIJUMNAME').AsString;
+        cells[EmployeeIndexArray[4],nRow] := FindField('DEPARTNAME').AsString;
+        cells[EmployeeIndexArray[5],nRow] := FindField('PO_NAME').AsString;
+        cells[EmployeeIndexArray[6],nRow] := FindField('CO_COMPANYCODE').AsString;
+        cells[EmployeeIndexArray[7],nRow] := FindField('CO_JIJUMCODE').AsString;
+        cells[EmployeeIndexArray[8],nRow] := FindField('CO_DEPARTCODE').AsString;
+        cells[EmployeeIndexArray[9],nRow] := FindField('PO_POSICODE').AsString;
         if FindField('EM_COTELENCRYPT').AsString = 'Y' then
         begin
-          cells[10,nRow] := MimeDecodeString(FindField('EM_COPHONE').AsString);
+          cells[EmployeeIndexArray[10],nRow] := MimeDecodeString(FindField('EM_COPHONE').AsString);
         end else
         begin
-          cells[10,nRow] := FindField('EM_COPHONE').AsString;
+          cells[EmployeeIndexArray[10],nRow] := FindField('EM_COPHONE').AsString;
         end;
-        cells[11,nRow] := FindField('EM_JOINDATE').AsString;
-        cells[12,nRow] := FindField('EM_RETIREDATE').AsString;
-        cells[13,nRow] := FindField('ZI_ZIPCODE').AsString;
-        cells[14,nRow] := FindField('EM_ADDR1').AsString;
-        cells[15,nRow] := FindField('EM_ADDR2').AsString;
-        cells[16,nRow] := FindField('EM_HOMEPHONE').AsString;
-        cells[17,nRow] := FindField('EM_HANDPHONE').AsString;
-        if FindField('EM_IMAGE').IsNull then  cells[18,nRow] := 'N'
-        else cells[18,nRow] := 'Y';
-        cells[19,nRow] := FindField('RG_CODE').AsString;
-        cells[20,nRow] := FindField('FDMS_ID').AsString;
-        cells[23,nRow] := FindField('DE_TIMECODEUSE').AsString;
-        cells[24,nRow] := FindField('TC_GROUP').AsString;
-        cells[25,nRow] := FindField('TC_TIME1').AsString;
-        cells[26,nRow] := FindField('TC_TIME2').AsString;
-        cells[27,nRow] := FindField('TC_TIME3').AsString;
-        cells[28,nRow] := FindField('TC_TIME4').AsString;
-        cells[29,nRow] := FindField('TC_WEEKCODE').AsString;
-        cells[30,nRow] := FindField('EM_MASTER').AsString;
-        cells[31,nRow] := FindField('WG_CODE').AsString;
+        cells[EmployeeIndexArray[11],nRow] := FindField('EM_JOINDATE').AsString;
+        cells[EmployeeIndexArray[12],nRow] := FindField('EM_RETIREDATE').AsString;
+        cells[EmployeeIndexArray[13],nRow] := FindField('ZI_ZIPCODE').AsString;
+        cells[EmployeeIndexArray[14],nRow] := FindField('EM_ADDR1').AsString;
+        cells[EmployeeIndexArray[15],nRow] := FindField('EM_ADDR2').AsString;
+        cells[EmployeeIndexArray[16],nRow] := FindField('EM_HOMEPHONE').AsString;
+        cells[EmployeeIndexArray[17],nRow] := FindField('EM_HANDPHONE').AsString;
+        if FindField('EM_IMAGE').IsNull then  cells[EmployeeIndexArray[18],nRow] := 'N'
+        else cells[EmployeeIndexArray[18],nRow] := 'Y';
+        cells[EmployeeIndexArray[19],nRow] := FindField('RG_CODE').AsString;
+        cells[EmployeeIndexArray[20],nRow] := FindField('FDMS_ID').AsString;
+        cells[EmployeeIndexArray[21],nRow] := FindField('DE_TIMECODEUSE').AsString;
+        cells[EmployeeIndexArray[22],nRow] := FindField('TC_GROUP').AsString;
+        cells[EmployeeIndexArray[23],nRow] := FindField('TC_TIME1').AsString;
+        cells[EmployeeIndexArray[24],nRow] := FindField('TC_TIME2').AsString;
+        cells[EmployeeIndexArray[25],nRow] := FindField('TC_TIME3').AsString;
+        cells[EmployeeIndexArray[26],nRow] := FindField('TC_TIME4').AsString;
+        cells[EmployeeIndexArray[27],nRow] := FindField('TC_WEEKCODE').AsString;
+        cells[EmployeeIndexArray[28],nRow] := FindField('EM_MASTER').AsString;
+        cells[EmployeeIndexArray[29],nRow] := FindField('WG_CODE').AsString;
         if (FindField('CO_COMPANYCODE').AsString + FindField('EM_CODE').AsString)  = aCode then
         begin
           SelectRows(nRow,1);
+          selectNum := nRow;
         end;
         if FindField('EM_RETIREDATE').AsString < formatdateTime('yyyymmdd',now) then
         begin
@@ -2668,6 +2705,7 @@ begin
       nRow := nRow + 1;
       Next;
     end;
+    sg_Employ.Col := 0;  //맨 앞쪽으로 이동
     if aTopRow = 0 then
     begin
       if sg_Employ.Row > 14 then sg_Employ.TopRow := sg_Employ.Row - 13;
@@ -2679,6 +2717,8 @@ begin
   TempAdoQuery.Free;
   CoUninitialize;
   sg_EmployClick(sg_Employ);
+
+
 
 end;
 
@@ -2717,22 +2757,9 @@ var
   stCompanyCode : string;
   stJijumCode : string;
 begin
-  CompanyCodeList := TStringList.Create;
-  sCompanyCodeList := TStringList.Create;
-  JijumCodeList := TStringList.Create;
-  sJijumCodeList := TStringList.Create;
-  PosiCodeList := TStringList.Create;
-  sPosiCodeList := TStringList.Create;
-  DepartCodeList := TStringList.Create;
-  sDepartCodeList := TStringList.Create;
-  ComPortList := TStringList.Create;
-  EmpTypeCodeList := TStringList.Create;
-  sEmpTypeCodeList := TStringList.Create;
-  sWorkGubunCodeList := TStringList.Create;
 
   State := '';
   AutoSabun := 1;
-  //GridInit(sg_Employ,6);
 
   if Not IsMaster then
   begin
@@ -2758,7 +2785,7 @@ begin
   LoadWorkGubun(sWorkGubunCodeList,cmb_WorkGubun);
   LoadEmpSearchType(cmb_SearchType);
 
-  //GridInit(sg_Employ,6);
+  GridInit(sg_Employ,27);
   pn_EmployInit;
 
   btn_Update.Enabled := False;
@@ -2794,6 +2821,7 @@ begin
     lb_fdmsno.Visible := True;
     ed_fdmsNo.Visible := True;
   end;
+  GridInitialize(sg_Employ,2);
 
   if G_nSearchIndex = 0 then btn_SearchClick(Self);
 end;
@@ -2811,37 +2839,10 @@ begin
 
 end;
 
-function TfmDupCardEmploy.GetFdmsID: string;
-var
-  stSql : string;
-  nFdms_id : integer;
-begin
-  result := '31';
-  stSql := 'select Max(Fdms_id) as fdms_id from TB_EMPLOYEE ';
-  with fdmsADOQuery do
-  begin
-    Close;
-    Sql.Clear;
-    Sql.Text := stSql;
-    Try
-      Open;
-    Except
-      Exit;
-    End;
-    if recordCount < 1 then Exit;
-    Try
-      nFdms_id := FindField('fdms_id').AsInteger;
-      if nFdms_id = 0 then Exit;
-    Except
-      Exit;
-    End;
-    result := inttostr(nFdms_id + 1);
-  end;
-end;
 
 procedure TfmDupCardEmploy.FormNameSet;
 begin
-
+  (*
   with sg_Employ do
   begin
     Cells[0,0] := FM002;
@@ -2861,7 +2862,7 @@ begin
     Cells[15,0] := FM109;
     Cells[17,0] := FM107;
 
-  end;
+  end;   *)
   lb_CompanyName.Caption := FM002;
   lb_CompanyName1.Caption := FM002;
 
@@ -3083,13 +3084,13 @@ begin
     stFdmsId := GetEmployeeFdmsID(stCompanyCode,ed_sEmpNo.Text);
     if stFdmsId = '0' then
     begin
-      if fdmsNoAuto then stFdmsId := GetFdmsID
+      if fdmsNoAuto then stFdmsId := CommonModule.GetNextFdmsID
       else stFdmsId := ed_fdmsNo.Text;
     end;
     if UpperCase(stMode) = 'INSERT' then
-      bResult := InsertTB_CARD(Trim(ed_CardNo.Text),copy(cmb_CardGubun.Text,1,1),'1',ed_sEmpNo.Text,stCompanyCode,ed_sEmpNM.Text,ed_sHandphone.Text,stFdmsId,cmb_sCompany.text,cmb_sJijum.text,cmb_sDepart.text,cmb_sPosi.text)
+      bResult := InsertTB_CARD(Trim(ed_CardNo.Text),copy(cmb_CardGubun.Text,1,1),'1',ed_sEmpNo.Text,stCompanyCode,ed_sEmpNM.Text,ed_sHandphone.Text,stFdmsId,cmb_sCompany.text,cmb_sJijum.text,cmb_sDepart.text,cmb_sPosi.text,'Y')
     else if UpperCase(stMode) = 'UPDATE' then
-      bResult := UpdateTB_CARD(Trim(ed_CardNo.Text),copy(cmb_CardGubun.Text,1,1),'1',ed_sEmpNo.Text,stCompanyCode,ed_sEmpNM.Text,ed_sHandphone.Text,stFdmsId,cmb_sCompany.text,cmb_sJijum.text,cmb_sDepart.text,cmb_sPosi.text);
+      bResult := UpdateTB_CARD(Trim(ed_CardNo.Text),copy(cmb_CardGubun.Text,1,1),'1',ed_sEmpNo.Text,stCompanyCode,ed_sEmpNM.Text,ed_sHandphone.Text,stFdmsId,cmb_sCompany.text,cmb_sJijum.text,cmb_sDepart.text,cmb_sPosi.text,'Y');
 
     if Not bResult then
     begin
@@ -3483,7 +3484,7 @@ begin
      (UpperCase(State) = 'UPDATE') then
   begin
     if aCheckBox and chk_CardReg.Checked then
-      ed_CardNo.Text := aCardNo;
+      ed_CardNo.Text := Trim(aCardNo);
   end else
   begin
     if aCheckBox and chk_CardRegSearch.Checked then
@@ -3563,6 +3564,7 @@ begin
     if cmb_SearchType.ItemIndex = 6 then LoadRegGubun(cmb_regGubun1)
     else if cmb_SearchType.ItemIndex = 7 then LoadEmpType(EmpTypeCodeList,cmb_regGubun1)
     else if cmb_SearchType.ItemIndex = 8 then LoadCardGubun(cmb_regGubun1)
+    else if cmb_SearchType.ItemIndex = 11 then LoadWorkGubun(WorkGubunCodeList,cmb_regGubun1,'전체')
     else
     begin
       cmb_regGubun1.Visible := False;
@@ -3662,7 +3664,7 @@ begin
     stCardType := copy(Cells[1,aRow],1,1);
     stCardNo := Cells[2,aRow];
     stCardState := copy(Cells[3,aRow],1,1);
-    result := UpdateTB_CARD(stCardNo,stCardType,stCardState,ed_sEmpNo.Text,stCompanyCode,ed_sEmpNM.Text,ed_sHandphone.Text,stFdmsId,cmb_sCompany.text,cmb_sJijum.text,cmb_sDepart.text,cmb_sPosi.text);
+    result := UpdateTB_CARD(stCardNo,stCardType,stCardState,ed_sEmpNo.Text,stCompanyCode,ed_sEmpNM.Text,ed_sHandphone.Text,stFdmsId,cmb_sCompany.text,cmb_sJijum.text,cmb_sDepart.text,cmb_sPosi.text,'Y');
     //if stCardState <> '1' then UpdateTB_DEVICECARDNO(stCardNo,'N');
     if L_bCardTypeChange then UpdateTB_DEVICECARDNORcvAck(stCardNo,'N');
   end;
@@ -3862,6 +3864,190 @@ procedure TfmDupCardEmploy.CommandArrayCommandsTCloseExecute(
 begin
   inherited;
   Close;
+end;
+
+procedure TfmDupCardEmploy.SetShowCount(const Value: integer);
+begin
+  FShowCount := Value;
+  lb_Count.Caption := inttostr(Value) + ' 건';
+end;
+
+procedure TfmDupCardEmploy.ChangeEmployeeIndex(FromIndex,
+  ToIndex: integer);
+var
+  i : integer;
+  nChangData : integer;
+begin
+  nChangData := relEmployeeIndexArray[FromIndex];
+  if FromIndex > ToIndex then   //뒤에 있는 놈이 앞으로 오는 경우
+  begin
+    for i := FromIndex downto ToIndex + 1 do
+    begin
+      relEmployeeIndexArray[i] := relEmployeeIndexArray[i - 1];
+    end;
+    relEmployeeIndexArray[ToIndex] := nChangData;
+  end else   //앞에 있는 놈이 뒤로 가는 경우
+  begin
+    for i := FromIndex to ToIndex - 1 do
+    begin
+      relEmployeeIndexArray[i] := relEmployeeIndexArray[i + 1];
+    end;
+    relEmployeeIndexArray[ToIndex] := nChangData;
+  end;
+
+  for i := LOW(relEmployeeIndexArray) to HIGH(relEmployeeIndexArray) do
+  begin
+    EmployeeIndexArray[relEmployeeIndexArray[i]] := i;
+  end;
+end;
+
+procedure TfmDupCardEmploy.EmployeeHeaderNameCreate;
+begin
+  EmployeeHeaderNameList.Clear;
+  EmployeeHeaderNameList.Add(FM002); // 0.회사명
+  EmployeeHeaderNameList.Add(FM101); // 1.사번
+  EmployeeHeaderNameList.Add(FM102); // 2.이름
+  EmployeeHeaderNameList.Add(FM012); // 3.지점명
+  EmployeeHeaderNameList.Add(FM022); // 4.부서명
+  EmployeeHeaderNameList.Add(FM032); // 5.직위명
+  EmployeeHeaderNameList.Add(FM001); // 6.회사코드
+  EmployeeHeaderNameList.Add(FM011); // 7.지점코드
+  EmployeeHeaderNameList.Add(FM021); // 8.부서코드
+  EmployeeHeaderNameList.Add(FM031); // 9.직위코드
+  EmployeeHeaderNameList.Add(FM103); // 10.사내전화번호
+  EmployeeHeaderNameList.Add(FM104); // 11.입사일
+  EmployeeHeaderNameList.Add(FM105); // 12.퇴사일
+
+  EmployeeHeaderNameList.Add('우편번호'); // 13
+
+  EmployeeHeaderNameList.Add(FM108); // 14.주소1
+  EmployeeHeaderNameList.Add(FM109); // 15.주소2
+
+  EmployeeHeaderNameList.Add('집전화번호'); // 16
+
+  EmployeeHeaderNameList.Add(FM107); // 17.핸드폰
+  EmployeeHeaderNameList.Add('사진등록유무'); //18
+  EmployeeHeaderNameList.Add('직원구분코드'); //19
+  EmployeeHeaderNameList.Add('지문번호');     //20
+  EmployeeHeaderNameList.Add('타임코드사용유무'); //21
+  EmployeeHeaderNameList.Add('타임그룹');     //22
+  EmployeeHeaderNameList.Add('타임1');        //23
+  EmployeeHeaderNameList.Add('타임2');        //24
+  EmployeeHeaderNameList.Add('타임3');        //25
+  EmployeeHeaderNameList.Add('타임4');        //26
+  EmployeeHeaderNameList.Add('주간');         //27
+  EmployeeHeaderNameList.Add('마스터카드');   //28
+  EmployeeHeaderNameList.Add('재직구분');   //29
+  EmployeeHeaderNameList.Add('예비1');
+  EmployeeHeaderNameList.Add('예비2');
+  EmployeeHeaderNameList.Add('예비3');
+  EmployeeHeaderNameList.Add('예비4');
+  EmployeeHeaderNameList.Add('예비5');
+  EmployeeHeaderNameList.Add('예비6');
+  EmployeeHeaderNameList.Add('예비7');
+  EmployeeHeaderNameList.Add('예비8');
+  EmployeeHeaderNameList.Add('예비9');
+  EmployeeHeaderNameList.Add('예비10');
+  EmployeeHeaderNameList.Add('예비11');
+
+end;
+
+procedure TfmDupCardEmploy.GridSetting;
+var
+  i : integer;
+begin
+  for i:=0 to sg_Employ.ColCount - 1 do
+  begin
+    EmployeeIndexArray[i] := i;
+    relEmployeeIndexArray[i] := i;
+  end;
+end;
+
+procedure TfmDupCardEmploy.iniConfigRead;
+var
+  ini_fun : TiniFile;
+  i : integer;
+begin
+  ini_fun := TiniFile.Create(ExeFolder + '\DupEmployeeReport.INI');
+  pn_Employ.Width := ini_fun.ReadInteger('Employee','EmployeeWidth',548);
+  if pn_Employ.Width = 0 then pn_Employ.Width := 10;
+  for i := 0 to sg_Employ.ColCount - 1 do
+  begin
+    sg_Employ.ColWidths[i] := ini_fun.ReadInteger('Employee','EmployeeCol' + inttostr(i),120);
+  end;
+
+  for i := LOW(EmployeeIndexArray) to HIGH(EmployeeIndexArray) do
+  begin
+    EmployeeIndexArray[i] := ini_fun.ReadInteger('Employee','EmployeeIndexArray'+inttostr(i),i);
+  end;
+  for i := LOW(relEmployeeIndexArray) to HIGH(relEmployeeIndexArray) do
+  begin
+    relEmployeeIndexArray[i] := ini_fun.ReadInteger('Employee','relEmployeeIndexArray'+inttostr(i),i);
+  end;
+
+  ini_fun.Free;
+end;
+
+procedure TfmDupCardEmploy.iniConfigWrite;
+var
+  ini_fun : TiniFile;
+  i : integer;
+begin
+  ini_fun := TiniFile.Create(ExeFolder + '\DupEmployeeReport.INI');
+  ini_fun.WriteInteger('Employee','EmployeeWidth', pn_Employ.Width);
+  for i := 0 to sg_Employ.ColCount - 1 do
+  begin
+    ini_fun.WriteInteger('Employee','EmployeeCol' + inttostr(i),sg_Employ.ColWidths[i]);
+  end;
+  for i := LOW(EmployeeIndexArray) to HIGH(EmployeeIndexArray) do
+  begin
+    ini_fun.WriteInteger('Employee','EmployeeIndexArray'+inttostr(i),EmployeeIndexArray[i]);
+  end;
+  for i := LOW(relEmployeeIndexArray) to HIGH(relEmployeeIndexArray) do
+  begin
+    ini_fun.WriteInteger('Employee','relEmployeeIndexArray'+inttostr(i),EmployeeIndexArray[i]);
+  end;
+
+  ini_fun.Free;
+end;
+
+procedure TfmDupCardEmploy.ListHeaderNameSet;
+var
+  i : integer;
+begin
+  for i := LOW(EmployeeIndexArray) to HIGH(EmployeeIndexArray) do
+  begin
+    sg_Employ.cells[EmployeeIndexArray[i],0] := EmployeeHeaderNameList[i];
+  end;
+end;
+
+procedure TfmDupCardEmploy.MemoryCreate;
+begin
+  CompanyCodeList := TStringList.Create;
+  sCompanyCodeList := TStringList.Create;
+  JijumCodeList := TStringList.Create;
+  sJijumCodeList := TStringList.Create;
+  PosiCodeList := TStringList.Create;
+  sPosiCodeList := TStringList.Create;
+  DepartCodeList := TStringList.Create;
+  sDepartCodeList := TStringList.Create;
+  ComPortList := TStringList.Create;
+  EmpTypeCodeList := TStringList.Create;
+  sEmpTypeCodeList := TStringList.Create;
+  sWorkGubunCodeList := TStringList.Create;
+  WorkGubunCodeList := TStringList.Create;
+
+  EmployeeHeaderNameList := TStringList.Create;
+  SetLength(EmployeeIndexArray,sg_Employ.ColCount);
+  SetLength(relEmployeeIndexArray,sg_Employ.ColCount);
+
+end;
+
+procedure TfmDupCardEmploy.sg_EmployColumnMoved(Sender: TObject; FromIndex,
+  ToIndex: Integer);
+begin
+  inherited;
+  ChangeEmployeeIndex(FromIndex,ToIndex);
 end;
 
 initialization

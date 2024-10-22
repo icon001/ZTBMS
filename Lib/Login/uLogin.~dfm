@@ -1,6 +1,6 @@
 object fmLogin: TfmLogin
-  Left = 571
-  Top = 274
+  Left = 555
+  Top = 101
   Width = 247
   Height = 186
   ActiveControl = edUserID

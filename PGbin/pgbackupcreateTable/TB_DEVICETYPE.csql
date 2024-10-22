@@ -1,0 +1,2 @@
+CREATE TABLE TB_DEVICETYPE (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , de_devicetype VARCHAR(2) NOT NULL , de_typename VARCHAR(30), de_accessgroup CHAR(1), de_atgroup CHAR(1), de_alarmgroup CHAR(1), de_foodgroup CHAR(1) ); 
+ ALTER TABLE TB_DEVICETYPE   ADD CONSTRAINT TB_DEVICETYPE_pkey PRIMARY KEY (group_code, de_devicetype);

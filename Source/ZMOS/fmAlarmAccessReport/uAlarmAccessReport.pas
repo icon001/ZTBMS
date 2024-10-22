@@ -357,11 +357,11 @@ begin
       stArmAreaNo := copy(DeviceCodeList.Strings[cmb_AlarmName.ItemIndex],6,1) ;
     end;
     if DBTYPE = 'MSSQL' then
-       stSql := MSSQL.SelectTB_ACCESSEVENTTOPatrolArea(FormatDateTime('yyyymmdd',dt_FromDate.Date),stFromhhmm,FormatDateTime('yyyymmdd',dt_ToDate.Date),stTohhmm,stPermitCode,stEmCode,stEmName,stEmTypeCode)
+       stSql := MSSQL.SelectTB_ACCESSEVENTTOPatrolArea(FormatDateTime('yyyymmdd',dt_FromDate.Date),stFromhhmm,FormatDateTime('yyyymmdd',dt_ToDate.Date),stTohhmm,stPermitCode,stEmCode,stEmName,stEmTypeCode,FillZeroStrNum(stArmAreaNo,2))
     else if DBTYPE = 'PG' then
-       stSql := PostGreSql.SelectTB_ACCESSEVENTTOPatrolArea(FormatDateTime('yyyymmdd',dt_FromDate.Date),stFromhhmm,FormatDateTime('yyyymmdd',dt_ToDate.Date),stTohhmm,stPermitCode,stEmCode,stEmName,stEmTypeCode)
+       stSql := PostGreSql.SelectTB_ACCESSEVENTTOPatrolArea(FormatDateTime('yyyymmdd',dt_FromDate.Date),stFromhhmm,FormatDateTime('yyyymmdd',dt_ToDate.Date),stTohhmm,stPermitCode,stEmCode,stEmName,stEmTypeCode,FillZeroStrNum(stArmAreaNo,2))
     else if DBTYPE = 'FB' then
-       stSql := FireBird.SelectTB_ACCESSEVENTTOPatrolArea(FormatDateTime('yyyymmdd',dt_FromDate.Date),stFromhhmm,FormatDateTime('yyyymmdd',dt_ToDate.Date),stTohhmm,stPermitCode,stEmCode,stEmName,stEmTypeCode)
+       stSql := FireBird.SelectTB_ACCESSEVENTTOPatrolArea(FormatDateTime('yyyymmdd',dt_FromDate.Date),stFromhhmm,FormatDateTime('yyyymmdd',dt_ToDate.Date),stTohhmm,stPermitCode,stEmCode,stEmName,stEmTypeCode,FillZeroStrNum(stArmAreaNo,2))
     else Exit;
 
     if (stArmAreaCode <> '000') and (stArmAreaCode <> '') then
@@ -1148,12 +1148,12 @@ begin
   L_bKeyPress := False;
   AlarmList.Visible := True;
   AlarmList.Clear;
-  stSql := ' Select * from TB_ALARMDEVICE ';
-  stSql := stSql + ' Where AL_ZONENAME Like ''%' + aName + '%'' ';
+  stSql := ' Select * from TB_ARMAREA ';
+  stSql := stSql + ' Where AR_NAME Like ''%' + aName + '%'' ';
   if (stBuildingCode <> '') and (stBuildingCode <> '000') then stSql := stSql + ' AND LO_DONGCODE = ''' + stBuildingCode + ''' ';
   if (stFloorCode <> '') and (stFloorCode <> '000') then stSql := stSql + ' AND LO_FLOORCODE = ''' + stFloorCode + ''' ';
   if (stAreaCode <> '') and (stAreaCode <> '000') then stSql := stSql + ' AND a.LO_AREACODE = ''' + stAreaCode + ''' ';
-  stSql := stSql + ' Order by AL_ZONENAME ';
+  stSql := stSql + ' Order by AR_NAME ';
 
   with DataModule1.ADOTmpQuery do
   begin
@@ -1167,7 +1167,7 @@ begin
     End;
     While Not Eof do
     begin
-      AlarmList.Items.Add(FindField('AL_ZONENAME').AsString);
+      AlarmList.Items.Add(FindField('AR_NAME').AsString);
       Next;
     end;
 

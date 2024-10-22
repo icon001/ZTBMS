@@ -15,14 +15,14 @@ inherited fmAlarmManageCode: TfmAlarmManageCode
     Left = 0
     Top = 33
     Width = 403
-    Height = 198
+    Height = 205
     Align = alClient
     TabOrder = 0
     object sg_AlarmCheckCode: TAdvStringGrid
       Left = 1
       Top = 1
       Width = 401
-      Height = 196
+      Height = 203
       Cursor = crDefault
       Align = alClient
       ColCount = 2
@@ -102,6 +102,7 @@ inherited fmAlarmManageCode: TfmAlarmManageCode
       PrintSettings.FooterFont.Name = 'MS Sans Serif'
       PrintSettings.FooterFont.Style = []
       PrintSettings.PageNumSep = '/'
+      ScrollWidth = 16
       SearchFooter.FindNextCaption = 'Find next'
       SearchFooter.FindPrevCaption = 'Find previous'
       SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -123,10 +124,11 @@ inherited fmAlarmManageCode: TfmAlarmManageCode
   end
   object Panel1: TPanel [1]
     Left = 0
-    Top = 231
+    Top = 238
     Width = 403
     Height = 97
     Align = alBottom
+    Color = clWhite
     TabOrder = 1
     object Label8: TLabel
       Left = 16
@@ -345,9 +347,10 @@ inherited fmAlarmManageCode: TfmAlarmManageCode
   end
   object StatusBar1: TStatusBar [2]
     Left = 0
-    Top = 328
+    Top = 335
     Width = 403
     Height = 27
+    Color = clWhite
     Panels = <>
   end
   object Panel12: TPanel [3]
@@ -357,9 +360,9 @@ inherited fmAlarmManageCode: TfmAlarmManageCode
     Height = 33
     Align = alTop
     Caption = #50508#46988#51312#52824#53076#46300#44288#47532
-    Color = clActiveCaption
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWhite
+    Font.Color = clBlack
     Font.Height = -16
     Font.Name = #44404#47548#52404
     Font.Style = [fsBold]

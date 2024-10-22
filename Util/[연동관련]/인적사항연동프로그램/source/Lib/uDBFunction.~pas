@@ -12,7 +12,9 @@ type
   public
     { Public declarations }
     Function CheckTB_CARD_CardNo(aCardNo:string;var aCardState:string):integer;
-    Function CheckTB_CARD_Employee(aCompanyCode,aEmCode,aCardNo:string;var aOldCardNo:string;bRegCard:Boolean=True):boolean;
+    Function checkTB_CARD_EmNum_Cnt(aEmcode: string):integer;
+    Function CheckTB_CARD_Employee(aCompanyCode,aEmCode,aCardNo:string;var aOldCardNo:string;bRegCard:Boolean=True):integer;
+    Function CheckTB_CARD_Employee_STICK(aCompanyCode,aEmCode:string):integer;
     Function CheckTB_COMPANY_Gubun(aCompanyCode,aJijumCode,aDepartCode,aGubun:string):integer;
     Function CheckTB_CONFIG(aGroup,aCode:string):Boolean;
     Function CheckTB_DEVICECARDNO_CardPermit(aCardNo:string):Boolean;
@@ -25,15 +27,16 @@ type
     Function CheckTB_HonikMappingPosi(aGUBUN:string;var aName:string) : integer;
     Function CheckTB_POSI(aCompanyCode,aPosiCode:string):integer;
     Function CheckTB_HonikTempTable2(aCAMPUS,aKEY:string;var aMode,aChange,alevel1,alevel2,agubun,aname,acnt:string):integer;
+    Function CheckTB_HonikTempTable2Seoul(aCAMPUS,aKEY:string;var aMode,aChange,alevel1,alevel2,agubun,aname,acnt,aStatus,aCardType,aCardStop:string ):integer;
     Function CopyGradeOldCard(aOldCardNO,aNewCardNO:string):Boolean;
-    Function DeleteHongikTempTable():Boolean;
+    Function DeleteHongikTempTable(aCampus:string):Boolean;
     Function DeleteTB_CARD_Key(aCardNo:string):Boolean;
     Function DeleteTB_DEVICECARDNOCardNo(aCardNo:string):Boolean;
     Function DeleteTB_EMPLOYEE_Key(aCompanyCode,aEmCode:string;aFdmsID:integer=0):Boolean;
-    Function DeleteTB_EMPLOYEE_CardNo(aEmCode,aCardNo:string):Boolean;
-    Function GetHonikJijumCode(stCompanyCode,aLEVEL1:string):string;
-    Function GetJijumCode(aCompanyCode,aJijumName:string):string;
-    Function GetMaxPositionNum : integer;
+    Function DeleteTB_EMPLOYEE_CardNo(aEmCode,aCardNo:string;aDupCard:integer=0):Boolean;
+    Function DeleteTB_HURELAY_Key(aHRSEQ:string):Boolean;
+
+
     Function InsertIntoTB_CARD_Value(aCardNo,aCardGubun,aCardType,aEmpID,aCompanyCode:string) : Boolean;
     Function InsertIntoTB_COMPANY(aCompanyCode,aJijumCode,aDepartCode,aGubun,aName:string):Boolean;
     Function InsertIntoTB_CONFIG(aGroup,aCode,aValue:string):Boolean;
@@ -51,10 +54,17 @@ type
     Function InsertIntoTB_HonikMappingJijum(aLEVEL1,aCompanyCode,aJijumCode,aLEVEL1_NAME,aChange:string):Boolean;
     Function InsertIntoTB_HonikMappingPosi(aGUBUN,aCompanyCode,aPosiCode,aGUBUN_NAME,aChange:string):Boolean;
     Function InsertIntoTB_HonikTempTable(aCAMPUS,aLEVEL1,aLEVEL1_NAME,aLEVEL2,aLEVEL2_NAME,aGUBUN,aGUBUN_NAME,aNAME,aKEY,aCARD_CNT:string):Boolean;
+    Function InsertIntoTB_HonikTempTableSeoul(aCAMPUS,aLEVEL1,aLEVEL1_NAME,aLEVEL2,aLEVEL2_NAME,aGUBUN,aGUBUN_NAME,aNAME,aKEY,aStatus,aUpdt:string):Boolean;
+    Function InsertIntoTB_HonikMCardTempTable(aKEY,aCARDTYPE,aCARDCNT,aCARDSTOP,aUPDT,aK_CARD_CNT,aM_CARD_GUBUN:string):Boolean;
     Function InsertIntoTB_HonikTempTable2(aCAMPUS,aKEY,aLEVEL1,aLEVEL1_NAME,aLEVEL2,aLEVEL2_NAME,aGUBUN,aGUBUN_NAME,aNAME,aCARD_CNT,aCurChange,aCurMode:string):Boolean;
+    Function InsertIntoTB_HonikTempTable2Seoul(aCAMPUS,aKEY,aLEVEL1,aLEVEL1_NAME,aLEVEL2,aLEVEL2_NAME,aGUBUN,aGUBUN_NAME,aNAME,aCARD_CNT,aSTATUS,aCARDTYPE,aCARDSTOP,aCurChange,aCurMode:string):Boolean;
     Function InsertIntoTB_POSI(aCompanyCode,aPosiCode,aPosiName:string):Boolean;
     Function InsertIntoTB_RELAYGUBUN(aRgCode,aCampusName:string):Boolean;
+    Function InsertIntoTB_WORKGUBUN(aCode,aType,aName:string):Boolean;
     Function InsertTB_EMPHISCardStop(aCardNo:string):Boolean;
+
+
+
     Function UpdateTB_CARDDOORGRADE(aCardNo,aDoorGrade:string):Boolean;
     Function UpdateTB_CARD_Change(aOldCardNo,aNewCardNo:string):Boolean;
     Function UpdateTB_CARD_Field_StringValue(aCardNo,aFieldName,aData:string):Boolean;
@@ -78,6 +88,8 @@ type
     Function UpdateTB_HonikMappingPosi(aGUBUN,aGUBUN_NAME,aChange:string):Boolean;
     Function UpdateTB_HonikMappingPosi_Field_StringValue(aGUBUN,aFieldName,aData:string):Boolean;
     Function UpdateTB_HonikTempTable2(aCAMPUS,aKEY,aLEVEL1,aLEVEL1_NAME,aLEVEL2,aLEVEL2_NAME,aGUBUN,aGUBUN_NAME,aNAME,aCARD_CNT,aCurChange,aCurMode:string):Boolean;
+    Function UpdateTB_HonikTempTable2Seoul(aCAMPUS,aKEY,aLEVEL1,aLEVEL1_NAME,aLEVEL2,aLEVEL2_NAME,aGUBUN,aGUBUN_NAME,aGUBUN_CHANGE,aNAME,aCARD_CNT,aSTATUS,aCARDTYPE,aCARDSTOP,aCurChange,aCurMode:string):Boolean;
+    Function UpdateTB_HonikTempTable2_Field_StringValue(aCAMPUS,aKEY,aFieldName,aData:string):Boolean;
     Function UpdateTB_Posi_Field_StringValue(aCompanyCode,aPosiCode,aFieldName,aData:string):Boolean;
   end;
 
@@ -89,7 +101,7 @@ implementation
 uses
   uDBModule,
   uCommonVariable,
-  uLomosUtil, uCommonSql;
+  uLomosUtil, uCommonSql, uCommon;
 
 {$R *.dfm}
 
@@ -135,13 +147,49 @@ begin
   End;
 end;
 
-function TdmDBFunction.CheckTB_CARD_Employee(aCompanyCode, aEmCode,
-  aCardNo: string; var aOldCardNo: string; bRegCard: Boolean): boolean;
+function TdmDBFunction.checkTB_CARD_EmNum_Cnt(aEmcode: string): integer;
 var
   stSql: string;
   TempAdoQuery : TADOQuery;
 begin
-  Result := False;
+  Result := 0;
+  stSql := 'select * from TB_CARD ';
+  stSql := stSql + ' where EM_CODE = ''' + aEmCode + ''' ';
+  stSql := stSql + ' AND CA_CARDTYPE = ''1'' ';  //등록된 카드 중에서
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmDBModule.ADOConnection;
+    TempAdoQuery.DisableControls;
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if recordcount = 0 then Exit;
+      result := recordcount;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TdmDBFunction.CheckTB_CARD_Employee(aCompanyCode, aEmCode,
+  aCardNo: string; var aOldCardNo: string; bRegCard: Boolean): integer;
+var
+  stSql: string;
+  TempAdoQuery : TADOQuery;
+begin
+  Result := -1;
   stSql := 'select * from TB_CARD ';
   stSql := stSql + ' where EM_CODE = ''' + aEmCode + ''' ';
   if aCompanyCode <> '' then stSql := stSql + ' AND CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
@@ -166,14 +214,55 @@ begin
       if recordcount = 0 then Exit;
       While Not Eof do
       begin
-        if FindField('CA_CARDNO').AsString <> aCardNo then
+        if FindField('CA_CARDNO').AsString = aCardNo then Result := 0
+        else
         begin
           aOldCardNo := FindField('CA_CARDNO').AsString;
-          result := True;
-          Exit;
+          result := 1;
         end;
+        Exit;
         Next;
       end;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TdmDBFunction.CheckTB_CARD_Employee_STICK(aCompanyCode,
+  aEmCode: string): integer;
+var
+  stSql: string;
+  TempAdoQuery : TADOQuery;
+begin
+  Result := -1;
+  stSql := 'select * from TB_CARD ';
+  stSql := stSql + ' where CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' AND EM_CODE = ''' + aEmCode + ''' ';
+  stSql := stSql + ' AND CA_STICK = ''Y'' ';
+
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmDBModule.ADOConnection;
+    TempAdoQuery.DisableControls;
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      result := 0;
+      if recordCount < 1 then Exit;
+      result := 1;
     end;
   Finally
     TempAdoQuery.EnableControls;
@@ -609,6 +698,53 @@ begin
   End;
 end;
 
+function TdmDBFunction.CheckTB_HonikTempTable2Seoul(aCAMPUS, aKEY: string;
+  var aMode, aChange, alevel1, alevel2, agubun, aname, acnt, aStatus,
+  aCardType, aCardStop: string): integer;
+var
+  stSql : string;
+  TempAdoQuery :TADOQuery;
+begin
+  result := -1;
+  stSql := 'select * from TB_HonikTempTable2  where K_CAMPUS = ' + aCAMPUS + ' and K_KEY = ''' + aKEY + ''' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmDBModule.ADOConnection;
+    TempAdoQuery.DisableControls;
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+
+      result := 0;
+      if recordcount < 1 then Exit;
+      aMode := Trim(FindField('K_STATE').AsString);
+      aChange := Trim(FindField('K_CHANGE').AsString);
+      alevel1 := Trim(FindField('K_LEVEL1').AsString);
+      alevel2:= Trim(FindField('K_LEVEL2').AsString);
+      agubun:= Trim(FindField('K_GUBUN').AsString);
+      aname:= Trim(FindField('K_NAME').AsString);
+      acnt:= Trim(FindField('K_CARD_CNT').AsString);
+      aStatus := Trim(FindField('K_STATUS').AsString);
+      aCardType := Trim(FindField('M_CARDTYPE').AsString);
+      aCardStop := Trim(FindField('M_CARDSTOP').AsString);
+      result := 1;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
 function TdmDBFunction.CheckTB_POSI(aCompanyCode,
   aPosiCode: string): integer;
 var
@@ -694,12 +830,19 @@ begin
     result := dmDBModule.ProcessExecSQL(stSql);
 end;
 
-function TdmDBFunction.DeleteHongikTempTable: Boolean;
+function TdmDBFunction.DeleteHongikTempTable(aCampus:string): Boolean;
 var
   stSql : string;
 begin
   stSql := ' Delete From TB_HonikTempTable ';
   result := dmDBModule.ProcessExecSQL(stSql);
+
+
+  if(aCampus='1') then   //홍익대 서울이면 
+  begin
+    stSql := ' Delete From TB_HonikMCardTempTable ';
+    result := dmDBModule.ProcessExecSQL(stSql);
+  end;
 
 end;
 
@@ -727,7 +870,7 @@ begin
 end;
 
 function TdmDBFunction.DeleteTB_EMPLOYEE_CardNo(aEmCode,
-  aCardNo: string): Boolean;
+  aCardNo: string;aDupCard:integer=0): Boolean;
 var
   stSql : string;
 begin
@@ -737,12 +880,25 @@ begin
   stSql := ' Update TB_DEVICECARDNO set DE_PERMIT = ''N'',DE_RCVACK = ''N'' FROM TB_DEVICECARDNO A JOIN TB_CARD B ON A.CA_CARDNO = B.CA_CARDNO where B.EM_CODE = ''' + aEmCode + '''  ';
   result := dmDBModule.ProcessExecSQL(stSql);
 
+  if aDupCard = 0 then
+  begin
+    stSql := ' Delete From TB_CARD where EM_CODE = ''' + aEmCode + ''' ';
+    result := dmDBModule.ProcessExecSQL(stSql);
 
-  stSql := ' Delete From TB_CARD where EM_CODE = ''' + aEmCode + ''' ';
-  result := dmDBModule.ProcessExecSQL(stSql);
+    stSql := ' Delete From TB_EMPLOYEE where EM_CODE = ''' + aEmCode + ''' ';
+    result := dmDBModule.ProcessExecSQL(stSql);
+  end else
+  begin
+    //카드 여러장 사용이면 카드번호로 카드만 삭제 후 카드 건수가 0 일때만 삭제 하자.
+    stSql := ' Delete From TB_CARD where CA_CARDNO = ''' + aCardNo + ''' ';
+    result := dmDBModule.ProcessExecSQL(stSql);
 
-  stSql := ' Delete From TB_EMPLOYEE where EM_CODE = ''' + aEmCode + ''' ';
-  result := dmDBModule.ProcessExecSQL(stSql);
+    if checkTB_CARD_EmNum_Cnt(aEmCode) = 0 then
+    begin
+      stSql := ' Delete From TB_EMPLOYEE where EM_CODE = ''' + aEmCode + ''' ';
+      result := dmDBModule.ProcessExecSQL(stSql);
+    end;
+  end;
 
 end;
 
@@ -762,118 +918,15 @@ begin
 
 end;
 
-function TdmDBFunction.GetHonikJijumCode(stCompanyCode,
-  aLEVEL1: string): string;
+function TdmDBFunction.DeleteTB_HURELAY_Key(aHRSEQ: string): Boolean;
 var
   stSql : string;
-  TempAdoQuery :TADOQuery;
 begin
-  result := '000';
-  stSql := 'select * from TB_HonikMappingJijum  where K_LEVEL1 = ''' + aLEVEL1 + ''' and CO_COMPANYCODE = ''' + stCompanyCode + ''' ';
+  stSql := 'Delete From TB_HURELAY';
+  stSql := stSql + ' Where HR_SEQ = ' + aHRSEQ + ' ';
 
-  Try
-    CoInitialize(nil);
-    TempAdoQuery := TADOQuery.Create(nil);
-    TempAdoQuery.Connection := dmDBModule.ADOConnection;
-    TempAdoQuery.DisableControls;
-    with TempAdoQuery do
-    begin
-      Close;
-      Sql.Clear;
-      Sql.Text := stSql;
-      Try
-        Open;
-      Except
-        Exit;
-      End;
+  Result := dmDBModule.ProcessExecSQL(stSql);
 
-      if recordcount < 1 then Exit;
-      result := FindField('CO_JIJUMCODE').AsString;
-    end;
-  Finally
-    TempAdoQuery.EnableControls;
-    TempAdoQuery.Free;
-    CoUninitialize;
-  End;
-end;
-
-function TdmDBFunction.GetJijumCode(aCompanyCode,
-  aJijumName: string): string;
-var
-  stSql : string;
-  TempAdoQuery : TADOQuery;
-begin
-  result := '000';
-  stSql := ' select * from TB_COMPANY ';
-  stSql := stSql + ' Where CO_GUBUN = ''2'' ';
-  stSql := stSql + ' AND CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
-  stSql := stSql + ' AND CO_NAME = ''' + aJijumName + ''' ';
-
-  Try
-    CoInitialize(nil);
-    TempAdoQuery := TADOQuery.Create(nil);
-    TempAdoQuery.Connection := dmDBModule.ADOConnection;
-    TempAdoQuery.DisableControls;
-    with TempAdoQuery do
-    begin
-      Close;
-      Sql.Text := stSql;
-      Try
-        Open;
-      Except
-        Exit;
-      End;
-      if recordCount < 1 then Exit;
-      result := FindField('CO_JIJUMCODE').AsString;
-    end;
-  Finally
-    TempAdoQuery.EnableControls;
-    TempAdoQuery.Free;
-    CoUninitialize;
-  End;
-end;
-
-function TdmDBFunction.GetMaxPositionNum: integer;
-var
-  stSql : string;
-  TempAdoQuery : TADOQuery;
-begin
-  result := 1;
-
-  stSql := 'Select Max(PositionNum) as MaxPosition From TB_CARD ';
-
-  Try
-    CoInitialize(nil);
-    TempAdoQuery := TADOQuery.Create(nil);
-    TempAdoQuery.Connection := dmDBModule.ADOConnection;
-    TempAdoQuery.DisableControls;
-
-    with TempAdoQuery do
-    begin
-      Close;
-      Sql.Clear;
-      Sql.Text := stSql;
-      Try
-        Open;
-      Except
-        Exit;
-      End;
-
-      if RecordCount < 1 then
-      begin
-        Exit;
-      end;
-      if Not IsDigit(FindField('MaxPosition').AsString) then
-      begin
-        Exit;
-      end;
-      result := FindField('MaxPosition').AsInteger + 1;
-    end;
-  Finally
-    TempAdoQuery.EnableControls;
-    TempAdoQuery.Free;
-    CoUninitialize;
-  End;
 end;
 
 function TdmDBFunction.InsertIntoTB_CARD_Value(aCardNo, aCardGubun,
@@ -890,7 +943,7 @@ begin
   end;
   if Not IsDigit(aCardGubun) then aCardGubun := '1';
 
-  nPositionNum := GetMaxPositionNum;  
+  nPositionNum := dmCommon.GetMaxPositionNum;  
 
   Result := False;
   stSql := 'Insert Into TB_CARD(GROUP_CODE,CA_CARDNO,CA_GUBUN,CA_CARDTYPE,';
@@ -1281,6 +1334,31 @@ begin
   result := dmDBModule.ProcessExecSQL(stSql);
 end;
 
+function TdmDBFunction.InsertIntoTB_HonikMCardTempTable(aKEY, aCARDTYPE,
+  aCARDCNT, aCARDSTOP, aUPDT,aK_CARD_CNT,aM_CARD_GUBUN: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Insert Into TB_HonikMCardTempTable ( ';
+  stSql := stSql + '  M_KEY ,';    //학생(학번), 교직원(종번)
+  stSql := stSql + '  M_CARDTYPE ,';        //0:모바일신분증, 1:카드신분증
+  stSql := stSql + '  M_CARDCNT ,';  //발급차수
+  stSql := stSql + '  M_CARDSTOP ,';         //0:정상, 1:분실, 2:정지
+  stSql := stSql + '  M_UPDT, ';  //트랜잭션시간
+  stSql := stSql + '  K_CARD_CNT, ';  //실물카드 발급 차수
+  stSql := stSql + '  M_CARD_GUBUN ';  //인증수단 구분(0.NFC,1.BLE)
+  stSql := stSql + ') ';
+  stSql := stSql + ' Values(';
+  stSql := stSql + '''' + aKEY + ''',';
+  stSql := stSql + '''' + aCARDTYPE + ''',';
+  stSql := stSql + '''' + aCARDCNT + ''',';
+  stSql := stSql + '''' + aCARDSTOP + ''',';
+  stSql := stSql + '''' + aUPDT + ''',';
+  stSql := stSql + '''' + aK_CARD_CNT + ''',';
+  stSql := stSql + '''' + aM_CARD_GUBUN + ''')';
+  result := dmDBModule.ProcessExecSQL(stSql);
+end;
+
 function TdmDBFunction.InsertIntoTB_HonikTempTable(aCAMPUS, aLEVEL1,
   aLEVEL1_NAME, aLEVEL2, aLEVEL2_NAME, aGUBUN, aGUBUN_NAME, aNAME, aKEY,
   aCARD_CNT: string): Boolean;
@@ -1354,6 +1432,90 @@ begin
   result := dmDBModule.ProcessExecSQL(stSql);
 end;
 
+function TdmDBFunction.InsertIntoTB_HonikTempTable2Seoul(aCAMPUS, aKEY,
+  aLEVEL1, aLEVEL1_NAME, aLEVEL2, aLEVEL2_NAME, aGUBUN, aGUBUN_NAME, aNAME,
+  aCARD_CNT, aSTATUS, aCARDTYPE, aCARDSTOP, aCurChange,
+  aCurMode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'Insert Into TB_HonikTempTable2 ( ';
+  stSql := stSql + '  K_CAMPUS,';        //캠퍼스 구분 1:서울 2:세종
+  stSql := stSql + '  K_KEY ,';        //학번 ( 종번 )
+  stSql := stSql + '  K_LEVEL1 ,';        //단과대코드( 소속 )
+  stSql := stSql + '  K_LEVEL1_NAME ,';  //단과대명칭( 소속명 )
+  stSql := stSql + '  K_LEVEL2 ,';         //학과코드 ( 소속2)
+  stSql := stSql + '  K_LEVEL2_NAME ,';  //학과명칭 (소속2명)
+  stSql := stSql + '  K_GUBUN ,';               //구분
+  stSql := stSql + '  K_GUBUN_NAME, ';   //구분명 ( 1:교수, 2:강사, 3:조교, 4: 대학원생, 5:학부생, 6:직원 )
+  stSql := stSql + '  K_NAME ,';        //성명
+  stSql := stSql + '  K_CARD_CNT ,';      //카드발급차수
+  stSql := stSql + '  K_STATE , ';      //변경 모드 1.입력,2.수정,3.삭제
+  stSql := stSql + '  K_STATUS , ';      //1:재학(재직), 2:휴학(휴직), 3:졸업(퇴직), 4:제적, 5:수료
+  stSql := stSql + '  M_CARDTYPE , ';      //0:모바일신분증, 1:BLE,2:카드신분증
+  stSql := stSql + '  M_CARDSTOP , ';      //0:정상, 1:분실, 2:정지
+  stSql := stSql + '  K_CHANGE, ';      //변경시 Y 미변경시 N
+  stSql := stSql + '  K_RELAY, ';      //완료시 Y
+  stSql := stSql + '  K_CHANGEDATE) ';
+  stSql := stSql + ' Values(' + aCAMPUS + ',';    //캠퍼스 구분 1:서울 2:세종
+  stSql := stSql + ' ''' + Trim(aKEY) + ''', ';       //학번 ( 종번 )
+  stSql := stSql + ' ''' + Trim(aLEVEL1) + ''',';        //단과대코드( 소속 )
+  stSql := stSql + ' ''' + Trim(aLEVEL1_NAME) + ''',';  //단과대명칭( 소속명 )
+  stSql := stSql + ' ''' + Trim(aLEVEL2) + ''',';         //학과코드 ( 소속2)
+  stSql := stSql + ' ''' + Trim(aLEVEL2_NAME) + ''',';  //학과명칭 (소속2명)
+  stSql := stSql + ' ''' + Trim(aGUBUN) + ''',';               //구분
+  stSql := stSql + ' ''' + Trim(aGUBUN_NAME) + ''', ';   //구분명 ( 1:교수, 2:강사, 3:조교, 4: 대학원생, 5:학부생, 6:직원 )
+  stSql := stSql + ' ''' + Trim(aNAME) + ''',';        //성명
+  stSql := stSql + ' ''' + Trim(aCARD_CNT) + ''',';      //카드발급차수
+  stSql := stSql + ' ' + aCurMode  + ', ';      //변경 모드 1.입력,2.수정,3.삭제
+  stSql := stSql + ' ' + aSTATUS  + ', ';      //1:재학(재직), 2:휴학(휴직), 3:졸업(퇴직), 4:제적, 5:수료
+  stSql := stSql + ' ''' + Trim(aCARDTYPE)  + ''', ';      //0:모바일신분증, 1:카드신분증
+  stSql := stSql + ' ''' + Trim(aCARDSTOP)  + ''', ';      //0:정상, 1:분실, 2:정지
+  stSql := stSql + ' ''' + Trim(aCurChange) + ''',';
+  stSql := stSql + ' ''N'',';
+  stSql := stSql + ' getDate())';
+  result := dmDBModule.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.InsertIntoTB_HonikTempTableSeoul(aCAMPUS, aLEVEL1,
+  aLEVEL1_NAME, aLEVEL2, aLEVEL2_NAME, aGUBUN, aGUBUN_NAME, aNAME, aKEY,
+  aStatus, aUpdt: string): Boolean;
+var
+  stSql : string;
+begin
+  if Not isdigit(aStatus) then aStatus := '1';
+  if Not isdigit(aUpdt) then aUpdt := formatdatetime('yyyymmdd',now);
+
+  stSql := 'Insert Into TB_HonikTempTable ( ';
+  stSql := stSql + '  K_CAMPUS ,';    //캠퍼스 구분 1:서울 2:세종
+  stSql := stSql + '  K_LEVEL1 ,';        //단과대코드( 소속 )
+  stSql := stSql + '  K_LEVEL1_NAME ,';  //단과대명칭( 소속명 )
+  stSql := stSql + '  K_LEVEL2 ,';         //학과코드 ( 소속2)
+  stSql := stSql + '  K_LEVEL2_NAME ,';  //학과명칭 (소속2명)
+  stSql := stSql + '  K_GUBUN ,';               //구분
+  stSql := stSql + '  K_GUBUN_NAME , ';   //구분명 ( 1:교수, 2:강사, 3:조교, 4: 대학원생, 5:학부생, 6:직원 )
+  stSql := stSql + '  K_NAME ,';        //성명
+  stSql := stSql + '  K_KEY ,';       //학번 ( 종번 )
+  stSql := stSql + '  K_STATUS ,';      //1:재학(재직), 2:휴학(휴직), 3:졸업(퇴직), 4:제적, 5:수료
+  stSql := stSql + '  K_UPDT ,';      //발령일 yyyymmdd
+  stSql := stSql + '  K_SEND ';      //연동 유무
+  stSql := stSql + ') ';
+  stSql := stSql + ' Values(';
+  stSql := stSql + '' + aCAMPUS + ',';
+  stSql := stSql + '''' + aLEVEL1 + ''',';
+  stSql := stSql + '''' + aLEVEL1_NAME + ''',';
+  stSql := stSql + '''' + aLEVEL2 + ''',';
+  stSql := stSql + '''' + aLEVEL2_NAME + ''',';
+  stSql := stSql + '''' + aGUBUN + ''',';
+  stSql := stSql + '''' + aGUBUN_NAME + ''',';
+  stSql := stSql + '''' + aNAME + ''',';
+  stSql := stSql + '''' + aKEY + ''',';
+  stSql := stSql + '' + aStatus + ',' ;
+  stSql := stSql + '' + aUpdt + ',' ;
+  stSql := stSql + '''N'')';
+  result := dmDBModule.ProcessExecSQL(stSql);
+end;
+
 function TdmDBFunction.InsertIntoTB_POSI(aCompanyCode, aPosiCode,
   aPosiName: string): Boolean;
 var
@@ -1386,6 +1548,25 @@ begin
   stSql := stSql + '''' + GROUPCODE + ''',';
   stSql := stSql + '''' + aRgCode + ''',';
   stSql := stSql + '''' + aCampusName + ''')';
+
+  result := dmDBModule.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.InsertIntoTB_WORKGUBUN(aCode, aType,
+  aName: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := ' Insert Into TB_WORKGUBUN(';
+  stSql := stSql + ' GROUP_CODE,';
+  stSql := stSql + ' WG_CODE,';
+  stSql := stSql + ' WG_TYPE,';
+  stSql := stSql + ' WG_NAME) ';
+  stSql := stSql + ' Values(';
+  stSql := stSql + '''' + GROUPCODE + ''',';
+  stSql := stSql + '''' + aCode + ''',';
+  stSql := stSql + '''' + aType + ''',';
+  stSql := stSql + '''' + aName + ''')';
 
   result := dmDBModule.ProcessExecSQL(stSql);
 end;
@@ -1792,6 +1973,49 @@ begin
   stSql := stSql + '  K_CHANGE =''' + aCurChange + ''' ';      //변경시 Y 미변경시 N
   if aCurChange = 'Y' then stSql := stSql + '  ,K_RELAY = ''N'' ';
   if aCurChange = 'Y' then stSql := stSql + '  ,K_CHANGEDATE = getdate() ';
+  stSql := stSql + ' where K_CAMPUS  = ' + aCAMPUS + '';    //캠퍼스 구분 1:서울 2:세종
+  stSql := stSql + ' and K_KEY = ''' + aKEY + ''' ';       //학번 ( 종번 )
+
+  result := dmDBModule.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.UpdateTB_HonikTempTable2Seoul(aCAMPUS, aKEY,
+  aLEVEL1, aLEVEL1_NAME, aLEVEL2, aLEVEL2_NAME, aGUBUN, aGUBUN_NAME,aGUBUN_CHANGE, aNAME,
+  aCARD_CNT, aSTATUS, aCARDTYPE, aCARDSTOP, aCurChange,
+  aCurMode: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'update TB_HonikTempTable2 set ';
+  stSql := stSql + '  K_LEVEL1 = ''' + Trim(aLEVEL1) + ''',';        //단과대코드( 소속 )
+  stSql := stSql + '  K_LEVEL1_NAME =''' + Trim(aLEVEL1_NAME) + ''',';  //단과대명칭( 소속명 )
+  stSql := stSql + '  K_LEVEL2 = ''' + Trim(aLEVEL2) + ''',';         //학과코드 ( 소속2)
+  stSql := stSql + '  K_LEVEL2_NAME = ''' + Trim(aLEVEL2_NAME) + ''',';  //학과명칭 (소속2명)
+  stSql := stSql + '  K_GUBUN = ''' + Trim(aGUBUN) + ''',';               //구분
+  stSql := stSql + '  K_GUBUN_NAME = ''' + Trim(aGUBUN_NAME) + ''', ';   //구분명 ( 1:교수, 2:강사, 3:조교, 4: 대학원생, 5:학부생, 6:직원 )
+  stSql := stSql + '  K_GUBUN_CHANGE = ''' + Trim(aGUBUN_CHANGE) + ''', ';   //구분변경유무
+  stSql := stSql + '  K_NAME = ''' + Trim(aNAME) + ''',';        //성명
+  stSql := stSql + '  K_CARD_CNT =''' + Trim(aCARD_CNT) + ''',';      //카드발급차수
+  stSql := stSql + '  K_STATE = ' + aCurMode  + ', ';      //변경 모드 1.입력,2.수정,3.삭제
+  stSql := stSql + '  K_STATUS =''' + Trim(aSTATUS) + ''', ';      //1:재학(재직), 2:휴학(휴직), 3:졸업(퇴직), 4:제적, 5:수료
+  stSql := stSql + '  M_CARDTYPE =''' + Trim(aCARDTYPE) + ''', ';      //0:모바일신분증, 1:카드신분증
+  stSql := stSql + '  M_CARDSTOP =''' + Trim(aCARDSTOP) + ''', ';      //0:정상, 1:분실, 2:정지
+  stSql := stSql + '  K_CHANGE =''' + Trim(aCurChange) + ''' ';      //변경시 Y 미변경시 N
+  if aCurChange = 'Y' then stSql := stSql + '  ,K_RELAY = ''N'' ';
+  if aCurChange = 'Y' then stSql := stSql + '  ,K_CHANGEDATE = getdate() ';
+  stSql := stSql + ' where K_CAMPUS  = ' + aCAMPUS + '';    //캠퍼스 구분 1:서울 2:세종
+  stSql := stSql + ' and K_KEY = ''' + aKEY + ''' ';       //학번 ( 종번 )
+
+  result := dmDBModule.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.UpdateTB_HonikTempTable2_Field_StringValue(aCAMPUS,
+  aKEY, aFieldName, aData: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'update TB_HonikTempTable2 set ';
+  stSql := stSql + aFieldName + '=''' + aData + ''' ';
   stSql := stSql + ' where K_CAMPUS  = ' + aCAMPUS + '';    //캠퍼스 구분 1:서울 2:세종
   stSql := stSql + ' and K_KEY = ''' + aKEY + ''' ';       //학번 ( 종번 )
 

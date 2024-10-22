@@ -71,6 +71,11 @@ type
     ed_JijumName: TEdit;
     Label2: TLabel;
     cmb_FoodArea: TComboBox;
+    btn_FileFormat: TSpeedButton;
+    btn_FileRead: TSpeedButton;
+    SaveDialog1: TSaveDialog;
+    OpenDialog1: TOpenDialog;
+    sg_FileFormat: TAdvStringGrid;
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -88,6 +93,8 @@ type
     procedure cmb_JijumChange(Sender: TObject);
     procedure cmb_DepartChange(Sender: TObject);
     procedure cmb_PosiChange(Sender: TObject);
+    procedure btn_FileFormatClick(Sender: TObject);
+    procedure btn_FileReadClick(Sender: TObject);
   private
     CompanyCodeList : TStringList;
     JijumCodeList : TStringList;
@@ -104,6 +111,7 @@ type
 
     procedure Load_FoodCode(cmb_Box:TComboBox);
     procedure PanelClear;
+    Function CheckTB_FoodEvent(aDate,aCompanyCode,aEmCode,aFoodCode:string;var aPermit:string):Boolean;
     Function InsertTB_FOODEVENT(aDate,aFoodTime,aNodeNo,aReaderNo,
                    aCompanyCode,
                    aEmCode,
@@ -112,6 +120,13 @@ type
                    aPermit, //승인유무
                    aContent,aFoodAmt:string):Boolean;
     Function UpdateTB_FOODEVENT(aDate,aFoodTime,aNodeNo,aReaderNo,
+                   aCompanyCode,
+                   aEmCode,
+                   aEcuId,
+                   aFoodCode,
+                   aPermit, //승인유무
+                   aContent,aFoodAmt:string):Boolean;
+    Function UpdateTB_FOODEVENT_Gubun(aDate,aFoodTime,aNodeNo,aReaderNo,
                    aCompanyCode,
                    aEmCode,
                    aEcuId,
@@ -130,6 +145,8 @@ type
     function CheckTB_FoodWeekCount(aYear,aWeekDay,aCompanyCode,aEMCode:string):integer;
     Function  GetFoodCurrentSemesterCode(aDate:string) : integer;
     procedure SearchFoodEvent(aCode:string);
+    Function FoodInfoInsert():Boolean;
+    Function FoodFormatCheck():Boolean;
   public
     { Public declarations }
   end;
@@ -411,8 +428,8 @@ end;
 procedure TfmFoodAdmin.btn_InsertClick(Sender: TObject);
 begin
   State := 'INSERT';
-  //ed_FoodTime.Text := '';
-  //ed_FoodAmt.Text := '';
+  ed_FoodTime.Text := '';
+  ed_FoodAmt.Text := '';
   ed_nodeno.Text := '0';
   ed_readerno.Text := '0';
   ed_mcuid.Text := '0000000';
@@ -1349,6 +1366,246 @@ begin
     CoUninitialize;
   End;
 
+end;
+
+procedure TfmFoodAdmin.btn_FileFormatClick(Sender: TObject);
+var
+  stFile : string;
+begin
+  GridInitialize(sg_FileFormat);
+  SaveDialog1.InitialDir:= ExtractFileDir(Application.ExeName);
+  SaveDialog1.DefaultExt:= 'CSV';
+  SaveDialog1.Filter := 'CSV files (*.CSV)|*.CSV';
+  if SaveDialog1.Execute then
+  begin
+    stFile:= SaveDialog1.FileName;
+    sg_FileFormat.SaveToCSV(stFile);
+  end;
+end;
+
+procedure TfmFoodAdmin.btn_FileReadClick(Sender: TObject);
+var
+  stFile : string;
+  i : integer;
+begin
+  if Application.MessageBox(pchar('업로드할 파일의 포맷을 정확히 확인 하셨습니까?'),'정보',mb_okcancel) = idcancel then Exit;
+  GridInitialize(sg_FileFormat);
+  OpenDialog1.InitialDir:= ExtractFileDir(Application.ExeName);
+  OpenDialog1.DefaultExt:= 'CSV';
+  OpenDialog1.Filter := 'CSV files (*.CSV)|*.CSV';
+  if OpenDialog1.Execute then
+  begin
+    stFile:= OpenDialog1.FileName;
+    sg_FileFormat.LoadFromCSV(stFile);
+  end else Exit;
+
+  if Not FoodInfoInsert then
+  begin
+    Exit;
+  end;
+  showmessage('식수정보 입력 완료!!!');
+  btn_SearchClick(self);
+
+end;
+
+function TfmFoodAdmin.FoodInfoInsert: Boolean;
+var
+  nRow : integer;
+  i : integer;
+  stNodeNo,stEcuID,stFoodDoorNo : string;
+  bResult : Boolean;
+  stOldPermit : string;
+begin
+  result := False;
+  if Not FoodFormatCheck() then Exit;
+
+  DataModule1.ADOConnectionEVENT.BeginTrans;
+  Try
+
+    with sg_FileFormat do
+    begin
+      for i := 1 to RowCount do
+      begin
+        if(cells[0,i]='') then continue;
+        stNodeNo := copy(FoodAreaList.Strings[strtoint(cells[6,i])],1,3);
+        stEcuID := copy(FoodAreaList.Strings[strtoint(cells[6,i])],4,2);
+        stFoodDoorNo := copy(FoodAreaList.Strings[strtoint(cells[6,i])],6,1);
+
+        if CheckTB_FoodEvent(cells[0,i],cells[2,i],cells[3,i],FoodCodeList.Strings[strtoint(cells[1,i])],stOldPermit) then
+        begin
+          bResult := UpdateTB_FOODEVENT_Gubun(cells[0,i],cells[4,i],stNodeNo,stFoodDoorNo,
+                         cells[2,i],cells[3,i],stEcuID,
+                         FoodCodeList.Strings[strtoint(cells[1,i])],
+                         'Y', //승인유무
+                         cells[7,i],cells[5,i]);
+
+          if bResult and (G_nSpecialProgram = 5) then   //송호대학교
+          begin
+            if stOldPermit <> 'Y' then
+            begin
+                songhoFoodCount_Add(cells[2,i],cells[3,i],cells[0,i],FoodCodeList.Strings[strtoint(cells[1,i])]);
+            end;
+          end;
+
+        end else
+        begin
+          bResult := InsertTB_FOODEVENT(cells[0,i],cells[4,i],stNodeNo,stFoodDoorNo,
+                       cells[2,i],cells[3,i], stEcuID,
+                       FoodCodeList.Strings[strtoint(cells[1,i])],
+                       'Y', //승인유무
+                       cells[7,i],cells[5,i]);
+          if bResult  and (G_nSpecialProgram = 5) then   //송호대학교
+          begin
+            songhoFoodCount_Add(cells[2,i],cells[3,i],cells[0,i],FoodCodeList.Strings[strtoint(cells[1,i])]);
+          end;
+        end;
+
+      end;
+    end;
+
+  Except
+    showmessage('식수 입력 실패');
+    DataModule1.ADOConnectionEVENT.RollbackTrans;
+    Exit;
+  End;
+
+  DataModule1.ADOConnectionEVENT.CommitTrans;
+
+  result := True;
+end;
+
+function TfmFoodAdmin.FoodFormatCheck: Boolean;
+var
+  nRow : integer;
+  i : integer;
+begin
+  result := False;
+  with sg_FileFormat do
+  begin
+    for i := 1 to RowCount do
+    begin
+      if(cells[0,i] <> '') then
+      begin
+        cells[0,i] := stringReplace(cells[0,i],'-','',[rfReplaceAll]);
+        if( length(cells[0,i]) <> 8 ) then
+        begin
+          showmessage('날짜 포맷은 yyyymmdd 형태입니다.');
+          Exit;
+        end;
+        if( Not isdigit(cells[0,i]) ) then
+        begin
+          showmessage('날짜 포맷은 yyyymmdd 형태입니다.');
+          Exit;
+        end;
+        if( Not isdigit(cells[1,i]) ) then
+        begin
+          showmessage('식수구분은 조식(1),중식(2),석식(3),야식(4)의 숫자 타입으로 입력 하셔야 합니다.');
+          Exit;
+        end;
+        if( FoodCodeList.Count < strtoint(cells[1,i]) ) then
+        begin
+          showmessage('식수구분은 조식(1),중식(2),석식(3),야식(4)의 숫자 타입으로 입력 하셔야 합니다.');
+          Exit;
+        end;
+        if( Not isdigit(cells[2,i]) ) then
+        begin
+          cells[2,i] := '001';
+        end;
+        cells[2,i] := FillZeroStrNum(cells[2,i],3);
+        if Trim(cells[3,i]) = ''  then
+        begin
+          showmessage('사번이 입력되지 않은 데이터가 있습니다.');
+          Exit;
+        end;
+        cells[4,i] := stringReplace(cells[4,i],'-','',[rfReplaceAll]);
+        cells[4,i] := stringReplace(cells[4,i],':','',[rfReplaceAll]);
+        if( Not isdigit(cells[4,i]) ) then
+        begin
+          showmessage('식사시간 포맷은 hhnnss(시분초) 형태입니다.');
+          Exit;
+        end;
+        cells[4,i] := FillZeroStrNum(cells[4,i],6);
+        if( Not isdigit(cells[5,i]) ) then cells[5,i] := '0';  //식수금액
+        if( Not isdigit(cells[6,i]) ) then cells[6,i] := '0';  //식수구역
+        if cmb_FoodArea.Items.Count <= strtoint(cells[6,i]) then
+        begin
+          showmessage('식수구역은 범위 안에서 선택하셔야 합니다.');
+          Exit;
+        end;
+      end;
+    end;
+  end;
+  result := True;
+end;
+
+function TfmFoodAdmin.CheckTB_FoodEvent(aDate, aCompanyCode, aEmCode,
+  aFoodCode: string;var aPermit:string): Boolean;
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+begin
+  result := False;
+  stSql := 'Select * from TB_FoodEvent ';
+  stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND FO_DATE = ''' + aDate + ''' ';
+  stSql := stSql + ' AND FO_FOODCODE = ''' + aFoodCode + ''' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' AND EM_CODE = ''' + aEMCODE + ''' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.DisableControls;
+
+    With TempAdoQuery do
+    begin
+      Close;
+      Sql.Text := stSql;
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      result := False;
+      if recordcount < 1 then Exit;
+      aPermit := FindField('aPermit').AsString;
+      result := True;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TfmFoodAdmin.UpdateTB_FOODEVENT_Gubun(aDate, aFoodTime, aNodeNo,
+  aReaderNo, aCompanyCode, aEmCode, aEcuId, aFoodCode, aPermit, aContent,
+  aFoodAmt: string): Boolean;
+var
+  stSql : string;
+  st : string;
+begin
+  result := False;
+
+  stSql := ' Update TB_FOODEVENT Set ';
+  stSql := stSql + ' AC_NODENO = ' + aNodeNo;
+  stSql := stSql + ' AC_ECUID = ''' + aEcuId + ''' ';
+  stSql := stSql + ' FO_DOORNO = ''' + aReaderNo + ''' ';
+  stSql := stSql + ' FO_PERMIT = ''' + aPermit + ''', ';
+  stSql := stSql + ' FO_CONTENT  = ''' + aContent + ''',  ';
+  stSql := stSql + ' FO_UPDATETIME  = ''' + FormatDateTime('yyyymmddHHMMSS',Now) + ''',  ';
+  stSql := stSql + ' FO_FOODAMT  = ' + aFoodAmt + '  ';
+  stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND FO_DATE = ''' + aDate + ''' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' AND EM_CODE = ''' + aEmCode + ''' ';
+  stSql := stSql + ' AND FO_FOODCODE = ''' + aFoodCode + ''', ';
+  stSql := stSql + ' AND FO_UPDATEOPERATOR  = ''' + Master_ID + ''',  ';
+
+  result := DataModule1.ProcessEventExecSQL(stSql);
+  st := aDate + ';' + aFoodTime + ';' + aNodeNo + ';' + aEcuId + ';' + aReaderNo + ';' + aCompanyCode + ';' + aEmCode + ';'  ;
+  InsertTB_WORKLOG('FOODEVENT','UPDATE',st);
 end;
 
 initialization

@@ -1,6 +1,6 @@
 inherited fmTreeEmployee: TfmTreeEmployee
-  Left = 206
-  Top = 234
+  Left = 207
+  Top = 214
   Width = 1024
   Height = 640
   Caption = #44060#48324#49324#50896#44288#47532
@@ -20,13 +20,13 @@ inherited fmTreeEmployee: TfmTreeEmployee
     Left = 305
     Top = 73
     Width = 1
-    Height = 533
+    Height = 540
   end
   object AdvPageControl1: TAdvPageControl [1]
     Left = 0
     Top = 73
     Width = 305
-    Height = 533
+    Height = 540
     ActivePage = AdvTabSheet1
     ActiveFont.Charset = DEFAULT_CHARSET
     ActiveFont.Color = clWindowText
@@ -58,7 +58,7 @@ inherited fmTreeEmployee: TfmTreeEmployee
         Left = 0
         Top = 0
         Width = 297
-        Height = 505
+        Height = 512
         Align = alClient
         BevelOuter = bvNone
         Color = clWhite
@@ -105,7 +105,7 @@ inherited fmTreeEmployee: TfmTreeEmployee
           Left = 0
           Top = 18
           Width = 297
-          Height = 487
+          Height = 494
           Align = alClient
           BorderStyle = bsNone
           HotTrack = True
@@ -168,7 +168,7 @@ inherited fmTreeEmployee: TfmTreeEmployee
     Left = 306
     Top = 73
     Width = 710
-    Height = 533
+    Height = 540
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -195,7 +195,7 @@ inherited fmTreeEmployee: TfmTreeEmployee
     FullHeight = 0
     object Splitter1: TSplitter
       Left = 1
-      Top = 183
+      Top = 190
       Width = 708
       Height = 1
       Cursor = crVSplit
@@ -203,7 +203,7 @@ inherited fmTreeEmployee: TfmTreeEmployee
     end
     object pan_Employee: TAdvPanel
       Left = 1
-      Top = 184
+      Top = 191
       Width = 708
       Height = 348
       Align = alBottom
@@ -611,7 +611,7 @@ inherited fmTreeEmployee: TfmTreeEmployee
       Left = 1
       Top = 1
       Width = 708
-      Height = 182
+      Height = 189
       Cursor = crDefault
       Align = alClient
       ColCount = 23
@@ -715,6 +715,7 @@ inherited fmTreeEmployee: TfmTreeEmployee
       PrintSettings.FooterFont.Style = []
       PrintSettings.PageNumSep = '/'
       ScrollSynch = True
+      ScrollWidth = 16
       SearchFooter.FindNextCaption = 'Find next'
       SearchFooter.FindPrevCaption = 'Find previous'
       SearchFooter.Font.Charset = DEFAULT_CHARSET

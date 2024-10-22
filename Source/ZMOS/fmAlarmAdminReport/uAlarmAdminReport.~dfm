@@ -226,7 +226,7 @@ inherited fmAlarmAdminReport: TfmAlarmAdminReport
       ImeName = 'Microsoft IME 2003'
       TabOrder = 1
     end
-    object cmb_Alarm: TRzComboBox
+    object cmb_Alaram: TRzComboBox
       Tag = 1
       Left = 391
       Top = 26
@@ -484,7 +484,7 @@ inherited fmAlarmAdminReport: TfmAlarmAdminReport
       00FA030000000000000100080002000000000000000000FFFFFF002E02000000
       0000000000000000FFFF0000000000020000000100000000FEFEFF0000000000
       00000000000000FC000000000000000000000000000000005800E9E41F70F5B9
-      E2401390F5FF4D18E540}
+      E2406B3771034E18E540}
   end
   object frDBDataSet1: TfrDBDataSet
     DataSet = AdoQuery

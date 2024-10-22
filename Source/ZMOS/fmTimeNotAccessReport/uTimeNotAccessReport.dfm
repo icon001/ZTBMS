@@ -1,6 +1,6 @@
 inherited fmTimeNotAccessReport: TfmTimeNotAccessReport
-  Left = 168
-  Top = 93
+  Left = 200
+  Top = 96
   Width = 1024
   Height = 640
   Caption = #49884#44036#48324#48120#52636#51077#51060#47141#48372#44256#49436
@@ -19,7 +19,7 @@ inherited fmTimeNotAccessReport: TfmTimeNotAccessReport
     Left = 0
     Top = 89
     Width = 1016
-    Height = 517
+    Height = 524
     Cursor = crDefault
     Align = alClient
     ColCount = 15
@@ -109,6 +109,7 @@ inherited fmTimeNotAccessReport: TfmTimeNotAccessReport
     PrintSettings.FooterFont.Style = []
     PrintSettings.PageNumSep = '/'
     ScrollSynch = True
+    ScrollWidth = 16
     SearchFooter.FindNextCaption = 'Find next'
     SearchFooter.FindPrevCaption = 'Find previous'
     SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -146,6 +147,7 @@ inherited fmTimeNotAccessReport: TfmTimeNotAccessReport
       Top = 96
       Width = 329
       Height = 73
+      Color = clWhite
       TabOrder = 3
       Visible = False
       object Label1: TLabel
@@ -171,6 +173,7 @@ inherited fmTimeNotAccessReport: TfmTimeNotAccessReport
     Width = 1016
     Height = 89
     Align = alTop
+    Color = clWhite
     TabOrder = 1
     object GroupBox5: TGroupBox
       Left = 856

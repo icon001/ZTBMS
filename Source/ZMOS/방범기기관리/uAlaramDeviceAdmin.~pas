@@ -87,6 +87,8 @@ type
     SaveDialog1: TSaveDialog;
     ADOSearchQuery: TADOQuery;
     Timer1: TTimer;
+    Label17: TLabel;
+    ed_RelayCode: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -135,6 +137,7 @@ type
     procedure FormClear;
     procedure FormEnable(aState:string);
     procedure ButtonEnable(aState:string);
+    procedure SearchLock(aEnable : Boolean);
     procedure MCULoad(aBuildingCode,aFloorCode,aAreaCode:string;aList:TStringList;cmb_Box:TComboBox;aType:string);
     procedure DeviceLoad(aNodeNo:string;StringList:TStringList;cmb_Box:TComboBox;aType:string);
     procedure LoadBuildingCode(cmb_Box:TComboBox);
@@ -404,6 +407,7 @@ begin
   FormClear;
   FormEnable(State);
   ButtonEnable(State);
+  SearchLock(False);
 
   GridInit; //스트링그리드 초기화
 
@@ -487,11 +491,13 @@ begin
       Try
         Open;
       Except
+        SearchLock(True);
         Exit;
       End;
 
       if RecordCount < 1 then
       begin
+        SearchLock(True);
         Exit;
       end;
 
@@ -527,6 +533,7 @@ begin
           cells[20,nRow] := FindField('AR_TELNO').AsString;
           cells[21,nRow] := FindField('AR_MEMO').AsString;
           cells[22,nRow] := FindField('AG_ARMCODE').AsString;
+          cells[23,nRow] := FindField('AR_RelayCode').AsString;
           if (FillZeroNumber(FindField('AC_NODENO').AsInteger,3) + FindField('AC_ECUID').AsString + stArmAreaNo)  = aAlarmNo then
           begin
             SelectRows(nRow,1);
@@ -544,7 +551,7 @@ begin
       end;
     end;
   Finally
-    
+    SearchLock(True);
   End;
   sg_AlarmClick(sg_Alarm);
 
@@ -568,6 +575,7 @@ begin
   ed_TotHeight.Text := '0';
   ed_CurX.Text := '0';
   ed_CurY.Text := '0';
+  ed_RelayCode.Text := '';
   cmb_ArmGubun.ItemIndex := -1;
 end;
 
@@ -630,6 +638,7 @@ begin
     ed_telno.Enabled := True;
     mem_etc.Enabled := True;
     cmb_ArmGubun.Enabled := True;
+    ed_RelayCode.Enabled := True;
   end else if UpperCase(aState) = 'UPDATE' then
   begin
     //Alarm Form Enable
@@ -653,6 +662,7 @@ begin
     ed_telno.Enabled := True;
     mem_etc.Enabled := True;
     cmb_ArmGubun.Enabled := True;
+    ed_RelayCode.Enabled := True;
   end else if UpperCase(aState) = 'SEARCH' then
   begin
     //Alarm Form Enable
@@ -676,6 +686,7 @@ begin
     ed_telno.Enabled := False;
     mem_etc.Enabled := False;
     cmb_ArmGubun.Enabled := False;
+    ed_RelayCode.Enabled := False;
   end else if UpperCase(aState) = 'CLICK' then
   begin
     //Alarm Form Enable
@@ -699,6 +710,7 @@ begin
     ed_telno.Enabled := False;
     mem_etc.Enabled := False;
     cmb_ArmGubun.Enabled := False;
+    ed_RelayCode.Enabled := False;
   end;
 end;
 
@@ -848,6 +860,8 @@ begin
     st_ArmCode := cells[22,Row];
     nIndex := sAlarmGubunCodeList.IndexOf(st_ArmCode);
     cmb_ArmGubun.ItemIndex := nIndex;
+    ed_RelayCode.Text := cells[23,Row];
+
   end;
 
 end;
@@ -1634,7 +1648,12 @@ begin
     stSql := stSql + 'AR_UPDATE = ''Y'', ';
     stSql := stSql + 'AR_TELNO = '''+ stTelNo +''', ';
     stSql := stSql + 'AR_MEMO = '''+ stMemo +''',  ';
-    stSql := stSql + 'AG_ARMCODE = '''+ stArmGubunCode +'''  ';
+    stSql := stSql + 'AG_ARMCODE = '''+ stArmGubunCode +''',  ';
+    stSql := stSql + 'AR_RelayCode = ''' + ed_RelayCode.Text + ''',';
+    stSql := stSql + 'AR_MEMLOAD = ''N'', ';
+    stSql := stSql + 'AR_Change = ''Y'' ';
+
+
     stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
     stSql := stSql + ' AND AC_NODENO = ' + stNodeNo + ' ';
     stSql := stSql + ' AND AC_ECUID = ''' + stEcuID + ''' ';
@@ -1662,6 +1681,8 @@ begin
     stSql := stSql + ' AR_TELNO,';
     stSql := stSql + ' AR_MEMO,';
     stSql := stSql + ' AG_ARMCODE,';
+    stSql := stSql + ' AR_RelayCode ,';
+    stSql := stSql + ' AR_Change ,';
     stSql := stSql + ' AR_USE ) ';
     stSql := stSql + ' Values( ';
     stSql := stSql + ' ''' + GROUPCODE + ''', ';
@@ -1678,10 +1699,12 @@ begin
     stSql := stSql + ' ' + stTotY + ',';
     stSql := stSql + ' ' + stX + ',';
     stSql := stSql + ' ' + stY + ', ';
-     stSql := stSql + ' ''Y'', ';
+    stSql := stSql + ' ''Y'', ';
     stSql := stSql + ' '''+ stTelNo +''', ';
     stSql := stSql + ' '''+ stMemo +''',  ';
     stSql := stSql + ' '''+ stArmGubunCode + ''',  ';
+    stSql := stSql + ' ''' + ed_RelayCode.Text + ''',' ;
+    stSql := stSql + ' ''Y'', ';
     stSql := stSql + ' ''Y'') ';
 
     DataModule1.ProcessExecSQL(stSql);
@@ -2639,6 +2662,16 @@ begin
   inherited;
   Timer1.Enabled := False;
   cmb_BuildingCode1Change(cmb_BuildingCode1);
+end;
+
+procedure TfmAlaramDeviceAdmin.SearchLock(aEnable: Boolean);
+begin
+  cmb_BuildingCode1.Enabled := aEnable;
+  cmb_FloorCode1.Enabled := aEnable;
+  cmb_AreaCode1.Enabled := aEnable;
+  cmb_MCUCode.Enabled := aEnable;
+  cmb_Ecu.Enabled := aEnable;
+  ed_ArmAreaName.Enabled := aEnable;
 end;
 
 end.

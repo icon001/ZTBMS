@@ -1,0 +1,2 @@
+CREATE TABLE TB_ATINCODE (  group_code VARCHAR(10) NOT NULL , at_incode VARCHAR(3) NOT NULL , at_inname VARCHAR(30), at_intype VARCHAR(1), at_inresult VARCHAR(1), at_system CHAR(1) ); 
+ ALTER TABLE TB_ATINCODE   ADD CONSTRAINT TB_ATINCODE_pkey PRIMARY KEY (group_code, at_incode);

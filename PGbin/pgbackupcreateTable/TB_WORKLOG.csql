@@ -1,0 +1,1 @@
+CREATE TABLE TB_WORKLOG (  wo_code VARCHAR(30) NOT NULL , wo_command VARCHAR(30) NOT NULL , wo_data VARCHAR(300), wo_time VARCHAR(14) NOT NULL , wo_operator VARCHAR(30) ); 

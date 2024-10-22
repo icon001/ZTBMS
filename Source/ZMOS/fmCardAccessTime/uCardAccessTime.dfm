@@ -22,7 +22,7 @@ inherited fmCardAccessTime: TfmCardAccessTime
     Height = 33
     Align = alTop
     Caption = #52636#51077#49884#44036#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -38,6 +38,7 @@ inherited fmCardAccessTime: TfmCardAccessTime
     Width = 1015
     Height = 128
     Align = alTop
+    Color = clWhite
     TabOrder = 1
     DesignSize = (
       1015
@@ -283,7 +284,7 @@ inherited fmCardAccessTime: TfmCardAccessTime
     Left = 0
     Top = 161
     Width = 1015
-    Height = 375
+    Height = 382
     Cursor = crDefault
     Align = alClient
     ColCount = 21
@@ -382,6 +383,7 @@ inherited fmCardAccessTime: TfmCardAccessTime
     PrintSettings.FooterFont.Style = []
     PrintSettings.PageNumSep = '/'
     ScrollSynch = True
+    ScrollWidth = 16
     SearchFooter.FindNextCaption = 'Find next'
     SearchFooter.FindPrevCaption = 'Find previous'
     SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -426,6 +428,7 @@ inherited fmCardAccessTime: TfmCardAccessTime
       Top = 160
       Width = 329
       Height = 73
+      Color = clWhite
       TabOrder = 3
       Visible = False
       object Label2: TLabel
@@ -448,10 +451,11 @@ inherited fmCardAccessTime: TfmCardAccessTime
   end
   object Panel2: TPanel [3]
     Left = 0
-    Top = 536
+    Top = 543
     Width = 1015
     Height = 78
     Align = alBottom
+    Color = clWhite
     TabOrder = 3
     object gb_TimeCode: TGroupBox
       Left = 1
@@ -468,6 +472,7 @@ inherited fmCardAccessTime: TfmCardAccessTime
         Height = 60
         Align = alClient
         BevelOuter = bvLowered
+        Color = clWhite
         TabOrder = 0
         Visible = False
         object Panel7: TPanel
@@ -476,6 +481,7 @@ inherited fmCardAccessTime: TfmCardAccessTime
           Width = 666
           Height = 28
           Align = alClient
+          Color = clWhite
           TabOrder = 0
           object chk_TimeSun: TCheckBox
             Left = 8
@@ -554,6 +560,7 @@ inherited fmCardAccessTime: TfmCardAccessTime
           Width = 666
           Height = 30
           Align = alTop
+          Color = clWhite
           TabOrder = 1
           object chk_Time1: TCheckBox
             Left = 8
@@ -604,6 +611,7 @@ inherited fmCardAccessTime: TfmCardAccessTime
         Height = 60
         Align = alLeft
         BevelOuter = bvLowered
+        Color = clWhite
         TabOrder = 1
         object rg_TimeCodeNotUse: TRadioButton
           Left = 8
@@ -641,6 +649,7 @@ inherited fmCardAccessTime: TfmCardAccessTime
       Height = 76
       Align = alRight
       BevelOuter = bvNone
+      Color = clWhite
       TabOrder = 1
       DesignSize = (
         246

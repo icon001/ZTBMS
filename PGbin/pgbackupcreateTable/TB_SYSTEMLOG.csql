@@ -1,0 +1,2 @@
+CREATE TABLE TB_SYSTEMLOG (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , sy_date VARCHAR(8) NOT NULL , sy_time VARCHAR(6) NOT NULL , sy_clientip VARCHAR(24) NOT NULL , sy_operator VARCHAR(10) NOT NULL , ac_nodeno INTEGER NOT NULL , ac_ecuid VARCHAR(2) NOT NULL , ca_cardno VARCHAR(20) NOT NULL , ac_number VARCHAR(1) NOT NULL , ac_type VARCHAR(1), sy_logdata VARCHAR(50) ); 
+ ALTER TABLE TB_SYSTEMLOG   ADD CONSTRAINT TB_SYSTEMLOG_pkey PRIMARY KEY (group_code, sy_date, sy_time, sy_clientip, sy_operator, ac_nodeno, ac_ecuid, ca_cardno, ac_number);

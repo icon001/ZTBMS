@@ -43,6 +43,7 @@ type
     cmb_emType: TComboBox;
     lb_emType: TLabel;
     Gauge1: TGauge;
+    btnDelete: TBitBtn;
     procedure FormActivate(Sender: TObject);
     procedure btn_CloseClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -59,6 +60,7 @@ type
     procedure cmb_DepartChange(Sender: TObject);
     procedure cmb_PosiChange(Sender: TObject);
     procedure btn_WorkBranchClick(Sender: TObject);
+    procedure btnDeleteClick(Sender: TObject);
   private
     CompanyCodeList : TStringList;
     sCompanyCodeList : TStringList;
@@ -98,6 +100,7 @@ uses
   uCompanyCodeLoad,
   uDataModule1,
   uCommonSql,
+  uDBFunction,
   uMssql,
   uMDBSql,
   uPostGreSql, uFireBird;
@@ -1017,6 +1020,53 @@ begin
   stSql := stSql + ' AND EM_CODE = ''' + aOrgEmCode + ''' ';
 
   result := DataModule1.ProcessExecSQL(stSql);
+
+end;
+
+procedure TfmEmployeeBranch.btnDeleteClick(Sender: TObject);
+var
+  stCompanyCode : string ;
+  stEmCode : string;
+  stCardNo : string;
+  i : integer;
+  bchkState : Boolean;
+begin
+  if (Application.MessageBox(PChar('선택한 사원정보를 삭제하시겠습니까?(삭제후에는 복원이 불가능합니다.)'),'삭제',MB_OKCANCEL) = ID_CANCEL)  then Exit;
+
+  if CheckCount < 1 then
+  begin
+    showmessage('작업 할 대상이 선택되지 않았습니다.');
+    Exit;
+  end;
+
+  Gauge1.Visible := True;
+  Gauge1.Progress := 0;
+  Gauge1.MaxValue := CheckCount;
+  with sg_Employ do
+  begin
+    for i := 1 to RowCount - 1 do
+    begin
+      GetCheckBoxState(0,i, bchkState);
+      if bchkState then
+      begin
+        stCompanyCode := Trim(sg_Employ.Cells[0,i]);
+        stEmCode := Trim(sg_Employ.Cells[1,i]);
+        stCardNo := Trim(sg_Employ.Cells[8,i]);
+        Gauge1.Progress := Gauge1.Progress + 1;
+        //카드 삭제
+        dmDBFunction.DeleteTB_CARD(stCardNo);
+        //사원 정보 삭제
+        if not dmDBFunction.CheckTB_CARDFromEmployeeID(stCompanyCode,stEmCode) then
+        begin
+          //해당 사원에 카드가 없는 경우만 사원정보를 삭제하자.
+          dmDBFunction.DeleteTB_EMPLOYEE(stEmCode,stCompanyCode,stCardNo,'fmEmployeeBranch');
+        end;
+      end;
+    end;
+  end;
+  Gauge1.Visible := False;
+  showmessage('작업완료');
+  btn_SearchClick(btn_Search);
 
 end;
 

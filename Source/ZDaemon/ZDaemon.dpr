@@ -99,7 +99,9 @@ uses
   uDBFunction in '..\..\Lib\DataBase\uDBFunction.pas' {dmDBFunction: TDataModule},
   uFoodSummary in 'Lib\uFoodSummary.pas' {dmFoodSummary: TDataModule},
   uRelayDoor in 'Lib\uRelayDoor.pas' {dmRelayDoor: TDataModule},
-  uMDIDoorAdmin in 'fmMDIAdmin\uMDIDoorAdmin.pas' {fmMDIDoorAdmin};
+  uMDIDoorAdmin in 'fmMDIAdmin\uMDIDoorAdmin.pas' {fmMDIDoorAdmin},
+  uRelay in 'Lib\uRelay.pas' {dmRelay: TDataModule},
+  uTimerIni in 'uTimerIni.pas' {dtmTimerIni: TDataModule};
 
 {$R *.res}
 {$R manifest.RES}
@@ -170,6 +172,8 @@ begin
   Application.CreateForm(TdmAdoQuery, dmAdoQuery);
   Application.CreateForm(TComModule, ComModule);
   Application.CreateForm(TfmMain, fmMain);
+  Application.CreateForm(TdmRelay, dmRelay);
+  Application.CreateForm(TdtmTimerIni, dtmTimerIni);
   Application.Run;
 end.
 {

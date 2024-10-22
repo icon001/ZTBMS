@@ -1,8 +1,8 @@
 inherited fmKTCardReg: TfmKTCardReg
-  Left = 265
-  Top = 134
+  Left = 266
+  Top = 0
   Width = 1184
-  Height = 975
+  Height = 968
   Caption = 'KT'#44592#52852#46300#48156#44553#52852#46300#46321#47197
   Font.Charset = HANGEUL_CHARSET
   Font.Height = -12
@@ -23,7 +23,7 @@ inherited fmKTCardReg: TfmKTCardReg
     Height = 33
     Align = alTop
     Caption = 'KT'#44592#52852#46300#48156#44553#52852#46300#46321#47197
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -39,6 +39,7 @@ inherited fmKTCardReg: TfmKTCardReg
     Width = 1176
     Height = 56
     Align = alBottom
+    Color = clWhite
     TabOrder = 1
     OnResize = Panel2Resize
     object btn_Update: TSpeedButton
@@ -129,6 +130,7 @@ inherited fmKTCardReg: TfmKTCardReg
       Width = 1176
       Height = 553
       Align = alClient
+      Color = clWhite
       TabOrder = 0
       object GroupBox2: TGroupBox
         Left = 1
@@ -137,6 +139,8 @@ inherited fmKTCardReg: TfmKTCardReg
         Height = 72
         Align = alTop
         Caption = #48156#44553#45236#50669#51312#54924
+        Color = clWhite
+        ParentColor = False
         TabOrder = 0
         object lb_CompanyName: TLabel
           Left = 16
@@ -462,6 +466,7 @@ inherited fmKTCardReg: TfmKTCardReg
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
         ScrollSynch = True
+        ScrollWidth = 16
         SearchFooter.FindNextCaption = 'Find next'
         SearchFooter.FindPrevCaption = 'Find previous'
         SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -508,6 +513,7 @@ inherited fmKTCardReg: TfmKTCardReg
       Width = 1176
       Height = 298
       Align = alBottom
+      Color = clWhite
       TabOrder = 1
       object GroupBox3: TGroupBox
         Left = 1

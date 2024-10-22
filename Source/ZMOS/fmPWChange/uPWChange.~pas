@@ -51,6 +51,7 @@ begin
   begin
     Tab_Message.TabVisible := True;
     Tab_PWChange.TabVisible := False;
+    stringReplace(Panel2.Caption,'$DATE',inttostr(G_nPWUpdateTime),[rfReplaceAll]);
   end else
   begin
     Tab_Message.TabVisible := False;
@@ -114,7 +115,8 @@ begin
       Exit;
     end;
   end;
-  stSql := ' Update TB_ADMIN set AD_UPDATETIME = ''' + FormatDateTime('yyyymmddhhnnss',dtUpdateTime) + ''' ';
+  stSql := ' Update TB_ADMIN set AD_UPDATETIME = ''' + FormatDateTime('yyyymmddhhnnss',Now) + ''', ';
+  stSql := stSql + ' AD_USERPW = ''' + ed_PW1.Text + ''' ';
   stSql := stSql + ' Where AD_USERID = ''' + LoginID + ''' ';
   DataModule1.ProcessExecSQL(stSql);
   Close;

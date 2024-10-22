@@ -1,6 +1,6 @@
 inherited fmCardList: TfmCardList
-  Left = 253
-  Top = 320
+  Left = 299
+  Top = 159
   Width = 1024
   Height = 640
   Caption = #52852#46300#45236#50669
@@ -23,7 +23,7 @@ inherited fmCardList: TfmCardList
     Height = 33
     Align = alTop
     Caption = #52852#46300#45236#50669
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -39,6 +39,7 @@ inherited fmCardList: TfmCardList
     Width = 1016
     Height = 96
     Align = alTop
+    Color = clWhite
     TabOrder = 1
     object lb_CompanyName: TLabel
       Left = 16
@@ -347,7 +348,7 @@ inherited fmCardList: TfmCardList
     Left = 0
     Top = 129
     Width = 1016
-    Height = 477
+    Height = 484
     Cursor = crDefault
     Align = alClient
     ColCount = 8
@@ -433,6 +434,7 @@ inherited fmCardList: TfmCardList
     PrintSettings.FooterFont.Style = []
     PrintSettings.PageNumSep = '/'
     ScrollSynch = True
+    ScrollWidth = 16
     SearchFooter.FindNextCaption = 'Find next'
     SearchFooter.FindPrevCaption = 'Find previous'
     SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -455,6 +457,7 @@ inherited fmCardList: TfmCardList
       Top = 160
       Width = 329
       Height = 73
+      Color = clWhite
       TabOrder = 3
       Visible = False
       object Label2: TLabel

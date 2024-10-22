@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, ExtCtrls, StdCtrls, Grids, BaseGrid, AdvGrid, Buttons,Jpeg,DB,
-  uSubForm, CommandArray,ADODB, LMDCustomComponent, LMDFileCtrl,ActiveX;
+  uSubForm, CommandArray,ADODB, LMDCustomComponent, LMDFileCtrl,ActiveX,
+  AdvObj;
 
 type
   TfmLocateCode = class(TfmASubForm)
@@ -87,6 +88,12 @@ type
     chk_FloorAuto: TCheckBox;
     chk_ArearAuto: TCheckBox;
     ADOAutoQuery: TADOQuery;
+    Label16: TLabel;
+    ed_BuildingRelayCode: TEdit;
+    Label17: TLabel;
+    ed_FloorRelayCode: TEdit;
+    Label18: TLabel;
+    ed_AreaRelayCode: TEdit;
     procedure FormActivate(Sender: TObject);
     procedure btn_closeClick(Sender: TObject);
     procedure StringGrideDrawCell(Sender: TObject; ACol,
@@ -136,10 +143,8 @@ type
     procedure LoadAreaBuilding;
     procedure LoadAreaFloor(aBuildingCode:string);
     procedure LoadAreaSearchFloor;
-    Function InsertTB_LOCATION(aBuildingCode,aFloorCode,aAreaCode,
-aName,aFileName,aGubun :string) : Boolean;
-    Function UpdateTB_LOCATION(aBuildingCode,aFloorCode,aAreaCode,
-aName,aFileName,aGubun :string) : Boolean;
+    Function InsertTB_LOCATION(aBuildingCode,aFloorCode,aAreaCode,aName,aFileName,aGubun,aRelayCode :string) : Boolean;
+    Function UpdateTB_LOCATION(aBuildingCode,aFloorCode,aAreaCode,aName,aFileName,aGubun,aRelayCode :string) : Boolean;
     Function DeleteTB_LOCATION(aBuildingCode,aFloorCode,aAreaCode,aGubun:string) : Boolean;
     Function GetAutoBuildingCode:string;
     Function GetAutoFloorCode(aBuildingCode:string):string;
@@ -280,6 +285,7 @@ begin
           cells[1,nRow] := FindField('LO_NAME').AsString;
           cells[2,nRow] := FindField('LO_DONGCODE').AsString;
           cells[3,nRow] := FindField('LO_FLOORCODE').AsString;
+          cells[4,nRow] := FindField('LO_RelayCode').AsString;
           if (FindField('LO_DONGCODE').AsString +
               FindField('LO_FLOORCODE').AsString +
               FindField('LO_AREACODE').AsString )  =
@@ -351,6 +357,7 @@ begin
         begin
           cells[0,nRow] := FindField('LO_DONGCODE').AsString;
           cells[1,nRow] := FindField('LO_NAME').AsString;
+          cells[2,nRow] := FindField('LO_RelayCode').AsString;
 
           if FindField('LO_DONGCODE').AsString = aBuildingCode then
           begin
@@ -426,6 +433,7 @@ begin
           cells[0,nRow] := FindField('LO_FLOORCODE').AsString;
           cells[1,nRow] := FindField('LO_NAME').AsString;
           cells[2,nRow] := FindField('LO_DONGCODE').AsString;
+          cells[3,nRow] := FindField('LO_RelayCode').AsString;
           if (FindField('LO_DONGCODE').AsString + FindField('LO_FLOORCODE').AsString)  = (aBuildingCode + aFloorCode) then
           begin
             SelectRows(nRow,1);
@@ -755,6 +763,7 @@ begin
 
     ed_BuildingCode.Text := cells[0,Row];
     ed_BuildingName.Text := cells[1,Row];
+    ed_BuildingRelayCode.Text := cells[2,Row];
   end;
 
   MapJpg := TJpegImage.Create;
@@ -923,9 +932,9 @@ begin
     end;
     ed_BuildingCode.Text := FillZeroNumber(strtoint(ed_BuildingCode.Text),3);
     if UpperCase(State) = 'INSERT' then
-      bResult := InsertTB_LOCATION(ed_BuildingCode.Text,'000','000',ed_BuildingName.Text,ed_Buildingimg.Text,'0')
+      bResult := InsertTB_LOCATION(ed_BuildingCode.Text,'000','000',ed_BuildingName.Text,ed_Buildingimg.Text,'0',ed_BuildingRelayCode.text)
     else if UpperCase(State) = 'UPDATE' then
-      bResult := UpdateTB_LOCATION(ed_BuildingCode.Text,'000','000',ed_BuildingName.Text,ed_Buildingimg.Text,'0');
+      bResult := UpdateTB_LOCATION(ed_BuildingCode.Text,'000','000',ed_BuildingName.Text,ed_Buildingimg.Text,'0',ed_BuildingRelayCode.text);
 
     if bResult then ShowBuildingCode(ed_BuildingCode.Text)
     else showmessage('ÀúÀå½ÇÆÐ');
@@ -948,9 +957,9 @@ begin
     if sBuildingCode = '' then sBuildingCode := '000';
 
     if UpperCase(State) = 'INSERT' then
-      bResult := InsertTB_LOCATION(sBuildingCode,ed_FloorCode.Text,'000',ed_FloorName.Text,ed_Floorimg.Text,'1')
+      bResult := InsertTB_LOCATION(sBuildingCode,ed_FloorCode.Text,'000',ed_FloorName.Text,ed_Floorimg.Text,'1',ed_FloorRelayCode.text)
     else if UpperCase(State) = 'UPDATE' then
-      bResult := UpdateTB_LOCATION(sBuildingCode,ed_FloorCode.Text,'000',ed_FloorName.Text,ed_Floorimg.Text,'1');
+      bResult := UpdateTB_LOCATION(sBuildingCode,ed_FloorCode.Text,'000',ed_FloorName.Text,ed_Floorimg.Text,'1',ed_FloorRelayCode.text);
 
     if bResult then ShowFloorCode(sBuildingCode,ed_FloorCode.Text)
     else showmessage('ÀúÀå½ÇÆÐ');
@@ -984,9 +993,9 @@ begin
     end else sFloorCode := '000';
 
     if UpperCase(State) = 'INSERT' then
-      bResult := InsertTB_LOCATION(sBuildingCode,sFloorCode,ed_AreaCode.Text,ed_AreaName.Text,ed_Areaimg.Text,'2')
+      bResult := InsertTB_LOCATION(sBuildingCode,sFloorCode,ed_AreaCode.Text,ed_AreaName.Text,ed_Areaimg.Text,'2',ed_AreaRelayCode.text)
     else if UpperCase(State) = 'UPDATE' then
-      bResult := UpdateTB_LOCATION(sBuildingCode,sFloorCode,ed_AreaCode.Text,ed_AreaName.Text,ed_Areaimg.Text,'2');
+      bResult := UpdateTB_LOCATION(sBuildingCode,sFloorCode,ed_AreaCode.Text,ed_AreaName.Text,ed_Areaimg.Text,'2',ed_AreaRelayCode.text);
 
     if bResult then ShowAreaCode(sBuildingCode,sFloorCode,ed_AreaCode.text)
     else showmessage('ÀúÀå½ÇÆÐ');
@@ -1062,7 +1071,7 @@ begin
 end;
 
 function TfmLocateCode.InsertTB_LOCATION(aBuildingCode,aFloorCode,aAreaCode,
-aName,aFileName,aGubun :string): Boolean;
+aName,aFileName,aGubun ,aRelayCode:string): Boolean;
 var
   stSql : string;
   TempAdoQuery : TADOQuery;
@@ -1081,6 +1090,8 @@ begin
     stSql := stSql + ' LO_CADIMAGE, ';
     stSql := stSql + ' LO_IMAGEUSE, ';
   end;
+  stSql := stSql + ' LO_RelayCode,';
+  stSql := stSql + ' LO_CHANGE,';
   stSql := stSql + ' LO_GUBUN )';
   stSql := stSql + ' values( ';
   stSql := stSql + '''' + GROUPCODE + ''',';
@@ -1093,6 +1104,8 @@ begin
     stSql := stSql + ':PARAM_IMAGE,';
     stSql := stSql + '''Y'',';
   end;
+  stSql := stSql + '''' + aRelayCode  + ''',';
+  stSql := stSql + '''Y'',';
   stSql := stSql + '''' + aGubun + '''';
   stSql := stSql + ')';
 
@@ -1142,7 +1155,7 @@ begin
 end;
 
 function TfmLocateCode.UpdateTB_LOCATION(aBuildingCode,aFloorCode,aAreaCode,
-aName,aFileName,aGubun :string): Boolean;
+aName,aFileName,aGubun,aRelayCode :string): Boolean;
 var
   stSql : string;
   TempAdoQuery : TADOQuery;
@@ -1150,7 +1163,9 @@ var
 begin
   result := False;
   stSql := ' Update TB_LOCATION set  ';
-  stSql := stSql + ' LO_NAME = ''' + aName  + ''' ';
+  stSql := stSql + ' LO_NAME = ''' + aName  + ''', ';
+  stSql := stSql + ' LO_RelayCode = ''' + aRelayCode  + ''', ';
+  stSql := stSql + ' LO_CHANGE = ''Y'' ';   
   if FileExists(aFileName) then
   begin
     stSql := stSql + ' ,LO_CADIMAGE = :PARAM_IMAGE, ';
@@ -1231,6 +1246,7 @@ begin
     nIndex := BuildingCodeList.IndexOf(cells[2,Row]);
     if nIndex > -1 then cmb_sBuildingCode1.ItemIndex := nIndex
     else cmb_sBuildingCode1.ItemIndex := 0;
+    ed_FloorRelayCode.Text := cells[3,Row];
 
     MapJpg := TJpegImage.Create;
     MapStream := TMemoryStream.Create;
@@ -1342,6 +1358,7 @@ begin
     nIndex := sFloorCodeList.IndexOf(cells[3,Row]);
     if nIndex > -1 then cmb_sFloorCode2.ItemIndex := nIndex
     else cmb_sFloorCode2.ItemIndex := 0;
+    ed_AreaRelayCode.Text := cells[4,Row];
 
     MapJpg := TJpegImage.Create;
     MapStream := TMemoryStream.Create;
@@ -1424,12 +1441,14 @@ begin
   ed_BuildingCode.Text := '';
   ed_BuildingName.Text := '';
   ed_Buildingimg.Text := '';
+  ed_BuildingRelayCode.Text := '';
   imgBuilding.Picture.Graphic := nil;
 
   //ÃþÄÚµå Æû Clear
   cmb_sBuildingCode1.ItemIndex := 0;
   ed_Floorcode.Text := '';
   ed_Floorname.Text := '';
+  ed_FloorRelayCode.Text := '';
   imgFloor.Picture := nil;
 
   //±¸¿ªÄÚµå Æû Clear
@@ -1437,6 +1456,7 @@ begin
   cmb_sFloorCode2.ItemIndex := 0;
   ed_Areacode.Text := '';
   ed_Areaname.Text := '';
+  ed_AreaRelayCode.Text := '';
   imgArea.Picture := nil;
 
 
@@ -1450,6 +1470,7 @@ begin
     sg_BuildingCode.Enabled := False; //Å¬¸¯ ¸øÇÏ°Ô ¸·´Â´Ù.
     ed_Buildingcode.Enabled := true;
     ed_Buildingname.Enabled  := true;
+    ed_BuildingRelayCode.Enabled := True;
     chk_BuildingAuto.Enabled := True;
     btn_BuildingSearch.Enabled := True;
 
@@ -1459,6 +1480,7 @@ begin
     ed_Floorcode.Enabled := true;
     chk_FloorAuto.Enabled := True;
     ed_Floorname.Enabled  := true;
+    ed_FloorRelayCode.Enabled := True;
     btn_FloorSearch.Enabled := True;
 
     //±¸¿ªÄÚµå Æû
@@ -1468,6 +1490,7 @@ begin
     ed_Areacode.Enabled := true;
     chk_ArearAuto.Enabled := True;
     ed_Areaname.Enabled  := true;
+    ed_AreaRelayCode.Enabled := True;
     btn_AreaSearch.Enabled := True;
 
   end else if upperCase(aState) = 'SEARCH' then
@@ -1477,6 +1500,7 @@ begin
     ed_BuildingCode.Enabled := False;
     ed_BuildingName.Enabled := False;
     chk_BuildingAuto.Enabled := False;
+    ed_BuildingRelayCode.Enabled := False;
     btn_BuildingSearch.Enabled := False;
 
     //ÃþÄÚµå Æû
@@ -1485,6 +1509,7 @@ begin
     ed_Floorcode.Enabled := False;
     chk_FloorAuto.Enabled := False;
     ed_Floorname.Enabled  := False;
+    ed_FloorRelayCode.Enabled := False;
     btn_FloorSearch.Enabled := False;
 
     //±¸¿ªÄÚµå Æû
@@ -1494,6 +1519,7 @@ begin
     ed_Areacode.Enabled := False;
     chk_ArearAuto.Enabled := False;
     ed_Areaname.Enabled  := False;
+    ed_AreaRelayCode.Enabled := False;
     btn_AreaSearch.Enabled := False;
   end else if upperCase(aState) = 'CLICK' then
   begin
@@ -1502,6 +1528,7 @@ begin
     ed_BuildingCode.Enabled := False;
     ed_BuildingName.Enabled := False;
     chk_BuildingAuto.Enabled := False;
+    ed_BuildingRelayCode.Enabled := False;
     btn_BuildingSearch.Enabled := False;
 
     //ÃþÄÚµå Æû
@@ -1510,6 +1537,7 @@ begin
     ed_Floorcode.Enabled := False;
     chk_FloorAuto.Enabled := False;
     ed_Floorname.Enabled  := False;
+    ed_FloorRelayCode.Enabled := False;
     btn_FloorSearch.Enabled := False;
 
     //±¸¿ªÄÚµå Æû
@@ -1519,6 +1547,7 @@ begin
     ed_Areacode.Enabled := False;
     chk_ArearAuto.Enabled := False;
     ed_Areaname.Enabled  := False;
+    ed_AreaRelayCode.Enabled := False;
     btn_AreaSearch.Enabled := False;
   end else if upperCase(aState) = 'UPDATE' then
   begin
@@ -1527,6 +1556,7 @@ begin
     ed_BuildingCode.Enabled := False;
     ed_BuildingName.Enabled := True;
     chk_BuildingAuto.Enabled := False;
+    ed_BuildingRelayCode.Enabled := True;
     btn_BuildingSearch.Enabled := True;
 
     //ÃþÄÚµå Æû
@@ -1535,6 +1565,7 @@ begin
     ed_Floorcode.Enabled := False;
     chk_FloorAuto.Enabled := False;
     ed_Floorname.Enabled  := True;
+    ed_FloorRelayCode.Enabled := True;
     btn_FloorSearch.Enabled := True;
 
     //±¸¿ªÄÚµå Æû
@@ -1544,6 +1575,7 @@ begin
     ed_Areacode.Enabled := False;
     chk_ArearAuto.Enabled := False;
     ed_Areaname.Enabled  := True;
+    ed_AreaRelayCode.Enabled := True;
     btn_AreaSearch.Enabled := True;
   end;
 end;

@@ -21,11 +21,11 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
     Left = 233
     Top = 33
     Width = 1
-    Height = 639
+    Height = 646
   end
   object StatusBar1: TStatusBar [1]
     Left = 0
-    Top = 672
+    Top = 679
     Width = 1016
     Height = 29
     Panels = <
@@ -37,14 +37,14 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
     Left = 0
     Top = 33
     Width = 233
-    Height = 639
+    Height = 646
     Align = alLeft
     TabOrder = 1
     object PageControl1: TPageControl
       Left = 1
       Top = 1
       Width = 231
-      Height = 637
+      Height = 644
       ActivePage = AlarmTab
       Align = alClient
       TabOrder = 0
@@ -55,14 +55,15 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
           Left = 0
           Top = 0
           Width = 223
-          Height = 610
+          Height = 617
           Align = alClient
+          Color = clWhite
           TabOrder = 0
           object sg_Door: TAdvStringGrid
             Left = 1
             Top = 97
             Width = 221
-            Height = 512
+            Height = 519
             Cursor = crDefault
             Align = alClient
             ColCount = 4
@@ -148,6 +149,7 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
             ScrollSynch = True
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -202,7 +204,7 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
               Width = 137
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 0
+              ItemHeight = 12
               TabOrder = 0
               OnChange = cmb_BuildingCodeChange
             end
@@ -212,7 +214,7 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
               Width = 137
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 0
+              ItemHeight = 12
               TabOrder = 1
               OnChange = cmb_FloorCodeChange
             end
@@ -222,7 +224,7 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
               Width = 137
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 0
+              ItemHeight = 12
               TabOrder = 2
               OnChange = cmb_AreaCodeChange
             end
@@ -236,8 +238,9 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
           Left = 0
           Top = 0
           Width = 223
-          Height = 610
+          Height = 617
           Align = alClient
+          Color = clWhite
           TabOrder = 0
           object GroupBox6: TGroupBox
             Left = 1
@@ -302,7 +305,7 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
             Left = 1
             Top = 97
             Width = 221
-            Height = 512
+            Height = 519
             Cursor = crDefault
             Align = alClient
             ColCount = 8
@@ -388,6 +391,7 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
             ScrollSynch = True
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -513,6 +517,7 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
             PrintSettings.FooterFont.Name = 'MS Sans Serif'
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -600,7 +605,7 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
     Left = 234
     Top = 33
     Width = 782
-    Height = 639
+    Height = 646
     Align = alClient
     TabOrder = 2
     OnResize = Panel1Resize
@@ -608,26 +613,27 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
       Left = 353
       Top = 121
       Width = 1
-      Height = 517
+      Height = 524
     end
     object Splitter3: TSplitter
       Left = 473
       Top = 121
       Width = 1
-      Height = 517
+      Height = 524
     end
     object Panel2: TPanel
       Left = 474
       Top = 121
       Width = 307
-      Height = 517
+      Height = 524
       Align = alClient
+      Color = clWhite
       TabOrder = 0
       object sg_GradeCard: TAdvStringGrid
         Left = 1
         Top = 34
         Width = 305
-        Height = 482
+        Height = 489
         Cursor = crDefault
         Align = alClient
         ColCount = 13
@@ -718,6 +724,7 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
         ScrollSynch = True
+        ScrollWidth = 16
         SearchFooter.FindNextCaption = 'Find next'
         SearchFooter.FindPrevCaption = 'Find previous'
         SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -771,14 +778,15 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
       Left = 1
       Top = 121
       Width = 352
-      Height = 517
+      Height = 524
       Align = alLeft
+      Color = clWhite
       TabOrder = 1
       object sg_Card: TAdvStringGrid
         Left = 1
         Top = 34
         Width = 350
-        Height = 482
+        Height = 489
         Cursor = crDefault
         Align = alClient
         ColCount = 9
@@ -864,6 +872,7 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
         ScrollSynch = True
+        ScrollWidth = 16
         SearchFooter.FindNextCaption = 'Find next'
         SearchFooter.FindPrevCaption = 'Find previous'
         SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -912,8 +921,9 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
       Left = 354
       Top = 121
       Width = 119
-      Height = 517
+      Height = 524
       Align = alLeft
+      Color = clWhite
       TabOrder = 2
       object btn_GradeInsert: TSpeedButton
         Left = 6
@@ -983,6 +993,7 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
       Width = 780
       Height = 120
       Align = alTop
+      Color = clWhite
       TabOrder = 3
       object GroupBox2: TGroupBox
         Left = 1
@@ -990,6 +1001,8 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
         Width = 778
         Height = 118
         Align = alClient
+        Color = clWhite
+        ParentColor = False
         TabOrder = 0
         DesignSize = (
           778
@@ -1351,7 +1364,7 @@ inherited fmMDIDeviceGrade: TfmMDIDeviceGrade
     Height = 33
     Align = alTop
     Caption = #44592#44592#48324#44428#54620#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16

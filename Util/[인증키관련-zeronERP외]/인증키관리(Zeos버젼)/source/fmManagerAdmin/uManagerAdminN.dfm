@@ -61,7 +61,7 @@ inherited fmManagerAdmin: TfmManagerAdmin
     end
     object Label15: TLabel
       Left = 24
-      Top = 223
+      Top = 255
       Width = 24
       Height = 12
       Caption = #44592#53440
@@ -152,11 +152,11 @@ inherited fmManagerAdmin: TfmManagerAdmin
     end
     object mem_etc: TMemo
       Left = 128
-      Top = 223
+      Top = 255
       Width = 329
-      Height = 90
+      Height = 58
       ImeName = 'Microsoft IME 2003'
-      ScrollBars = ssBoth
+      ScrollBars = ssVertical
       TabOrder = 7
     end
     object GroupBox2: TGroupBox
@@ -410,12 +410,13 @@ inherited fmManagerAdmin: TfmManagerAdmin
       ImeName = 'Microsoft IME 2003'
       TabOrder = 10
     end
-    object ed_addr: TEdit
+    object ed_addr: TMemo
       Left = 128
-      Top = 198
+      Top = 199
       Width = 329
-      Height = 20
+      Height = 50
       ImeName = 'Microsoft IME 2003'
+      ScrollBars = ssVertical
       TabOrder = 11
     end
   end

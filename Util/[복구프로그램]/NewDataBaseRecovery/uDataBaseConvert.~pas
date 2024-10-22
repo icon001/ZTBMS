@@ -148,7 +148,8 @@ var
 implementation
 
 uses
-  uLomosUtil;
+  uLomosUtil,
+  systeminfos;
 {$R *.dfm}
 function GetAttributeStatus(CB: TCheckBox): TFileAttributeStatus;
 begin
@@ -172,13 +173,13 @@ begin
     ed_targetDBPort.Text := '1433';
     ed_targetDBPort.Visible := True;
     ed_targetUserName.Text := 'sa';
-    ed_targetUserPw.Text := 'sapasswd';
+    ed_targetUserPw.Text := 'sapasswd123@@';
   end else
   begin
     ed_targetDBPort.Text := '5432';
     ed_targetDBPort.Visible := False;
     ed_targetUserName.Text := 'postgres';
-    ed_targetUserPw.Text := '1';
+    ed_targetUserPw.Text := 'postgres';
   end;
 
 end;
@@ -383,6 +384,7 @@ begin
   BackupFileList.Clear;
 
   L_bStop := False;
+  Caption := '데이터복구['+strBuildInfo+']';
 end;
 
 procedure TForm1.FindFileFileMatch(Sender: TObject;
@@ -427,14 +429,14 @@ begin
   targetName := ExtractFileName(aImportFileName);
   targetName := ChangeFileExt(targetName,'');
 
-  if (UpperCase(targetName) = 'TB_ZIPCODE')  then
+
+  if UpperCase(targetName) = 'TB_CLIENTSOCK' then
   begin
     ga_Table.Progress := ga_Table.MaxValue;
     Ga_Tot.Progress := Ga_Tot.Progress + 1;
-    result := True;
+    result := True; //TB_CLIENTSOCK 테이블은 복구 하지 말자. Serial 부분 때문에 문제 발생함
     Exit;
   end;
-
   if UpperCase(targetName) = 'TB_EMPHIS' then
   begin
     ga_Table.Progress := ga_Table.MaxValue;
@@ -442,11 +444,18 @@ begin
     result := True; //TB_EMPHIS 테이블은 복구 하지 말자. Serial 부분 때문에 문제 발생함
     Exit;
   end;
-  if UpperCase(targetName) = 'TB_CLIENTSOCK' then
+  if UpperCase(targetName) = 'TB_EMPLOYEECHANGE' then
   begin
     ga_Table.Progress := ga_Table.MaxValue;
     Ga_Tot.Progress := Ga_Tot.Progress + 1;
-    result := True; //TB_CLIENTSOCK 테이블은 복구 하지 말자. Serial 부분 때문에 문제 발생함
+    result := True; //TB_EMPLOYEECHANGE 테이블은 복구 하지 말자. Serial 부분 때문에 문제 발생함
+    Exit;
+  end;
+  if UpperCase(targetName) = 'TB_EMPLOYEEEXPIRECHANGE' then
+  begin
+    ga_Table.Progress := ga_Table.MaxValue;
+    Ga_Tot.Progress := Ga_Tot.Progress + 1;
+    result := True; //TB_EMPLOYEEEXPIRECHANGE 테이블은 복구 하지 말자. Serial 부분 때문에 문제 발생함
     Exit;
   end;
   if UpperCase(targetName) = 'TB_FACECOP' then
@@ -456,11 +465,25 @@ begin
     result := True; //TB_FACECOP 테이블은 복구 하지 말자. Serial 부분 때문에 문제 발생함
     Exit;
   end;
+  if UpperCase(targetName) = 'TB_KTTMAPPINGCODE' then
+  begin
+    ga_Table.Progress := ga_Table.MaxValue;
+    Ga_Tot.Progress := Ga_Tot.Progress + 1;
+    result := True; //TB_KTTMAPPINGCODE 테이블은 복구 하지 말자.
+    Exit;
+  end;
   if UpperCase(targetName) = 'TB_MAPPOSITION' then
   begin
     ga_Table.Progress := ga_Table.MaxValue;
     Ga_Tot.Progress := Ga_Tot.Progress + 1;
     result := True; //TB_FACECOP 테이블은 복구 하지 말자. Serial 부분 때문에 문제 발생함
+    Exit;
+  end;
+  if (UpperCase(targetName) = 'TB_ZIPCODE')  then
+  begin
+    ga_Table.Progress := ga_Table.MaxValue;
+    Ga_Tot.Progress := Ga_Tot.Progress + 1;
+    result := True;
     Exit;
   end;
 
@@ -477,6 +500,8 @@ begin
   if Not CreateTable(targetName) then
   begin
     //showmessage(targetName +' 테이블 생성 오류입니다.');
+    memo1.Lines.Add(targetName +' 테이블 복구');
+    Ga_Tot.Progress := Ga_Tot.Progress + 1;
     Exit;
   end;
 
@@ -763,8 +788,8 @@ begin
         stSql := stSql + ' ' + CreateTableList.Strings[i];
       end;
     end;
-
-    result := True;
+    if(  (Pos('SERIAL',UpperCase(stSql)) > 0 ) or (Pos('IDENTITY',UpperCase(stSql)) > 0 ) ) then result := false
+    else  result := True;
   Finally
     CreateTableList.Free;
   End;

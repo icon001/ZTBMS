@@ -14,14 +14,14 @@ inherited fmEmType: TfmEmType
     Left = 0
     Top = 33
     Width = 322
-    Height = 163
+    Height = 170
     Align = alClient
     TabOrder = 0
     object sg_EmTypeCode: TAdvStringGrid
       Left = 1
       Top = 1
       Width = 320
-      Height = 161
+      Height = 168
       Cursor = crDefault
       Align = alClient
       ColCount = 2
@@ -102,6 +102,7 @@ inherited fmEmType: TfmEmType
       PrintSettings.FooterFont.Style = []
       PrintSettings.PageNumSep = '/'
       ScrollSynch = True
+      ScrollWidth = 16
       SearchFooter.FindNextCaption = 'Find next'
       SearchFooter.FindPrevCaption = 'Find previous'
       SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -118,15 +119,16 @@ inherited fmEmType: TfmEmType
       Version = '6.0.4.4'
       ColWidths = (
         114
-        147)
+        194)
     end
   end
   object Panel1: TPanel [1]
     Left = 0
-    Top = 196
+    Top = 203
     Width = 322
     Height = 140
     Align = alBottom
+    Color = clWhite
     TabOrder = 1
     object lb_Code: TLabel
       Left = 16
@@ -345,9 +347,10 @@ inherited fmEmType: TfmEmType
   end
   object StatusBar1: TStatusBar [2]
     Left = 0
-    Top = 336
+    Top = 343
     Width = 322
     Height = 22
+    Color = clWhite
     Panels = <>
   end
   object Panel12: TPanel [3]
@@ -357,7 +360,7 @@ inherited fmEmType: TfmEmType
     Height = 33
     Align = alTop
     Caption = #52636#51077#49849#51064#53076#46300' '#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16

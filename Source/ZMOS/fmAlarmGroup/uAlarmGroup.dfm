@@ -15,14 +15,14 @@ inherited fmAlarmGroup: TfmAlarmGroup
     Left = 0
     Top = 0
     Width = 265
-    Height = 437
+    Height = 444
     Align = alLeft
     TabOrder = 0
     object sg_Alarm: TAdvStringGrid
       Left = 1
       Top = 34
       Width = 263
-      Height = 402
+      Height = 409
       Cursor = crDefault
       Align = alClient
       ColCount = 2
@@ -103,6 +103,7 @@ inherited fmAlarmGroup: TfmAlarmGroup
       PrintSettings.FooterFont.Name = 'MS Sans Serif'
       PrintSettings.FooterFont.Style = []
       PrintSettings.PageNumSep = '/'
+      ScrollWidth = 16
       SearchFooter.FindNextCaption = 'Find next'
       SearchFooter.FindPrevCaption = 'Find previous'
       SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -128,9 +129,9 @@ inherited fmAlarmGroup: TfmAlarmGroup
       Height = 33
       Align = alTop
       Caption = #50508#46988#53076#46300' '#47785#47197
-      Color = clActiveCaption
+      Color = clSilver
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
+      Font.Color = clBlack
       Font.Height = -13
       Font.Name = #44404#47548#52404
       Font.Style = [fsBold]
@@ -143,8 +144,9 @@ inherited fmAlarmGroup: TfmAlarmGroup
     Left = 265
     Top = 0
     Width = 112
-    Height = 437
+    Height = 444
     Align = alLeft
+    Color = clWhite
     TabOrder = 1
     object btn_Insert: TSpeedButton
       Left = 16
@@ -257,9 +259,9 @@ inherited fmAlarmGroup: TfmAlarmGroup
       Height = 33
       Align = alTop
       Caption = #51089#50629
-      Color = clActiveCaption
+      Color = clSilver
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
+      Font.Color = clBlack
       Font.Height = -13
       Font.Name = #44404#47548#52404
       Font.Style = [fsBold]
@@ -272,7 +274,7 @@ inherited fmAlarmGroup: TfmAlarmGroup
     Left = 377
     Top = 0
     Width = 283
-    Height = 437
+    Height = 444
     Align = alClient
     TabOrder = 2
     object Panel21: TPanel
@@ -282,9 +284,9 @@ inherited fmAlarmGroup: TfmAlarmGroup
       Height = 33
       Align = alTop
       Caption = #50508#46988#44536#47353
-      Color = clActiveCaption
+      Color = clSilver
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
+      Font.Color = clBlack
       Font.Height = -13
       Font.Name = #44404#47548#52404
       Font.Style = [fsBold]
@@ -296,7 +298,7 @@ inherited fmAlarmGroup: TfmAlarmGroup
       Left = 1
       Top = 81
       Width = 281
-      Height = 355
+      Height = 362
       Cursor = crDefault
       Align = alClient
       ColCount = 2
@@ -377,6 +379,7 @@ inherited fmAlarmGroup: TfmAlarmGroup
       PrintSettings.FooterFont.Name = 'MS Sans Serif'
       PrintSettings.FooterFont.Style = []
       PrintSettings.PageNumSep = '/'
+      ScrollWidth = 16
       SearchFooter.FindNextCaption = 'Find next'
       SearchFooter.FindPrevCaption = 'Find previous'
       SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -401,6 +404,7 @@ inherited fmAlarmGroup: TfmAlarmGroup
       Width = 281
       Height = 47
       Align = alTop
+      Color = clWhite
       TabOrder = 2
       object Label1: TLabel
         Left = 16

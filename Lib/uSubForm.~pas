@@ -346,11 +346,21 @@ begin
 
   For Loop:=0 to GroupBox.ControlCount-1 do
   Begin
-    If LowerCase(GroupBox.Controls[Loop].name) = LowerCase(stName) + inttostr(no) then
-    Begin
-      Result:=TComboBox(GroupBox.Controls[Loop]);
-      exit;
-    End;
+    if no <> -1 then
+    begin
+      If LowerCase(GroupBox.Controls[Loop].name) = LowerCase(stName) + inttostr(no) then
+      Begin
+        Result:=TComboBox(GroupBox.Controls[Loop]);
+        exit;
+      End;
+    end else
+    begin
+      If LowerCase(GroupBox.Controls[Loop].name) = LowerCase(stName) then
+      Begin
+        Result:=TComboBox(GroupBox.Controls[Loop]);
+        exit;
+      End;
+    end;
   End;
 end;
 

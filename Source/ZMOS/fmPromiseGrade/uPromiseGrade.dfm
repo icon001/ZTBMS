@@ -18,20 +18,21 @@ inherited fmPromiseGrade: TfmPromiseGrade
     Left = 265
     Top = 33
     Width = 1
-    Height = 501
+    Height = 508
   end
   object Panel1: TPanel [1]
     Left = 0
     Top = 33
     Width = 265
-    Height = 501
+    Height = 508
     Align = alLeft
+    Color = clWhite
     TabOrder = 0
     object GroupBox2: TGroupBox
       Left = 1
       Top = 1
       Width = 263
-      Height = 499
+      Height = 506
       Align = alClient
       Caption = #44536#47353' '#44428#54620#53076#46300
       TabOrder = 0
@@ -39,7 +40,7 @@ inherited fmPromiseGrade: TfmPromiseGrade
         Left = 2
         Top = 14
         Width = 259
-        Height = 483
+        Height = 490
         Cursor = crDefault
         Align = alClient
         ColCount = 1
@@ -119,6 +120,7 @@ inherited fmPromiseGrade: TfmPromiseGrade
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
         ScrollSynch = True
+        ScrollWidth = 16
         SearchFooter.FindNextCaption = 'Find next'
         SearchFooter.FindPrevCaption = 'Find previous'
         SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -142,14 +144,15 @@ inherited fmPromiseGrade: TfmPromiseGrade
     Left = 266
     Top = 33
     Width = 444
-    Height = 501
+    Height = 508
     Align = alClient
+    Color = clWhite
     TabOrder = 1
     object PageControl1: TPageControl
       Left = 1
       Top = 49
       Width = 442
-      Height = 451
+      Height = 458
       ActivePage = DoorTab
       Align = alClient
       TabOrder = 0
@@ -159,14 +162,14 @@ inherited fmPromiseGrade: TfmPromiseGrade
           Left = 0
           Top = 0
           Width = 434
-          Height = 424
+          Height = 431
           Align = alClient
           TabOrder = 0
           object sg_Door: TAdvStringGrid
             Left = 1
             Top = 1
             Width = 432
-            Height = 422
+            Height = 429
             Cursor = crDefault
             Align = alClient
             DefaultColWidth = 150
@@ -251,6 +254,7 @@ inherited fmPromiseGrade: TfmPromiseGrade
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
             ScrollSynch = True
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -281,14 +285,14 @@ inherited fmPromiseGrade: TfmPromiseGrade
           Left = 0
           Top = 0
           Width = 434
-          Height = 424
+          Height = 431
           Align = alClient
           TabOrder = 0
           object sg_Alarm: TAdvStringGrid
             Left = 1
             Top = 1
             Width = 432
-            Height = 422
+            Height = 429
             Cursor = crDefault
             Align = alClient
             DefaultColWidth = 150
@@ -372,6 +376,7 @@ inherited fmPromiseGrade: TfmPromiseGrade
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
             ScrollSynch = True
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -402,14 +407,14 @@ inherited fmPromiseGrade: TfmPromiseGrade
           Left = 0
           Top = 0
           Width = 434
-          Height = 424
+          Height = 431
           Align = alClient
           TabOrder = 0
           object sg_Food: TAdvStringGrid
             Left = 1
             Top = 1
             Width = 432
-            Height = 422
+            Height = 429
             Cursor = crDefault
             Align = alClient
             DefaultColWidth = 150
@@ -493,6 +498,7 @@ inherited fmPromiseGrade: TfmPromiseGrade
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
             ScrollSynch = True
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -523,6 +529,7 @@ inherited fmPromiseGrade: TfmPromiseGrade
       Width = 442
       Height = 48
       Align = alTop
+      Color = clWhite
       TabOrder = 1
       object Label1: TLabel
         Left = 16
@@ -543,10 +550,11 @@ inherited fmPromiseGrade: TfmPromiseGrade
   end
   object Panel3: TPanel [3]
     Left = 0
-    Top = 534
+    Top = 541
     Width = 710
     Height = 71
     Align = alBottom
+    Color = clWhite
     TabOrder = 2
     object btn_Insert: TSpeedButton
       Left = 24
@@ -723,7 +731,7 @@ inherited fmPromiseGrade: TfmPromiseGrade
   end
   object StatusBar1: TStatusBar [4]
     Left = 0
-    Top = 605
+    Top = 612
     Width = 710
     Height = 29
     Panels = <
@@ -738,7 +746,7 @@ inherited fmPromiseGrade: TfmPromiseGrade
     Height = 33
     Align = alTop
     Caption = #44536#47353#48324' '#44428#54620#53076#46300#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16

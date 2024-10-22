@@ -1,0 +1,2 @@
+CREATE TABLE TB_LOWDATA (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , seq INTEGER NOT NULL , lo_date VARCHAR(8), ac_nodeno INTEGER, lo_ip VARCHAR(24), lo_port VARCHAR(5), lo_mcuid VARCHAR(7), lo_ecuid VARCHAR(2), lo_txrx VARCHAR(2), lo_command CHAR(1), lo_lowdata VARCHAR(200), lo_inserttime VARCHAR(14) ); 
+ ALTER TABLE TB_LOWDATA   ADD CONSTRAINT TB_LOWDATA_pkey PRIMARY KEY (group_code, seq);

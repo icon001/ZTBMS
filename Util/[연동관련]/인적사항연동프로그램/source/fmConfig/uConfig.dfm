@@ -61,7 +61,7 @@ object fmConfig: TfmConfig
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 272
+    Top = 279
     Width = 458
     Height = 34
     Panels = <

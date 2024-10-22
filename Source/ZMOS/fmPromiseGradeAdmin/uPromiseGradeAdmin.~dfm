@@ -1,6 +1,8 @@
 inherited fmPromiseGradeAdmin: TfmPromiseGradeAdmin
-  Left = 3
-  Top = 2
+  Left = 782
+  Top = 131
+  Width = 1035
+  Height = 771
   BorderIcons = [biSystemMenu]
   Caption = #44536#47353#48324#44428#54620#46321#47197
   Font.Charset = HANGEUL_CHARSET
@@ -17,13 +19,13 @@ inherited fmPromiseGradeAdmin: TfmPromiseGradeAdmin
   object Splitter1: TSplitter [0]
     Left = 393
     Top = 33
-    Height = 352
+    Height = 675
   end
   object Panel3: TPanel [1]
     Left = 0
     Top = 33
     Width = 393
-    Height = 352
+    Height = 675
     Align = alLeft
     TabOrder = 0
     object GroupBox2: TGroupBox
@@ -195,7 +197,7 @@ inherited fmPromiseGradeAdmin: TfmPromiseGradeAdmin
         Width = 169
         Height = 20
         ImeName = 'Microsoft IME 2003'
-        MaxLength = 10
+        MaxLength = 20
         TabOrder = 6
       end
       object chk_NonGrade: TCheckBox
@@ -283,8 +285,9 @@ inherited fmPromiseGradeAdmin: TfmPromiseGradeAdmin
       Left = 1
       Top = 201
       Width = 391
-      Height = 150
+      Height = 473
       Cursor = crDefault
+      TabStop = False
       Align = alClient
       ColCount = 9
       DefaultColWidth = 90
@@ -339,7 +342,7 @@ inherited fmPromiseGradeAdmin: TfmPromiseGradeAdmin
       FilterDropDown.Font.Name = 'MS Sans Serif'
       FilterDropDown.Font.Style = []
       FilterDropDownClear = '(All)'
-      FixedColWidth = 86
+      FixedColWidth = 90
       FixedFont.Charset = DEFAULT_CHARSET
       FixedFont.Color = clWindowText
       FixedFont.Height = -11
@@ -386,10 +389,10 @@ inherited fmPromiseGradeAdmin: TfmPromiseGradeAdmin
       SortSettings.AutoFormat = False
       Version = '6.0.4.4'
       ColWidths = (
-        86
+        90
         78
         86
-        81
+        126
         79
         90
         90
@@ -399,8 +402,8 @@ inherited fmPromiseGradeAdmin: TfmPromiseGradeAdmin
   end
   object StatusBar1: TStatusBar [2]
     Left = 0
-    Top = 385
-    Width = 630
+    Top = 708
+    Width = 1027
     Height = 29
     Panels = <
       item
@@ -410,22 +413,22 @@ inherited fmPromiseGradeAdmin: TfmPromiseGradeAdmin
   object Panel1: TPanel [3]
     Left = 396
     Top = 33
-    Width = 234
-    Height = 352
+    Width = 631
+    Height = 675
     Align = alClient
     TabOrder = 2
     object Panel2: TPanel
       Left = 1
       Top = 1
-      Width = 232
-      Height = 350
+      Width = 629
+      Height = 673
       Align = alClient
       TabOrder = 0
       object PageControl1: TPageControl
         Left = 1
         Top = 49
-        Width = 230
-        Height = 300
+        Width = 627
+        Height = 623
         ActivePage = DoorTab
         Align = alClient
         TabOrder = 0
@@ -434,15 +437,15 @@ inherited fmPromiseGradeAdmin: TfmPromiseGradeAdmin
           object Panel6: TPanel
             Left = 0
             Top = 0
-            Width = 222
-            Height = 273
+            Width = 619
+            Height = 596
             Align = alClient
             TabOrder = 0
             object sg_Door: TAdvStringGrid
               Left = 1
               Top = 1
-              Width = 220
-              Height = 271
+              Width = 617
+              Height = 594
               Cursor = crDefault
               Align = alClient
               DefaultColWidth = 150
@@ -795,7 +798,7 @@ inherited fmPromiseGradeAdmin: TfmPromiseGradeAdmin
       object Panel4: TPanel
         Left = 1
         Top = 1
-        Width = 230
+        Width = 627
         Height = 48
         Align = alTop
         TabOrder = 1
@@ -845,7 +848,7 @@ inherited fmPromiseGradeAdmin: TfmPromiseGradeAdmin
   object Panel12: TPanel [4]
     Left = 0
     Top = 0
-    Width = 630
+    Width = 1027
     Height = 33
     Align = alTop
     Caption = #44536#47353#48324#44428#54620#46321#47197

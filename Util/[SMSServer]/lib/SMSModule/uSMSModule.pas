@@ -12,6 +12,7 @@ type
 
   TdmSMSModule = class(TDataModule)
     SMSConnection: TADOConnection;
+    ADOQuery1: TADOQuery;
     procedure DataModuleCreate(Sender: TObject);
   private
     FDataBaseIP: string;
@@ -231,6 +232,18 @@ begin
     stSql := stSql + '''' + aCdrID + ''') ';
   end else if ServerType = 0 then
   begin
+      ADOQuery1.SQL.Text := 'set names euckr';
+      Try
+        //ADOQuery1.Close;
+        ADOQuery1.ExecSQL;
+      Except
+        on e: Exception do
+        begin
+            ShowMessage(E.Message );
+            Exit;
+        end;
+
+      End;
     stSql := 'INSERT INTO SDK_SMS_SEND ';
     stSql := stSql + '( USER_ID, ';
     stSql := stSql + 'SUBJECT, ';

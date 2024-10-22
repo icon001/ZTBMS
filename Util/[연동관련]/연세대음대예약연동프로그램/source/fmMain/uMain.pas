@@ -1004,17 +1004,22 @@ begin
 
   Try
     RelayTimer.Enabled:=False;
+    if Not dmAdoRelay.DBConnected then
+    begin
+      tbi.Hint := '예약시스템 접속 실패';
+      RelayAdoConnectCheckTimer.Enabled := True;
+      Exit;
+    end;
     tbi.Hint := '예약정보 연동 시스템 작업중';
-    if Not dmAdoRelay.DBConnected then RelayAdoConnectCheckTimer.Enabled := True
-    else YSReserveRelay;
+    YSReserveRelay;
     ReserveGradeSetting;
     AccessEventReserveSeverSend;
 
     if Not isDigit(L_stRelayTime) then  L_stRelayTime := '5';
     L_dtRelayActionTime := IncTime(Now,0,0,strtoint(L_stRelayTime),0);
+    tbi.Hint := '예약정보 연동 완료';
   Finally
     RelayTimer.Enabled:= Not L_bApplicationTerminate;
-    tbi.Hint := '예약정보 연동 완료';
   End;
 
 end;

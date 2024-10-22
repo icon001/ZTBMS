@@ -9,4 +9,10 @@ object dmSMSModule: TdmSMSModule
     Left = 40
     Top = 48
   end
+  object ADOQuery1: TADOQuery
+    Connection = SMSConnection
+    Parameters = <>
+    Left = 92
+    Top = 47
+  end
 end

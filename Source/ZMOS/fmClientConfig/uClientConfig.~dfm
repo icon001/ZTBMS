@@ -5,6 +5,7 @@ inherited fmClientConfig: TfmClientConfig
   Height = 392
   BorderIcons = [biSystemMenu]
   Caption = #54872#44221#49444#51221
+  Color = clWhite
   Font.Charset = HANGEUL_CHARSET
   Font.Height = -12
   OldCreateOrder = True
@@ -101,7 +102,7 @@ inherited fmClientConfig: TfmClientConfig
     Top = 0
     Width = 486
     Height = 313
-    ActivePage = TabSheet2
+    ActivePage = AlarmTab
     Align = alTop
     MultiLine = True
     TabOrder = 0
@@ -111,7 +112,7 @@ inherited fmClientConfig: TfmClientConfig
         Left = 0
         Top = 0
         Width = 478
-        Height = 129
+        Height = 161
         Align = alTop
         Caption = #52636#51077#51060#48292#53944
         TabOrder = 0
@@ -128,6 +129,13 @@ inherited fmClientConfig: TfmClientConfig
           Width = 60
           Height = 12
           Caption = #52636#51077#51060#48292#53944
+        end
+        object Label23: TLabel
+          Left = 24
+          Top = 128
+          Width = 60
+          Height = 12
+          Caption = #52636#51077#47928#50676#47548
         end
         object chk_Alarm: TCheckBox
           Left = 24
@@ -209,10 +217,52 @@ inherited fmClientConfig: TfmClientConfig
           ImeName = 'Microsoft IME 2003'
           TabOrder = 6
         end
+        object ed_DoorOpenAlarm: TEdit
+          Left = 88
+          Top = 124
+          Width = 217
+          Height = 20
+          ImeName = 'Microsoft IME 2003'
+          TabOrder = 7
+        end
+        object btn_DoorOpenAlarm: TRzBitBtn
+          Left = 307
+          Top = 122
+          Hint = '1'
+          Caption = #49548#47532
+          Color = 15791348
+          HighlightColor = 16026986
+          HotTrack = True
+          HotTrackColor = 3983359
+          TabOrder = 8
+          OnClick = btn_DoorOpenAlarmClick
+          Glyph.Data = {
+            76010000424D7601000000000000760000002800000020000000100000000100
+            04000000000000010000120B0000120B00001000000000000000000000000000
+            800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+            33333333333FFF3333F333333300033339333333337773F33733333330008033
+            933333333737F7F37333333307078733333933337337373F3337333077088803
+            33933337F37F337F3373333077088803393333F7337FF37F3733300777008803
+            9333377F33773F7F733307088808087333337F7F337F7F7F3FFF070777080873
+            99997F7F337F7F7F77770808880808733333737F337F737F3F33300888008803
+            93333773F377337F73F333308807880339333337F37F337F373F333088077803
+            339333373F73F37333733333087777333339333373F7F7F33F37333330807033
+            933333333737F73373F333333300033339333333337773333733}
+          NumGlyphs = 2
+        end
+        object chk_DoorOpenAlarm: TCheckBox
+          Left = 336
+          Top = 16
+          Width = 137
+          Height = 25
+          Caption = #52636#51077#47928#50676#47548' '#50508#46988#48156#49373
+          TabOrder = 9
+        end
       end
       object GroupBox2: TGroupBox
         Left = 0
-        Top = 129
+        Top = 161
         Width = 478
         Height = 47
         Align = alTop
@@ -242,7 +292,7 @@ inherited fmClientConfig: TfmClientConfig
       end
       object GroupBox4: TGroupBox
         Left = 0
-        Top = 176
+        Top = 208
         Width = 478
         Height = 41
         Align = alTop
@@ -317,9 +367,9 @@ inherited fmClientConfig: TfmClientConfig
         object chk_PTAlarm: TCheckBox
           Left = 24
           Top = 16
-          Width = 153
+          Width = 169
           Height = 25
-          Caption = #48169#48276' '#51060#49345#49884' '#50508#46988' '#48156#49373
+          Caption = #50508#46988#51060#48292#53944' '#50508#46988#49548#47532' '#48156#49373
           TabOrder = 0
         end
         object ed_PTalarmFile: TEdit
@@ -934,7 +984,7 @@ inherited fmClientConfig: TfmClientConfig
       object GroupBox8: TGroupBox
         Left = 0
         Top = 0
-        Width = 461
+        Width = 478
         Height = 41
         Align = alTop
         Caption = #52852#46300#48156#44553

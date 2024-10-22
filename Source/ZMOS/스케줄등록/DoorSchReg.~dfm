@@ -1,6 +1,6 @@
 inherited DoorscheduleRegForm: TDoorscheduleRegForm
-  Left = 486
-  Top = 146
+  Left = 446
+  Top = 123
   Width = 1248
   Height = 858
   Caption = #52636#51077#47928' '#49828#52992#51572' '#44288#47532
@@ -333,7 +333,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
       Top = 33
       Width = 758
       Height = 757
-      ActivePage = TabSheet2
+      ActivePage = TabSheet1
       Align = alClient
       TabOrder = 0
       object TabSheet1: TTabSheet
@@ -345,6 +345,9 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
           Height = 730
           Align = alClient
           TabOrder = 0
+          DesignSize = (
+            750
+            730)
           object RzGroupBox1: TRzGroupBox
             Left = 1
             Top = 1
@@ -737,7 +740,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 0
-                OnDblClick = Panel8DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel8DragDrop
                 OnDragOver = Panel8DragOver
                 OnResize = Panel8Resize
@@ -767,7 +770,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 1
-                OnDblClick = Panel8DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel8DragDrop
                 OnDragOver = Panel8DragOver
                 OnResize = Panel8Resize
@@ -797,7 +800,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 2
-                OnDblClick = Panel8DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel8DragDrop
                 OnDragOver = Panel8DragOver
                 OnResize = Panel8Resize
@@ -815,7 +818,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 3
-                OnDblClick = Panel8DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel8DragDrop
                 OnDragOver = Panel8DragOver
                 OnResize = Panel8Resize
@@ -845,7 +848,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 4
-                OnDblClick = Panel8DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel8DragDrop
                 OnDragOver = Panel8DragOver
                 OnResize = Panel8Resize
@@ -1023,7 +1026,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 0
-                OnDblClick = Panel22DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel22DragDrop
                 OnDragOver = Panel22DragOver
                 OnResize = Panel22Resize
@@ -1053,7 +1056,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 1
-                OnDblClick = Panel22DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel22DragDrop
                 OnDragOver = Panel22DragOver
                 OnResize = Panel22Resize
@@ -1083,7 +1086,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 2
-                OnDblClick = Panel22DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel22DragDrop
                 OnDragOver = Panel22DragOver
                 OnResize = Panel22Resize
@@ -1101,7 +1104,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 3
-                OnDblClick = Panel22DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel22DragDrop
                 OnDragOver = Panel22DragOver
                 OnResize = Panel22Resize
@@ -1131,7 +1134,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 4
-                OnDblClick = Panel22DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel22DragDrop
                 OnDragOver = Panel22DragOver
                 OnResize = Panel22Resize
@@ -1309,7 +1312,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 0
-                OnDblClick = Panel44DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel44DragDrop
                 OnDragOver = Panel44DragOver
                 OnResize = Panel44Resize
@@ -1339,7 +1342,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 1
-                OnDblClick = Panel44DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel44DragDrop
                 OnDragOver = Panel44DragOver
                 OnResize = Panel44Resize
@@ -1369,7 +1372,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 2
-                OnDblClick = Panel44DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel44DragDrop
                 OnDragOver = Panel44DragOver
                 OnResize = Panel44Resize
@@ -1387,7 +1390,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 3
-                OnDblClick = Panel44DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel44DragDrop
                 OnDragOver = Panel44DragOver
                 OnResize = Panel44Resize
@@ -1417,7 +1420,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 4
-                OnDblClick = Panel44DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = Panel44DragDrop
                 OnDragOver = Panel44DragOver
                 OnResize = Panel44Resize
@@ -1494,6 +1497,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
             Top = 665
             Width = 87
             Height = 30
+            Anchors = [akLeft, akBottom]
             Caption = #51201#50857
             Color = 15791348
             HighlightColor = 16026986
@@ -1660,7 +1664,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 0
-                OnDblClick = pan_h21DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h21DragDrop
                 OnDragOver = pan_h21DragOver
                 OnResize = pan_h21Resize
@@ -1690,7 +1694,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 1
-                OnDblClick = pan_h21DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h21DragDrop
                 OnDragOver = pan_h21DragOver
                 OnResize = pan_h21Resize
@@ -1720,7 +1724,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 2
-                OnDblClick = pan_h21DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h21DragDrop
                 OnDragOver = pan_h21DragOver
                 OnResize = pan_h21Resize
@@ -1738,7 +1742,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 3
-                OnDblClick = pan_h21DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h21DragDrop
                 OnDragOver = pan_h21DragOver
                 OnResize = pan_h21Resize
@@ -1768,7 +1772,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 4
-                OnDblClick = pan_h21DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h21DragDrop
                 OnDragOver = pan_h21DragOver
                 OnResize = pan_h21Resize
@@ -1946,7 +1950,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 0
-                OnDblClick = pan_h31DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h31DragDrop
                 OnDragOver = pan_h31DragOver
                 OnResize = pan_h31Resize
@@ -1976,7 +1980,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 1
-                OnDblClick = pan_h31DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h31DragDrop
                 OnDragOver = pan_h31DragOver
                 OnResize = pan_h31Resize
@@ -2006,7 +2010,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 2
-                OnDblClick = pan_h31DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h31DragDrop
                 OnDragOver = pan_h31DragOver
                 OnResize = pan_h31Resize
@@ -2024,7 +2028,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 3
-                OnDblClick = pan_h31DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h31DragDrop
                 OnDragOver = pan_h31DragOver
                 OnResize = pan_h31Resize
@@ -2054,7 +2058,7 @@ inherited DoorscheduleRegForm: TDoorscheduleRegForm
                 ParentShowHint = False
                 ShowHint = True
                 TabOrder = 4
-                OnDblClick = pan_h31DblClick
+                OnDblClick = Panel2DblClick
                 OnDragDrop = pan_h31DragDrop
                 OnDragOver = pan_h31DragOver
                 OnResize = pan_h31Resize

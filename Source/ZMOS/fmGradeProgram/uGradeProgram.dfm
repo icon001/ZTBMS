@@ -16,8 +16,9 @@ inherited fmGradeProgram: TfmGradeProgram
     Left = 0
     Top = 33
     Width = 305
-    Height = 439
+    Height = 446
     Align = alLeft
+    Color = clWhite
     TabOrder = 0
     object GroupBox2: TGroupBox
       Left = 1
@@ -65,7 +66,7 @@ inherited fmGradeProgram: TfmGradeProgram
       Left = 1
       Top = 97
       Width = 303
-      Height = 341
+      Height = 348
       Cursor = crDefault
       Align = alClient
       ColCount = 3
@@ -146,6 +147,7 @@ inherited fmGradeProgram: TfmGradeProgram
       PrintSettings.FooterFont.Name = 'MS Sans Serif'
       PrintSettings.FooterFont.Style = []
       PrintSettings.PageNumSep = '/'
+      ScrollWidth = 16
       SearchFooter.FindNextCaption = 'Find next'
       SearchFooter.FindPrevCaption = 'Find previous'
       SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -168,9 +170,10 @@ inherited fmGradeProgram: TfmGradeProgram
   end
   object StatusBar1: TStatusBar [1]
     Left = 0
-    Top = 472
+    Top = 479
     Width = 817
     Height = 26
+    Color = clWhite
     Panels = <
       item
         Width = 50
@@ -180,8 +183,9 @@ inherited fmGradeProgram: TfmGradeProgram
     Left = 417
     Top = 33
     Width = 400
-    Height = 439
+    Height = 446
     Align = alClient
+    Color = clWhite
     TabOrder = 2
     object GroupBox3: TGroupBox
       Left = 1
@@ -212,7 +216,7 @@ inherited fmGradeProgram: TfmGradeProgram
       Left = 1
       Top = 97
       Width = 398
-      Height = 341
+      Height = 348
       Cursor = crDefault
       Align = alClient
       ColCount = 6
@@ -295,6 +299,7 @@ inherited fmGradeProgram: TfmGradeProgram
       PrintSettings.FooterFont.Name = 'MS Sans Serif'
       PrintSettings.FooterFont.Style = []
       PrintSettings.PageNumSep = '/'
+      ScrollWidth = 16
       SearchFooter.FindNextCaption = 'Find next'
       SearchFooter.FindPrevCaption = 'Find previous'
       SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -322,8 +327,9 @@ inherited fmGradeProgram: TfmGradeProgram
     Left = 305
     Top = 33
     Width = 112
-    Height = 439
+    Height = 446
     Align = alLeft
+    Color = clWhite
     TabOrder = 3
     object btn_GradeInsert: TSpeedButton
       Left = 16
@@ -437,7 +443,7 @@ inherited fmGradeProgram: TfmGradeProgram
     Height = 33
     Align = alTop
     Caption = #44428#54620#48324' '#54532#47196#44536#47016#49324#50857' '#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16

@@ -519,6 +519,7 @@ inherited fmTimeNotAccessReport: TfmTimeNotAccessReport
         ItemHeight = 12
         ParentCtl3D = False
         TabOrder = 8
+        OnChange = cmb_PositionChange
       end
     end
     object GroupBox2: TGroupBox

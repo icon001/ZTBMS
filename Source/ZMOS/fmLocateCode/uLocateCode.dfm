@@ -4,6 +4,7 @@ inherited fmLocateCode: TfmLocateCode
   Width = 653
   Height = 534
   Caption = #50948#52824#51221#48372#44288#47532
+  Color = clWhite
   Font.Charset = HANGEUL_CHARSET
   Font.Height = -12
   OldCreateOrder = True
@@ -18,8 +19,8 @@ inherited fmLocateCode: TfmLocateCode
     Left = 0
     Top = 33
     Width = 645
-    Height = 382
-    ActivePage = FloorTab
+    Height = 389
+    ActivePage = AreaTab
     Align = alClient
     TabOrder = 0
     OnChange = PageControl1Change
@@ -29,29 +30,30 @@ inherited fmLocateCode: TfmLocateCode
         Left = 0
         Top = 0
         Width = 637
-        Height = 355
+        Height = 362
         Align = alClient
         TabOrder = 0
         object Splitter1: TSplitter
           Left = 247
           Top = 14
-          Height = 339
+          Height = 346
         end
         object Panel2: TPanel
           Left = 2
           Top = 14
           Width = 245
-          Height = 339
+          Height = 346
           Align = alLeft
+          Color = clWhite
           TabOrder = 0
           object sg_BuildingCode: TAdvStringGrid
             Left = 1
             Top = 1
             Width = 243
-            Height = 337
+            Height = 344
             Cursor = crDefault
             Align = alClient
-            ColCount = 2
+            ColCount = 3
             DefaultColWidth = 90
             DefaultRowHeight = 21
             FixedCols = 0
@@ -129,6 +131,7 @@ inherited fmLocateCode: TfmLocateCode
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
             ScrollSynch = True
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -145,21 +148,23 @@ inherited fmLocateCode: TfmLocateCode
             Version = '6.0.4.4'
             ColWidths = (
               84
-              135)
+              135
+              90)
           end
         end
         object Panel3: TPanel
           Left = 250
           Top = 14
           Width = 385
-          Height = 339
+          Height = 346
           Align = alClient
+          Color = clWhite
           TabOrder = 1
           object GroupBox8: TGroupBox
             Left = 1
             Top = 1
             Width = 383
-            Height = 337
+            Height = 344
             Align = alClient
             TabOrder = 0
             object lb_sbuildingcode1: TLabel
@@ -171,7 +176,7 @@ inherited fmLocateCode: TfmLocateCode
             end
             object lb_sBuildingName1: TLabel
               Left = 16
-              Top = 77
+              Top = 58
               Width = 48
               Height = 12
               Caption = #48716#46377#47749#52845
@@ -191,6 +196,13 @@ inherited fmLocateCode: TfmLocateCode
               Caption = #52286#44592
               OnClick = btn_BuildingSearchClick
             end
+            object Label16: TLabel
+              Left = 16
+              Top = 85
+              Width = 48
+              Height = 12
+              Caption = #50672#46041#53076#46300
+            end
             object ed_BuildingCode: TEdit
               Left = 120
               Top = 28
@@ -203,7 +215,7 @@ inherited fmLocateCode: TfmLocateCode
             end
             object ed_BuildingName: TEdit
               Left = 120
-              Top = 73
+              Top = 54
               Width = 217
               Height = 20
               ImeName = 'Microsoft IME 2003'
@@ -245,6 +257,14 @@ inherited fmLocateCode: TfmLocateCode
               TabOrder = 4
               OnClick = chk_BuildingAutoClick
             end
+            object ed_BuildingRelayCode: TEdit
+              Left = 120
+              Top = 81
+              Width = 217
+              Height = 20
+              ImeName = 'Microsoft IME 2003'
+              TabOrder = 5
+            end
           end
         end
       end
@@ -256,38 +276,39 @@ inherited fmLocateCode: TfmLocateCode
         Left = 0
         Top = 0
         Width = 637
-        Height = 355
+        Height = 362
         Align = alClient
         TabOrder = 0
         object Splitter2: TSplitter
           Left = 247
           Top = 14
-          Height = 339
+          Height = 346
         end
         object Panel6: TPanel
           Left = 250
           Top = 14
           Width = 385
-          Height = 339
+          Height = 346
           Align = alClient
+          Color = clWhite
           TabOrder = 0
           object GroupBox9: TGroupBox
             Left = 1
             Top = 1
             Width = 383
-            Height = 337
+            Height = 344
             Align = alClient
             TabOrder = 0
             object lb_sFloorCode2: TLabel
               Left = 16
-              Top = 57
+              Top = 47
               Width = 78
               Height = 12
               Caption = #52789#53076#46300'(3'#51088#47532')'
             end
             object lb_sFloorName2: TLabel
               Left = 16
-              Top = 90
+              Top = 74
               Width = 36
               Height = 12
               Caption = #52789#47749#52845
@@ -309,14 +330,21 @@ inherited fmLocateCode: TfmLocateCode
             end
             object lb_sbuildingcode2: TLabel
               Left = 16
-              Top = 24
+              Top = 21
               Width = 48
               Height = 12
               Caption = #48716#46377#53076#46300
             end
+            object Label17: TLabel
+              Left = 16
+              Top = 101
+              Width = 48
+              Height = 12
+              Caption = #50672#46041#53076#46300
+            end
             object ed_FloorCode: TEdit
               Left = 120
-              Top = 53
+              Top = 43
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
@@ -326,7 +354,7 @@ inherited fmLocateCode: TfmLocateCode
             end
             object ed_FloorName: TEdit
               Left = 120
-              Top = 86
+              Top = 70
               Width = 217
               Height = 20
               ImeName = 'Microsoft IME 2003'
@@ -350,7 +378,7 @@ inherited fmLocateCode: TfmLocateCode
             end
             object cmb_sBuildingCode1: TComboBox
               Left = 120
-              Top = 20
+              Top = 17
               Width = 217
               Height = 20
               ImeName = 'Microsoft IME 2003'
@@ -369,7 +397,7 @@ inherited fmLocateCode: TfmLocateCode
             end
             object chk_FloorAuto: TCheckBox
               Left = 232
-              Top = 55
+              Top = 45
               Width = 113
               Height = 17
               Caption = #53076#46300#51088#46041#49373#49457
@@ -378,14 +406,23 @@ inherited fmLocateCode: TfmLocateCode
               TabOrder = 5
               OnClick = chk_FloorAutoClick
             end
+            object ed_FloorRelayCode: TEdit
+              Left = 120
+              Top = 97
+              Width = 217
+              Height = 20
+              ImeName = 'Microsoft IME 2003'
+              TabOrder = 6
+            end
           end
         end
         object Panel5: TPanel
           Left = 2
           Top = 14
           Width = 245
-          Height = 339
+          Height = 346
           Align = alLeft
+          Color = clWhite
           TabOrder = 1
           object GroupBox10: TGroupBox
             Left = 1
@@ -416,10 +453,10 @@ inherited fmLocateCode: TfmLocateCode
             Left = 1
             Top = 58
             Width = 243
-            Height = 280
+            Height = 287
             Cursor = crDefault
             Align = alClient
-            ColCount = 3
+            ColCount = 4
             DefaultColWidth = 90
             DefaultRowHeight = 21
             FixedCols = 0
@@ -497,6 +534,7 @@ inherited fmLocateCode: TfmLocateCode
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
             ScrollSynch = True
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -514,6 +552,7 @@ inherited fmLocateCode: TfmLocateCode
             ColWidths = (
               84
               134
+              90
               90)
           end
         end
@@ -526,52 +565,53 @@ inherited fmLocateCode: TfmLocateCode
         Left = 0
         Top = 0
         Width = 637
-        Height = 355
+        Height = 362
         Align = alClient
         TabOrder = 0
         object Splitter3: TSplitter
           Left = 247
           Top = 14
-          Height = 339
+          Height = 346
         end
         object Panel9: TPanel
           Left = 250
           Top = 14
           Width = 385
-          Height = 339
+          Height = 346
           Align = alClient
+          Color = clWhite
           TabOrder = 0
           object GroupBox11: TGroupBox
             Left = 1
             Top = 1
             Width = 383
-            Height = 337
+            Height = 344
             Align = alClient
             TabOrder = 0
             object lb_sAreaCode3: TLabel
               Left = 16
-              Top = 73
+              Top = 70
               Width = 90
               Height = 12
               Caption = #44396#50669#53076#46300'(3'#51088#47532')'
             end
             object lb_sAreaName3: TLabel
               Left = 16
-              Top = 98
+              Top = 93
               Width = 48
               Height = 12
               Caption = #44396#50669#47749#52845
             end
             object Label12: TLabel
               Left = 16
-              Top = 125
+              Top = 141
               Width = 48
               Height = 12
               Caption = #50948#52824#51221#48372
             end
             object btn_AreaSearch: TSpeedButton
               Left = 120
-              Top = 119
+              Top = 135
               Width = 81
               Height = 25
               Caption = #52286#44592
@@ -586,14 +626,21 @@ inherited fmLocateCode: TfmLocateCode
             end
             object lb_sFloorCode3: TLabel
               Left = 16
-              Top = 48
+              Top = 47
               Width = 36
               Height = 12
               Caption = #52789#53076#46300
             end
+            object Label18: TLabel
+              Left = 16
+              Top = 117
+              Width = 48
+              Height = 12
+              Caption = #50672#46041#53076#46300
+            end
             object ed_AreaCode: TEdit
               Left = 120
-              Top = 69
+              Top = 66
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
@@ -603,7 +650,7 @@ inherited fmLocateCode: TfmLocateCode
             end
             object ed_AreaName: TEdit
               Left = 120
-              Top = 94
+              Top = 89
               Width = 217
               Height = 20
               ImeName = 'Microsoft IME 2003'
@@ -611,16 +658,16 @@ inherited fmLocateCode: TfmLocateCode
             end
             object Panel10: TPanel
               Left = 16
-              Top = 152
+              Top = 168
               Width = 353
-              Height = 161
+              Height = 145
               BevelOuter = bvLowered
               TabOrder = 2
               object imgArea: TImage
                 Left = 1
                 Top = 1
                 Width = 351
-                Height = 159
+                Height = 143
                 Align = alClient
                 Stretch = True
               end
@@ -631,23 +678,23 @@ inherited fmLocateCode: TfmLocateCode
               Width = 217
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 0
+              ItemHeight = 12
               TabOrder = 3
               OnChange = cmb_sBuildingCode2Change
             end
             object cmb_sFloorCode2: TComboBox
               Left = 120
-              Top = 44
+              Top = 43
               Width = 217
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 0
+              ItemHeight = 12
               TabOrder = 4
               OnChange = cmb_sFloorCode2Change
             end
             object ed_AreaImg: TEdit
               Left = 216
-              Top = 121
+              Top = 137
               Width = 97
               Height = 20
               ImeName = 'Microsoft IME 2003'
@@ -656,7 +703,7 @@ inherited fmLocateCode: TfmLocateCode
             end
             object chk_ArearAuto: TCheckBox
               Left = 232
-              Top = 71
+              Top = 68
               Width = 113
               Height = 17
               Caption = #53076#46300#51088#46041#49373#49457
@@ -665,14 +712,23 @@ inherited fmLocateCode: TfmLocateCode
               TabOrder = 6
               OnClick = chk_ArearAutoClick
             end
+            object ed_AreaRelayCode: TEdit
+              Left = 120
+              Top = 113
+              Width = 217
+              Height = 20
+              ImeName = 'Microsoft IME 2003'
+              TabOrder = 7
+            end
           end
         end
         object Panel8: TPanel
           Left = 2
           Top = 14
           Width = 245
-          Height = 339
+          Height = 346
           Align = alLeft
+          Color = clWhite
           TabOrder = 1
           object GroupBox12: TGroupBox
             Left = 1
@@ -701,7 +757,7 @@ inherited fmLocateCode: TfmLocateCode
               Width = 137
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 0
+              ItemHeight = 12
               TabOrder = 0
               OnChange = cmb_BuildingCode2Change
             end
@@ -711,7 +767,7 @@ inherited fmLocateCode: TfmLocateCode
               Width = 137
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 0
+              ItemHeight = 12
               TabOrder = 1
               OnChange = cmb_FloorCode2Change
             end
@@ -720,10 +776,9 @@ inherited fmLocateCode: TfmLocateCode
             Left = 1
             Top = 81
             Width = 243
-            Height = 257
+            Height = 264
             Cursor = crDefault
             Align = alClient
-            ColCount = 4
             DefaultColWidth = 90
             DefaultRowHeight = 21
             FixedCols = 0
@@ -801,6 +856,7 @@ inherited fmLocateCode: TfmLocateCode
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
             ScrollSynch = True
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -819,6 +875,7 @@ inherited fmLocateCode: TfmLocateCode
               84
               138
               90
+              90
               90)
           end
         end
@@ -827,14 +884,14 @@ inherited fmLocateCode: TfmLocateCode
   end
   object StatusBar1: TStatusBar [1]
     Left = 0
-    Top = 472
+    Top = 479
     Width = 645
     Height = 28
     Panels = <>
   end
   object GroupBox2: TGroupBox [2]
     Left = 0
-    Top = 415
+    Top = 422
     Width = 645
     Height = 57
     Align = alBottom
@@ -1017,7 +1074,7 @@ inherited fmLocateCode: TfmLocateCode
     Height = 33
     Align = alTop
     Caption = #50948#52824#51221#48372#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16

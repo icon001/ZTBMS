@@ -15,9 +15,10 @@ inherited fmArmGubunCode: TfmArmGubunCode
   TextHeight = 12
   object StatusBar1: TStatusBar [0]
     Left = 0
-    Top = 413
+    Top = 420
     Width = 509
     Height = 22
+    Color = clWhite
     Panels = <>
   end
   object Panel12: TPanel [1]
@@ -27,7 +28,7 @@ inherited fmArmGubunCode: TfmArmGubunCode
     Height = 33
     Align = alTop
     Caption = #48169#48276#44396#50669#44396#48516#53076#46300#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -41,14 +42,14 @@ inherited fmArmGubunCode: TfmArmGubunCode
     Left = 0
     Top = 33
     Width = 509
-    Height = 274
+    Height = 281
     Align = alClient
     TabOrder = 2
     object sg_Code: TAdvStringGrid
       Left = 1
       Top = 1
       Width = 507
-      Height = 272
+      Height = 279
       Cursor = crDefault
       Align = alClient
       ColCount = 2
@@ -129,6 +130,7 @@ inherited fmArmGubunCode: TfmArmGubunCode
       PrintSettings.FooterFont.Style = []
       PrintSettings.PageNumSep = '/'
       ScrollSynch = True
+      ScrollWidth = 16
       SearchFooter.FindNextCaption = 'Find next'
       SearchFooter.FindPrevCaption = 'Find previous'
       SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -150,10 +152,11 @@ inherited fmArmGubunCode: TfmArmGubunCode
   end
   object Panel1: TPanel [3]
     Left = 0
-    Top = 307
+    Top = 314
     Width = 509
     Height = 106
     Align = alBottom
+    Color = clWhite
     TabOrder = 3
     object Label8: TLabel
       Left = 16

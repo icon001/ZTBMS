@@ -1,9 +1,10 @@
 inherited fmKHUEmployee: TfmKHUEmployee
-  Left = 362
-  Top = 92
+  Left = 363
+  Top = 84
   Width = 752
   Height = 615
   Caption = #44221#55148#45824#49324#50896#44288#47532
+  Color = clWhite
   Font.Charset = HANGEUL_CHARSET
   Font.Height = -12
   Position = poMainFormCenter
@@ -285,7 +286,7 @@ inherited fmKHUEmployee: TfmKHUEmployee
     Left = 0
     Top = 137
     Width = 744
-    Height = 444
+    Height = 451
     Cursor = crDefault
     Align = alClient
     ColCount = 3
@@ -367,6 +368,7 @@ inherited fmKHUEmployee: TfmKHUEmployee
     PrintSettings.FooterFont.Style = []
     PrintSettings.PageNumSep = '/'
     ScrollSynch = True
+    ScrollWidth = 16
     SearchFooter.FindNextCaption = 'Find next'
     SearchFooter.FindPrevCaption = 'Find previous'
     SearchFooter.Font.Charset = DEFAULT_CHARSET

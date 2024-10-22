@@ -25,7 +25,7 @@ inherited fmFoodAdmin: TfmFoodAdmin
     TabOrder = 0
     object btn_Search: TSpeedButton
       Left = 792
-      Top = 37
+      Top = 21
       Width = 81
       Height = 30
       Caption = #51312#54924
@@ -85,7 +85,7 @@ inherited fmFoodAdmin: TfmFoodAdmin
     end
     object btn_Close: TSpeedButton
       Left = 904
-      Top = 37
+      Top = 21
       Width = 81
       Height = 30
       Caption = #45803#44592
@@ -142,6 +142,50 @@ inherited fmFoodAdmin: TfmFoodAdmin
         57E8E8E8E8E8E8E8E8E8E8E8E8AC818181E8E8E8E8E8E8E8E8E8}
       NumGlyphs = 2
       OnClick = btn_CloseClick
+    end
+    object btn_FileFormat: TSpeedButton
+      Left = 792
+      Top = 56
+      Width = 81
+      Height = 30
+      Caption = #51077#47141#54252#47607
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        0400000000000001000000000000000000001000000000000000000000000000
+        8000008000000080800080000000800080008080000080808000C0C0C0000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333330070
+        7700333333337777777733333333008088003333333377F73377333333330088
+        88003333333377FFFF7733333333000000003FFFFFFF77777777000000000000
+        000077777777777777770FFFFFFF0FFFFFF07F3333337F3333370FFFFFFF0FFF
+        FFF07F3FF3FF7FFFFFF70F00F0080CCC9CC07F773773777777770FFFFFFFF039
+        99337F3FFFF3F7F777F30F0000F0F09999937F7777373777777F0FFFFFFFF999
+        99997F3FF3FFF77777770F00F000003999337F773777773777F30FFFF0FF0339
+        99337F3FF7F3733777F30F08F0F0337999337F7737F73F7777330FFFF0039999
+        93337FFFF7737777733300000033333333337777773333333333}
+      NumGlyphs = 2
+      OnClick = btn_FileFormatClick
+    end
+    object btn_FileRead: TSpeedButton
+      Left = 904
+      Top = 56
+      Width = 81
+      Height = 30
+      Caption = #54028#51068#46321#47197
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000130B0000130B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        33333333FF33333333FF333993333333300033377F3333333777333993333333
+        300033F77FFF3333377739999993333333333777777F3333333F399999933333
+        33003777777333333377333993333333330033377F3333333377333993333333
+        3333333773333333333F333333333333330033333333F33333773333333C3333
+        330033333337FF3333773333333CC333333333FFFFF77FFF3FF33CCCCCCCCCC3
+        993337777777777F77F33CCCCCCCCCC3993337777777777377333333333CC333
+        333333333337733333FF3333333C333330003333333733333777333333333333
+        3000333333333333377733333333333333333333333333333333}
+      NumGlyphs = 2
+      OnClick = btn_FileReadClick
     end
     object GroupBox5: TGroupBox
       Left = 137
@@ -571,6 +615,7 @@ inherited fmFoodAdmin: TfmFoodAdmin
       Enabled = False
       ImeName = 'Microsoft IME 2003'
       ItemHeight = 12
+      ItemIndex = 0
       TabOrder = 13
       Text = #49849#51064
       Items.Strings = (
@@ -657,6 +702,128 @@ inherited fmFoodAdmin: TfmFoodAdmin
         'MCUID'
         'ECUID'
         #49885#49324#44552#50529)
+      ControlLook.FixedGradientHoverFrom = clGray
+      ControlLook.FixedGradientHoverTo = clWhite
+      ControlLook.FixedGradientDownFrom = clGray
+      ControlLook.FixedGradientDownTo = clSilver
+      ControlLook.DropDownHeader.Font.Charset = DEFAULT_CHARSET
+      ControlLook.DropDownHeader.Font.Color = clWindowText
+      ControlLook.DropDownHeader.Font.Height = -11
+      ControlLook.DropDownHeader.Font.Name = 'Tahoma'
+      ControlLook.DropDownHeader.Font.Style = []
+      ControlLook.DropDownHeader.Visible = True
+      ControlLook.DropDownHeader.Buttons = <>
+      ControlLook.DropDownFooter.Font.Charset = DEFAULT_CHARSET
+      ControlLook.DropDownFooter.Font.Color = clWindowText
+      ControlLook.DropDownFooter.Font.Height = -11
+      ControlLook.DropDownFooter.Font.Name = 'MS Sans Serif'
+      ControlLook.DropDownFooter.Font.Style = []
+      ControlLook.DropDownFooter.Visible = True
+      ControlLook.DropDownFooter.Buttons = <>
+      Filter = <>
+      FilterDropDown.Font.Charset = DEFAULT_CHARSET
+      FilterDropDown.Font.Color = clWindowText
+      FilterDropDown.Font.Height = -11
+      FilterDropDown.Font.Name = 'MS Sans Serif'
+      FilterDropDown.Font.Style = []
+      FilterDropDownClear = '(All)'
+      FixedColWidth = 92
+      FixedFont.Charset = DEFAULT_CHARSET
+      FixedFont.Color = clWindowText
+      FixedFont.Height = -11
+      FixedFont.Name = 'Tahoma'
+      FixedFont.Style = [fsBold]
+      FloatFormat = '%.2f'
+      PrintSettings.DateFormat = 'dd/mm/yyyy'
+      PrintSettings.Font.Charset = DEFAULT_CHARSET
+      PrintSettings.Font.Color = clWindowText
+      PrintSettings.Font.Height = -11
+      PrintSettings.Font.Name = 'MS Sans Serif'
+      PrintSettings.Font.Style = []
+      PrintSettings.FixedFont.Charset = DEFAULT_CHARSET
+      PrintSettings.FixedFont.Color = clWindowText
+      PrintSettings.FixedFont.Height = -11
+      PrintSettings.FixedFont.Name = 'MS Sans Serif'
+      PrintSettings.FixedFont.Style = []
+      PrintSettings.HeaderFont.Charset = DEFAULT_CHARSET
+      PrintSettings.HeaderFont.Color = clWindowText
+      PrintSettings.HeaderFont.Height = -11
+      PrintSettings.HeaderFont.Name = 'MS Sans Serif'
+      PrintSettings.HeaderFont.Style = []
+      PrintSettings.FooterFont.Charset = DEFAULT_CHARSET
+      PrintSettings.FooterFont.Color = clWindowText
+      PrintSettings.FooterFont.Height = -11
+      PrintSettings.FooterFont.Name = 'MS Sans Serif'
+      PrintSettings.FooterFont.Style = []
+      PrintSettings.PageNumSep = '/'
+      SearchFooter.FindNextCaption = 'Find next'
+      SearchFooter.FindPrevCaption = 'Find previous'
+      SearchFooter.Font.Charset = DEFAULT_CHARSET
+      SearchFooter.Font.Color = clWindowText
+      SearchFooter.Font.Height = -11
+      SearchFooter.Font.Name = 'MS Sans Serif'
+      SearchFooter.Font.Style = []
+      SearchFooter.HighLightCaption = 'Highlight'
+      SearchFooter.HintClose = 'Close'
+      SearchFooter.HintFindNext = 'Find next occurence'
+      SearchFooter.HintFindPrev = 'Find previous occurence'
+      SearchFooter.HintHighlight = 'Highlight occurences'
+      SearchFooter.MatchCaseCaption = 'Match case'
+      Version = '6.0.4.4'
+      ColWidths = (
+        92
+        71
+        96
+        99
+        91
+        91
+        89
+        110
+        110
+        125
+        110
+        110
+        110
+        110
+        110)
+    end
+    object sg_FileFormat: TAdvStringGrid
+      Left = 336
+      Top = 96
+      Width = 465
+      Height = 153
+      Cursor = crDefault
+      ColCount = 15
+      DefaultColWidth = 110
+      DefaultRowHeight = 21
+      FixedCols = 0
+      RowCount = 2
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing, goRowSelect]
+      ParentFont = False
+      ScrollBars = ssVertical
+      TabOrder = 1
+      Visible = False
+      OnClick = sg_reportClick
+      ActiveCellFont.Charset = DEFAULT_CHARSET
+      ActiveCellFont.Color = clWindowText
+      ActiveCellFont.Height = -11
+      ActiveCellFont.Name = 'Tahoma'
+      ActiveCellFont.Style = [fsBold]
+      ColumnHeaders.Strings = (
+        #45216#51676'(yyyymmdd-8'#51088#47532#49707#51088')'
+        #49885#49688#44396#48516'('#51312#49885'1,'#51473#49885'2,'#49437#49885'3,'#50556#49885'4)'
+        #54924#49324#53076#46300'('#44277#48177#49884' 001 '#52376#47532')'
+        #49324#48264
+        #49885#49324#49884#44036'(hhnnss-6'#51088#47532#49707#51088' '#49884#48516#52488')'
+        #49885#49324#44552#50529'('#49707#51088#47564')'
+        #49885#49688#44396#50669'('#52376#51020#45208#50724#45716' '#44396#50669#51060' 0'#48264#51076')'
+        #48708#44256
+        '')
       ControlLook.FixedGradientHoverFrom = clGray
       ControlLook.FixedGradientHoverTo = clWhite
       ControlLook.FixedGradientDownFrom = clGray
@@ -851,5 +1018,13 @@ inherited fmFoodAdmin: TfmFoodAdmin
         Name = 'TCommand0'
         OnExecute = CommandArrayCommandsTCommand0Execute
       end>
+  end
+  object SaveDialog1: TSaveDialog
+    Left = 28
+    Top = 28
+  end
+  object OpenDialog1: TOpenDialog
+    Left = 68
+    Top = 28
   end
 end

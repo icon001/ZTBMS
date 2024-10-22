@@ -26,6 +26,12 @@ type
     function ChangeTB_FOODGRADE_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
     function ChangeTB_FOODSemesterCount_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
     function ChangeTB_FOODWeekCount_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode:string):Boolean;
+
+    Function CheckTB_CARDFromEmployeeID(aCompanyCode,aEmpID:string):Boolean;
+
+    Function DeleteTB_CARD(aCardNo:string):Boolean;
+    Function DeleteTB_EMPLOYEE(aEmpID,aCompanyCode,aCardNo,aFormName:string):Boolean;
+
     function DeleteTB_FIREGROUP_NodeNo(aNodeNo:string):Boolean;
     function DeleteTB_RELAYCONTROLDOOR_Key(aNodeNo,aEcuID,aDoorNo:string):Boolean;
     Function DupCheckCardNo(aCardNo:string):Boolean;
@@ -39,7 +45,10 @@ type
                                    aSystemId:string='';aMuxID:string='';aDecoderID:string='';aSockType:string='1'):Boolean;
     function InsertIntoTB_ATEVENT_Intime(aDate,aCompanyCode,aEMCode,aAttendCode,aWeekCode,aTime,aAtInCode,aJijumCode,aDepartCode,aEmName,aWorkStartTime:string):Boolean;
     function InsertIntoTB_COMPANY_CompanyName(aCompanyCode,aName:string):Boolean;
+    function InsertIntoTB_HURELAY_Value(aID,aName,aLocCode,aStatus,aVacancy:string):Boolean;
+    Function InsertIntoTB_LOGINCREATEHIS(auserid,ausername,auserPw,aGradeCode,aMaster,aCompanyCode,aJijumCode,aDepartCode,aBuildingGrade,aDongCode,aFloorCode,aAreaCode,aMode:string):Boolean;
     function InsertIntoTB_RELAYCONTROLDOOR_Value(aNodeNo,aEcuID,aDoorNo:string):Boolean;
+
     Function UpdateTB_ACCESSDEVICE(aNodeNo,aMcuID,aEcuID,aMcuIp,aMcuPort,aName,aBuildingCode,
                                    aFloorCode,aAreaCode,aRegState,aTotWidth,aTotHeight,
                                    aCurX,aCurY,aMcuAC,aMcuFd,aMcuPt,aMcuAt,aJavara,aSendAck,
@@ -64,6 +73,8 @@ type
     function UpdateTB_ATEVENT_WORKTIME_Add(aDate,aCompanyCode,aEMCode,aTimeMM:string):Boolean;
     function UpdateTB_CARD_Field_StringValue(aCardNo,aFieldName,aValue:string):Boolean;
     function UpdateTB_CURRENTDAEMON_Field_StringValue(aCode,aFieldName,aValue:string):Boolean;
+    Function UpdateTB_DEVICECARDNO(aCardNo,aPermit:string):Boolean;
+    Function UpdateTB_DEVICECARDNO_AllMemory(aState:String):Boolean;
     Function UpdateTB_DEVICECARDNO_AllState(OrgState,NewState:String):Boolean;   //권한전송 상태 변경
     Function UpdateTB_DEVICECARDNO_CardNoState(aNodeNo,aEcuID,aCardNo,aOldState,aNewState:String):Boolean;
     Function UpdateTB_DEVICECARDNO_Field_StringValue(aNodeNo,aEcuID,aCardNo,aFieldName,aValue:string):Boolean;
@@ -73,6 +84,8 @@ type
     function UpdateTB_DOOR_RcvSetting(aNodeNo,aEcuID,aDoorNo,aDoorType,aControlTime,aFire,aOpenMoni,aSendDoor,
                                aAlarmLong,aDsOpen,aRemoteDoor,aRcvAck:string):Boolean;
     function UpdateTB_DOOR_SCHUSE_Ack(aNodeNo,aEcuID,aDoorNo,aRcvAck:string):Boolean;
+    function UpdateTB_LOCATION_Field_StringValue(aDONGCODE,aFLOORCODE,aAREACODE,aFieldName,aValue:string):Boolean;
+
   public
     { Public declarations }
     function GetArmAreaName(aNodeNo,aEcuID,aArmAreaNo:string):string;
@@ -84,6 +97,7 @@ type
     function GetPortName(aNodeNo,aECUID,aPortNo:string):String;
     function GetTB_ATEVENT_LastInTime(aDate,aCompanyCode,aEMCode:string;var aATCode,aWorkStartTime,aWorkEndTime : string):string;
     function GetTB_ATEVENT_LastOutTime(aDate,aCompanyCode,aEMCode:string;var aATCode,aWorkStartTime,aWorkEndTime : string):string;
+    Function GetTB_LOGINCREATEHIS_Seq(aData:string):string;
     function GetTB_ZONEDEVICE_BuildingCode(aNodeNo,aECUID,aPortNo:string):string;
   public
     function UseDeviceTimeCode(aNodeNo,aEcuID:string) : Boolean;
@@ -95,6 +109,7 @@ var
 implementation
 uses
   uDataModule1,
+  uCommonSql,
   uLomosUtil;
 
 {$R *.dfm}
@@ -103,6 +118,8 @@ uses
 
 function TdmDBFunction.ChangeEmCode(aOldCompanyCode, aOldEmCode,
   aNewCompanyCode, aNewEmCode: string): Boolean;
+var
+  stSql : string;
 begin
   ChangeTB_ATDAYSUMMARY_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
   ChangeTB_ATEMPEXTRA_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
@@ -120,6 +137,9 @@ begin
   ChangeTB_FOODGRADE_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
   ChangeTB_FOODSemesterCount_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
   ChangeTB_FOODWeekCount_EmCode(aOldCompanyCode, aOldEmCode,aNewCompanyCode, aNewEmCode);
+  stSql := CommonSql.InsertIntoTB_EMPHIS(aNewCompanyCode,aNewEmCode,'0','2','','1',
+           aOldEmCode,'',aOldCompanyCode,'','','사번변경');//수정
+  result := DataModule1.ProcessExecSQL(stSql);
 end;
 
 function TdmDBFunction.ChangeTB_ATDAYSUMMARY_EmCode(aOldCompanyCode,
@@ -344,6 +364,92 @@ begin
   stSql := stSql + ' AND EM_CODE = ''' + aOldEmCode + ''' ';
 
   result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.CheckTB_CARDFromEmployeeID(aCompanyCode,
+  aEmpID: string): Boolean;
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+begin
+  Result := False;
+  stSql := 'Select * from TB_CARD ';
+  stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = '''  + aCompanyCode + ''' ';
+  stSql := stSql + ' AND EM_CODE = '''  + aEmpID + ''' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if recordCount < 1 then Exit;
+      result := True;
+    end;
+  Finally
+    TempAdoQuery.Free;
+    CoUninitialize;
+  end;
+
+end;
+
+function TdmDBFunction.DeleteTB_CARD(aCardNo: string): Boolean;
+var
+  stSql : string;
+  bResult : Boolean;
+begin
+  Result := False;
+  if aCardNo = '' then Exit;
+  bResult := UpdateTB_DEVICECARDNO(aCardNo,'N'); //모든 카드 권한을 삭제 처리함
+  if Not bResult then Exit;
+
+  stSql := 'Delete From TB_CARD ';
+  stSql := stSql + ' where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND CA_CARDNO = ''' +  aCardNo + ''' ';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.DeleteTB_EMPLOYEE(aEmpID, aCompanyCode,
+  aCardNo,aFormName: string): Boolean;
+var
+  stSql : string;
+  stFdmsId : string;
+begin
+  Result := False;
+  aCardNo := Trim(aCardNo);
+  stFdmsId := GetEmployeeFdmsID(aCompanyCode,aEmpID);
+  stSql := 'Delete From TB_FingerDeviceCard where FP_USERID = ' + stFdmsId + ' ';
+  result := DataModule1.ProcessExecSQL(stSql);
+
+  stSql := 'update TB_CardFinger set FP_PERMIT = ''0'',FP_CHANGE=''Y'' where FP_USERID = ' + stFdmsId + ' ';
+  result := DataModule1.ProcessExecSQL(stSql);
+
+  stSql := CommonSql.InsertIntoTB_EMPHIS(aCompanyCode,aEmpID,stFdmsId,'3',aCardNo,'2',
+           '','','','','','');//삭제
+  result := DataModule1.ProcessExecSQL(stSql);
+
+  stSql := 'Delete From TB_EMPLOYEE ';
+  stSql := stSql + ' where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND EM_CODE = ''' +  aEmpID + ''' ';
+  if (aCompanyCode <> '') and (aCompanyCode <> '000') then
+  begin
+    stSql := stSql + ' AND CO_COMPANYCODE = ''' +  aCompanyCode + ''' ';
+  end;
+  result := DataModule1.ProcessExecSQL(stSql);
+
+  stSql := CommonSql.InsertIntoTB_EMPLOYEECHANGE(aCompanyCode,aEmpID,aCardNo,aFormName,'3');
+  DataModule1.ProcessExecSQL(stSql);
+
 end;
 
 function TdmDBFunction.DeleteTB_FIREGROUP_NodeNo(aNodeNo: string): Boolean;
@@ -909,6 +1015,45 @@ begin
   End;
 end;
 
+function TdmDBFunction.GetTB_LOGINCREATEHIS_Seq(aData: string): string;
+var
+  stSql : string;
+  TempAdoQuery :TADOQuery;
+begin
+  result := '1';
+
+  stSql := 'select MAX(LC_SEQ) as LC_SEQ from TB_LOGINCREATEHIS ';
+  stSql := stSql + ' Where  GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND LC_DATE = ''' + aData + ''' ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.DisableControls;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if recordCount < 1 then Exit;
+      result := inttostr(FindField('LC_SEQ').AsInteger + 1);
+
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
 function TdmDBFunction.GetTB_ZONEDEVICE_BuildingCode(aNodeNo, aECUID,
   aPortNo: string): string;
 var
@@ -1009,6 +1154,79 @@ begin
   stSql := stSql + '''' + aName + ''',';
   stSql := stSql + '''1'',';
   stSql := stSql + '''N'' ';
+  stSql := stSql + ')';
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.InsertIntoTB_HURELAY_Value(aID, aName, aLocCode,
+  aStatus, aVacancy: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := ' Insert Into TB_HURELAY( ';
+  stSql := stSql + ' HR_ID,';
+  stSql := stSql + ' HR_NAME,';
+  stSql := stSql + ' HR_LOCCODE,';
+  stSql := stSql + ' HR_STATUS,';
+  stSql := stSql + ' HR_VACANCY )';
+  stSql := stSql + ' values( ';
+  stSql := stSql + '''' + aID + ''',';
+  stSql := stSql + '''' + aName + ''',';
+  stSql := stSql + '''' + aLocCode + ''',';
+  stSql := stSql + '''' + aStatus + ''',';
+  stSql := stSql + '''' + aVacancy + '''';
+  stSql := stSql + ')';
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.InsertIntoTB_LOGINCREATEHIS(auserid, ausername,
+  auserPw, aGradeCode, aMaster, aCompanyCode, aJijumCode, aDepartCode,
+  aBuildingGrade, aDongCode, aFloorCode, aAreaCode,aMode: string): Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+  stSql := ' Insert Into TB_LOGINCREATEHIS( ';
+  stSql := stSql + ' GROUP_CODE,';
+  stSql := stSql + ' LC_DATE,';
+  stSql := stSql + ' LC_SEQ,';
+  stSql := stSql + ' AD_USERID,';
+  stSql := stSql + ' AD_USERPW,';
+  stSql := stSql + ' AD_USERNAME,';
+  stSql := stSql + ' GR_GRADECODE,';
+  stSql := stSql + ' AD_MASTER, ';
+  stSql := stSql + ' CO_COMPANYCODE, ';
+  stSql := stSql + ' CO_JIJUMCODE, ';
+  stSql := stSql + ' CO_DEPARTCODE, ';
+  stSql := stSql + ' AD_UPDATETIME,';
+  stSql := stSql + ' AD_UPDATEOPERATER,';
+  stSql := stSql + ' AD_BUILDINGGRADE,';
+  stSql := stSql + ' LO_DONGCODE,';
+  stSql := stSql + ' LO_FLOORCODE,';
+  stSql := stSql + ' LO_AREACODE,' ;
+	stSql := stSql + ' LC_MODE,';   //1.입력,2.수정,3.삭제
+  stSql := stSql + ' LC_PCIP) ';
+  stSql := stSql + ' values( ';
+  stSql := stSql + '''' + GROUPCODE + ''',';
+  stSql := stSql + '''' + FormatDateTime('yyyymmdd',now) + ''', ';
+  stSql := stSql + '' + GetTB_LOGINCREATEHIS_Seq(FormatDateTime('yyyymmdd',now)) + ',';
+  stSql := stSql + '''' + auserid + ''',';
+  stSql := stSql + '''' + auserPw + ''',';
+  stSql := stSql + '''' + ausername + ''',';
+  stSql := stSql + '''' + aGradeCode + ''',';
+  stSql := stSql + '''' + aMaster + ''',';
+  stSql := stSql + '''' + aCompanyCode + ''',';
+  stSql := stSql + '''' + aJijumCode + ''',';
+  stSql := stSql + '''' + aDepartCode + ''',';
+  stSql := stSql + '''' + FormatDateTime('yyyymmddHHMMSS',Now) + ''',';
+  stSql := stSql + '''' + Master_ID + ''',';
+  stSql := stSql + '''' + aBuildingGrade + ''',';
+  stSql := stSql + '''' + aDongCode + ''',';
+  stSql := stSql + '''' + aFloorCode + ''',';
+  stSql := stSql + '''' + aAreaCode + ''',';
+  stSql := stSql + '' + aMode + ',';
+  stSql := stSql + '''' + copy(Get_Local_IPAddr,1,24) + '''';   
   stSql := stSql + ')';
 
   result := DataModule1.ProcessExecSQL(stSql);
@@ -1486,6 +1704,32 @@ begin
   Result := DataModule1.ProcessExecSQL(stSql);
 end;
 
+function TdmDBFunction.UpdateTB_DEVICECARDNO(aCardNo,
+  aPermit: string): Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+  stSql := 'Update TB_DEVICECARDNO Set ';
+  stSql := stSql + ' DE_PERMIT = ''' + aPermit + ''', ';
+  stSql := stSql + ' DE_RCVACK = ''N'' ';
+  stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND CA_CARDNO = ''' + aCardNo + ''' ';
+
+  Result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.UpdateTB_DEVICECARDNO_AllMemory(
+  aState: String): Boolean;
+var
+  stSql : string;
+begin
+  Result := False;
+  stSql := 'Update TB_DEVICECARDNO Set DE_MEMLOAD = ''' + aState + ''' ';     //송신중으로 변경
+
+  Result := DataModule1.ProcessExecSQL(stSql);
+end;
+
 function TdmDBFunction.UpdateTB_DEVICECARDNO_AllState(OrgState,
   NewState: String): Boolean;
 var
@@ -1613,6 +1857,21 @@ begin
   stSql := stSql + ' AND AC_ECUID = ''' + aECUID + ''' ';
   stSql := stSql + ' AND DO_DOORNO = ''' + inttostr(strtoint(aDoorNo)) + ''' ';
   stSql := stSql + ' AND SEND_ACK = ''S'' ';   //스케줄 사용 유무 전송 중인 것만
+
+  result := DataModule1.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.UpdateTB_LOCATION_Field_StringValue(aDONGCODE,
+  aFLOORCODE, aAREACODE, aFieldName, aValue: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := ' Update TB_LOCATION set ';
+  stSql := stSql + aFieldName + ' = ''' + aValue + ''' ';
+  stSql := stSql + ' WHERE GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND LO_DONGCODE = ''' + aDONGCODE + ''' ' ;
+  stSql := stSql + ' AND LO_FLOORCODE = ''' + aFLOORCODE + ''' ' ;
+  stSql := stSql + ' AND LO_AREACODE = ''' + aAREACODE + ''' ' ;
 
   result := DataModule1.ProcessExecSQL(stSql);
 end;

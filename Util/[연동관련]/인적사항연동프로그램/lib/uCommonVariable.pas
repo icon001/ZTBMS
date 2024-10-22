@@ -31,6 +31,7 @@ var
  G_nCardRegisterPort : integer = 0;   //등록기 시리얼 포트
  G_bApplicationTerminate : Boolean;   //Application 종료 유무
  G_nCardServerPort : integer = 7777;  //스피드게이트 수신포트
+ G_nDupCard : integer = 0; //0:1인당 1장 카드, 1: 1인당 여러장 카드
  IsMaster : Boolean;
  BuildingGrade : integer;
  MasterBuildingCode : string;

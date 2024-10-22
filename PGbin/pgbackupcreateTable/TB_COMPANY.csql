@@ -1,0 +1,2 @@
+CREATE TABLE TB_COMPANY (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , co_companycode VARCHAR(3) NOT NULL  DEFAULT  '000' , co_jijumcode VARCHAR(3) NOT NULL  DEFAULT  '000' , co_departcode VARCHAR(3) NOT NULL  DEFAULT  '000' , co_name VARCHAR(30), co_gubun CHAR(1), co_charge VARCHAR(20), co_telnum VARCHAR(14), co_updatecheck CHAR(1) DEFAULT  'N'  ); 
+ ALTER TABLE TB_COMPANY   ADD CONSTRAINT TB_COMPANY_pkey PRIMARY KEY (group_code, co_companycode, co_jijumcode, co_departcode);

@@ -1,0 +1,2 @@
+CREATE TABLE TB_INOUTGROUP (  group_code VARCHAR(10) NOT NULL  DEFAULT  '1234567890' , io_groupname VARCHAR(30) NOT NULL , ac_nodeno INTEGER NOT NULL , ac_ecuid VARCHAR(2) NOT NULL , do_doorno VARCHAR(1) NOT NULL  ); 
+ ALTER TABLE TB_INOUTGROUP   ADD CONSTRAINT TB_INOUTGROUP_pkey PRIMARY KEY (group_code, io_groupname, ac_nodeno, ac_ecuid, do_doorno);

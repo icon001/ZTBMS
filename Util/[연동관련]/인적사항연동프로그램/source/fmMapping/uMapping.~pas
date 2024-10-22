@@ -265,6 +265,7 @@ end;
 function TfmMapping.CheckTB_EMMAPPING(aMPCode: string): Boolean;
 var
   stSql: string;
+  TempAdoQuery : TADOQuery;
 begin
   Result := False;
   stSql := 'select * from TB_EMMAPPING ';
@@ -273,7 +274,11 @@ begin
 
 
   Try
-    with ADOQuery1 do
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmDBModule.ADOConnection;
+
+    with TempAdoQuery do
     begin
       Close;
       Sql.Clear;
@@ -288,6 +293,8 @@ begin
       result := True;
     end;
   Finally
+    TempAdoQuery.Free;
+    CoUninitialize;
   End;
 end;
 

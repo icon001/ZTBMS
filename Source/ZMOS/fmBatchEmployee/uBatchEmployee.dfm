@@ -1,6 +1,6 @@
 inherited fmBatchEmployee: TfmBatchEmployee
-  Left = 903
-  Top = 313
+  Left = 904
+  Top = 287
   Width = 716
   Height = 620
   BorderIcons = [biSystemMenu]

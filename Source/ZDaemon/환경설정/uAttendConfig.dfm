@@ -1,7 +1,7 @@
 object fmAttendConfig: TfmAttendConfig
-  Left = 538
-  Top = 142
-  Width = 572
+  Left = 1072
+  Top = 150
+  Width = 621
   Height = 738
   Caption = #54872#44221#49444#51221
   Color = clBtnFace
@@ -18,7 +18,7 @@ object fmAttendConfig: TfmAttendConfig
   object PageControl1: TPageControl
     Left = 0
     Top = 33
-    Width = 564
+    Width = 613
     Height = 607
     ActivePage = TabSheet5
     Align = alClient
@@ -29,7 +29,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox3: TGroupBox
         Left = 0
         Top = 0
-        Width = 556
+        Width = 605
         Height = 481
         Align = alTop
         TabOrder = 0
@@ -377,7 +377,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox1: TGroupBox
         Left = 0
         Top = 474
-        Width = 556
+        Width = 605
         Height = 89
         Align = alBottom
         Caption = #44221#48372' '#52376#47532
@@ -403,7 +403,7 @@ object fmAttendConfig: TfmAttendConfig
       object rg_Alarmview: TRadioGroup
         Left = 0
         Top = 0
-        Width = 556
+        Width = 605
         Height = 73
         Align = alTop
         Caption = #47784#45768#53552#47553#54872#44221
@@ -456,7 +456,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox8: TGroupBox
         Left = 0
         Top = 301
-        Width = 556
+        Width = 605
         Height = 60
         Align = alTop
         Caption = #50556#49885
@@ -560,7 +560,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox9: TGroupBox
         Left = 0
         Top = 241
-        Width = 556
+        Width = 605
         Height = 60
         Align = alTop
         Caption = #49437#49885
@@ -664,7 +664,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox10: TGroupBox
         Left = 0
         Top = 181
-        Width = 556
+        Width = 605
         Height = 60
         Align = alTop
         Caption = #51473#49885
@@ -768,7 +768,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox11: TGroupBox
         Left = 0
         Top = 121
-        Width = 556
+        Width = 605
         Height = 60
         Align = alTop
         Caption = #51312#49885
@@ -872,7 +872,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox13: TGroupBox
         Left = 0
         Top = 0
-        Width = 556
+        Width = 605
         Height = 41
         Align = alTop
         Caption = #53440#51077
@@ -903,7 +903,7 @@ object fmAttendConfig: TfmAttendConfig
       object rg_FdGrade: TRadioGroup
         Left = 0
         Top = 81
-        Width = 556
+        Width = 605
         Height = 40
         Align = alTop
         Caption = #44428#54620
@@ -917,7 +917,7 @@ object fmAttendConfig: TfmAttendConfig
       object rg_DupEvent: TRadioGroup
         Left = 0
         Top = 41
-        Width = 556
+        Width = 605
         Height = 40
         Align = alTop
         Caption = #49885#49688#51060#48292#53944#51473#48373#54728#50857
@@ -953,7 +953,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox12: TGroupBox
         Left = 0
         Top = 0
-        Width = 556
+        Width = 605
         Height = 73
         Align = alTop
         Caption = #48177#50629#49325#51228#49444#51221
@@ -980,7 +980,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox14: TGroupBox
         Left = 0
         Top = 73
-        Width = 556
+        Width = 605
         Height = 112
         Align = alTop
         Caption = #51088#46041#48177#50629#49444#51221
@@ -1122,8 +1122,8 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox16: TGroupBox
         Left = 0
         Top = 185
-        Width = 556
-        Height = 152
+        Width = 605
+        Height = 192
         Align = alTop
         Caption = #51088#46041#49325#51228#49444#51221
         TabOrder = 2
@@ -1183,6 +1183,20 @@ object fmAttendConfig: TfmAttendConfig
           Height = 12
           Caption = #51068
         end
+        object Label151: TLabel
+          Left = 16
+          Top = 140
+          Width = 114
+          Height = 12
+          Caption = #49324#50896#48320#44221#51060#47141' '#48372#44288#51068
+        end
+        object Label152: TLabel
+          Left = 176
+          Top = 140
+          Width = 12
+          Height = 12
+          Caption = #51068
+        end
         object ed_AcDel: TEdit
           Left = 136
           Top = 24
@@ -1238,6 +1252,14 @@ object fmAttendConfig: TfmAttendConfig
               'MemoryDB')
           end
         end
+        object ed_EmpDel: TEdit
+          Left = 136
+          Top = 136
+          Width = 33
+          Height = 20
+          ImeName = 'Microsoft IME 2003'
+          TabOrder = 5
+        end
       end
     end
     object TabSheet4: TTabSheet
@@ -1246,7 +1268,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox15: TGroupBox
         Left = 0
         Top = 0
-        Width = 556
+        Width = 605
         Height = 169
         Align = alTop
         Caption = #45936#47788#54872#44221
@@ -1254,7 +1276,7 @@ object fmAttendConfig: TfmAttendConfig
         object rg_MultiDaemon: TRadioGroup
           Left = 2
           Top = 14
-          Width = 552
+          Width = 601
           Height = 35
           Align = alTop
           Columns = 2
@@ -1479,7 +1501,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox17: TGroupBox
         Left = 0
         Top = 249
-        Width = 556
+        Width = 605
         Height = 96
         Align = alTop
         Caption = #47196#44536#49444#51221
@@ -1533,7 +1555,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox4: TGroupBox
         Left = 0
         Top = 345
-        Width = 556
+        Width = 605
         Height = 56
         Align = alTop
         Caption = #52852#46300#45796#50868#47196#46300' '#54872#44221#49444#51221
@@ -1558,7 +1580,7 @@ object fmAttendConfig: TfmAttendConfig
       object gr_FileServer: TGroupBox
         Left = 0
         Top = 169
-        Width = 556
+        Width = 605
         Height = 80
         Align = alTop
         Caption = #54028#51068#49436#48260#54872#44221
@@ -1606,7 +1628,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox25: TGroupBox
         Left = 0
         Top = 401
-        Width = 556
+        Width = 605
         Height = 40
         Align = alTop
         TabOrder = 4
@@ -1634,7 +1656,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox5: TGroupBox
         Left = 0
         Top = 49
-        Width = 556
+        Width = 605
         Height = 48
         Align = alTop
         Caption = #54532#47196#44536#47016' '#49324#50857
@@ -1691,7 +1713,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox6: TGroupBox
         Left = 0
         Top = 0
-        Width = 556
+        Width = 605
         Height = 49
         Align = alTop
         TabOrder = 1
@@ -1715,7 +1737,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox22: TGroupBox
         Left = 0
         Top = 97
-        Width = 556
+        Width = 605
         Height = 48
         Align = alTop
         Caption = #52636#51077#51060#48292#53944
@@ -1738,17 +1760,24 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox35: TGroupBox
         Left = 0
         Top = 145
-        Width = 556
+        Width = 605
         Height = 48
         Align = alTop
         Caption = #54056#49828#50892#46300
         TabOrder = 3
+        object Label150: TLabel
+          Left = 360
+          Top = 22
+          Width = 36
+          Height = 12
+          Caption = #48320#44221#51068
+        end
         object chk_pwLength: TCheckBox
           Left = 16
           Top = 16
           Width = 121
           Height = 25
-          Caption = #54056#49828#50892#46300#51088#47551#49688
+          Caption = #54056#49828#50892#46300#52404#53356#49324#50857
           TabOrder = 0
         end
         object ed_PWLength: TEdit
@@ -1767,12 +1796,20 @@ object fmAttendConfig: TfmAttendConfig
           Caption = #49707#51088#47928#51088#53945#49688#47928#51088#49324#50857
           TabOrder = 2
         end
+        object ed_PWChange: TEdit
+          Left = 432
+          Top = 18
+          Width = 41
+          Height = 20
+          ImeName = 'Microsoft IME 2003'
+          TabOrder = 3
+        end
       end
       object GroupBox40: TGroupBox
         Left = 0
         Top = 193
-        Width = 556
-        Height = 56
+        Width = 605
+        Height = 48
         Align = alTop
         Caption = #54596#46300#50516#54840#54868
         TabOrder = 4
@@ -1787,9 +1824,9 @@ object fmAttendConfig: TfmAttendConfig
       end
       object GroupBox41: TGroupBox
         Left = 0
-        Top = 249
-        Width = 556
-        Height = 56
+        Top = 241
+        Width = 605
+        Height = 48
         Align = alTop
         Caption = #51088#46041#47196#44536#50500#50883
         TabOrder = 5
@@ -1819,9 +1856,9 @@ object fmAttendConfig: TfmAttendConfig
       end
       object GroupBox42: TGroupBox
         Left = 0
-        Top = 305
-        Width = 556
-        Height = 56
+        Top = 289
+        Width = 605
+        Height = 48
         Align = alTop
         Caption = #47196#44536#51064#54943#49688#51228#54620
         TabOrder = 6
@@ -1849,6 +1886,30 @@ object fmAttendConfig: TfmAttendConfig
           TabOrder = 1
         end
       end
+      object GroupBox43: TGroupBox
+        Left = 0
+        Top = 337
+        Width = 605
+        Height = 48
+        Align = alTop
+        Caption = #44592#53440
+        TabOrder = 7
+        object Label153: TLabel
+          Left = 8
+          Top = 22
+          Width = 89
+          Height = 12
+          Caption = 'CardFull '#52404#53356
+        end
+        object chk_CardFull: TCheckBox
+          Left = 104
+          Top = 16
+          Width = 57
+          Height = 25
+          Caption = #49324#50857
+          TabOrder = 0
+        end
+      end
     end
     object TabSheet7: TTabSheet
       Caption = #50672#46041
@@ -1856,7 +1917,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox7: TGroupBox
         Left = 0
         Top = 0
-        Width = 556
+        Width = 605
         Height = 233
         Align = alTop
         Caption = #51648#47928#50672#46041
@@ -1877,7 +1938,7 @@ object fmAttendConfig: TfmAttendConfig
         object gb_fdms: TGroupBox
           Left = 105
           Top = 14
-          Width = 449
+          Width = 498
           Height = 217
           Align = alClient
           TabOrder = 1
@@ -1885,23 +1946,25 @@ object fmAttendConfig: TfmAttendConfig
           object rg_readerType: TRadioGroup
             Left = 2
             Top = 14
-            Width = 445
+            Width = 494
             Height = 35
+            Hint = #49457#54788'(NEW)-'#47784#44397#44284' '#44057#51060' IF1000'#51012' '#51060#50857#54644#49436' '#49457#54788' '#54532#47196#44536#47016#50640' '#44428#54620' '#48512#50668#44620#51648' '#44032#45733#54632
             Align = alTop
             Caption = 'Type'
-            Columns = 3
+            Columns = 4
             ItemIndex = 0
             Items.Strings = (
               #49457#54788'(OLD)'
               #50976#45768#50728
-              #49457#54788'(NEW)')
+              #49457#54788'('#47784#44397')'
+              #49457#54788'('#53685#54633')')
             TabOrder = 0
             OnClick = rg_readerTypeClick
           end
           object Panel3: TPanel
             Left = 2
             Top = 49
-            Width = 445
+            Width = 494
             Height = 166
             Align = alClient
             TabOrder = 1
@@ -1976,6 +2039,14 @@ object fmAttendConfig: TfmAttendConfig
               Height = 12
               Caption = #44600#51060
             end
+            object SpeedButton4: TSpeedButton
+              Left = 416
+              Top = 86
+              Width = 57
+              Height = 25
+              Caption = #53580#49828#53944
+              OnClick = SpeedButton4Click
+            end
             object ed_fdmsCardLen: TEdit
               Left = 184
               Top = 114
@@ -2005,16 +2076,16 @@ object fmAttendConfig: TfmAttendConfig
             object ed_fdmsPath: TEdit
               Left = 88
               Top = 40
-              Width = 249
+              Width = 313
               Height = 20
               ImeName = 'Microsoft IME 2003'
               TabOrder = 3
             end
             object btn_fdmsSearch: TButton
-              Left = 344
+              Left = 408
               Top = 40
-              Width = 49
-              Height = 17
+              Width = 57
+              Height = 19
               Caption = #54028#51068#52286#44592
               TabOrder = 4
               OnClick = btn_fdmsSearchClick
@@ -2022,7 +2093,7 @@ object fmAttendConfig: TfmAttendConfig
             object rg_fdmsdbtype: TRadioGroup
               Left = 1
               Top = 1
-              Width = 443
+              Width = 492
               Height = 32
               Align = alTop
               Caption = 'DBTYPE'
@@ -2135,7 +2206,7 @@ object fmAttendConfig: TfmAttendConfig
       object rg_ServerReader: TRadioGroup
         Left = 0
         Top = 233
-        Width = 556
+        Width = 605
         Height = 48
         Align = alTop
         Caption = #52852#46300#47532#45908#49436#48260#50672#46041
@@ -2150,7 +2221,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox18: TGroupBox
         Left = 0
         Top = 281
-        Width = 556
+        Width = 605
         Height = 48
         Align = alTop
         Caption = #51064#51201#49324#54637#50808#48512#50672#46041
@@ -2217,7 +2288,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox19: TGroupBox
         Left = 0
         Top = 329
-        Width = 556
+        Width = 605
         Height = 56
         Hint = #51204#47928#44508#52825#51012#49373#49457#54616#50668#51204#47928#51004#47196' '#49569#49888#54616#45716' '#50669#54624#51012' '#49688#54665
         Align = alTop
@@ -2250,7 +2321,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox36: TGroupBox
         Left = 0
         Top = 385
-        Width = 556
+        Width = 605
         Height = 104
         Align = alTop
         Caption = 'FaceCop'
@@ -2287,7 +2358,7 @@ object fmAttendConfig: TfmAttendConfig
         object rg_Facecop: TRadioGroup
           Left = 2
           Top = 14
-          Width = 552
+          Width = 601
           Height = 48
           Align = alTop
           Caption = #49324#50896#50672#46041
@@ -2323,7 +2394,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox20: TGroupBox
         Left = 0
         Top = 0
-        Width = 556
+        Width = 605
         Height = 105
         Align = alTop
         Caption = #54868#51116#50672#46041#49483#54021
@@ -2392,7 +2463,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox31: TGroupBox
         Left = 0
         Top = 105
-        Width = 556
+        Width = 605
         Height = 64
         Align = alTop
         Caption = #47540#47112#51060
@@ -2479,14 +2550,14 @@ object fmAttendConfig: TfmAttendConfig
       object Panel2: TPanel
         Left = 0
         Top = 0
-        Width = 556
+        Width = 605
         Height = 113
         Align = alTop
         TabOrder = 0
         object GroupBox21: TGroupBox
           Left = 1
           Top = 1
-          Width = 554
+          Width = 603
           Height = 57
           Align = alTop
           Caption = #51109#48708#49444#51221
@@ -2517,7 +2588,7 @@ object fmAttendConfig: TfmAttendConfig
         object gb_ServerPort: TGroupBox
           Left = 1
           Top = 58
-          Width = 554
+          Width = 603
           Height = 48
           Align = alTop
           Caption = #44592#44592#48324#49436#48260#54252#53944#49444#51221
@@ -2579,7 +2650,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox24: TGroupBox
         Left = 0
         Top = 113
-        Width = 556
+        Width = 605
         Height = 48
         Align = alTop
         Caption = 'FTP '#49324#50857#50976#47924
@@ -2606,7 +2677,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox23: TGroupBox
         Left = 0
         Top = 0
-        Width = 556
+        Width = 605
         Height = 49
         Align = alTop
         Caption = #54924#49324
@@ -2640,13 +2711,14 @@ object fmAttendConfig: TfmAttendConfig
             '6.'#51060#45432#45769#49828#44608#52380#44277#51109
             '7.'#50896#51452#49884#47549#46020#49436#44288
             '8.GS'#46041#54644#51204#47141#49885#49688
-            '9.'#51204#45224#45824#48337#50896)
+            '9.'#51204#45224#45824#48337#50896
+            '10.'#54861#51061#45824'('#49464#51333')')
         end
       end
       object gb_ArmStateView: TGroupBox
         Left = 0
         Top = 49
-        Width = 556
+        Width = 605
         Height = 56
         Align = alTop
         Caption = #50508#46988#47196#44536#44592#47197#49884#44036
@@ -2690,7 +2762,7 @@ object fmAttendConfig: TfmAttendConfig
       object gb_ModebusPort: TGroupBox
         Left = 0
         Top = 105
-        Width = 556
+        Width = 605
         Height = 48
         Align = alTop
         Caption = #47784#46300#48260#49828#45824#44592#54252#53944
@@ -2716,7 +2788,7 @@ object fmAttendConfig: TfmAttendConfig
       object rg_OldCardDelete: TRadioGroup
         Left = 0
         Top = 153
-        Width = 556
+        Width = 605
         Height = 56
         Align = alTop
         Caption = #44396#52852#46300#49325#51228#50976#47924
@@ -2730,7 +2802,7 @@ object fmAttendConfig: TfmAttendConfig
       object gb_RelayPG: TGroupBox
         Left = 0
         Top = 257
-        Width = 556
+        Width = 605
         Height = 48
         Align = alTop
         Caption = #50672#46041#54532#47196#44536#47016' '#45824#44592#54252#53944
@@ -2756,7 +2828,7 @@ object fmAttendConfig: TfmAttendConfig
       object rg_RelayServer: TRadioGroup
         Left = 0
         Top = 209
-        Width = 556
+        Width = 605
         Height = 48
         Align = alTop
         Caption = #50672#46041#49436#48260#49324#50857#50976#47924
@@ -2774,7 +2846,7 @@ object fmAttendConfig: TfmAttendConfig
       object gb_PgType: TGroupBox
         Left = 0
         Top = 0
-        Width = 556
+        Width = 605
         Height = 80
         Align = alTop
         Caption = #52852#46300#53440#51077
@@ -2842,7 +2914,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox26: TGroupBox
         Left = 0
         Top = 80
-        Width = 556
+        Width = 605
         Height = 49
         Align = alTop
         TabOrder = 1
@@ -2856,7 +2928,7 @@ object fmAttendConfig: TfmAttendConfig
           OnClick = chk_CardLenFixedClick
         end
         object pan_CardFix: TPanel
-          Left = 202
+          Left = 251
           Top = 14
           Width = 352
           Height = 33
@@ -2921,7 +2993,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox29: TGroupBox
         Left = 0
         Top = 129
-        Width = 556
+        Width = 605
         Height = 48
         Align = alTop
         Caption = #50508#46988#52404#53356#54805#53468
@@ -2955,7 +3027,7 @@ object fmAttendConfig: TfmAttendConfig
       object rg_CardMemoryLoading: TRadioGroup
         Left = 0
         Top = 177
-        Width = 556
+        Width = 605
         Height = 41
         Align = alTop
         Caption = #52852#46300#45936#51060#53552#47700#47784#47532#47196#46377
@@ -2969,7 +3041,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox39: TGroupBox
         Left = 0
         Top = 218
-        Width = 556
+        Width = 605
         Height = 55
         Align = alTop
         Caption = #52852#46300#49325#51228
@@ -3010,7 +3082,7 @@ object fmAttendConfig: TfmAttendConfig
       object rg_DevicePermitSync: TRadioGroup
         Left = 0
         Top = 273
-        Width = 556
+        Width = 605
         Height = 41
         Align = alTop
         Caption = #52852#46300#44428#54620' '#44592#44592' '#46041#44592#54868
@@ -3028,7 +3100,7 @@ object fmAttendConfig: TfmAttendConfig
       object rg_ScheduleDevice: TRadioGroup
         Left = 0
         Top = 49
-        Width = 556
+        Width = 605
         Height = 49
         Align = alTop
         Caption = #49828#52992#51460#46041#51089
@@ -3042,7 +3114,7 @@ object fmAttendConfig: TfmAttendConfig
       object rg_ScheduleAsync: TRadioGroup
         Left = 0
         Top = 0
-        Width = 556
+        Width = 605
         Height = 49
         Align = alTop
         Caption = #49828#52992#51460#50672#46041'('#50672#46041#49884' '#52636#51077#47928' '#49828#52992#51460#49324#50857' '#49884' '#44592#44592' '#51201#50857#46120')'
@@ -3056,7 +3128,7 @@ object fmAttendConfig: TfmAttendConfig
       object rg_schUsepacket: TRadioGroup
         Left = 0
         Top = 98
-        Width = 556
+        Width = 605
         Height = 49
         Align = alTop
         Caption = #49828#52992#51460#49324#50857#50976#47924
@@ -3074,7 +3146,7 @@ object fmAttendConfig: TfmAttendConfig
       object rg_CommLog: TRadioGroup
         Left = 0
         Top = 0
-        Width = 556
+        Width = 605
         Height = 49
         Align = alTop
         Caption = #53685#49888#47196#44536
@@ -3088,7 +3160,7 @@ object fmAttendConfig: TfmAttendConfig
       object rg_CardLog: TRadioGroup
         Left = 0
         Top = 49
-        Width = 556
+        Width = 605
         Height = 49
         Align = alTop
         Caption = #52852#46300#47196#44536
@@ -3113,7 +3185,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox30: TGroupBox
         Left = 0
         Top = 57
-        Width = 556
+        Width = 605
         Height = 104
         Align = alTop
         Caption = #44288#51228#49436#48260#54872#44221
@@ -3189,7 +3261,7 @@ object fmAttendConfig: TfmAttendConfig
       object rg_kttControlServerUses: TRadioGroup
         Left = 0
         Top = 0
-        Width = 556
+        Width = 605
         Height = 57
         Align = alTop
         Caption = #44288#51228#53685#49888#49324#50857#50976#47924
@@ -3204,7 +3276,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox32: TGroupBox
         Left = 0
         Top = 218
-        Width = 556
+        Width = 605
         Height = 79
         Align = alTop
         Caption = 'DDNS'#49436#48260#54872#44221
@@ -3273,7 +3345,7 @@ object fmAttendConfig: TfmAttendConfig
       object rg_kttDDNSServerUses: TRadioGroup
         Left = 0
         Top = 161
-        Width = 556
+        Width = 605
         Height = 57
         Align = alTop
         Caption = 'DDNS'#49436#48260#49324#50857#50976#47924
@@ -3339,7 +3411,7 @@ object fmAttendConfig: TfmAttendConfig
       object rg_AntiPassGroup: TRadioGroup
         Left = 0
         Top = 0
-        Width = 556
+        Width = 605
         Height = 41
         Align = alTop
         Caption = #44544#47196#48268#50504#54000#54056#49828' '#49324#50857#50976#47924
@@ -3353,7 +3425,7 @@ object fmAttendConfig: TfmAttendConfig
       object gb_GlobalInfo: TGroupBox
         Left = 0
         Top = 41
-        Width = 556
+        Width = 605
         Height = 96
         Align = alTop
         Caption = #46321#47197#49324#54637
@@ -3444,7 +3516,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox37: TGroupBox
         Left = 0
         Top = 0
-        Width = 556
+        Width = 605
         Height = 129
         Align = alTop
         Caption = #49885#49688#51064#51613#54943#49688#51228#54620
@@ -3525,7 +3597,7 @@ object fmAttendConfig: TfmAttendConfig
       object GroupBox38: TGroupBox
         Left = 0
         Top = 129
-        Width = 556
+        Width = 605
         Height = 136
         Align = alTop
         Caption = #54617#44592#44396#49457
@@ -4260,7 +4332,7 @@ object fmAttendConfig: TfmAttendConfig
   object GroupBox2: TGroupBox
     Left = 0
     Top = 640
-    Width = 564
+    Width = 613
     Height = 64
     Align = alBottom
     TabOrder = 1
@@ -4350,7 +4422,7 @@ object fmAttendConfig: TfmAttendConfig
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 564
+    Width = 613
     Height = 33
     Align = alTop
     Caption = #54872#44221#49444#51221

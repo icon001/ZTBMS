@@ -131,7 +131,7 @@ begin
     TempAdoQuery.Free;
     CoUninitialize;
   End;
-  result := fmMain.FillZeroNumber(nSeq,3);
+  result := FillZeroNumber(nSeq,3);
 end;
 
 procedure TfmGroupCode.FormActivate(Sender: TObject);

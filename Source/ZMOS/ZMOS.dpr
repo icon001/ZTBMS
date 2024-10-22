@@ -42,7 +42,7 @@ uses
   uPromiseGrade in 'fmPromiseGrade\uPromiseGrade.pas' {fmPromiseGrade},
   uPromiseGradeAdmin in 'fmPromiseGradeAdmin\uPromiseGradeAdmin.pas' {fmPromiseGradeAdmin},
   uZonePosition in 'fmZonePosition\uZonePosition.pas' {fmZonePosition},
-  uDoorAdminReport in 'fmDoorAdminReport\uDoorAdminReport.pas' {fmDoorAdminReport},
+  uAdminChangeReport in 'fmAdminChangeReport\uAdminChangeReport.pas' {fmAdminChangeReport},
   uCardAdminReport in 'fmCardAdminReport\uCardAdminReport.pas' {fmCardAdminReport},
   uLOMOSEmployee in 'fmLOMOSEmployee\uLOMOSEmployee.pas' {fmLOMOSEmployee},
   uCompanyGrade in 'fmAdmin\uCompanyGrade.pas' {fmCompanyGrade},
@@ -162,7 +162,9 @@ uses
   uSHFDBRelay in '..\..\Lib\SHFDBRelay\uSHFDBRelay.pas' {dmSHFDBRelay: TDataModule},
   uReaderManager in '..\SH_FPDaemon\fmReaderManager\uReaderManager.pas' {fmReaderManager},
   uAlarmMapMonitoring in 'fmAlarmMapMonitoring\uAlarmMapMonitoring.pas' {fmAlarmMapMonitoring},
-  uAlarmMap in 'fmKTTypeMonitoring\uAlarmMap.pas' {fmAlarmMap};
+  uAlarmMap in 'fmKTTypeMonitoring\uAlarmMap.pas' {fmAlarmMap},
+  uDoorAdminReport in 'fmDoorAdminReport\uDoorAdminReport.pas' {fmDoorAdminReport},
+  uSystemLoginReport in 'fmSystemLoginReport\uSystemLoginReport.pas' {fmSystemLoginReport};
 
 {$R *.res}
 {$R manifest.RES}
@@ -177,6 +179,5 @@ begin
   Application.CreateForm(TdmDBFunction, dmDBFunction);
   Application.CreateForm(TdmSHFDBRelay, dmSHFDBRelay);
   Application.CreateForm(TfmMain, fmMain);
-  Application.CreateForm(TfmAlarmMap, fmAlarmMap);
   Application.Run;
 end.

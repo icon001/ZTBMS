@@ -59,7 +59,8 @@ uses
   uCotrolerType in 'fmControlerType\uCotrolerType.pas' {fmControlerType},
   uGoodsCode in 'fmGoodsCode\uGoodsCode.pas' {fmGoodsCode},
   uGOODSCATALOG in 'fmGOODSCATALOG\uGOODSCATALOG.pas' {fmGOODSCATALOG},
-  uControlerInformationAdmin in 'fmControlerInfomation\uControlerInformationAdmin.pas' {fmControlerInformationAdmin};
+  uControlerInformationAdmin in 'fmControlerInfomation\uControlerInformationAdmin.pas' {fmControlerInformationAdmin},
+  uStartReg in 'fmStartReg\uStartReg.pas' {fmStartReg};
 
 {$R *.res}
 
@@ -69,5 +70,6 @@ begin
   Application.Initialize;
   Application.CreateForm(TdmDB, dmDB);
   Application.CreateForm(TfmMain, fmMain);
+  Application.CreateForm(TfmStartReg, fmStartReg);
   Application.Run;
 end.

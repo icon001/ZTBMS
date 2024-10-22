@@ -1,6 +1,6 @@
 inherited fmDeviceVerInfo: TfmDeviceVerInfo
-  Left = 135
-  Top = 191
+  Left = 590
+  Top = 190
   Width = 1019
   Height = 702
   Caption = #44592#44592#48260#51260' '#51221#48372' '#51312#54924
@@ -22,6 +22,8 @@ inherited fmDeviceVerInfo: TfmDeviceVerInfo
     Width = 1011
     Height = 89
     Align = alTop
+    Color = clWhite
+    ParentColor = False
     TabOrder = 0
     object btn_Search: TSpeedButton
       Left = 568
@@ -214,9 +216,10 @@ inherited fmDeviceVerInfo: TfmDeviceVerInfo
     Left = 0
     Top = 89
     Width = 1011
-    Height = 579
+    Height = 586
     Cursor = crDefault
     Align = alClient
+    ColCount = 7
     DefaultColWidth = 90
     DefaultRowHeight = 21
     FixedCols = 0
@@ -241,7 +244,9 @@ inherited fmDeviceVerInfo: TfmDeviceVerInfo
       'Node No'
       'ECU ID'
       #44592#44592#47749#52845
-      #44592#44592' '#48260#51260' '#51221#48372)
+      #44592#44592' '#48260#51260' '#51221#48372
+      #44592#44592#53076#46300
+      #44592#44592#53440#51077)
     ControlLook.FixedGradientHoverFrom = clGray
     ControlLook.FixedGradientHoverTo = clWhite
     ControlLook.FixedGradientDownFrom = clGray
@@ -297,6 +302,7 @@ inherited fmDeviceVerInfo: TfmDeviceVerInfo
     PrintSettings.FooterFont.Style = []
     PrintSettings.PageNumSep = '/'
     ScrollSynch = True
+    ScrollWidth = 16
     SearchFooter.FindNextCaption = 'Find next'
     SearchFooter.FindPrevCaption = 'Find previous'
     SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -318,7 +324,9 @@ inherited fmDeviceVerInfo: TfmDeviceVerInfo
       97
       119
       224
-      426)
+      229
+      109
+      97)
     object pan_gauge: TPanel
       Left = 328
       Top = 96

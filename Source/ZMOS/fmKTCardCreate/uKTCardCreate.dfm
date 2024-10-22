@@ -1,9 +1,10 @@
 inherited fmKTCardCreate: TfmKTCardCreate
-  Left = 193
-  Top = 252
+  Left = 307
+  Top = 162
   Width = 950
   Height = 647
   Caption = 'KT'#52852#46300#48156#44553
+  Color = clWhite
   Font.Charset = HANGEUL_CHARSET
   Font.Height = -12
   FormStyle = fsMDIChild
@@ -23,7 +24,7 @@ inherited fmKTCardCreate: TfmKTCardCreate
     Height = 33
     Align = alTop
     Caption = 'KT'#52852#46300#48156#44553
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -35,10 +36,11 @@ inherited fmKTCardCreate: TfmKTCardCreate
   end
   object Panel2: TPanel [1]
     Left = 0
-    Top = 557
+    Top = 564
     Width = 942
     Height = 56
     Align = alBottom
+    Color = clWhite
     TabOrder = 1
     OnResize = Panel2Resize
     object btn_Update: TSpeedButton
@@ -133,9 +135,10 @@ inherited fmKTCardCreate: TfmKTCardCreate
     Left = 0
     Top = 33
     Width = 942
-    Height = 524
+    Height = 531
     Align = alClient
     BevelOuter = bvNone
+    Color = clWhite
     TabOrder = 2
     object Splitter1: TSplitter
       Left = 0
@@ -149,8 +152,9 @@ inherited fmKTCardCreate: TfmKTCardCreate
       Left = 0
       Top = 1
       Width = 942
-      Height = 225
+      Height = 232
       Align = alClient
+      Color = clWhite
       TabOrder = 0
       object GroupBox2: TGroupBox
         Left = 1
@@ -384,7 +388,7 @@ inherited fmKTCardCreate: TfmKTCardCreate
         Left = 1
         Top = 73
         Width = 940
-        Height = 151
+        Height = 158
         Cursor = crDefault
         Align = alClient
         ColCount = 21
@@ -484,6 +488,7 @@ inherited fmKTCardCreate: TfmKTCardCreate
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
         ScrollSynch = True
+        ScrollWidth = 16
         SearchFooter.FindNextCaption = 'Find next'
         SearchFooter.FindPrevCaption = 'Find previous'
         SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -526,10 +531,11 @@ inherited fmKTCardCreate: TfmKTCardCreate
     end
     object pn_Employ: TPanel
       Left = 0
-      Top = 226
+      Top = 233
       Width = 942
       Height = 298
       Align = alBottom
+      Color = clWhite
       TabOrder = 1
       object GroupBox3: TGroupBox
         Left = 1

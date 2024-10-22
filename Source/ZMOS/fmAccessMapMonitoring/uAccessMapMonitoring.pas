@@ -188,6 +188,12 @@ type
     pm_PosiNega: TMenuItem;
     Positive1: TMenuItem;
     Negative1: TMenuItem;
+    N1: TMenuItem;
+    mn_ControlerChange: TMenuItem;
+    PopupMenu_IntAccess: TPopupMenu;
+    MenuItem10: TMenuItem;
+    MenuItem14: TMenuItem;
+    N24: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Action_LoctionLoadExecute(Sender: TObject);
@@ -251,6 +257,10 @@ type
       Shift: TShiftState);
     procedure Positive1Click(Sender: TObject);
     procedure Negative1Click(Sender: TObject);
+    procedure mn_ControlerChangeClick(Sender: TObject);
+    procedure MenuItem10Click(Sender: TObject);
+    procedure MenuItem14Click(Sender: TObject);
+    procedure N24Click(Sender: TObject);
   private
     L_bFirst : Boolean;
     L_bClose : Boolean;
@@ -4234,6 +4244,64 @@ begin
 
   self.FindSubForm('Main').FindCommand('SendData').Params.Values['VALUE'] := 'NEGATIVE'+ DATADELIMITER + stDoorID + DATADELIMITER;
   self.FindSubForm('Main').FindCommand('SendData').Execute;
+
+end;
+
+procedure TfmAccessMapMonitoring.mn_ControlerChangeClick(Sender: TObject);
+var
+  stNodeNo : string;
+  stEcuID : string;
+  stDeviceID: string;
+  stCaption : string;
+begin
+  stCaption := TreeView_Device.Selected.Text;
+  stDeviceID := DeviceCodeList.Strings[ DeviceCaptionList.IndexOf(stCaption)];
+  Delete(stDeviceID,1,1);
+
+  stNodeNo := copy(stDeviceID,1,3);
+  stEcuID := copy(stDeviceID,4,2);
+
+  dmDBFunction.UpdateTB_ACCESSDEVICE_Field_StringValue(stNodeNo,stEcuID,'AC_DEVICECODE','');
+  dmDBFunction.UpdateTB_DEVICESCHEDULE_Field_StringValue(stNodeNo,stEcuID,'','','DE_RCVACK','N');
+
+  self.FindSubForm('Main').FindCommand('SendData').Params.Values['VALUE'] := 'CARDDOWNLOAD'+ DATADELIMITER + stDeviceID + DATADELIMITER + 'Y' + DATADELIMITER;
+  self.FindSubForm('Main').FindCommand('SendData').Execute;
+  DataModule1.TB_SYSTEMLOGInsert('0','00','0','0',stDeviceID , '컨트롤러교체');
+
+end;
+
+procedure TfmAccessMapMonitoring.MenuItem10Click(Sender: TObject);
+var
+  stCardNo : string;
+begin
+  stCardNo := sg_Access.Cells[DoorIndexArray[5],sg_Access.Row];
+  if stCardNo = '' then Exit;
+  self.FindSubForm('Main').FindCommand('CARDSHOW').Params.Values['VALUE'] := 'EMPLOYEE';
+  self.FindSubForm('Main').FindCommand('CARDSHOW').Params.Values['CARDNO'] := stCardNo;
+  self.FindSubForm('Main').FindCommand('CARDSHOW').Execute;
+
+end;
+
+procedure TfmAccessMapMonitoring.MenuItem14Click(Sender: TObject);
+var
+  stCardNo : string;
+begin
+  stCardNo := sg_Access.Cells[DoorIndexArray[5],sg_Access.Row];
+  if stCardNo = '' then Exit;
+  self.FindSubForm('Main').FindCommand('CARDSHOW').Params.Values['VALUE'] := 'CARDADMIN';
+  self.FindSubForm('Main').FindCommand('CARDSHOW').Params.Values['CARDNO'] := stCardNo;
+  self.FindSubForm('Main').FindCommand('CARDSHOW').Execute;
+
+end;
+
+procedure TfmAccessMapMonitoring.N24Click(Sender: TObject);
+var
+  st : string;
+begin
+  inherited;
+  st := sg_Access.Cells[DoorIndexArray[5],sg_Access.Row];
+
+  if st <> '' then ClipBoard.SetTextBuf(PChar(st));
 
 end;
 

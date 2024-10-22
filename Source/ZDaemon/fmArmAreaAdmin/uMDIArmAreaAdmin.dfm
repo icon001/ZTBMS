@@ -260,7 +260,7 @@ inherited fmMDIArmArea: TfmMDIArmArea
         end
         object Label3: TLabel
           Left = 16
-          Top = 121
+          Top = 120
           Width = 48
           Height = 12
           Caption = #51312#54924#49692#49436
@@ -296,7 +296,7 @@ inherited fmMDIArmArea: TfmMDIArmArea
         end
         object Label14: TLabel
           Left = 16
-          Top = 217
+          Top = 257
           Width = 72
           Height = 12
           Caption = #53748#49892#51648#50672#49884#44036
@@ -305,7 +305,7 @@ inherited fmMDIArmArea: TfmMDIArmArea
         end
         object Label4: TLabel
           Left = 179
-          Top = 217
+          Top = 257
           Width = 12
           Height = 12
           Caption = #52488
@@ -332,7 +332,7 @@ inherited fmMDIArmArea: TfmMDIArmArea
         end
         object Label6: TLabel
           Left = 16
-          Top = 73
+          Top = 72
           Width = 72
           Height = 12
           Caption = #48169#48276#44396#50669#48264#54840
@@ -346,17 +346,24 @@ inherited fmMDIArmArea: TfmMDIArmArea
         end
         object Label11: TLabel
           Left = 16
-          Top = 177
+          Top = 168
           Width = 48
           Height = 12
           Caption = #52404#53356#49884#44036
         end
         object Label16: TLabel
           Left = 224
-          Top = 177
+          Top = 168
           Width = 6
           Height = 12
           Caption = '~'
+        end
+        object Label18: TLabel
+          Left = 16
+          Top = 192
+          Width = 48
+          Height = 12
+          Caption = #50672#46041#53076#46300
         end
         object ed_regAlarmName: TEdit
           Left = 120
@@ -381,7 +388,7 @@ inherited fmMDIArmArea: TfmMDIArmArea
         end
         object ed_regAlarmSeq: TSpinEdit
           Left = 120
-          Top = 117
+          Top = 116
           Width = 217
           Height = 21
           MaxValue = 65000
@@ -554,7 +561,7 @@ inherited fmMDIArmArea: TfmMDIArmArea
         end
         object SpinEdit_OutDelay: TRzSpinEdit
           Left = 120
-          Top = 213
+          Top = 253
           Width = 51
           Height = 20
           AllowKeyEdit = True
@@ -582,7 +589,7 @@ inherited fmMDIArmArea: TfmMDIArmArea
         end
         object ed_AlarmNo: TEdit
           Left = 216
-          Top = 224
+          Top = 240
           Width = 161
           Height = 20
           ImeName = 'Microsoft IME 2003'
@@ -600,7 +607,7 @@ inherited fmMDIArmArea: TfmMDIArmArea
         end
         object se_ArmAreaNo: TSpinEdit
           Left = 120
-          Top = 69
+          Top = 68
           Width = 217
           Height = 21
           MaxValue = 8
@@ -620,7 +627,7 @@ inherited fmMDIArmArea: TfmMDIArmArea
         end
         object chk_DisArmAlarm: TCheckBox
           Left = 16
-          Top = 144
+          Top = 140
           Width = 153
           Height = 25
           Caption = #48120#44221#44228#49884#50508#46988#48156#49373' '#49324#50857
@@ -628,7 +635,7 @@ inherited fmMDIArmArea: TfmMDIArmArea
         end
         object ed_DisArmCheckFrom: TEdit
           Left = 120
-          Top = 172
+          Top = 164
           Width = 89
           Height = 20
           ImeName = 'Microsoft IME 2003'
@@ -638,12 +645,22 @@ inherited fmMDIArmArea: TfmMDIArmArea
         end
         object ed_DisArmCheckTo: TEdit
           Left = 248
-          Top = 172
+          Top = 164
           Width = 89
           Height = 20
           ImeName = 'Microsoft IME 2003'
           MaxLength = 30
           TabOrder = 21
+          OnEnter = ed_regAlarmNameEnter
+        end
+        object ed_RelayCode: TEdit
+          Left = 120
+          Top = 188
+          Width = 217
+          Height = 20
+          ImeName = 'Microsoft IME 2003'
+          MaxLength = 30
+          TabOrder = 22
           OnEnter = ed_regAlarmNameEnter
         end
       end
@@ -722,7 +739,7 @@ inherited fmMDIArmArea: TfmMDIArmArea
         Height = 285
         Cursor = crDefault
         Align = alClient
-        ColCount = 23
+        ColCount = 24
         DefaultColWidth = 90
         DefaultRowHeight = 21
         FixedCols = 0
@@ -837,6 +854,7 @@ inherited fmMDIArmArea: TfmMDIArmArea
           134
           128
           71
+          90
           90
           90
           90

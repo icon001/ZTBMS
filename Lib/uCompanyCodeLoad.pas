@@ -12,7 +12,7 @@ procedure LoadEmpType(aStringList:TStringList;cmb_Box:TComboBox);
 procedure LoadEmpSearchType(cmb_Box:TComboBox);
 procedure LoadRegGubun(cmb_Box:TComboBox);
 procedure LoadCardGubun(cmb_Box:TComboBox);
-procedure LoadWorkGubun(aStringList:TStringList;cmb_Box:TComboBox);
+procedure LoadWorkGubun(aStringList:TStringList;cmb_Box:TComboBox;aAll:string='');
 
 procedure LoadsCompanyCode(aStringList:TStringList;cmb_Box:TComboBox);
 procedure LoadsJijumCode(aCompanyCode:string;aStringList:TStringList;cmb_Box:TComboBox);
@@ -883,6 +883,7 @@ begin
   cmb_Box.Items.Add('카드타입');
   cmb_Box.Items.Add(FM108);
   cmb_Box.Items.Add(FM109);
+  //cmb_Box.Items.Add(FM110);
   cmb_Box.ItemIndex := 0;
 end;
 
@@ -948,14 +949,14 @@ begin
   End;
 end;
 
-procedure LoadWorkGubun(aStringList:TStringList;cmb_Box:TComboBox);
+procedure LoadWorkGubun(aStringList:TStringList;cmb_Box:TComboBox;aAll:string='');
 var
   stSql :string;
   TempAdoQuery : TADOQuery;
 begin
   cmb_Box.Clear;
   aStringList.Clear;
-  cmb_Box.Items.Add('');
+  cmb_Box.Items.Add(aAll);
   aStringList.Add('');
   cmb_Box.ItemIndex := 0;
 

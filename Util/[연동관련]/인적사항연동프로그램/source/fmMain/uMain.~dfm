@@ -20,7 +20,7 @@ inherited fmMain: TfmMain
     Left = 0
     Top = 57
     Width = 980
-    Height = 517
+    Height = 525
     Align = alClient
     AutoSize = True
     Center = True
@@ -53,7 +53,7 @@ inherited fmMain: TfmMain
   end
   object StatusBar1: TStatusBar [2]
     Left = 0
-    Top = 574
+    Top = 582
     Width = 980
     Height = 30
     Panels = <
@@ -3108,9 +3108,7 @@ inherited fmMain: TfmMain
   end
   object ControlSocketPort: TApdWinsockPort
     WsLocalAddresses.Strings = (
-      '192.168.0.106'
-      '192.168.101.3'
-      '192.168.10.3')
+      '192.168.0.45')
     WsLocalAddressIndex = 0
     WsPort = '3431'
     WsSocksServerInfo.Port = 0

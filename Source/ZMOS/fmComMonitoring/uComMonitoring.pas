@@ -17,6 +17,7 @@ type
     sg_ComState: TAdvStringGrid;
     btn_Close: TSpeedButton;
     SaveDialog1: TSaveDialog;
+    Panel17: TPanel;
     procedure btn_CloseClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormActivate(Sender: TObject);

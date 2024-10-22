@@ -357,11 +357,11 @@ begin
       stArmAreaNo := copy(DeviceCodeList.Strings[cmb_AlarmName.ItemIndex],6,1) ;
     end;
     if DBTYPE = 'MSSQL' then
-       stSql := MSSQL.SelectTB_ACCESSEVENTTOPatrolArea(FormatDateTime('yyyymmdd',dt_FromDate.Date),stFromhhmm,FormatDateTime('yyyymmdd',dt_ToDate.Date),stTohhmm,stPermitCode,stEmCode,stEmName,stEmTypeCode)
+       stSql := MSSQL.SelectTB_ACCESSEVENTTOPatrolArea(FormatDateTime('yyyymmdd',dt_FromDate.Date),stFromhhmm,FormatDateTime('yyyymmdd',dt_ToDate.Date),stTohhmm,stPermitCode,stEmCode,stEmName,stEmTypeCode,FillZeroStrNum(stArmAreaNo,2))
     else if DBTYPE = 'PG' then
-       stSql := PostGreSql.SelectTB_ACCESSEVENTTOPatrolArea(FormatDateTime('yyyymmdd',dt_FromDate.Date),stFromhhmm,FormatDateTime('yyyymmdd',dt_ToDate.Date),stTohhmm,stPermitCode,stEmCode,stEmName,stEmTypeCode)
+       stSql := PostGreSql.SelectTB_ACCESSEVENTTOPatrolArea(FormatDateTime('yyyymmdd',dt_FromDate.Date),stFromhhmm,FormatDateTime('yyyymmdd',dt_ToDate.Date),stTohhmm,stPermitCode,stEmCode,stEmName,stEmTypeCode,FillZeroStrNum(stArmAreaNo,2))
     else if DBTYPE = 'FB' then
-       stSql := FireBird.SelectTB_ACCESSEVENTTOPatrolArea(FormatDateTime('yyyymmdd',dt_FromDate.Date),stFromhhmm,FormatDateTime('yyyymmdd',dt_ToDate.Date),stTohhmm,stPermitCode,stEmCode,stEmName,stEmTypeCode)
+       stSql := FireBird.SelectTB_ACCESSEVENTTOPatrolArea(FormatDateTime('yyyymmdd',dt_FromDate.Date),stFromhhmm,FormatDateTime('yyyymmdd',dt_ToDate.Date),stTohhmm,stPermitCode,stEmCode,stEmName,stEmTypeCode,FillZeroStrNum(stArmAreaNo,2))
     else Exit;
 
     if (stArmAreaCode <> '000') and (stArmAreaCode <> '') then

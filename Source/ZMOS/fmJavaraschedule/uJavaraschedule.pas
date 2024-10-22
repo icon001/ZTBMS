@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Grids, BaseGrid, AdvGrid, StdCtrls, Buttons, Spin, RzPanel,
-  RzRadGrp, ExtCtrls, ComCtrls,ADODB,ActiveX, uSubForm, CommandArray;
+  RzRadGrp, ExtCtrls, ComCtrls,ADODB,ActiveX, uSubForm, CommandArray,
+  AdvObj;
 
 type
   TfmJavaraschedule = class(TfmASubForm)

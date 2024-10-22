@@ -21,7 +21,7 @@ object fmPWChange: TfmPWChange
     Top = 0
     Width = 493
     Height = 188
-    ActivePage = Tab_PWChange
+    ActivePage = Tab_Message
     Align = alClient
     TabOrder = 0
     object Tab_Message: TTabSheet
@@ -58,7 +58,7 @@ object fmPWChange: TfmPWChange
         Align = alTop
         BevelInner = bvLowered
         BevelOuter = bvNone
-        Caption = #48708#48128#48264#54840#47484' '#48320#44221' '#54980' 30'#51068#51060' '#51648#45228#49845#45768#45796'.'#48708#48128#48264#54840#47484' '#48320#44221' '#54616#50668' '#51452#49901#49884#50836'.'
+        Caption = #48708#48128#48264#54840#47484' '#48320#44221' '#54980' $DATE'#51068#51060' '#51648#45228#49845#45768#45796'.'#48708#48128#48264#54840#47484' '#48320#44221' '#54616#50668' '#51452#49901#49884#50836'.'
         TabOrder = 1
       end
     end

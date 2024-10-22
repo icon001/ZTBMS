@@ -1,9 +1,9 @@
 inherited fmMain: TfmMain
-  Left = 357
-  Top = 125
+  Left = 610
+  Top = 77
   BorderStyle = bsSingle
   Caption = #49569#49688#49888#54788#54889#51312#54924
-  ClientHeight = 800
+  ClientHeight = 732
   ClientWidth = 1135
   Font.Height = -12
   FormStyle = fsMDIForm
@@ -94,7 +94,7 @@ inherited fmMain: TfmMain
     Left = 0
     Top = 57
     Width = 1135
-    Height = 713
+    Height = 645
     Align = alClient
     AutoSize = True
     Enabled = False
@@ -160,7 +160,7 @@ inherited fmMain: TfmMain
   end
   object StatusBar1: TStatusBar [2]
     Left = 0
-    Top = 770
+    Top = 702
     Width = 1135
     Height = 30
     Panels = <
@@ -1788,6 +1788,17 @@ inherited fmMain: TfmMain
       object mn_HolidayReSend: TMenuItem
         Caption = #53945#51221#51068#51116#51204#49569
         OnClick = mn_HolidayReSendClick
+      end
+      object mn_fdmsResend: TMenuItem
+        Caption = #49324#50896#51221#48372#51116#51204#49569
+        OnClick = mn_fdmsResendClick
+      end
+      object N42: TMenuItem
+        Caption = '-'
+      end
+      object mn_Update: TMenuItem
+        Caption = #53685#49888#45936#47788#50629#45936#51060#53944
+        OnClick = mn_UpdateClick
       end
     end
   end
@@ -4513,7 +4524,7 @@ inherited fmMain: TfmMain
   end
   object LogDeleteTime: TTimer
     Enabled = False
-    Interval = 100000
+    Interval = 1000000
     OnTimer = LogDeleteTimeTimer
     Left = 112
     Top = 632
@@ -4541,7 +4552,7 @@ inherited fmMain: TfmMain
     Enabled = False
     Interval = 60000
     OnTimer = fdmsRelyTimerTimer
-    Left = 232
+    Left = 240
     Top = 632
   end
   object ADOfdmsConnection: TADOConnection
@@ -4735,9 +4746,7 @@ inherited fmMain: TfmMain
   end
   object SentenceSock: TApdWinsockPort
     WsLocalAddresses.Strings = (
-      '192.168.0.106'
-      '192.168.101.3'
-      '192.168.10.3')
+      '192.168.0.45')
     WsLocalAddressIndex = 0
     WsPort = '3431'
     WsSocksServerInfo.Port = 0
@@ -5108,7 +5117,7 @@ inherited fmMain: TfmMain
   end
   object ValidExpiredTimer: TTimer
     Enabled = False
-    Interval = 60000
+    Interval = 600000
     OnTimer = ValidExpiredTimerTimer
     Left = 792
     Top = 640

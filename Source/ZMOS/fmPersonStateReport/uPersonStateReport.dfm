@@ -20,7 +20,7 @@ inherited fmPersonStateReport: TfmPersonStateReport
     Left = 0
     Top = 89
     Width = 1016
-    Height = 495
+    Height = 502
     Cursor = crDefault
     Align = alClient
     ColCount = 10
@@ -109,6 +109,7 @@ inherited fmPersonStateReport: TfmPersonStateReport
     PrintSettings.FooterFont.Style = []
     PrintSettings.PageNumSep = '/'
     ScrollSynch = True
+    ScrollWidth = 16
     SearchFooter.FindNextCaption = 'Find next'
     SearchFooter.FindPrevCaption = 'Find previous'
     SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -141,6 +142,7 @@ inherited fmPersonStateReport: TfmPersonStateReport
       Top = 96
       Width = 329
       Height = 73
+      Color = clWhite
       TabOrder = 3
       Visible = False
       object Label1: TLabel
@@ -166,6 +168,7 @@ inherited fmPersonStateReport: TfmPersonStateReport
     Width = 1016
     Height = 89
     Align = alTop
+    Color = clWhite
     TabOrder = 1
     object GroupBox5: TGroupBox
       Left = 768
@@ -720,7 +723,7 @@ inherited fmPersonStateReport: TfmPersonStateReport
       45524D49544E414D45225D00000000FFFF000000000002000000010000000004
       00B1BCB8B20009000000000000000000080000000000020000000000FFFFFF00
       0000000200000000000000FEFEFF000000000000000000000000FC0000000000
-      00000000000000000000005800E9E41F70F5B9E240E2D19F3B4F18E540}
+      00000000000000000000005800E9E41F70F5B9E24081B2298F323DE640}
   end
   object frDBDataSet1: TfrDBDataSet
     DataSet = AdoQuery

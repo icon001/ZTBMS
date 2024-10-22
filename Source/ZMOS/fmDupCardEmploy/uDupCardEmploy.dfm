@@ -1,9 +1,10 @@
 inherited fmDupCardEmploy: TfmDupCardEmploy
-  Left = 369
-  Top = 121
+  Left = 428
+  Top = 238
   Width = 998
   Height = 734
   Caption = #49324#50896#44288#47532
+  Color = clWhite
   Font.Height = -12
   FormStyle = fsMDIChild
   OldCreateOrder = True
@@ -20,23 +21,25 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
     Left = 0
     Top = 33
     Width = 990
-    Height = 611
+    Height = 618
     Align = alClient
     BevelOuter = bvNone
+    Color = clWhite
     TabOrder = 0
     object Splitter1: TSplitter
       Left = 393
       Top = 0
       Width = 1
-      Height = 611
+      Height = 618
       Align = alRight
     end
     object Panel3: TPanel
       Left = 0
       Top = 0
       Width = 393
-      Height = 611
+      Height = 618
       Align = alClient
+      Color = clWhite
       TabOrder = 0
       object GroupBox2: TGroupBox
         Left = 1
@@ -120,7 +123,7 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
         end
         object btn_Excel: TSpeedButton
           Left = 288
-          Top = 104
+          Top = 88
           Width = 81
           Height = 25
           Caption = #50641#49472
@@ -292,7 +295,7 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
           OnKeyPress = ed_searchTextKeyPress
         end
         object chk_CardRegSearch: TCheckBox
-          Left = 256
+          Left = 254
           Top = 138
           Width = 113
           Height = 17
@@ -319,12 +322,20 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
             '2.'#48516#49892
             '3.'#51221#51648)
         end
+        object chk_Add: TCheckBox
+          Left = 254
+          Top = 114
+          Width = 113
+          Height = 17
+          Caption = #52628#44032#51312#54924
+          TabOrder = 9
+        end
       end
       object sg_Employ: TAdvStringGrid
         Left = 1
         Top = 169
         Width = 391
-        Height = 441
+        Height = 448
         Cursor = crDefault
         Align = alClient
         ColCount = 31
@@ -337,11 +348,12 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
         Font.Height = -12
         Font.Name = 'Tahoma'
         Font.Style = []
-        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing, goRowSelect]
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing, goColMoving, goRowSelect]
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 1
         OnClick = sg_EmployClick
+        OnColumnMoved = sg_EmployColumnMoved
         ActiveCellFont.Charset = DEFAULT_CHARSET
         ActiveCellFont.Color = clWindowText
         ActiveCellFont.Height = -11
@@ -431,6 +443,7 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
         ScrollSynch = True
+        ScrollWidth = 16
         SearchFooter.FindNextCaption = 'Find next'
         SearchFooter.FindPrevCaption = 'Find previous'
         SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -509,8 +522,9 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
       Left = 394
       Top = 0
       Width = 596
-      Height = 611
+      Height = 618
       Align = alRight
+      Color = clWhite
       TabOrder = 1
       object Splitter2: TSplitter
         Left = 1
@@ -522,7 +536,7 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
       end
       object GroupBox1: TGroupBox
         Left = 1
-        Top = 480
+        Top = 487
         Width = 594
         Height = 130
         Align = alBottom
@@ -534,6 +548,7 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
           Width = 590
           Height = 35
           Align = alTop
+          Color = clWhite
           TabOrder = 0
           object btn_visitAdd: TSpeedButton
             Left = 352
@@ -678,6 +693,7 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
           PrintSettings.FooterFont.Name = 'MS Sans Serif'
           PrintSettings.FooterFont.Style = []
           PrintSettings.PageNumSep = '/'
+          ScrollWidth = 16
           SearchFooter.FindNextCaption = 'Find next'
           SearchFooter.FindPrevCaption = 'Find previous'
           SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -726,8 +742,9 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
         Left = 1
         Top = 2
         Width = 594
-        Height = 478
+        Height = 485
         Align = alClient
+        Color = clWhite
         TabOrder = 1
         object lb_sabun: TLabel
           Left = 16
@@ -1060,7 +1077,7 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
         end
         object gb_TimeCode: TGroupBox
           Left = 1
-          Top = 403
+          Top = 410
           Width = 592
           Height = 74
           Align = alBottom
@@ -1081,6 +1098,7 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
               Width = 491
               Height = 26
               Align = alClient
+              Color = clWhite
               TabOrder = 0
               object chk_TimeSun: TCheckBox
                 Left = 8
@@ -1152,6 +1170,7 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
               Width = 491
               Height = 30
               Align = alTop
+              Color = clWhite
               TabOrder = 1
               object chk_Time1: TCheckBox
                 Left = 8
@@ -1198,6 +1217,7 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
             Height = 58
             Align = alLeft
             BevelOuter = bvLowered
+            Color = clWhite
             TabOrder = 1
             object rg_TimeCodeNotUse: TRadioButton
               Left = 8
@@ -1270,10 +1290,11 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
   end
   object Panel2: TPanel [1]
     Left = 0
-    Top = 644
+    Top = 651
     Width = 990
     Height = 56
     Align = alBottom
+    Color = clWhite
     TabOrder = 1
     OnResize = Panel2Resize
     object btn_Insert: TSpeedButton
@@ -1454,7 +1475,7 @@ inherited fmDupCardEmploy: TfmDupCardEmploy
     Height = 33
     Align = alTop
     Caption = #49324#50896#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16

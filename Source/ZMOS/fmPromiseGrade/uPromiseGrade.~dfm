@@ -150,7 +150,7 @@ inherited fmPromiseGrade: TfmPromiseGrade
       Top = 49
       Width = 442
       Height = 451
-      ActivePage = AlarmTab
+      ActivePage = DoorTab
       Align = alClient
       TabOrder = 0
       object DoorTab: TTabSheet

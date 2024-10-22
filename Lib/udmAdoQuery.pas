@@ -1097,7 +1097,7 @@ begin
   stSql := stSql + '''' + stAL_ALARMSTATUSCODE + ''',';
   stSql := stSql + '''' + stAL_ISALARM + ''',';
   stSql := stSql + '''' + stAL_OPERATOR + ''',';
-  stSql := stSql + '''' + stAL_INPUTTIME + ''',';
+  stSql := stSql + '''' + FormatDateTime('yyyymmddhhnnsszzz',Now) + ''','; // stAL_INPUTTIME 14자리에서 17자로로 변경 
   stSql := stSql + '''' + stAL_INPUTOPERATOR + ''',';
   stSql := stSql + '''' + stAL_CHECKOK + ''',';
   stSql := stSql + '''' + stAL_CHECKCODE + ''',';
@@ -1819,8 +1819,7 @@ begin
   stSql := stSql + '''' + stAL_ZONESTATE + ''',';
   stSql := stSql + '''' + stAL_ALARMSTATUSCODE + ''',';
   stSql := stSql + '''' + stAL_ISALARM + ''',';
-  stSql := stSql + '''' + stAL_OPERATOR + ''',';
-  stSql := stSql + '''' + stAL_INPUTTIME + ''',';
+  stSql := stSql + '''' + stAL_OPERATOR + ''',';//stAL_INPUTTIME   14자리에서 17자리로 변경
   stSql := stSql + '''' + stAL_INPUTOPERATOR + ''',';
   stSql := stSql + '''' + stAL_CHECKOK + ''',';
   stSql := stSql + '''' + stAL_CHECKCODE + ''',';

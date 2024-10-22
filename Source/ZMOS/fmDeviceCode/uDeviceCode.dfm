@@ -4,6 +4,7 @@ inherited fmDeviceCode: TfmDeviceCode
   Width = 758
   Height = 548
   Caption = #52968#53944#47204#47084#44288#47532
+  Color = clWhite
   Font.Charset = HANGEUL_CHARSET
   Font.Height = -12
   OldCreateOrder = True
@@ -25,7 +26,7 @@ inherited fmDeviceCode: TfmDeviceCode
     Left = 0
     Top = 33
     Width = 750
-    Height = 397
+    Height = 404
     ActivePage = ECUTab
     Align = alClient
     TabOrder = 0
@@ -36,20 +37,21 @@ inherited fmDeviceCode: TfmDeviceCode
         Left = 0
         Top = 0
         Width = 742
-        Height = 370
+        Height = 377
         Align = alClient
         TabOrder = 0
         object Splitter1: TSplitter
           Left = 302
           Top = 14
-          Height = 354
+          Height = 361
         end
         object Panel2: TPanel
           Left = 2
           Top = 14
           Width = 300
-          Height = 354
+          Height = 361
           Align = alLeft
+          Color = clWhite
           TabOrder = 0
           object GroupBox14: TGroupBox
             Left = 1
@@ -114,7 +116,7 @@ inherited fmDeviceCode: TfmDeviceCode
             Left = 1
             Top = 105
             Width = 298
-            Height = 248
+            Height = 255
             Cursor = crDefault
             Align = alClient
             ColCount = 25
@@ -213,6 +215,7 @@ inherited fmDeviceCode: TfmDeviceCode
             PrintSettings.FooterFont.Name = 'MS Sans Serif'
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -259,14 +262,15 @@ inherited fmDeviceCode: TfmDeviceCode
           Left = 305
           Top = 14
           Width = 435
-          Height = 354
+          Height = 361
           Align = alClient
+          Color = clWhite
           TabOrder = 1
           object GroupBox7: TGroupBox
             Left = 1
             Top = 1
             Width = 433
-            Height = 352
+            Height = 359
             Align = alClient
             TabOrder = 0
             object lb_McuIp: TLabel
@@ -582,6 +586,7 @@ inherited fmDeviceCode: TfmDeviceCode
             Width = 329
             Height = 97
             Caption = 'Panel14'
+            Color = clWhite
             TabOrder = 1
             Visible = False
             object Label3: TLabel
@@ -683,26 +688,27 @@ inherited fmDeviceCode: TfmDeviceCode
         Left = 0
         Top = 0
         Width = 742
-        Height = 370
+        Height = 377
         Align = alClient
         TabOrder = 0
         object Splitter2: TSplitter
           Left = 302
           Top = 14
-          Height = 354
+          Height = 361
         end
         object Panel6: TPanel
           Left = 305
           Top = 14
           Width = 435
-          Height = 354
+          Height = 361
           Align = alClient
+          Color = clWhite
           TabOrder = 0
           object GroupBox10: TGroupBox
             Left = 1
             Top = 1
             Width = 433
-            Height = 352
+            Height = 359
             Align = alClient
             TabOrder = 0
             object lb_sBuilding2: TLabel
@@ -1057,8 +1063,9 @@ inherited fmDeviceCode: TfmDeviceCode
           Left = 2
           Top = 14
           Width = 300
-          Height = 354
+          Height = 361
           Align = alLeft
+          Color = clWhite
           TabOrder = 1
           object GroupBox11: TGroupBox
             Left = 1
@@ -1140,7 +1147,7 @@ inherited fmDeviceCode: TfmDeviceCode
             Left = 1
             Top = 129
             Width = 298
-            Height = 224
+            Height = 231
             Cursor = crDefault
             Align = alClient
             ColCount = 25
@@ -1237,6 +1244,7 @@ inherited fmDeviceCode: TfmDeviceCode
             PrintSettings.FooterFont.Name = 'MS Sans Serif'
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -1389,7 +1397,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 170
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 1
               OnChange = cmb_sBuildingCode3Change
             end
@@ -1399,7 +1407,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 170
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 2
               OnChange = cmb_sFloorCode3Change
             end
@@ -1409,7 +1417,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 170
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 3
               OnChange = cmb_sAreaCode3Change
             end
@@ -1419,7 +1427,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 170
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 4
               OnChange = cmb_sMCUCode3Change
             end
@@ -1429,7 +1437,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 170
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 5
             end
             object ed_sDoorNo: TSpinEdit
@@ -1520,7 +1528,7 @@ inherited fmDeviceCode: TfmDeviceCode
           Left = 2
           Top = 14
           Width = 287
-          Height = 354
+          Height = 361
           Align = alLeft
           TabOrder = 1
           object GroupBox13: TGroupBox
@@ -1574,7 +1582,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 0
               OnChange = cmb_MCUCode3Change
             end
@@ -1584,7 +1592,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 1
               OnChange = cmb_ECUCode3Change
             end
@@ -1594,7 +1602,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 2
               Visible = False
               OnChange = cmb_BuildingCode3Change
@@ -1605,7 +1613,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 3
               Visible = False
               OnChange = cmb_FloorCode3Change
@@ -1616,7 +1624,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 4
               Visible = False
               OnChange = cmb_AreaCode3Change
@@ -1626,7 +1634,7 @@ inherited fmDeviceCode: TfmDeviceCode
             Left = 1
             Top = 73
             Width = 285
-            Height = 280
+            Height = 287
             Cursor = crDefault
             Align = alClient
             ColCount = 14
@@ -1718,6 +1726,7 @@ inherited fmDeviceCode: TfmDeviceCode
             PrintSettings.FooterFont.Name = 'MS Sans Serif'
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -1759,26 +1768,26 @@ inherited fmDeviceCode: TfmDeviceCode
         Left = 0
         Top = 0
         Width = 742
-        Height = 370
+        Height = 377
         Align = alClient
         TabOrder = 0
         object Splitter4: TSplitter
           Left = 281
           Top = 14
-          Height = 354
+          Height = 361
         end
         object Panel4: TPanel
           Left = 284
           Top = 14
           Width = 456
-          Height = 354
+          Height = 361
           Align = alClient
           TabOrder = 0
           object GroupBox17: TGroupBox
             Left = 1
             Top = 1
             Width = 454
-            Height = 352
+            Height = 359
             Align = alClient
             TabOrder = 0
             object Label35: TLabel
@@ -1851,7 +1860,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 180
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 0
               OnChange = cmb_sBuildingCode4Change
             end
@@ -1861,7 +1870,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 180
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 1
               OnChange = cmb_sFloorCode4Change
             end
@@ -1871,7 +1880,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 180
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 2
               OnChange = cmb_sAreaCode4Change
             end
@@ -1881,7 +1890,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 180
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 3
               OnChange = cmb_sMCUCode4Change
             end
@@ -2093,7 +2102,7 @@ inherited fmDeviceCode: TfmDeviceCode
           Left = 2
           Top = 14
           Width = 279
-          Height = 354
+          Height = 361
           Align = alLeft
           TabOrder = 1
           object GroupBox18: TGroupBox
@@ -2140,7 +2149,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 0
               OnChange = cmb_MCUCode4Change
             end
@@ -2150,7 +2159,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 1
               Visible = False
               OnChange = cmb_BuildingCode4Change
@@ -2161,7 +2170,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 2
               Visible = False
               OnChange = cmb_FloorCode4Change
@@ -2172,7 +2181,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 3
               Visible = False
               OnChange = cmb_AreaCode4Change
@@ -2182,7 +2191,7 @@ inherited fmDeviceCode: TfmDeviceCode
             Left = 1
             Top = 57
             Width = 277
-            Height = 296
+            Height = 303
             Cursor = crDefault
             Align = alClient
             ColCount = 4
@@ -2274,6 +2283,7 @@ inherited fmDeviceCode: TfmDeviceCode
             PrintSettings.FooterFont.Name = 'MS Sans Serif'
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -2305,26 +2315,26 @@ inherited fmDeviceCode: TfmDeviceCode
         Left = 0
         Top = 0
         Width = 742
-        Height = 370
+        Height = 377
         Align = alClient
         TabOrder = 0
         object Splitter6: TSplitter
           Left = 281
           Top = 14
-          Height = 354
+          Height = 361
         end
         object Panel1: TPanel
           Left = 284
           Top = 14
           Width = 456
-          Height = 354
+          Height = 361
           Align = alClient
           TabOrder = 0
           object GroupBox15: TGroupBox
             Left = 1
             Top = 1
             Width = 454
-            Height = 352
+            Height = 359
             Align = alClient
             TabOrder = 0
             object Label64: TLabel
@@ -2387,7 +2397,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 180
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 0
               Visible = False
               OnChange = cmb_sBuildingCode6Change
@@ -2398,7 +2408,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 180
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 1
               Visible = False
               OnChange = cmb_sFloorCode6Change
@@ -2409,7 +2419,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 180
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 2
               Visible = False
             end
@@ -2604,7 +2614,7 @@ inherited fmDeviceCode: TfmDeviceCode
           Left = 2
           Top = 14
           Width = 279
-          Height = 354
+          Height = 361
           Align = alLeft
           TabOrder = 1
           object GroupBox19: TGroupBox
@@ -2634,7 +2644,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 0
               OnChange = cmb_MCUCode6Change
             end
@@ -2644,7 +2654,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 1
               OnChange = cmb_AlarmCode6Change
             end
@@ -2653,7 +2663,7 @@ inherited fmDeviceCode: TfmDeviceCode
             Left = 1
             Top = 81
             Width = 277
-            Height = 272
+            Height = 279
             Cursor = crDefault
             Align = alClient
             ColCount = 4
@@ -2745,6 +2755,7 @@ inherited fmDeviceCode: TfmDeviceCode
             PrintSettings.FooterFont.Name = 'MS Sans Serif'
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -2877,7 +2888,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 217
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 1
               OnChange = cmb_sBuildingCode5Change
             end
@@ -2887,7 +2898,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 217
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 2
               OnChange = cmb_sFloorCode5Change
             end
@@ -2897,7 +2908,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 217
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 3
             end
             object cmb_sMCUCode5: TComboBox
@@ -2906,7 +2917,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 217
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 4
               OnChange = cmb_sMCUCode5Change
             end
@@ -2916,7 +2927,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 217
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 5
             end
             object ed_sFoodNo: TSpinEdit
@@ -3008,7 +3019,7 @@ inherited fmDeviceCode: TfmDeviceCode
           Left = 2
           Top = 14
           Width = 193
-          Height = 354
+          Height = 361
           Align = alLeft
           TabOrder = 1
           object GroupBox9: TGroupBox
@@ -3062,7 +3073,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 0
               OnChange = cmb_MCUCode5Change
             end
@@ -3072,7 +3083,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 1
               OnChange = cmb_ECUCode5Change
             end
@@ -3082,7 +3093,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 2
               Visible = False
               OnChange = cmb_BuildingCode3Change
@@ -3093,7 +3104,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 3
               Visible = False
               OnChange = cmb_FloorCode3Change
@@ -3104,7 +3115,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 105
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 4
               Visible = False
               OnChange = cmb_AreaCode3Change
@@ -3114,7 +3125,7 @@ inherited fmDeviceCode: TfmDeviceCode
             Left = 1
             Top = 73
             Width = 191
-            Height = 280
+            Height = 287
             Cursor = crDefault
             Align = alClient
             ColCount = 14
@@ -3206,6 +3217,7 @@ inherited fmDeviceCode: TfmDeviceCode
             PrintSettings.FooterFont.Name = 'MS Sans Serif'
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -3242,14 +3254,14 @@ inherited fmDeviceCode: TfmDeviceCode
   end
   object StatusBar1: TStatusBar [2]
     Left = 0
-    Top = 487
+    Top = 494
     Width = 750
     Height = 27
     Panels = <>
   end
   object GroupBox8: TGroupBox [3]
     Left = 0
-    Top = 430
+    Top = 437
     Width = 750
     Height = 57
     Align = alBottom
@@ -3432,7 +3444,7 @@ inherited fmDeviceCode: TfmDeviceCode
     Height = 33
     Align = alTop
     Caption = #52968#53944#47204#47084#44288#47532
-    Color = 15387318
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16

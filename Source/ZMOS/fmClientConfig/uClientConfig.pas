@@ -156,6 +156,10 @@ type
     chk_AlarmMap: TCheckBox;
     chk_ZoneMap: TCheckBox;
     chk_UpdateEmCode: TCheckBox;
+    Label23: TLabel;
+    ed_DoorOpenAlarm: TEdit;
+    btn_DoorOpenAlarm: TRzBitBtn;
+    chk_DoorOpenAlarm: TCheckBox;
     procedure btn_CloseClick(Sender: TObject);
     procedure btWav1Click(Sender: TObject);
     procedure btn_SaveClick(Sender: TObject);
@@ -167,6 +171,7 @@ type
     procedure cmb_FingerTypeChange(Sender: TObject);
     procedure btn_ArmSoundClick(Sender: TObject);
     procedure btn_DisArmSoundClick(Sender: TObject);
+    procedure btn_DoorOpenAlarmClick(Sender: TObject);
   private
     EmpTypeCodeList : TStringList;
     ComPortList : TStringList;
@@ -241,6 +246,14 @@ begin
   begin
     LMDIniCtrl1.WriteString('환경설정','장시간열림알람발생','N');
   end;
+  if chk_DoorOpenAlarm.Checked then
+  begin
+    LMDIniCtrl1.WriteString('환경설정','출입문열림알람발생','Y');
+  end else
+  begin
+    LMDIniCtrl1.WriteString('환경설정','출입문열림알람발생','N');
+  end;
+  
   if chk_ACAlarmEvnet.Checked then
   begin
     LMDIniCtrl1.WriteString('환경설정','출입전용알람발생','Y');
@@ -282,6 +295,8 @@ begin
   end else LMDIniCtrl1.WriteInteger('환경설정','AlarmCount',1);
 
   LMDIniCtrl1.WriteString('환경설정','알람파일',ed_alarmFile.Text);
+  LMDIniCtrl1.WriteString('환경설정','출입문열림파일',ed_DoorOpenAlarm.Text);
+  
   if chk_PTAlarm.Checked then
   begin
     LMDIniCtrl1.WriteString('환경설정','방범알람발생','Y');
@@ -520,9 +535,11 @@ begin
   chk_UpdateEmCode.Checked := G_bUpdateEmCode;
   chk_Alarm.Checked := ACAlarmUse;
   chk_longOpen.Checked := LongDoorOpenAlarmUse;
+  chk_DoorOpenAlarm.Checked := G_bDoorOpenAlarmUse;
   chk_ACAlarmEvnet.Checked := ACAlarmEventUse;
   ed_ACAlarmEvnetCode.Text := ACAlarmEventCode;
   ed_alarmFile.Text := ACAlaramFile;
+  ed_DoorOpenAlarm.Text := G_stDoorOpenAlaramFile;
   chk_PTAlarm.Checked := PTAlarmUse;
   chk_PTMessage.Checked := PTAlarmMessageUse;
   chk_AlarmConfirmEvent.Checked := PTAlarmConfirmEvent;
@@ -849,13 +866,14 @@ procedure TfmClientConfig.cmb_MonitorTypeChange(Sender: TObject);
 begin
   chk_AlarmMap.Visible := False;
   chk_ZoneMap.Visible := False;
-  if (cmb_MonitorType.ItemIndex = 5) or
+  (*if (cmb_MonitorType.ItemIndex = 5) or
     (cmb_MonitorType.ItemIndex = 6) or
    (cmb_MonitorType.ItemIndex = 7) then
   begin
     tab_Map.TabVisible := True;
   end else tab_Map.TabVisible := False;
-
+  *)
+  tab_Map.TabVisible := True;
   if (cmb_MonitorType.ItemIndex = 2) or (cmb_MonitorType.ItemIndex = 4) then
   begin
     chk_BuildingVisible.Visible := True;
@@ -905,6 +923,25 @@ begin
     ed_ModeChangeDisArmSound.Text :=  RzOpenDialog1.FileName;
   end;
 
+end;
+
+procedure TfmClientConfig.btn_DoorOpenAlarmClick(Sender: TObject);
+var
+  st : string;
+  edit : TEdit;
+begin         
+  RzOpenDialog1.Title:= '소리 파일 찾기';
+  RzOpenDialog1.DefaultExt:= 'wav,mp3';
+  RzOpenDialog1.InitialDir := 'C:\WINDOWS\Media'; //C:\WINDOWS\Media
+  RzOpenDialog1.Filter := 'WAV files (*.wav,*.mp3)|*.WAV;*.MP3';
+  if RzOpenDialog1.Execute then
+  begin
+    ed_DoorOpenAlarm.Text := RzOpenDialog1.FileName;
+    MediaPlayer1.Close;
+    MediaPlayer1.FileName := ed_DoorOpenAlarm.Text;
+    MediaPlayer1.Open;
+    MediaPlayer1.play;
+  end;
 end;
 
 end.

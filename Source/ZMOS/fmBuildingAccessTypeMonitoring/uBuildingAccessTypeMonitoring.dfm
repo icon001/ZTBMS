@@ -1,6 +1,6 @@
 inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
-  Left = 186
-  Top = 119
+  Left = 188
+  Top = 225
   Width = 1508
   Height = 758
   Caption = #44288#51228#49884#49828#53596
@@ -20,14 +20,14 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
   TextHeight = 12
   object Splitter1: TSplitter [0]
     Left = 217
-    Top = 0
-    Height = 724
+    Top = 9
+    Height = 722
   end
   object pan_device: TPanel [1]
     Left = 0
-    Top = 0
+    Top = 9
     Width = 217
-    Height = 724
+    Height = 722
     Align = alLeft
     TabOrder = 0
     OnResize = pan_deviceResize
@@ -35,18 +35,19 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
       Left = 1
       Top = 1
       Width = 215
-      Height = 722
-      ActivePage = tbDEVICE
+      Height = 720
+      ActivePage = tbLOCATE
       Align = alClient
       TabOrder = 0
       OnChange = PageControl1Change
+      OnDrawTab = PageControl1DrawTab
       object tbLOCATE: TTabSheet
         Caption = #47700#51064#49345#53468
         object GroupBox2: TGroupBox
           Left = 0
           Top = 0
           Width = 207
-          Height = 671
+          Height = 693
           Align = alClient
           TabOrder = 0
           object Shader2: TShader
@@ -65,7 +66,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
             Left = 2
             Top = 23
             Width = 203
-            Height = 646
+            Height = 668
             Cursor = crDefault
             Align = alClient
             ColCount = 3
@@ -76,7 +77,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -12
-            Font.Name = 'Tahoma'
+            Font.Name = #44404#47548
             Font.Style = []
             Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing, goColMoving]
             ParentFont = False
@@ -151,6 +152,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
             ScrollSynch = True
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -219,7 +221,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -12
-            Font.Name = 'Tahoma'
+            Font.Name = #44404#47548
             Font.Style = []
             Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing, goColMoving]
             ParentFont = False
@@ -294,6 +296,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
             PrintSettings.FooterFont.Style = []
             PrintSettings.PageNumSep = '/'
             ScrollSynch = True
+            ScrollWidth = 16
             SearchFooter.FindNextCaption = 'Find next'
             SearchFooter.FindPrevCaption = 'Find previous'
             SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -324,9 +327,9 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
   end
   object Panel5: TPanel [2]
     Left = 220
-    Top = 0
+    Top = 9
     Width = 1280
-    Height = 724
+    Height = 722
     Align = alClient
     TabOrder = 2
     object Splitter7: TSplitter
@@ -341,7 +344,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
       Left = 1
       Top = 380
       Width = 1278
-      Height = 343
+      Height = 341
       Align = alClient
       TabOrder = 0
       OnResize = Panel15Resize
@@ -349,7 +352,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
         Left = 1
         Top = 1
         Width = 1276
-        Height = 341
+        Height = 339
         Cursor = crDefault
         Align = alClient
         ColCount = 16
@@ -360,7 +363,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -12
-        Font.Name = 'Tahoma'
+        Font.Name = #44404#47548
         Font.Style = []
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing, goColMoving]
         ParentFont = False
@@ -441,6 +444,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
         PrintSettings.FooterFont.Style = []
         PrintSettings.PageNumSep = '/'
         ScrollSynch = True
+        ScrollWidth = 16
         SearchFooter.FindNextCaption = 'Find next'
         SearchFooter.FindPrevCaption = 'Find previous'
         SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -493,10 +497,11 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
         Top = 1
         Width = 1276
         Height = 374
-        ActivePage = BuildingTab
+        ActivePage = tabArea
         Align = alClient
         TabOrder = 0
         OnChange = PageControl2Change
+        OnDrawTab = PageControl2DrawTab
         object BuildingTab: TTabSheet
           Caption = #48716#46377
           ImageIndex = 3
@@ -524,7 +529,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                 Height = 345
                 Align = alClient
                 Caption = #48716#46377
-                Color = clBtnFace
+                Color = clWhite
                 ParentColor = False
                 TabOrder = 0
                 object Shader6: TShader
@@ -533,9 +538,10 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                   Width = 1262
                   Height = 9
                   Align = alTop
+                  Color = clWhite
                   TabOrder = 1
-                  FromColor = 15591915
-                  ToColor = clSilver
+                  FromColor = clWhite
+                  ToColor = clWhite
                   Direction = False
                   Version = '1.4.0.0'
                 end
@@ -604,7 +610,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                 Height = 305
                 Align = alClient
                 Caption = #52636#51077#47928#49345#53468
-                Color = clBtnFace
+                Color = clWhite
                 ParentColor = False
                 TabOrder = 0
                 object Shader4: TShader
@@ -613,9 +619,10 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                   Width = 1262
                   Height = 9
                   Align = alTop
+                  Color = clWhite
                   TabOrder = 1
-                  FromColor = 15591915
-                  ToColor = clSilver
+                  FromColor = clWhite
+                  ToColor = clWhite
                   Direction = False
                   Version = '1.4.0.0'
                 end
@@ -669,18 +676,21 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                   Width = 1264
                   Height = 40
                   Align = alTop
+                  BevelOuter = bvNone
+                  Color = clWhite
                   TabOrder = 0
                   object pan_LargeIntro: TPanel
                     Left = 1
                     Top = 1
-                    Width = 877
+                    Width = 594
                     Height = 38
+                    Color = clWhite
                     TabOrder = 0
-                    object Image4: TImage
+                    object Image2: TImage
                       Left = 8
                       Top = 14
                       Width = 17
-                      Height = 24
+                      Height = 16
                       Picture.Data = {
                         07544269746D617036040000424D360400000000000036000000280000001000
                         0000100000000100200000000000000400000000000000000000000000000000
@@ -718,11 +728,11 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                         000000000000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF00000000
                         0000}
                     end
-                    object Image5: TImage
+                    object Image3: TImage
                       Left = 90
                       Top = 14
                       Width = 17
-                      Height = 24
+                      Height = 16
                       Picture.Data = {
                         07544269746D617036030000424D360300000000000036000000280000001000
                         000010000000010018000000000000030000120B0000120B0000000000000000
@@ -752,7 +762,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
                         FFFF}
                     end
-                    object Image12: TImage
+                    object Image4: TImage
                       Left = 269
                       Top = 4
                       Width = 33
@@ -890,7 +900,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
                         FF00}
                     end
-                    object Image13: TImage
+                    object Image5: TImage
                       Left = 352
                       Top = 4
                       Width = 41
@@ -1028,11 +1038,11 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
                         FF00}
                     end
-                    object Image14: TImage
+                    object Image12: TImage
                       Left = 178
                       Top = 14
                       Width = 17
-                      Height = 24
+                      Height = 16
                       Picture.Data = {
                         07544269746D617036040000424D360400000000000036000000280000001000
                         0000100000000100200000000000000400000000000000000000000000000000
@@ -1070,7 +1080,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                         F600FFFFF300FFFCED00FBF5EA00FFF9FA00FDF6FD00FDF8FF00FEF9FF00FCFC
                         FC00}
                     end
-                    object Image15: TImage
+                    object Image13: TImage
                       Left = 448
                       Top = 4
                       Width = 41
@@ -1208,7 +1218,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                         FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
                         FF00}
                     end
-                    object StaticText4: TStaticText
+                    object StaticText2: TStaticText
                       Left = 32
                       Top = 14
                       Width = 52
@@ -1216,7 +1226,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                       Caption = #50868#50689#47784#46300
                       TabOrder = 0
                     end
-                    object StaticText5: TStaticText
+                    object StaticText3: TStaticText
                       Left = 120
                       Top = 14
                       Width = 52
@@ -1224,7 +1234,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                       Caption = #44060#48169#47784#46300
                       TabOrder = 1
                     end
-                    object StaticText12: TStaticText
+                    object StaticText4: TStaticText
                       Left = 312
                       Top = 14
                       Width = 40
@@ -1232,7 +1242,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                       Caption = #47928#45803#55192
                       TabOrder = 2
                     end
-                    object StaticText13: TStaticText
+                    object StaticText5: TStaticText
                       Left = 400
                       Top = 14
                       Width = 40
@@ -1240,7 +1250,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                       Caption = #47928#50676#47548
                       TabOrder = 3
                     end
-                    object StaticText14: TStaticText
+                    object StaticText12: TStaticText
                       Left = 208
                       Top = 14
                       Width = 52
@@ -1248,7 +1258,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                       Caption = #54224#49604#47784#46300
                       TabOrder = 4
                     end
-                    object StaticText15: TStaticText
+                    object StaticText13: TStaticText
                       Left = 504
                       Top = 14
                       Width = 76
@@ -1258,16 +1268,17 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                     end
                   end
                   object pan_SmallIntro: TPanel
-                    Left = 87
+                    Left = 648
                     Top = -1
-                    Width = 537
+                    Width = 585
                     Height = 41
+                    Color = clWhite
                     TabOrder = 1
                     object Image6: TImage
                       Left = 352
                       Top = 16
                       Width = 25
-                      Height = 24
+                      Height = 16
                       Picture.Data = {
                         07544269746D617036040000424D360400000000000036000000280000001000
                         0000100000000100200000000000000400000000000000000000000000000000
@@ -1309,7 +1320,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                       Left = 272
                       Top = 16
                       Width = 22
-                      Height = 24
+                      Height = 16
                       Picture.Data = {
                         07544269746D617036040000424D360400000000000036000000280000001000
                         0000100000000100200000000000000400000000000000000000000000000000
@@ -1351,7 +1362,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                       Left = 90
                       Top = 16
                       Width = 17
-                      Height = 24
+                      Height = 16
                       Picture.Data = {
                         07544269746D617036030000424D360300000000000036000000280000001000
                         000010000000010018000000000000030000120B0000120B0000000000000000
@@ -1385,7 +1396,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                       Left = 8
                       Top = 16
                       Width = 17
-                      Height = 24
+                      Height = 16
                       Picture.Data = {
                         07544269746D617036040000424D360400000000000036000000280000001000
                         0000100000000100200000000000000400000000000000000000000000000000
@@ -1423,11 +1434,11 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                         000000000000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF00000000
                         0000}
                     end
-                    object Image2: TImage
+                    object Image10: TImage
                       Left = 178
                       Top = 16
                       Width = 17
-                      Height = 24
+                      Height = 16
                       Picture.Data = {
                         07544269746D617036040000424D360400000000000036000000280000001000
                         0000100000000100200000000000000400000000000000000000000000000000
@@ -1465,11 +1476,11 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                         F600FFFFF300FFFCED00FBF5EA00FFF9FA00FDF6FD00FDF8FF00FEF9FF00FCFC
                         FC00}
                     end
-                    object Image3: TImage
+                    object Image11: TImage
                       Left = 448
                       Top = 16
                       Width = 25
-                      Height = 24
+                      Height = 16
                       Picture.Data = {
                         07544269746D617036040000424D360400000000000036000000280000001000
                         0000100000000100200000000000000400000000000000000000000000000000
@@ -1539,7 +1550,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                       Caption = #50868#50689#47784#46300
                       TabOrder = 3
                     end
-                    object StaticText2: TStaticText
+                    object StaticText10: TStaticText
                       Left = 208
                       Top = 16
                       Width = 52
@@ -1547,8 +1558,8 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
                       Caption = #54224#49604#47784#46300
                       TabOrder = 4
                     end
-                    object StaticText3: TStaticText
-                      Left = 488
+                    object StaticText11: TStaticText
+                      Left = 480
                       Top = 16
                       Width = 76
                       Height = 16
@@ -1570,6 +1581,7 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
     Width = 761
     Height = 105
     BiDiMode = bdLeftToRight
+    Color = clWhite
     ParentBiDiMode = False
     ParentBackground = False
     TabOrder = 1
@@ -1598,6 +1610,16 @@ inherited fmBuildingAccessTypeMonitoring: TfmBuildingAccessTypeMonitoring
       ParentFont = False
       TabOrder = 0
     end
+  end
+  object Panel1: TPanel [4]
+    Left = 0
+    Top = 0
+    Width = 1500
+    Height = 9
+    Align = alTop
+    BevelOuter = bvNone
+    Color = clSilver
+    TabOrder = 3
   end
   inherited CommandArray: TCommandArray
     Commands = <

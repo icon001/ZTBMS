@@ -1,6 +1,6 @@
 inherited fmKTCardCreate: TfmKTCardCreate
-  Left = 193
-  Top = 252
+  Left = 194
+  Top = 231
   Width = 950
   Height = 647
   Caption = 'KT'#52852#46300#48156#44553

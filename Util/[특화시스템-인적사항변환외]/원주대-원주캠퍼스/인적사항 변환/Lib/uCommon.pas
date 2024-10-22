@@ -1,0 +1,288 @@
+unit uCommon;
+
+interface
+uses ADODB,StdCtrls,Classes;
+
+type
+  TAlarmStatusCode = Class(TComponent)
+  private
+    FALARMDATA: string;
+    FDISALARMSTATUSCODE: string;
+    FALARMSTATUSCODE: string;
+    procedure SetALARMDATA(const Value: string);
+    procedure SetALARMSTATUSCODE(const Value: string);
+    procedure SetDISALARMSTATUSCODE(const Value: string);
+    { Private declarations }
+  public
+    { Public declarations }
+  published
+    Property ALARMDATA:string Read FALARMDATA write SetALARMDATA;
+    Property ALARMSTATUSCODE:string Read FALARMSTATUSCODE write SetALARMSTATUSCODE;
+    Property DISALARMSTATUSCODE:string Read FDISALARMSTATUSCODE write SetDISALARMSTATUSCODE;
+  end;
+
+  
+procedure LoadCompanyCode(aStringList:TStringList;cmb_Box:TComboBox);
+procedure LoadJijumCode(aCompanyCode:string;aStringList:TStringList;cmb_Box:TComboBox);
+procedure LoadAlarmModeNotCard(var aStringList:TStringList);
+procedure LoadZoneDetectList(var aStringList:TStringList);
+function GetModeChangeAlarmStatusCode(aAN_CODE:string;var aAlarmStateCode,aDisAlarmStateCode:string):Boolean;
+
+implementation
+uses
+  uDataModule1;
+
+procedure LoadCompanyCode(aStringList:TStringList;cmb_Box:TComboBox);
+var
+  stSql :string;
+  TempAdoQuery : TADOQuery;
+begin
+  cmb_Box.Clear;
+  aStringList.Clear;
+
+  stSql := ' select a.CO_NAME,a.CO_COMPANYCODE from TB_COMPANY a ';
+  if CompanyGrade = '1' then
+  begin
+    stSql := stSql + ' Inner JOIN TB_ADMINCOMPANY b ';
+    stSql := stSql + ' ON (a.GROUP_CODE = b.GROUP_CODE ';
+    stSql := stSql + ' AND a.CO_COMPANYCODE = b.CO_COMPANYCODE ';
+    stSql := stSql + ' AND a.CO_GUBUN = b.CO_GUBUN ) ';
+  end;
+  stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND a.CO_GUBUN = ''1''';
+  if CompanyGrade = '1' then
+     stSql := stSql + ' AND b.AD_USERID = ''' + Master_ID + '''';
+
+  cmb_Box.Items.Add('전체');
+  aStringList.Add('');
+  cmb_Box.ItemIndex := 0;
+
+  TempAdoQuery := TADOQuery.Create(nil);
+  TempAdoQuery.Connection := DataModule1.ADOConnection;
+
+  with TempAdoQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+
+    Try
+      Open;
+    Except
+      TempAdoQuery.Free;
+      Exit;
+    End;
+
+    if RecordCount < 1 then
+    begin
+      TempAdoQuery.Free;
+      Exit;
+    end;
+    First;
+
+    While Not Eof do
+    begin
+      cmb_Box.Items.Add(FindField('CO_NAME').AsString);
+      aStringList.Add(FindField('CO_COMPANYCODE').AsString);
+      Next;
+    end;
+
+  end;
+  TempAdoQuery.Free;
+end;
+
+procedure LoadJijumCode(aCompanyCode:string;aStringList:TStringList;cmb_Box:TComboBox);
+var
+  stSql :string;
+  TempAdoQuery : TADOQuery;
+  i : integer;
+begin
+  cmb_Box.Clear;
+  aStringList.Clear;
+  cmb_Box.Items.Add('전체');
+  JijumCodeList.Add('');
+  cmb_Box.ItemIndex := 0;
+
+  if CompanyGrade = '2' then
+  begin
+    stSql := ' select a.CO_NAME,a.CO_COMPANYCODE,a.CO_JIJUMCODE,a.CO_DEPARTCODE from TB_COMPANY a ';
+    stSql := stSql + ' Inner JOIN TB_ADMINCOMPANY b ';
+    stSql := stSql + ' ON (a.GROUP_CODE = b.GROUP_CODE ';
+    stSql := stSql + ' AND a.CO_COMPANYCODE = b.CO_COMPANYCODE ';
+    stSql := stSql + ' AND a.CO_JIJUMCODE = b.CO_JIJUMCODE ';
+    stSql := stSql + ' AND a.CO_DEPARTCODE = b.CO_DEPARTCODE ';
+    stSql := stSql + ' AND a.CO_GUBUN = b.CO_GUBUN ) ';
+    stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
+    stSql := stSql + ' AND a.CO_GUBUN = ''2''';
+    stSql := stSql + ' AND b.AD_USERID = ''' + Master_ID + '''';
+  end else
+  begin
+    stSql := ' select a.CO_NAME,a.CO_COMPANYCODE,a.CO_JIJUMCODE,a.CO_DEPARTCODE from TB_COMPANY a ';
+    stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
+    stSql := stSql + ' AND a.CO_GUBUN = ''2''';
+    if IsMaster or ( strtoint(CompanyGrade) < 2) then
+    begin
+      if (aCompanyCode = '000') or (aCompanyCode = '') then Exit;
+    end;
+    if (aCompanyCode <> '000') and (aCompanyCode <> '') then
+        stSql := stSql + ' AND a.CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  end;
+
+
+  TempAdoQuery := TADOQuery.Create(nil);
+  TempAdoQuery.Connection := DataModule1.ADOConnection;
+
+  with TempAdoQuery do
+  begin
+    Close;
+    Sql.Clear;
+    Sql.Text := stSql;
+
+    Try
+      Open;
+    Except
+      TempAdoQuery.Free;
+      Exit;
+    End;
+
+    if RecordCount < 1 then
+    begin
+      TempAdoQuery.Free;
+      Exit;
+    end;
+
+    First;
+
+    While Not Eof do
+    begin
+      cmb_Box.Items.Add(FindField('CO_NAME').AsString);
+      JijumCodeList.Add(FindField('CO_COMPANYCODE').AsString + FindField('CO_JIJUMCODE').AsString);
+      Next;
+    end;
+
+  end;
+  TempAdoQuery.Free;
+
+end;
+
+
+procedure LoadAlarmModeNotCard(var aStringList: TStringList);
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+  AlarmStatusCode : TAlarmStatusCode;
+  stAlarmStateCode : string;
+  stDisAlarmStateCode : string;
+begin
+  aStringList.Clear;
+
+  stSql := ' SELECT * from TB_ALARMMODENOTCARD ';
+  stSql := stSql + ' order by AN_CODE ';
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.DisableControls;
+    with TempAdoQuery  do
+    begin
+      Close;
+      //SQL.Clear;
+      SQL.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+
+      While Not Eof do
+      begin
+        AlarmStatusCode:= TAlarmStatusCode.Create(Self);
+        AlarmStatusCode.ALARMDATA := FindField('AN_NOTDATA').AsString;
+        GetModeChangeAlarmStatusCode(FindField('AN_CODE').AsString,stAlarmStateCode,stDisAlarmStateCode);
+        AlarmStatusCode.ALARMSTATUSCODE := stAlarmStateCode;
+        AlarmStatusCode.DISALARMSTATUSCODE := stDisAlarmStateCode;
+        aStringList.AddObject(FindField('AN_NOTDATA').AsString,AlarmStatusCode);
+        Next;
+      end;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function GetModeChangeAlarmStatusCode(aAN_CODE: string;
+  var aAlarmStateCode, aDisAlarmStateCode: string): Boolean;
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+begin
+  result := False;
+  aAlarmStateCode := '';
+  aDisAlarmStateCode := '';
+  
+  stSql := ' SELECT * from TB_NOTCARDALARMCODE ';
+  stSql := stSql + ' where AN_CODE = ''' + aAN_CODE + ''' ';
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := DataModule1.ADOConnection;
+    TempAdoQuery.DisableControls;
+    with TempAdoQuery  do
+    begin
+      Close;
+      //SQL.Clear;
+      SQL.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+
+      While Not Eof do
+      begin
+        if Trim(FindField('AN_MODE').AsString) = 'a' then aAlarmStateCode := FindField('AL_STATUSCODE2').AsString
+        else if Trim(FindField('AN_MODE').AsString) = 'd' then aDisAlarmStateCode := FindField('AL_STATUSCODE2').AsString;
+        Next;
+      end;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+  result := True;
+end;
+
+procedure LoadZoneDetectList(var aStringList: TStringList);
+begin
+  aStringList.Clear;
+  aStringList.Add('FI'); //화재알람
+  aStringList.Add('F1'); //화재알람
+  aStringList.Add('E1'); //비상알람
+  aStringList.Add('G1'); //가스알람
+  aStringList.Add('Q1'); //설비알람
+
+end;
+
+{ TAlarmStatusCode }
+
+procedure TAlarmStatusCode.SetALARMDATA(const Value: string);
+begin
+  FALARMDATA := Value;
+end;
+
+procedure TAlarmStatusCode.SetALARMSTATUSCODE(const Value: string);
+begin
+  FALARMSTATUSCODE := Value;
+end;
+
+procedure TAlarmStatusCode.SetDISALARMSTATUSCODE(const Value: string);
+begin
+  FDISALARMSTATUSCODE := Value;
+end;
+
+end.

@@ -48,6 +48,7 @@ type
     cmb_Type: TRzComboBox;
     cmb_EmType: TRzComboBox;
     cmb_AccessPermit: TRzComboBox;
+    Panel2: TPanel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure btn_SearchClick(Sender: TObject);

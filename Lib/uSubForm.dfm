@@ -1,6 +1,6 @@
 object fmASubForm: TfmASubForm
-  Left = 6
-  Top = 5
+  Left = 33
+  Top = 14
   Width = 638
   Height = 448
   Caption = 'fmASubForm'
