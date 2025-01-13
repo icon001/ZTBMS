@@ -4132,6 +4132,8 @@ begin
       L_bDeviceUpdate := True;
       if bresult then  //MCU 입력시 출입문 달 것인지 여부
       begin
+        stSql := 'Delete From TB_FIREGROUP where AC_NODENO = ' + ed_NodeNo.Text + '';
+        DataModule1.ProcessExecSQL(stSql);
         stSql := ' Insert Into TB_FIREGROUP(AC_NODENO) Values(' + ed_NodeNo.Text + ')';
         DataModule1.ProcessExecSQL(stSql);
         InsertAlarmDevice(ed_NodeNo.Text,'00',ed_MCUname.Text,stBuildingCode,stFloorCode,stAreaCode,stArmAreaUse,chk_PtName.Checked);

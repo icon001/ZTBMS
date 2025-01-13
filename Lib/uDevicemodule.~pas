@@ -2328,6 +2328,7 @@ begin
             end
           end;
   end;
+
   case cDoorState of
     'C' : begin
             if GetDoorState(strtoint(stDoorNo)) <> dsClose then
@@ -2346,6 +2347,7 @@ begin
     'T','D' : begin
             if GetDoorState(strtoint(stDoorNo)) <> dsLongTime then
             begin
+              //LogSave(ExeFolder + '\..\log\LongTime'+ FormatDateTIme('yyyymmdd',Now)+'.log','DoorModeState:'+aData);
               SetDoorState(strtoint(stDoorNo),dsLongTime);
               bChange := True;
             end
@@ -2715,6 +2717,7 @@ begin
             end
           end;
   end;
+
   case cDoorState of
     'C' : begin
             if GetDoorState(strtoint(stDoorNo)) <> dsClose then
@@ -2734,6 +2737,7 @@ begin
             if GetDoorState(strtoint(stDoorNo)) <> dsLongTime then
             begin
               SetDoorState(strtoint(stDoorNo),dsLongTime);
+              //LogSave(ExeFolder + '\..\log\LongTime'+ FormatDateTIme('yyyymmdd',Now)+'.log','DoorControlState:'+aData);
               bChange := True;
             end
           end;
@@ -3162,6 +3166,7 @@ begin
             end
           end;
   end;
+
   case cDoorState of
     'C' : begin
             if GetDoorState(strtoint(stDoorNo)) <> dsClose then
@@ -3181,6 +3186,7 @@ begin
             if GetDoorState(strtoint(stDoorNo)) <> dsLongTime then
             begin
               SetDoorState(strtoint(stDoorNo),dsLongTime);
+              //LogSave(ExeFolder + '\..\log\LongTime'+ FormatDateTIme('yyyymmdd',Now)+'.log','DoorSetupState:'+aData);
               bChange := True;
             end
           end;
@@ -3620,6 +3626,14 @@ begin
     MaxLockCount := 1;
     ScheduleSkill := True;
   end else if UpperCase(Value) = 'ICU-340' then   //ICU340
+  begin
+    DeviceType := '4';
+    HO1USE := True;
+    HO2USE := True;
+    HO3USE := True;
+    MaxLockCount := 1;
+    ScheduleSkill := True;
+  end else if UpperCase(Value) = 'ICU-350' then   //ICU350
   begin
     DeviceType := '4';
     HO1USE := True;

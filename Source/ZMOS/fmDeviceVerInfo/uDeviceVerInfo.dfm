@@ -231,6 +231,7 @@ inherited fmDeviceVerInfo: TfmDeviceVerInfo
     Font.Style = []
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing, goRowSelect]
     ParentFont = False
+    PopupMenu = PopupMenu_Search
     ScrollBars = ssVertical
     TabOrder = 1
     OnResize = sg_DeviceInfoResize
@@ -373,5 +374,18 @@ inherited fmDeviceVerInfo: TfmDeviceVerInfo
     Options = [ofOverwritePrompt, ofHideReadOnly]
     Left = 72
     Top = 448
+  end
+  object PopupMenu_Search: TPopupMenu
+    AutoHotkeys = maManual
+    Left = 619
+    Top = 157
+    object mnDeviceCode: TMenuItem
+      Caption = #44592#44592#53076#46300#51312#54924
+      OnClick = mnDeviceCodeClick
+    end
+    object mnDeviceVersion: TMenuItem
+      Caption = #48260#51260#51221#48372#51312#54924
+      OnClick = mnDeviceVersionClick
+    end
   end
 end

@@ -27,15 +27,18 @@ type
     Function CheckTB_HonikMappingJijum(aLEVEL1:string;var aName:string) : integer;
     Function CheckTB_HonikMappingPosi(aGUBUN:string;var aName:string) : integer;
     Function CheckTB_POSI(aCompanyCode,aPosiCode:string):integer;
+    Function CheckTB_POSIJIJUMMapping(aCode:string):integer;
     Function CheckTB_HonikTempTable2(aCAMPUS,aKEY:string;var aMode,aChange,alevel1,alevel2,agubun,aname,acnt:string):integer;
     Function CheckTB_HonikTempTable2Seoul(aCAMPUS,aKEY:string;var aMode,aChange,alevel1,alevel2,agubun,aname,acnt,aStatus,aCardType,aCardStop:string ):integer;
     Function CopyGradeOldCard(aOldCardNO,aNewCardNO:string):Boolean;
     Function DeleteHongikTempTable(aCampus:string):Boolean;
+    Function DeleteTB_CARD_EmployeeCardGubun(aCompanyCode,aEmCode,aCardGubun:string):Boolean;
     Function DeleteTB_CARD_Key(aCardNo:string):Boolean;
     Function DeleteTB_DEVICECARDNOCardNo(aCardNo:string):Boolean;
     Function DeleteTB_EMPLOYEE_Key(aCompanyCode,aEmCode:string;aFdmsID:integer=0):Boolean;
     Function DeleteTB_EMPLOYEE_CardNo(aEmCode,aCardNo:string;aDupCard:integer=0):Boolean;
     Function DeleteTB_HURELAY_Key(aHRSEQ:string):Boolean;
+
 
 
     Function InsertIntoTB_CARD_Value(aCardNo,aCardGubun,aCardType,aEmpID,aCompanyCode:string) : Boolean;
@@ -63,6 +66,7 @@ type
     Function InsertIntoTB_RELAYGUBUN(aRgCode,aCampusName:string):Boolean;
     Function InsertIntoTB_WORKGUBUN(aCode,aType,aName:string):Boolean;
     Function InsertTB_EMPHISCardStop(aCardNo:string):Boolean;
+    Function InsertIntoTB_POSIJIJUMMapping(aCode,aName:string):Boolean;
 
 
 
@@ -92,6 +96,7 @@ type
     Function UpdateTB_HonikTempTable2Seoul(aCAMPUS,aKEY,aLEVEL1,aLEVEL1_NAME,aLEVEL2,aLEVEL2_NAME,aGUBUN,aGUBUN_NAME,aGUBUN_CHANGE,aNAME,aCARD_CNT,aSTATUS,aCARDTYPE,aCARDSTOP,aCurChange,aCurMode:string):Boolean;
     Function UpdateTB_HonikTempTable2_Field_StringValue(aCAMPUS,aKEY,aFieldName,aData:string):Boolean;
     Function UpdateTB_Posi_Field_StringValue(aCompanyCode,aPosiCode,aFieldName,aData:string):Boolean;
+    Function UpdateTB_POSIJIJUMMapping(aCode, aName:string):Boolean;
   end;
 
 var
@@ -234,7 +239,7 @@ end;
 
 function TdmDBFunction.CheckTB_CARD_EmployeeGubun(aCompanyCode, aEmCode,
   aCardNo, aCardGubun: string; var aOldCardNo: string;
-  bRegCard: Boolean): integer;
+  bRegCard: Boolean=True): integer;
 var
   stSql: string;
   TempAdoQuery : TADOQuery;
@@ -836,6 +841,43 @@ begin
   End;
 end;
 
+function TdmDBFunction.CheckTB_POSIJIJUMMapping(aCode: string): integer;
+var
+  stSql: string;
+  TempAdoQuery : TADOQuery;
+begin
+  Result := -1;
+  stSql := 'select * from TB_POSIJIJUMMapping ';
+  stSql := stSql + ' where PG_CODE = ''' + aCode + ''' ';
+
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmDBModule.ADOConnection;
+    TempAdoQuery.DisableControls;
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      result := 0;
+      if recordCount < 1 then Exit;
+      result := 1;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
 function TdmDBFunction.CopyGradeOldCard(aOldCardNO,
   aNewCardNO: string): Boolean;
 var
@@ -895,6 +937,37 @@ begin
     result := dmDBModule.ProcessExecSQL(stSql);
   end;
 
+end;
+
+function TdmDBFunction.DeleteTB_CARD_EmployeeCardGubun(aCompanyCode,
+  aEmCode, aCardGubun: string): Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+  //카드 권한 삭제
+  stSql := 'Update TB_DEVICECARDNO Set ';
+  stSql := stSql + ' DE_PERMIT = ''N'', ';
+  stSql := stSql + ' DE_RCVACK = ''N'' ';
+  stSql := stSql + ' FROM TB_CARD a ';
+  stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND a.CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' AND a.EM_CODE = ''' + aEmCode + ''' ';
+  stSql := stSql + ' AND a.CA_GUBUN = ''' + aCardGubun + ''' ';
+  stSql := stSql + ' AND TB_DEVICECARDNO.CA_CARDNO = a.CA_CARDNO ';
+
+  Result := dmDBModule.ProcessExecSQL(stSql);
+
+
+  //카드 정지 
+  stSql := 'Update TB_CARD Set ';
+  stSql := stSql + ' CA_CARDTYPE = ''2'' ';
+  stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' AND EM_CODE = ''' + aEmCode + ''' ';
+  stSql := stSql + ' AND CA_GUBUN = ''' + aCardGubun + ''' ';
+
+  Result := dmDBModule.ProcessExecSQL(stSql);
 end;
 
 function TdmDBFunction.DeleteTB_CARD_Key(aCardNo: string): Boolean;
@@ -1586,6 +1659,21 @@ begin
   result := dmDBModule.ProcessExecSQL(stSql);
 end;
 
+function TdmDBFunction.InsertIntoTB_POSIJIJUMMapping(aCode,
+  aName: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := ' Insert Into TB_POSIJIJUMMapping(';
+  stSql := stSql + ' PG_CODE,';
+  stSql := stSql + ' PG_NAME) ';
+  stSql := stSql + ' Values(';
+  stSql := stSql + '''' + aCode + ''',';
+  stSql := stSql + '''' + aName + ''')';
+
+  result := dmDBModule.ProcessExecSQL(stSql);
+end;
+
 function TdmDBFunction.InsertIntoTB_RELAYGUBUN(aRgCode,
   aCampusName: string): Boolean;
 var
@@ -1688,6 +1776,7 @@ var
   stSql : string;
 begin
   stSql := 'Update TB_CARD set ';
+  if(aCardGubun<>'') then stSql := stSql + 'CA_GUBUN = ''' + aCardGubun + ''',';
   stSql := stSql + 'CA_CARDTYPE = ''' + aCardType + ''',';
   stSql := stSql + 'EM_CODE = ''' + aEmpID + ''',';
   if aDoorGrade <> '' then stSql := stSql + 'CA_DOORGRADE = ''' + aDoorGrade + ''',';
@@ -2072,6 +2161,18 @@ begin
   stSql := stSql + aFieldName + '=''' + aData + ''' ';
   stSql := stSql + ' where K_CAMPUS  = ' + aCAMPUS + '';    //캠퍼스 구분 1:서울 2:세종
   stSql := stSql + ' and K_KEY = ''' + aKEY + ''' ';       //학번 ( 종번 )
+
+  result := dmDBModule.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.UpdateTB_POSIJIJUMMapping(aCode,
+  aName: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'update TB_POSIJIJUMMapping set ';
+  stSql := stSql + 'PG_NAME =''' + aName + ''' ';
+  stSql := stSql + ' where PG_CODE = ''' + aCode + ''' ';
 
   result := dmDBModule.ProcessExecSQL(stSql);
 end;

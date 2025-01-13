@@ -20,6 +20,13 @@ type
     Pan_Gauge: TPanel;
     Gauge1: TGauge;
     StaticText1: TStaticText;
+    GroupBox2: TGroupBox;
+    lb_Building1: TLabel;
+    cmb_BuildingCode: TComboBox;
+    cmb_FloorCode: TComboBox;
+    lb_FloorCode1: TLabel;
+    lb_AreaCode1: TLabel;
+    cmb_AreaCode: TComboBox;
     procedure btn_CloseClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -28,10 +35,20 @@ type
     procedure sg_DoorCheckBoxClick(Sender: TObject; ACol, ARow: Integer;
       State: Boolean);
     procedure btn_SaveClick(Sender: TObject);
+    procedure cmb_BuildingCodeChange(Sender: TObject);
+    procedure cmb_FloorCodeChange(Sender: TObject);
+    procedure cmb_AreaCodeChange(Sender: TObject);
   private
     GroupCodeList : TStringList;
+    BuildingCodeList : TStringList;
+    FloorCodeList : TStringList;
+    AreaCodeList :TStringList;
+
     { Private declarations }
     function LoadGroupCode:Boolean;
+    procedure LoadBuildingCode(cmb_Box:TComboBox);
+    procedure LoadFloorCode(aBuildingCode:string;cmb_Box:TComboBox);
+    procedure LoadAreaCode(aBuildingCode,aFloorCode:string;cmb_Box:TComboBox);
     function LoadDoor : Boolean;
     Function CheckTB_DEVICECARDNO_Group(aGroup,aNodeNo,aECUID : String):Boolean;
     function DoorGradeSetting(aGroupCode:string):Boolean;
@@ -61,6 +78,9 @@ end;
 procedure TfmGroupGrade.FormActivate(Sender: TObject);
 begin
   LoadGroupCode;
+  LoadBuildingCode(cmb_BuildingCode);
+  LoadFloorCode('000',cmb_FloorCode);
+  LoadAreaCode('000','000',cmb_AreaCode);
   if cmb_GroupCode.Items.Count > 0 then
   begin
     cmb_GroupCode.ItemIndex := 0;
@@ -115,6 +135,9 @@ end;
 procedure TfmGroupGrade.FormCreate(Sender: TObject);
 begin
   GroupCodeList := TStringList.Create;
+  BuildingCodeList := TStringList.Create;
+  FloorCodeList := TStringList.Create;
+  AreaCodeList := TStringList.Create;
 end;
 
 procedure TfmGroupGrade.FormClose(Sender: TObject;
@@ -139,7 +162,20 @@ var
   nRow : integer;
   i : integer;
   TempAdoQuery : TADOQuery;
+  stBuildingCode : string;
+  stFloorCode : string;
+  stAreaCode : string;
 begin
+  stBuildingCode := '000';
+  stFloorCode := '000';
+  stAreaCode := '000';
+  if cmb_BuildingCode.itemindex > 0 then
+    stBuildingCode := BuildingCodeList.Strings[ cmb_BuildingCode.itemindex ];
+  if cmb_FloorCode.itemindex > 0 then
+    stFloorCode := FloorCodeList.Strings[ cmb_FloorCode.itemindex ];
+  if cmb_AreaCode.itemindex > 0 then
+    stAreaCode := AreaCodeList.Strings[ cmb_AreaCode.itemindex ];
+
   GridInit(sg_Door,2,2,True);
   stSql := ' select a.DO_DOORNONAME,a.DO_DOORNO,a.AC_NODENO,a.AC_MCUID,a.AC_ECUID,a.DO_VIEWSEQ ' ;
   stSql := stSql + ' from TB_DOOR a ';
@@ -148,6 +184,10 @@ begin
   stSql := stSql + ' AND a.AC_NODENO = c.AC_NODENO ';
   stSql := stSql + ' AND a.AC_ECUID = c.AC_ECUID ';
   stSql := stSql + ' AND c.AC_FDTYPE <> ''1'' )';  //식수타입은 조회 하지 말자
+  stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
+  if(stBuildingCode<> '000') then stSql := stSql + 'a.LO_DONGCODE = ''' +  stBuildingCode + ''' ';
+  if(stFloorCode<> '000') then stSql := stSql + 'a.LO_FLOORCODE = ''' +  stFloorCode + ''' ';
+  if(stAreaCode<> '000') then stSql := stSql + 'a.LO_AREACODE = ''' +  stAreaCode + ''' ';
   stSql := stSql + ' order by a.DO_VIEWSEQ ';
 
   Try
@@ -435,30 +475,7 @@ begin
   stSql := stSql + '''' + FormatDateTime('yyyymmddHHMMSS',Now) + ''',';
   stSql := stSql + '''RELAY'') ';
 
-  Try
-    CoInitialize(nil);
-    TempAdoQuery := TADOQuery.Create(nil);
-    TempAdoQuery.Connection := dmDBModule.ADOConnection;
-
-    with TempAdoQuery do
-    begin
-      Close;
-      Sql.Clear;
-      Sql.Text := stSql;
-
-      Try
-        ExecSql;
-      Except
-        Exit;
-      End;
-    
-    end;
-  Finally
-    TempAdoQuery.Free;
-    CoUninitialize;
-  End;
-
-  Result := True;
+  Result :=dmDBModule.ProcessExecSQL(stSql);
 end;
 
 function TfmGroupGrade.UpdateTB_DEVICECARDNO_Group(aGroup, aNodeNo, aECUID,
@@ -483,21 +500,228 @@ begin
   stSql := stSql + ' AND AC_NODENO =' + aNodeNo ;
   stSql := stSql + ' AND AC_ECUID = ''' + aECUID + '''';
 
-  with ADOQuery2 do
+  Result :=dmDBModule.ProcessExecSQL(stSql);
+
+end;
+
+procedure TfmGroupGrade.LoadBuildingCode(cmb_Box: TComboBox);
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+begin
+
+  cmb_Box.Clear;
+  cmb_Box.Enabled := True;
+  BuildingCodeList.Clear;
+
+  stSql := 'select * from TB_LOCATION ';
+  stSql := stSql + ' where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND LO_GUBUN = ''0'' ';
+  stSql := stSql + ' Order by LO_NAME ';
+
+  cmb_Box.Items.Add('전체');
+  BuildingCodeList.Add('');
+  cmb_Box.ItemIndex := 0;
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmDBModule.ADOConnection;
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+
+      if RecordCount < 1 then
+      begin
+        Exit;
+      end;
+
+      First;
+      While Not Eof do
+      begin
+        cmb_Box.Items.Add(FindField('LO_NAME').AsString );
+        BuildingCodeList.Add(FindField('LO_DONGCODE').AsString);
+        Next;
+      end;
+
+    end;
+  Finally
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+procedure TfmGroupGrade.LoadFloorCode(aBuildingCode: string;
+  cmb_Box: TComboBox);
+var
+  stSql : string;
+  TempAdoQuery:TADOQuery;
+begin
+  cmb_Box.Clear;
+  FloorCodeList.Clear;
+
+  cmb_Box.Items.Add('전체');
+  FloorCodeList.Add('');
+  cmb_Box.ItemIndex := 0;  
+
+  stSql := 'select * from TB_LOCATION ';
+  stSql := stSql + ' where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND LO_GUBUN = ''1'' ';
+  if (aBuildingCode <> '') And (aBuildingCode <> '000')  then
   begin
-    Close;
-    Sql.Clear;
-    Sql.Text := stSql;
+    stSql := stSql + ' AND LO_DONGCODE = ''' + aBuildingCode + '''';
+  end else Exit;
+  stSql := stSql + ' Order by LO_NAME ';
 
-    Try
-      ExecSql;
-    Except
-      Exit;
-    End;
-    
-  end;
 
-  Result := True;
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmDBModule.ADOConnection;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+
+      if RecordCount < 1 then
+      begin
+        Exit;
+      end;
+      First;
+      While Not Eof do
+      begin
+        cmb_Box.Items.Add(FindField('LO_NAME').AsString );
+        FloorCodeList.Add(FindField('LO_FLOORCODE').AsString);
+        Next;
+      end;
+
+    end;
+  Finally
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+procedure TfmGroupGrade.LoadAreaCode(aBuildingCode, aFloorCode: string;
+  cmb_Box: TComboBox);
+var
+  stSql : string;
+  TempAdoQuery : TADOQuery;
+begin
+  cmb_Box.Clear;
+  AreaCodeList.Clear;
+
+  cmb_Box.Items.Add('전체');
+  AreaCodeList.Add('');
+  cmb_Box.ItemIndex := 0;
+
+  stSql := 'select * from TB_LOCATION ';
+  stSql := stSql + ' where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND LO_GUBUN = ''2'' ';
+
+  if (aBuildingCode <> '') And (aBuildingCode <> '000')  then
+  begin
+    stSql := stSql + ' AND LO_DONGCODE = ''' + aBuildingCode + '''';
+  end else Exit;
+
+  if (aFloorCode <> '') And (aFloorCode <> '000')  then
+  begin
+    stSql := stSql + ' AND LO_FLOORCODE = ''' + aFloorCode + '''';
+  end else Exit;
+
+  stSql := stSql + ' Order by LO_NAME ';
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmDBModule.ADOConnection;
+
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+
+      if RecordCount < 1 then
+      begin
+        Exit;
+      end;
+
+      First;
+      While Not Eof do
+      begin
+        cmb_Box.Items.Add(FindField('LO_NAME').AsString );
+        AreaCodeList.Add(FindField('LO_AREACODE').AsString);
+        Next;
+      end;
+
+    end;
+  Finally
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+procedure TfmGroupGrade.cmb_BuildingCodeChange(Sender: TObject);
+var
+  stBuildingCode : string;
+  stFloorCode : string;
+  stAreaCode : string;
+begin
+  if cmb_BuildingCode.itemindex < 0 then Exit;
+  stBuildingCode := '000';
+  stFloorCode := '000';
+  stAreaCode := '000';
+
+  stBuildingCode := BuildingCodeList.Strings[ cmb_BuildingCode.itemindex ];
+  LoadFloorCode(stBuildingCode,cmb_FloorCode);
+  LoadAreaCode(stBuildingCode,stFloorCode,cmb_AreaCode);
+  cmb_GroupCodeChange(cmb_GroupCode);
+end;
+
+procedure TfmGroupGrade.cmb_FloorCodeChange(Sender: TObject);
+var
+  stBuildingCode : string;
+  stFloorCode : string;
+  stAreaCode : string;
+begin
+  stBuildingCode := '000';
+  stFloorCode := '000';
+  stAreaCode := '000';
+  if cmb_BuildingCode.itemindex < 0 then Exit;
+  stBuildingCode := BuildingCodeList.Strings[ cmb_BuildingCode.itemindex ];
+  if cmb_FloorCode.itemindex < 0 then Exit;
+  stFloorCode := FloorCodeList.Strings[ cmb_FloorCode.itemindex ];
+  LoadAreaCode(stBuildingCode,stFloorCode,cmb_AreaCode);
+  cmb_GroupCodeChange(cmb_GroupCode);
+end;
+
+procedure TfmGroupGrade.cmb_AreaCodeChange(Sender: TObject);
+begin
+  cmb_GroupCodeChange(cmb_GroupCode);
 end;
 
 end.

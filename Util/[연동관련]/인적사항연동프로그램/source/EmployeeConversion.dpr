@@ -39,7 +39,8 @@ uses
   uJUNNAMCurrentState in 'fmJUNNAMCurrentState\uJUNNAMCurrentState.pas' {fmJUNNAMCurrentState},
   uDBRelayFunction in 'Lib\uDBRelayFunction.pas' {dmDBRelayFunction: TDataModule},
   uHoniK in 'Lib\uHoniK.pas' {dmHoniK: TDataModule},
-  uCommon in 'Lib\uCommon.pas' {dmCommon: TDataModule};
+  uCommon in 'Lib\uCommon.pas' {dmCommon: TDataModule},
+  uChosun in '..\lib\uChosun.pas' {dmChosun: TDataModule};
 
 {$R *.res}
 {$R manifest.RES}
@@ -68,5 +69,6 @@ begin
   Application.CreateForm(TdmDBRelayFunction, dmDBRelayFunction);
   Application.CreateForm(TdmHoniK, dmHoniK);
   Application.CreateForm(TdmCommon, dmCommon);
+  Application.CreateForm(TdmChosun, dmChosun);
   Application.Run;
 end.

@@ -38,14 +38,14 @@ inherited fmGroupCode: TfmGroupCode
     object Label8: TLabel
       Left = 16
       Top = 10
-      Width = 72
+      Width = 89
       Height = 13
       Caption = #44428#54620#44536#47353#53076#46300
     end
     object Label1: TLabel
       Left = 16
       Top = 34
-      Width = 72
+      Width = 89
       Height = 13
       Caption = #44428#54620#44536#47353#47749#52845
     end

@@ -38,7 +38,9 @@ uses
   uHongikCurrentState in 'fmHongikCurrentState\uHongikCurrentState.pas' {fmHongikCurrentState},
   uJUNNAMCurrentState in 'fmJUNNAMCurrentState\uJUNNAMCurrentState.pas' {fmJUNNAMCurrentState},
   uDBRelayFunction in 'Lib\uDBRelayFunction.pas' {dmDBRelayFunction: TDataModule},
-  uHoniK in 'Lib\uHoniK.pas' {dmHoniK: TDataModule};
+  uHoniK in 'Lib\uHoniK.pas' {dmHoniK: TDataModule},
+  uCommon in 'Lib\uCommon.pas' {dmCommon: TDataModule},
+  uChosun in '..\lib\uChosun.pas' {DataModule1: TDataModule};
 
 {$R *.res}
 {$R manifest.RES}
@@ -66,5 +68,7 @@ begin
   Application.CreateForm(TdmDBFunction, dmDBFunction);
   Application.CreateForm(TdmDBRelayFunction, dmDBRelayFunction);
   Application.CreateForm(TdmHoniK, dmHoniK);
+  Application.CreateForm(TdmCommon, dmCommon);
+  Application.CreateForm(TDataModule1, DataModule1);
   Application.Run;
 end.

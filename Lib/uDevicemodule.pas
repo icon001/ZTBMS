@@ -2328,6 +2328,7 @@ begin
             end
           end;
   end;
+
   case cDoorState of
     'C' : begin
             if GetDoorState(strtoint(stDoorNo)) <> dsClose then
@@ -2346,6 +2347,7 @@ begin
     'T','D' : begin
             if GetDoorState(strtoint(stDoorNo)) <> dsLongTime then
             begin
+              //LogSave(ExeFolder + '\..\log\LongTime'+ FormatDateTIme('yyyymmdd',Now)+'.log','DoorModeState:'+aData);
               SetDoorState(strtoint(stDoorNo),dsLongTime);
               bChange := True;
             end
@@ -2715,6 +2717,7 @@ begin
             end
           end;
   end;
+
   case cDoorState of
     'C' : begin
             if GetDoorState(strtoint(stDoorNo)) <> dsClose then
@@ -2734,6 +2737,7 @@ begin
             if GetDoorState(strtoint(stDoorNo)) <> dsLongTime then
             begin
               SetDoorState(strtoint(stDoorNo),dsLongTime);
+              //LogSave(ExeFolder + '\..\log\LongTime'+ FormatDateTIme('yyyymmdd',Now)+'.log','DoorControlState:'+aData);
               bChange := True;
             end
           end;
@@ -3162,6 +3166,7 @@ begin
             end
           end;
   end;
+
   case cDoorState of
     'C' : begin
             if GetDoorState(strtoint(stDoorNo)) <> dsClose then
@@ -3181,6 +3186,7 @@ begin
             if GetDoorState(strtoint(stDoorNo)) <> dsLongTime then
             begin
               SetDoorState(strtoint(stDoorNo),dsLongTime);
+              //LogSave(ExeFolder + '\..\log\LongTime'+ FormatDateTIme('yyyymmdd',Now)+'.log','DoorSetupState:'+aData);
               bChange := True;
             end
           end;
@@ -3634,6 +3640,22 @@ begin
     HO2USE := True;
     HO3USE := True;
     MaxLockCount := 1;
+    ScheduleSkill := True;
+  end else if copy(UpperCase(Value),1,3) = 'ICU' then  //다음에 나오는 ICU 전체
+  begin
+    DeviceType := '4';
+    HO1USE := True;
+    HO2USE := True;
+    HO3USE := True;
+    MaxLockCount := 1;
+    ScheduleSkill := True;
+  end else   //그 외는 MCU 또는 ECU로 판단
+  begin
+    DeviceType := '1';
+    HO1USE := True;
+    HO2USE := True;
+    HO3USE := True;
+    MaxLockCount := 8;
     ScheduleSkill := True;
   end;
 end;

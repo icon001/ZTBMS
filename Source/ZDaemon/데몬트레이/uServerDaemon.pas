@@ -888,6 +888,7 @@ type
     Function  Check_HolidayDevice:Boolean; //Holiday 다운로드 하지 않은 기기가 있는지 체크
     Function  Search_PortState(aDeviceID:string):Boolean;
     Function  Search_ZoneExtendPortState(aDeviceID:string):Boolean;
+    Function  Search_DeviceCode(aDeviceID:string):Boolean;
 
     procedure Process_STRReceive(aCheckData:string); //STR 등록 데이터 수신 처리
 
@@ -4058,7 +4059,7 @@ begin
     if (stGubun = '00') then
     begin
       stRomVer :=Copy(ReceiveData,23,Length(ReceiveData)-24);
-      dmDBFunction.UpdateTB_ACCESSDEVICE_Field_StringValue(inttostr(NodeNO),stECUID,'AC_VER',stTemp);
+      dmDBFunction.UpdateTB_ACCESSDEVICE_Field_StringValue(inttostr(NodeNO),stECUID,'AC_VER',stRomVer);
     end else if (stGubun = '01') then
     begin
       stTemp :=Copy(ReceiveData,23,Length(ReceiveData)-24);
@@ -5924,7 +5925,7 @@ begin
   else if stCMD = 'ALARMDISABLE' then Control_AlarmModeChange(stDeviceID,'0')  //경계해제
   else if stCMD = 'ALARMREFRESH' then MonitorAlarmRefresh
   else if stCMD = 'ALARMSETTING' then Control_AlarmModeChange(stDeviceID,'1')  //경계
-  else if stCMD = 'ARMAREASTATE' then DaemonArmAreaState(stDeviceID)           //방범 구역 
+  else if stCMD = 'ARMAREASTATE' then DaemonArmAreaState(stDeviceID)           //방범 구역
   else if stCMD = 'BROADCAST' then BroadCastMonitorClient(stData)
   else if stCMD = 'CARDDOWNLOAD' then  //카드권한다운로드
   begin
@@ -5973,6 +5974,8 @@ begin
   else if stCMD = 'TIMESYNC' then Registration_DeviceTimeSync(stDeviceID)         //시간동기화
   else if stCMD = 'ZEPORTSTATE' then Search_ZoneExtendPortState(stDeviceID)
 //  else if stCMD = 'HOLIDAY' then Send_DeviceHoliday(stDeviceID)  //공휴일 다운로드
+  else if stCMD = 'DEVICECODESEARCH' then  Search_DeviceCode(stDeviceID)
+  else if stCMD = 'DEVICEVERSEARCH' then Check_DeviceVersion(stDeviceID)
 ;
 
 end;
@@ -22353,7 +22356,7 @@ begin
   DeviceInfoSearch.Interval := G_nDeviceInfoSearchTimerInterval; //2초에 한번씩...
   DeviceInfoSearch.Enabled := False;
 
-  if L_nDeviceInfoSearchNo >= DeviceList.count - 1 then L_nDeviceInfoSearchNo := 0; 
+  if L_nDeviceInfoSearchNo >= DeviceList.count - 1 then L_nDeviceInfoSearchNo := 0;
 
   for i := L_nDeviceInfoSearchNo to DeviceList.count - 1 do
   begin
@@ -24655,6 +24658,26 @@ begin
   end;
   dmDBFunction.UpdateTB_ACCESSDEVICE_Field_StringValue(inttostr(NodeNo),stEcuID,'AC_CARDFULL',aData);
 end;
+
+function TfmMain.Search_DeviceCode(aDeviceID: string): Boolean;
+var
+  stNodeNo,stECUID : string;
+  aDevice: TDevice;
+begin
+  stNodeNo := copy(aDeviceID,1,3);
+  stECUID := copy(aDeviceID,4,2);
+
+  aDevice:= GetDevice(stNodeNo + stECUID );
+  if aDevice <> nil then
+  begin
+    if aDevice.CommNode.SocketConnected = True then
+    begin
+      aDevice.SearchDevicecode;
+    end;
+  end;
+
+end;
+
 
 end.
 

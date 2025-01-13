@@ -78,6 +78,8 @@ type
     btn_QueryTest3: TSpeedButton;
     gb_Emergency: TGroupBox;
     ed_EmergencyCode: TEdit;
+    Label24: TLabel;
+    ed_PosiJijumCode: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure sbCancelClick(Sender: TObject);
     procedure sbSaveClick(Sender: TObject);
@@ -168,6 +170,7 @@ begin
           else if FindField('CO_CONFIGCODE').AsString = 'JIJUMCD'   then ed_JijumCode.Text := FindField('CO_CONFIGVALUE').AsString
           else if FindField('CO_CONFIGCODE').AsString = 'POSICD'   then ed_BasicPosiCode.Text := FindField('CO_CONFIGVALUE').AsString
           else if FindField('CO_CONFIGCODE').AsString = 'EMGCD'   then ed_EmergencyCode.Text := FindField('CO_CONFIGVALUE').AsString
+          else if FindField('CO_CONFIGCODE').AsString = 'POSIJIJUM'   then ed_PosiJijumCode.Text := FindField('CO_CONFIGVALUE').AsString
           ;
         end;
         Next;
@@ -202,6 +205,7 @@ begin
     end;
     if (cmb_ProgramType.ItemIndex + 1) = 15 then dmHoniK.InitSeoulRelay();  ///초기화 작업으로 직위코드 가져 오자.
   end;
+  
   stSql := UpdateTB_CONFIG('EMPCONV','PGTYPE',inttostr(cmb_ProgramType.ItemIndex + 1));
   dmDBModule.ProcessExecSQL(stSql);
   stSql := UpdateTB_CONFIG('EMPCONV','DBTYPE',inttostr(cmb_DBType.ItemIndex + 1));
@@ -359,6 +363,15 @@ begin
     dmDBModule.ProcessExecSQL(stSql);
   end;
  
+  if Not dmCommon.CheckTB_CONFIG('EMPCONV','POSIJIJUM') then
+  begin
+    stSql := InsertIntoTB_CONFIG('EMPCONV','POSIJIJUM',ed_PosiJijumCode.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end else
+  begin
+    stSql := UpdateTB_CONFIG('EMPCONV','POSIJIJUM',ed_PosiJijumCode.Text);
+    dmDBModule.ProcessExecSQL(stSql);
+  end;
 
   Close;
 end;

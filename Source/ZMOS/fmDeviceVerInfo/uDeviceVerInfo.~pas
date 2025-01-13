@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Buttons, StdCtrls, Grids, BaseGrid, AdvGrid, uSubForm,
-  CommandArray, DB, ADODB, Gauges, ExtCtrls,iniFiles,ComObj, AdvObj;
+  CommandArray, DB, ADODB, Gauges, ExtCtrls,iniFiles,ComObj, AdvObj, Menus;
 
 type
   TfmDeviceVerInfo = class(TfmASubForm)
@@ -19,6 +19,9 @@ type
     Label1: TLabel;
     Gauge1: TGauge;
     SaveDialog1: TSaveDialog;
+    PopupMenu_Search: TPopupMenu;
+    mnDeviceCode: TMenuItem;
+    mnDeviceVersion: TMenuItem;
     procedure btn_CloseClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btn_SearchClick(Sender: TObject);
@@ -28,6 +31,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure CommandArrayCommandsTCloseExecute(Command: TCommand;
       Params: TStringList);
+    procedure mnDeviceCodeClick(Sender: TObject);
+    procedure mnDeviceVersionClick(Sender: TObject);
   private
     { Private declarations }
     procedure SearchDeviceVersionInfo;
@@ -42,7 +47,7 @@ var
 implementation
 
 uses
-  uDataModule1, uExcelSave;
+  uDataModule1, uExcelSave,uDBFunction,uLomosUtil;
 {$R *.dfm}
 procedure TfmDeviceVerInfo.btn_CloseClick(Sender: TObject);
 begin
@@ -221,6 +226,53 @@ procedure TfmDeviceVerInfo.CommandArrayCommandsTCloseExecute(
 begin
   inherited;
   Close;
+end;
+
+procedure TfmDeviceVerInfo.mnDeviceCodeClick(Sender: TObject);
+var
+  stNodeNo : string;
+  stEcuId : string;
+  i : integer;
+begin
+  for i:=0 to sg_DeviceInfo.RowCount - 1 do
+  begin
+    if sg_DeviceInfo.IsSelected(0,I) then
+    begin
+      RowIndex := i;
+      stNodeNo := sg_DeviceInfo.Cells[1,RowIndex];
+      stEcuId  := sg_DeviceInfo.Cells[2,RowIndex];
+      sg_DeviceInfo.cells[5,RowIndex] := '';
+
+      dmDBFunction.UpdateTB_ACCESSDEVICE_Field_StringValue(stNodeNo,stEcuID,'AC_DEVICECODE','');
+      self.FindSubForm('Main').FindCommand('SendData').Params.Values['VALUE'] := 'DEVICECODESEARCH'+ DATADELIMITER + FillZeroStrNum(stNodeNo,3) + FillZeroStrNum(stEcuId,2) + DATADELIMITER;
+      self.FindSubForm('Main').FindCommand('SendData').Execute;
+    end;
+  end;
+
+end;
+
+procedure TfmDeviceVerInfo.mnDeviceVersionClick(Sender: TObject);
+var
+  stNodeNo : string;
+  stEcuId : string;
+  i : integer;
+  RowIndex : integer;
+begin
+  for i:=0 to sg_DeviceInfo.RowCount - 1 do
+  begin
+    if sg_DeviceInfo.IsSelected(0,I) then
+    begin
+      RowIndex := i;
+      stNodeNo := sg_DeviceInfo.Cells[1,RowIndex];
+      stEcuId  := sg_DeviceInfo.Cells[2,RowIndex];
+      sg_DeviceInfo.cells[4,RowIndex] := '';
+
+      dmDBFunction.UpdateTB_ACCESSDEVICE_Field_StringValue(stNodeNo,stEcuID,'AC_VER','');
+      self.FindSubForm('Main').FindCommand('SendData').Params.Values['VALUE'] := 'DEVICEVERSEARCH'+ DATADELIMITER + FillZeroStrNum(stNodeNo,3) + FillZeroStrNum(stEcuId,2) + DATADELIMITER;
+      self.FindSubForm('Main').FindCommand('SendData').Execute;
+    end;
+  end;
+
 end;
 
 initialization

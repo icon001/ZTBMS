@@ -765,7 +765,7 @@ var
   nFdmsID : integer;
   stOldCodeNo : string;
   stOldCardState : string;
-  bCardStateChange : Boolean;
+  bCardGroupGrade : Boolean;
   stWorkCode,stEndDate : string;
   stEmCode : string;
   nIndex : integer;
@@ -796,10 +796,11 @@ aCARDSTOP : 0:정상, 1:분실, 2:정지
 
   stCardGubun := '1';
 
-  bCardStateChange := False;
+  bCardGroupGrade := False;
   stCardNo :='';
   stCardState := '1';  //aType이 0 인경우만 정상
-  if aSTATUS <> '1' then stCardState := '3'; ///카드 정지
+  if aSTATUS = '5' then aSTATUS := '1'; //수료도 정상으로 처리
+  //if aSTATUS <> '1' then stCardState := '3'; ///카드 정지
   if (aCARDSTOP = '1') then stCardState := '2' ///카드 분실
   else if (aCARDSTOP = '2') then stCardState := '3' ; ///카드 정지
 
@@ -807,11 +808,16 @@ aCARDSTOP : 0:정상, 1:분실, 2:정지
   if length(aKEY) < 13 then
   begin
     stPosiGubun := aKGUBUN;
-    if (Trim(aKGUBUN) = '4') or (Trim(aKGUBUN) = '5') then stPosiGubun := '01'
-    else if (Trim(aKGUBUN) = '1') or (Trim(aKGUBUN) = '2') then stPosiGubun := '02'
-    else if (Trim(aKGUBUN) = '3') or (Trim(aKGUBUN) = '6') then stPosiGubun := '03';
+    (*
+    if (Trim(aKGUBUN) = '4') or (Trim(aKGUBUN) = '5') then stPosiGubun := '01'    //구성원 코드가 4,5 이면 01 타입으로 변환
+    else if (Trim(aKGUBUN) = '1') or (Trim(aKGUBUN) = '2') then stPosiGubun := '02'   //구성원 구분코드가 1,2 이면 02 타입으로 변환
+    else if (Trim(aKGUBUN) = '3') or (Trim(aKGUBUN) = '6') then stPosiGubun := '03';  //구성원 구분코드가 3,6 이면 03 타입으로 변환
+    *)
+    if (Trim(aKGUBUN) = '1') or (Trim(aKGUBUN) = '2') then stPosiGubun := '01';   //구성원 구분코드가 1,2 이면 01 타입으로 변환
+
     if(aCARDTYPE='0') then
     begin
+      //모바일카드 생성 규칙 M/B + 구분코드 2자리,사번10자리(*로 채움)+N+차수(2)
       aKEY := 'M' + FillZeroStrNum(Trim(stPosiGubun),2) + FillCharString(aKEY,'*',10,False)+ 'N';        ///모바일 카드
       stCardGubun := '2';
     end else if (aCARDTYPE='1') then
@@ -828,7 +834,7 @@ aCARDSTOP : 0:정상, 1:분실, 2:정지
   if isdigit(aCARDCNT) then
   begin
     if(aCARDTYPE='0') or (aCARDTYPE='1') then stCardNo := aKEY + FillZeroStrNum(aCARDCNT,2)
-    else if (aCARDTYPE='2') then stCardNo := aKEY + FillZeroStrNum(aCARDCNT,2,False);
+    else if (aCARDTYPE='2') then stCardNo := aKEY + FillZeroNumber( strtoint(aCARDCNT),2,False);
     //stCardNo := dmCommon.MakeCardNo(fmMain.L_stProgramType,aKEY,aCARDCNT);
   end;
 
@@ -895,7 +901,7 @@ aCARDSTOP : 0:정상, 1:분실, 2:정지
                         '001',
                         aSTATUS) then Exit;
 
-      bCardStateChange := True; //카드 상태 변경으로 권한 부여
+      bCardGroupGrade := True; //카드 상태 변경으로 권한 부여
       dmDBFunction.InsertIntoTB_EMPHIS(stCompanyCode,stEmCode,inttostr(nFdmsID),
                           '1',stCardNo,stCardState,aName,
                           '','홍익대학교',stJijumCode,stDepartCode,'');
@@ -911,64 +917,92 @@ aCARDSTOP : 0:정상, 1:분실, 2:정지
 
 
   //if dmDBFunction.CheckTB_CARD_Employee_STICK(stCompanyCode,stEmCode) = 1 then Exit; //수동으로 들어온 카드라면 변경하지 않는다. 이 부분은 제거
-  //학번에 다른 카드가 있으면 기존 카드 정지 후
-  if G_nDupCard = 0 then
+
+  if(stCardGubun='1') then//실물카드라면
   begin
-    //1인 1카드 사용시
-    nResult := dmDBFunction.CheckTB_CARD_Employee(stCompanyCode,stEmCode,stCardNo,stOldCodeNo);
-    if nResult = 1 then
-    begin
-      //같은 사번으로 다른 카드가 있는 경우
-      //기존카드 권한을 똑같이 옮김
-      dmDBFunction.UpdateTB_CARD_Change(stOldCodeNo,stCardNo);
-      bCardStateChange := False;
-    end else if nResult = 0 then
-    begin
-      //같은 사번으로 같은 카드가 있는 경우 권한 변경 하지 말자.
-      bCardStateChange := False;
-    end;
-  end else
-  begin
-    //1인 여러장 카드 사용시
+    //실물 카드가 있는지 확인한다.
     nResult := dmDBFunction.CheckTB_CARD_EmployeeGubun(stCompanyCode,stEmCode,stCardNo,stCardGubun,stOldCodeNo);
     if nResult = 1 then
     begin
       //같은 사번으로 다른 카드가 있는 경우
-      //기존카드 권한을 똑같이 옮김
+      //기존카드 권한을 똑같이 옮긴다.
       dmDBFunction.UpdateTB_CARD_Change(stOldCodeNo,stCardNo);
-      bCardStateChange := False;
+      bCardGroupGrade := False;
     end else if nResult = 0 then
     begin
       //같은 사번으로 같은 카드가 있는 경우 권한 변경 하지 말자.
-      bCardStateChange := False;
+      bCardGroupGrade := False;
     end else if nResult = -1 then
     begin
-      //같은 모바일 카드가 없다면 모든 카드를 살펴 본다.
+      //실물 카드가 없다면 전체 카드 확인한다.
       nResult := dmDBFunction.CheckTB_CARD_Employee(stCompanyCode,stEmCode,stCardNo,stOldCodeNo);
       if nResult = 1 then
       begin
         //같은 사번으로 다른 카드가 있는 경우
         //기존카드 권한을 똑같이 옮김,기존 카드 삭제는 하지 않는다.
         dmDBFunction.UpdateTB_CARD_Change(stOldCodeNo,stCardNo,False);
-        bCardStateChange := False;
+        bCardGroupGrade := False;
+      end else
+      begin
+        nResult := dmDBFunction.CheckTB_CARD_Employee(stCompanyCode,stEmCode,stCardNo,stOldCodeNo,False);
+        if nResult = 1 then
+        begin
+          dmDBFunction.UpdateTB_CARD_Change(stOldCodeNo,stCardNo,False);
+          bCardGroupGrade := False;
+        end else
+        begin       //그룹권한을 적용한다.
+          bCardGroupGrade := True;
+        end;
+      end;
+    end;
+    // 모바일 카드 권한은 삭제 한다.
+    dmDBFunction.DeleteTB_CARD_EmployeeCardGubun(stCompanyCode,stEmCode,'2');
+
+  end else //모바일 카드라면
+  begin
+    nResult := dmDBFunction.CheckTB_CARD_EmployeeGubun(stCompanyCode,stEmCode,stCardNo,stCardGubun,stOldCodeNo);
+    if nResult = 1 then
+    begin
+      //같은 사번으로 다른 모바일 카드가 있는 경우
+      //기존카드 권한을 똑같이 옮김
+      dmDBFunction.UpdateTB_CARD_Change(stOldCodeNo,stCardNo);
+      bCardGroupGrade := False;
+    end else if nResult = 0 then
+    begin
+      //같은 사번으로 같은 카드가 있는 경우 권한 변경 하지 말자.
+      bCardGroupGrade := False;
+    end else if nResult = -1 then
+    begin
+      //모바일 카드가 없다면 전체 카드를 조회한다.
+      nResult := dmDBFunction.CheckTB_CARD_Employee(stCompanyCode,stEmCode,stCardNo,stOldCodeNo);
+      if nResult = 1 then
+      begin
+        //같은 사번으로 다른 카드가 있는 경우
+        //기존카드 권한을 똑같이 옮김,기존 카드 삭제는 하지 않는다.
+        dmDBFunction.UpdateTB_CARD_Change(stOldCodeNo,stCardNo,False);
+        bCardGroupGrade := False;
+      end else
+      begin
+        //그룹권한을 적용한다.
+        bCardGroupGrade := True;
       end;
     end;
   end;
 
   if dmDBFunction.CheckTB_CARD_CardNo(stCardNo,stOldCardState) = 1 then
   begin
-    if stCardState <> stOldCardState then bCardStateChange := True;
+    if stCardState <> stOldCardState then bCardGroupGrade := True;
     if Not dmDBFunction.UpdateTB_CARD(stCardNo,stCardGubun,stCardState,stEmCode,stCompanyCode) then Exit;
   end else
   begin
     if Not dmDBFunction.InsertIntoTB_CARD_Value(stCardNo,stCardGubun,stCardState,stEmCode,stCompanyCode) then Exit;
-    //bCardStateChange := True;
   end;
 
-  dmDBFunction.UpdateTB_CARD_Field_StringValue(stCardNo,'CA_GUBUN',stCardGubun);
-
+  (*
+  구분이 변경 될때 디폴드 값으로 가져 갈것인지 체크
   if(aGUBUN_CHANGE='Y') then
-    bCardStateChange:=True;
+    bCardGroupGrade:=True;
+  *)
 
   if (stCardState <> '1') then  //비정상
   begin
@@ -976,7 +1010,7 @@ aCARDSTOP : 0:정상, 1:분실, 2:정지
   end else
   begin
     ///신규 카드 여기서 권한 적용하자.
-    if (bCardStateChange) then
+    if (bCardGroupGrade) then
     begin
       nIndex := MappingCode1List.IndexOf(stCompanyCode + stPosiCode);
       stGradeGroupCode := '';
@@ -1172,7 +1206,7 @@ begin
           end
           else if FindField('M_CARDTYPE').AsString = '1' then
           begin
-            stCardRegcnt := FindField('K_CARD_CNT').AsString;
+            stCardRegcnt := FindField('M_CARDCNT').AsString;
             stCardRegType := '2';
           end;
 

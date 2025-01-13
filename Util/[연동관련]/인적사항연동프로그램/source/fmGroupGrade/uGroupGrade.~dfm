@@ -32,9 +32,9 @@ object fmGroupGrade: TfmGroupGrade
       Caption = #44428#54620#44536#47353#53076#46300
     end
     object cmb_GroupCode: TComboBox
-      Left = 112
+      Left = 96
       Top = 16
-      Width = 393
+      Width = 409
       Height = 21
       ImeName = 'Microsoft IME 2010'
       ItemHeight = 13
@@ -44,9 +44,9 @@ object fmGroupGrade: TfmGroupGrade
   end
   object sg_Door: TAdvStringGrid
     Left = 0
-    Top = 49
+    Top = 153
     Width = 587
-    Height = 439
+    Height = 342
     Cursor = crDefault
     Align = alClient
     ColCount = 6
@@ -127,6 +127,7 @@ object fmGroupGrade: TfmGroupGrade
     PrintSettings.FooterFont.Style = []
     PrintSettings.PageNumSep = '/'
     ScrollSynch = True
+    ScrollWidth = 16
     SearchFooter.FindNextCaption = 'Find next'
     SearchFooter.FindPrevCaption = 'Find previous'
     SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -151,7 +152,7 @@ object fmGroupGrade: TfmGroupGrade
   end
   object Panel1: TPanel
     Left = 0
-    Top = 488
+    Top = 495
     Width = 587
     Height = 54
     Align = alBottom
@@ -241,7 +242,7 @@ object fmGroupGrade: TfmGroupGrade
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 542
+    Top = 549
     Width = 587
     Height = 22
     Panels = <>
@@ -272,6 +273,65 @@ object fmGroupGrade: TfmGroupGrade
       BevelKind = bkSoft
       Caption = #8553
       TabOrder = 0
+    end
+  end
+  object GroupBox2: TGroupBox
+    Left = 0
+    Top = 49
+    Width = 587
+    Height = 104
+    Align = alTop
+    TabOrder = 5
+    object lb_Building1: TLabel
+      Left = 16
+      Top = 24
+      Width = 52
+      Height = 13
+      Caption = #48716#46377#53076#46300
+    end
+    object lb_FloorCode1: TLabel
+      Left = 16
+      Top = 48
+      Width = 39
+      Height = 13
+      Caption = #52789#53076#46300
+    end
+    object lb_AreaCode1: TLabel
+      Left = 16
+      Top = 72
+      Width = 52
+      Height = 13
+      Caption = #44396#50669#53076#46300
+    end
+    object cmb_BuildingCode: TComboBox
+      Left = 96
+      Top = 20
+      Width = 409
+      Height = 21
+      ImeName = 'Microsoft IME 2003'
+      ItemHeight = 13
+      TabOrder = 0
+      OnChange = cmb_BuildingCodeChange
+    end
+    object cmb_FloorCode: TComboBox
+      Left = 96
+      Top = 44
+      Width = 409
+      Height = 21
+      ImeName = 'Microsoft IME 2003'
+      ItemHeight = 13
+      TabOrder = 1
+      OnChange = cmb_FloorCodeChange
+    end
+    object cmb_AreaCode: TComboBox
+      Left = 96
+      Top = 68
+      Width = 409
+      Height = 21
+      ImeName = 'Microsoft IME 2003'
+      ItemHeight = 13
+      TabOrder = 2
+      OnChange = cmb_AreaCodeChange
     end
   end
 end

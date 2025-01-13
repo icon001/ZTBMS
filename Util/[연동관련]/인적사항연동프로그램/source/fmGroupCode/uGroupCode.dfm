@@ -30,7 +30,7 @@ inherited fmGroupCode: TfmGroupCode
   end
   object Panel1: TPanel [1]
     Left = 0
-    Top = 395
+    Top = 402
     Width = 511
     Height = 106
     Align = alBottom
@@ -38,14 +38,14 @@ inherited fmGroupCode: TfmGroupCode
     object Label8: TLabel
       Left = 16
       Top = 10
-      Width = 89
+      Width = 78
       Height = 13
       Caption = #44428#54620#44536#47353#53076#46300
     end
     object Label1: TLabel
       Left = 16
       Top = 34
-      Width = 89
+      Width = 78
       Height = 13
       Caption = #44428#54620#44536#47353#47749#52845
     end
@@ -251,7 +251,7 @@ inherited fmGroupCode: TfmGroupCode
   end
   object StatusBar1: TStatusBar [2]
     Left = 0
-    Top = 501
+    Top = 508
     Width = 511
     Height = 22
     Panels = <>
@@ -260,7 +260,7 @@ inherited fmGroupCode: TfmGroupCode
     Left = 0
     Top = 33
     Width = 511
-    Height = 362
+    Height = 369
     Cursor = crDefault
     Align = alClient
     ColCount = 2
@@ -341,6 +341,7 @@ inherited fmGroupCode: TfmGroupCode
     PrintSettings.FooterFont.Style = []
     PrintSettings.PageNumSep = '/'
     ScrollSynch = True
+    ScrollWidth = 16
     SearchFooter.FindNextCaption = 'Find next'
     SearchFooter.FindPrevCaption = 'Find previous'
     SearchFooter.Font.Charset = DEFAULT_CHARSET

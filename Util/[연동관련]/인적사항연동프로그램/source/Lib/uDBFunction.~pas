@@ -14,6 +14,7 @@ type
     Function CheckTB_CARD_CardNo(aCardNo:string;var aCardState:string):integer;
     Function checkTB_CARD_EmNum_Cnt(aEmcode: string):integer;
     Function CheckTB_CARD_Employee(aCompanyCode,aEmCode,aCardNo:string;var aOldCardNo:string;bRegCard:Boolean=True):integer;
+    Function CheckTB_CARD_EmployeeGubun(aCompanyCode,aEmCode,aCardNo,aCardGubun:string;var aOldCardNo:string;bRegCard:Boolean=True):integer;
     Function CheckTB_CARD_Employee_STICK(aCompanyCode,aEmCode:string):integer;
     Function CheckTB_COMPANY_Gubun(aCompanyCode,aJijumCode,aDepartCode,aGubun:string):integer;
     Function CheckTB_CONFIG(aGroup,aCode:string):Boolean;
@@ -30,6 +31,7 @@ type
     Function CheckTB_HonikTempTable2Seoul(aCAMPUS,aKEY:string;var aMode,aChange,alevel1,alevel2,agubun,aname,acnt,aStatus,aCardType,aCardStop:string ):integer;
     Function CopyGradeOldCard(aOldCardNO,aNewCardNO:string):Boolean;
     Function DeleteHongikTempTable(aCampus:string):Boolean;
+    Function DeleteTB_CARD_EmployeeCardGubun(aCompanyCode,aEmCode,aCardGubun:string):Boolean;
     Function DeleteTB_CARD_Key(aCardNo:string):Boolean;
     Function DeleteTB_DEVICECARDNOCardNo(aCardNo:string):Boolean;
     Function DeleteTB_EMPLOYEE_Key(aCompanyCode,aEmCode:string;aFdmsID:integer=0):Boolean;
@@ -62,11 +64,12 @@ type
     Function InsertIntoTB_RELAYGUBUN(aRgCode,aCampusName:string):Boolean;
     Function InsertIntoTB_WORKGUBUN(aCode,aType,aName:string):Boolean;
     Function InsertTB_EMPHISCardStop(aCardNo:string):Boolean;
+    Function InsertIntoTB_POSIJIJUMMapping(aCode,aName:string):Boolean;
 
 
 
     Function UpdateTB_CARDDOORGRADE(aCardNo,aDoorGrade:string):Boolean;
-    Function UpdateTB_CARD_Change(aOldCardNo,aNewCardNo:string):Boolean;
+    Function UpdateTB_CARD_Change(aOldCardNo,aNewCardNo:string;aDeleteCard:Boolean=True):Boolean;
     Function UpdateTB_CARD_Field_StringValue(aCardNo,aFieldName,aData:string):Boolean;
     Function UpdateTB_CARD(aCardNo,aCardGubun,aCardType,aEmpID,aCompanyCode:string;aDoorGrade:string='') : Boolean;
     Function UpdateTB_CARD_NewCard(aCardNo:string):Boolean;
@@ -91,6 +94,7 @@ type
     Function UpdateTB_HonikTempTable2Seoul(aCAMPUS,aKEY,aLEVEL1,aLEVEL1_NAME,aLEVEL2,aLEVEL2_NAME,aGUBUN,aGUBUN_NAME,aGUBUN_CHANGE,aNAME,aCARD_CNT,aSTATUS,aCARDTYPE,aCARDSTOP,aCurChange,aCurMode:string):Boolean;
     Function UpdateTB_HonikTempTable2_Field_StringValue(aCAMPUS,aKEY,aFieldName,aData:string):Boolean;
     Function UpdateTB_Posi_Field_StringValue(aCompanyCode,aPosiCode,aFieldName,aData:string):Boolean;
+    Function UpdateTB_POSIJIJUMMapping(aCode, aName:string):Boolean;
   end;
 
 var
@@ -192,6 +196,56 @@ begin
   Result := -1;
   stSql := 'select * from TB_CARD ';
   stSql := stSql + ' where EM_CODE = ''' + aEmCode + ''' ';
+  if aCompanyCode <> '' then stSql := stSql + ' AND CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  if bRegCard then stSql := stSql + ' AND CA_CARDTYPE = ''1'' ';  //등록된 카드 중에서
+
+  Try
+    CoInitialize(nil);
+    TempAdoQuery := TADOQuery.Create(nil);
+    TempAdoQuery.Connection := dmDBModule.ADOConnection;
+    TempAdoQuery.DisableControls;
+    with TempAdoQuery do
+    begin
+      Close;
+      Sql.Clear;
+      Sql.Text := stSql;
+
+      Try
+        Open;
+      Except
+        Exit;
+      End;
+      if recordcount = 0 then Exit;
+      While Not Eof do
+      begin
+        if FindField('CA_CARDNO').AsString = aCardNo then Result := 0
+        else
+        begin
+          aOldCardNo := FindField('CA_CARDNO').AsString;
+          result := 1;
+        end;
+        Exit;
+        Next;
+      end;
+    end;
+  Finally
+    TempAdoQuery.EnableControls;
+    TempAdoQuery.Free;
+    CoUninitialize;
+  End;
+end;
+
+function TdmDBFunction.CheckTB_CARD_EmployeeGubun(aCompanyCode, aEmCode,
+  aCardNo, aCardGubun: string; var aOldCardNo: string;
+  bRegCard: Boolean=True): integer;
+var
+  stSql: string;
+  TempAdoQuery : TADOQuery;
+begin
+  Result := -1;
+  stSql := 'select * from TB_CARD ';
+  stSql := stSql + ' where EM_CODE = ''' + aEmCode + ''' ';
+  stSql := stSql + ' and CA_GUBUN = ''' + aCardGubun + ''' ';
   if aCompanyCode <> '' then stSql := stSql + ' AND CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
   if bRegCard then stSql := stSql + ' AND CA_CARDTYPE = ''1'' ';  //등록된 카드 중에서
 
@@ -844,6 +898,37 @@ begin
     result := dmDBModule.ProcessExecSQL(stSql);
   end;
 
+end;
+
+function TdmDBFunction.DeleteTB_CARD_EmployeeCardGubun(aCompanyCode,
+  aEmCode, aCardGubun: string): Boolean;
+var
+  stSql : string;
+begin
+  result := False;
+  //카드 권한 삭제
+  stSql := 'Update TB_DEVICECARDNO Set ';
+  stSql := stSql + ' DE_PERMIT = ''N'', ';
+  stSql := stSql + ' DE_RCVACK = ''N'' ';
+  stSql := stSql + ' FROM TB_CARD a ';
+  stSql := stSql + ' Where a.GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND a.CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' AND a.EM_CODE = ''' + aEmCode + ''' ';
+  stSql := stSql + ' AND a.CA_GUBUN = ''' + aCardGubun + ''' ';
+  stSql := stSql + ' AND TB_DEVICECARDNO.CA_CARDNO = a.CA_CARDNO ';
+
+  Result := dmDBModule.ProcessExecSQL(stSql);
+
+
+  //카드 정지 
+  stSql := 'Update TB_CARD Set ';
+  stSql := stSql + ' CA_CARDTYPE = ''2'' ';
+  stSql := stSql + ' Where GROUP_CODE = ''' + GROUPCODE + ''' ';
+  stSql := stSql + ' AND CO_COMPANYCODE = ''' + aCompanyCode + ''' ';
+  stSql := stSql + ' AND EM_CODE = ''' + aEmCode + ''' ';
+  stSql := stSql + ' AND CA_GUBUN = ''' + aCardGubun + ''' ';
+
+  Result := dmDBModule.ProcessExecSQL(stSql);
 end;
 
 function TdmDBFunction.DeleteTB_CARD_Key(aCardNo: string): Boolean;
@@ -1535,6 +1620,21 @@ begin
   result := dmDBModule.ProcessExecSQL(stSql);
 end;
 
+function TdmDBFunction.InsertIntoTB_POSIJIJUMMapping(aCode,
+  aName: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := ' Insert Into TB_POSIJIJUMMapping(';
+  stSql := stSql + ' PG_CODE,';
+  stSql := stSql + ' PG_NAME) ';
+  stSql := stSql + ' Values(';
+  stSql := stSql + '''' + aCode + ''',';
+  stSql := stSql + '''' + aName + ''')';
+
+  result := dmDBModule.ProcessExecSQL(stSql);
+end;
+
 function TdmDBFunction.InsertIntoTB_RELAYGUBUN(aRgCode,
   aCampusName: string): Boolean;
 var
@@ -1637,6 +1737,7 @@ var
   stSql : string;
 begin
   stSql := 'Update TB_CARD set ';
+  if(aCardGubun<>'') then stSql := stSql + 'CA_GUBUN = ''' + aCardGubun + ''',';
   stSql := stSql + 'CA_CARDTYPE = ''' + aCardType + ''',';
   stSql := stSql + 'EM_CODE = ''' + aEmpID + ''',';
   if aDoorGrade <> '' then stSql := stSql + 'CA_DOORGRADE = ''' + aDoorGrade + ''',';
@@ -1659,7 +1760,7 @@ begin
 end;
 
 function TdmDBFunction.UpdateTB_CARD_Change(aOldCardNo,
-  aNewCardNo: string): Boolean;
+  aNewCardNo: string;aDeleteCard:Boolean=True): Boolean;
 var
   stSql : string;
   bResult : Boolean;
@@ -1669,6 +1770,9 @@ begin
   if aNewCardNo = '' then Exit;
   DeleteTB_DEVICECARDNOCardNo(aNewCardNo); // 권한테이블에 새로 등록할 카드에 대한 찌꺼기가 남아 있으면 삭제
   CopyGradeOldCard(aOldCardNo,aNewCardNo); //여기서 권한을 복사 L_stStopCard -> stCardNo
+
+  if Not aDeleteCard then Exit; //기존카드 삭제가 아니라면 빠져 나간다.
+
   bResult := UpdateTB_DEVICECARDNO_permit(aOldCardNo,'N'); //모든 카드 권한을 삭제 처리함
 
   InsertTB_EMPHISCardStop(aOldCardNo);    //
@@ -2018,6 +2122,18 @@ begin
   stSql := stSql + aFieldName + '=''' + aData + ''' ';
   stSql := stSql + ' where K_CAMPUS  = ' + aCAMPUS + '';    //캠퍼스 구분 1:서울 2:세종
   stSql := stSql + ' and K_KEY = ''' + aKEY + ''' ';       //학번 ( 종번 )
+
+  result := dmDBModule.ProcessExecSQL(stSql);
+end;
+
+function TdmDBFunction.UpdateTB_POSIJIJUMMapping(aCode,
+  aName: string): Boolean;
+var
+  stSql : string;
+begin
+  stSql := 'update TB_POSIJIJUMMapping set ';
+  stSql := stSql + 'PG_NAME =''' + aName + ''' ';
+  stSql := stSql + ' where PG_CODE = ''' + aCode + ''' ';
 
   result := dmDBModule.ProcessExecSQL(stSql);
 end;

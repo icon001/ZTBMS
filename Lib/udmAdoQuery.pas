@@ -277,6 +277,7 @@ begin
   stSql := stSql + ' and a.AC_NODENO = ' + inttostr(aNodeNo) ;
   stSql := stSql + ' and a.GROUP_CODE = ''' + GROUPCODE + ''' ';
 
+  //LogSave(ExeFolder + '\..\log\Grade.log',stSql);
   Try
     CoInitialize(nil);
     TempAdoQuery := TAdoQuery.Create(nil);
@@ -365,6 +366,7 @@ begin
               AND (FindField('DE_PERMIT').asString = 'L') then Result:= True;
           end;
         end;
+        //LogSave(ExeFolder + '\..\log\Grade.log','DE_USEACCESS = ' + FindField('DE_USEACCESS').asString);
         //카드타입 확인
         if (FindField('DE_USEACCESS').asString = 'Y') then  aACType:= '1';   //출입권한 유
         //else  aACType:= '0';                                             //출입권한 무
@@ -406,8 +408,16 @@ begin
           aRegCode:= '3';
         end;
 
-        if FindField('DE_PERMIT').asString <> 'L' then aRegCode:= '4'; //권한이 없는 경우 삭제가 내려가야 됨 2011.06.10 변경
-        if FindField('CA_CARDTYPE').AsString <> '1' then aRegCode:= '4'; //카드 등록상태가 아닌 경우 삭제가 내려가야 됨
+        if FindField('DE_PERMIT').asString <> 'L' then
+        begin
+          aRegCode:= '4'; //권한이 없는 경우 삭제가 내려가야 됨 2011.06.10 변경
+          //LogSave(ExeFolder + '\..\log\Grade.log','DE_PERMIT <> L ');
+        end;
+        if FindField('CA_CARDTYPE').AsString <> '1' then
+        begin
+          aRegCode:= '4'; //카드 등록상태가 아닌 경우 삭제가 내려가야 됨
+          //LogSave(ExeFolder + '\..\log\Grade.log','CA_CARDTYPE <> 1 ');
+        end;
 
         // 타임 코드
         if FindField('DE_TIMECODE').asString <> '' then
@@ -469,12 +479,18 @@ begin
         if FindField('EM_CODE').IsNull then
         begin
           aRegCode:= '4';
+          //LogSave(ExeFolder + '\..\log\Grade.log','EM_CODE is Null ');
         end;
       end else
       begin
       //  aRegCode:= '4';
       end;
-      if (aACType = '0') and (aPTType = '0') then aRegCode := '4';
+      //LogSave(ExeFolder + '\..\log\Grade.log','aACType = ' + aACType + ' aPTType = ' + aPTType);
+      if (aACType = '0') and (aPTType = '0') then
+      begin
+        aRegCode := '4';
+        //LogSave(ExeFolder + '\..\log\Grade.log','aACType = 0 ');
+      end;
       if aRegCode = '4' then result := False;
     end;
   Finally

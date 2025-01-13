@@ -162,6 +162,7 @@ type
     L_stJijumCode : string;
     L_stPosiCode : string;
     L_stEMGCode : string;   //여수 응급실 코드
+    L_stPosiJijumRelay : string; //직위코드 등록시 단과대별 권한부여
     L_dtRelayActionTime : TDatetime;
     L_bShowState : Boolean;
     L_bJUNNAMShowState : Boolean;
@@ -238,9 +239,9 @@ type
     Function KTBundangEmployeeCardStop1(aDelDate,aEmCode,aCardID,aUserName:string):Boolean;
     Function KTBundangConversionEmployee1(aEmCode,aCardNo,aEmName,aCardIssuCont,aStartDate,aEmEndDate,aJijumName,aDepartName,aPosiName,aWorkGubun:string):Boolean;
   private
-    Function GetChosunRelay:Boolean;
-    Function ChosunRelay(aTime:string):Boolean;
-    Function CHOSUNConversionEmployee(aEmCode,aEmName,aPosiCode,aJijumName,aDepartName,aRegname,aCompanyPhone,aReTireDate,aCardSeq:string):Boolean;
+    //Function GetChosunRelay:Boolean;  ///테이블을 연동 테이블로 저장 
+    //Function ChosunRelay(aTime:string):Boolean;
+    //Function CHOSUNConversionEmployee(aEmCode,aEmName,aPosiCode,aJijumName,aDepartName,aRegname,aCompanyPhone,aReTireDate,aCardSeq:string):Boolean;
   private
     //쌍용정보통신 연동
     Function SSANGYONGAT_Relay:Boolean;
@@ -327,7 +328,8 @@ uses
   uDongyangUniversityCurrentState,
   uYoungGwangCurrentState,
   uHongikCurrentState,
-  uDBRelayFunction, uHoniK, uCommon;
+  uDBRelayFunction, uHoniK, uCommon,
+  uChosun;
 
 {$R *.dfm}
 
@@ -400,6 +402,7 @@ begin
   end;
 
   LoadConfig;
+
   L_dtRelayActionTime := Now; //시작 되자 마자 한번 연동 하자.
   if Not dmAdoRelay.AdoRelayConnected(L_stDBType, L_stDBIP, L_stDBPort,
                     L_stDBUserID, L_stDBUserPW, L_stDBName) then
@@ -514,21 +517,28 @@ end;
 
 procedure TfmMain.mn_ConfigClick(Sender: TObject);
 begin
-  fmConfig := TfmConfig.Create(Self);
-  fmConfig.ShowModal;
-  fmConfig.Free;
-  LoadConfig;
-  if Not dmAdoRelay.AdoRelayConnected(L_stDBType, L_stDBIP, L_stDBPort,
-                    L_stDBUserID, L_stDBUserPW, L_stDBName) then
-  begin
-    RelayAdoConnectCheckTimer.Interval := 1000 * 600;   //접속실패시 10분에 한번씩 체크
-    RelayAdoConnectCheckTimer.Enabled := True;
-    tbi.Hint := '사원정보 연동 시스템 실패';
-  end else
-  begin
-    RelayAdoConnectCheckTimer.Interval := 1000 * 10; //끊기면 10초에 한번씩 체크
-    tbi.Hint := '사원정보 연동 시스템 정상';
-  end;
+  RelayTimer.Enabled := False;
+  Try
+    fmConfig := TfmConfig.Create(Self);
+    fmConfig.ShowModal;
+    fmConfig.Free;
+    LoadConfig;
+    if Not dmAdoRelay.AdoRelayConnected(L_stDBType, L_stDBIP, L_stDBPort,
+                      L_stDBUserID, L_stDBUserPW, L_stDBName) then
+    begin
+      RelayAdoConnectCheckTimer.Interval := 1000 * 600;   //접속실패시 10분에 한번씩 체크
+      RelayAdoConnectCheckTimer.Enabled := True;
+      tbi.Hint := '사원정보 연동 시스템 실패';
+    end else
+    begin
+      RelayAdoConnectCheckTimer.Interval := 1000 * 10; //끊기면 10초에 한번씩 체크
+      tbi.Hint := '사원정보 연동 시스템 정상';
+    end;
+    //if L_stProgramType = '4' then dmChosun.InitPosiCode();  //직위코드 초기화 할 필요 없다. 사용중인곳
+
+  Finally
+    RelayTimer.Enabled := True;
+  End;
 
 end;
 
@@ -567,6 +577,7 @@ begin
   L_stJijumCode := '000';
   L_stPosiCode := '000';
   L_stEMGCode := '000';
+  L_stPosiJijumRelay :='';
 
   stSql := 'select * from TB_CONFIG ';
 
@@ -590,7 +601,7 @@ begin
         if FindField('CO_CONFIGGROUP').AsString = 'COMMON' then
         begin
           if FindField('CO_CONFIGCODE').AsString = 'CARDNOTYPE' then G_nCARDLENGTHTYPE := strtoint(FindField('CO_CONFIGVALUE').AsString)  // 0.고정4Byte,1.길이ASCII,2.KT
-          if FindField('CO_CONFIGCODE').AsString = 'DUPCARD' then G_nDupCard := strtoint(FindField('CO_CONFIGVALUE').AsString)  // 0.1장 카드,1.여러장 카드 
+          else if FindField('CO_CONFIGCODE').AsString = 'DUPCARD' then G_nDupCard := strtoint(FindField('CO_CONFIGVALUE').AsString);  // 0.1장 카드,1.여러장 카드 
 
         end else if FindField('CO_CONFIGGROUP').AsString = 'DAEMON' then
         begin
@@ -623,6 +634,7 @@ begin
           else if FindField('CO_CONFIGCODE').AsString = 'JIJUMCD'   then L_stJijumCode := FindField('CO_CONFIGVALUE').AsString
           else if FindField('CO_CONFIGCODE').AsString = 'POSICD'   then L_stPosiCode := FindField('CO_CONFIGVALUE').AsString
           else if FindField('CO_CONFIGCODE').AsString = 'EMGCD'   then L_stEMGCode := FindField('CO_CONFIGVALUE').AsString
+          else if FindField('CO_CONFIGCODE').AsString = 'POSIJIJUM'   then L_stPosiJijumRelay := FindField('CO_CONFIGVALUE').AsString
           ;
         end else if FindField('CO_CONFIGGROUP').AsString = 'RELAY' then
         begin
@@ -748,6 +760,8 @@ begin
 end;
 
 procedure TfmMain.mn_RelayDBClick(Sender: TObject);
+var
+  stDebug:string;
 begin
   inherited;
   if Not dmAdoRelay.DBConnected then dmAdoRelay.AdoRelayConnected(L_stDBType, L_stDBIP, L_stDBPort,
@@ -768,8 +782,8 @@ begin
     end else if L_stProgramType = '4' then
     begin
       StatusBar1.Panels[2].Text := '즉시연동' + L_stLastRelayTime;
-      GetChosunRelay;  //조선대 데이터 가져오기
-      if Not ChosunRelay(L_stLastRelayTime) then Exit;  //조선대 인적사항 연동
+      //GetChosunRelay;  //조선대 데이터 가져오기
+      if Not dmChosun.ChosunRelay(L_stLastRelayTime,stDebug) then Exit;  //조선대 인적사항 연동
     end else if L_stProgramType = '5' then  //우면동
     begin
       if Not KTBundangDelRelay1(L_stLastRelayDelTime) then Exit;
@@ -1035,6 +1049,8 @@ begin
 end;
 
 procedure TfmMain.RelayTimerTimer(Sender: TObject);
+var
+  stDebug:string;
 begin
   inherited;
   if L_bApplicationTerminate then Exit;
@@ -1071,8 +1087,8 @@ begin
     end else if L_stProgramType = '4' then   //조선대학교 연동
     begin
       StatusBar1.Panels[2].Text := 'RelayTimerTimer' + FormatDateTime('yyyymmddhhnnss',Now) + '-' +L_stLastRelayTime;
-      GetChosunRelay;  //조선대 데이터 가져오기
-      if Not ChosunRelay(L_stLastRelayTime) then Exit;  //조선대 인적사항 연동
+      //GetChosunRelay;  //조선대 데이터 가져오기
+      if Not dmChosun.ChosunRelay(L_stLastRelayTime,stDebug) then Exit;  //조선대 인적사항 연동
     end else if L_stProgramType = '5' then   //KT우면동 연동
     begin
       KTBundangRelay1(L_stLastRelayTime);  //KT우면동 연동
@@ -1930,6 +1946,7 @@ begin
   fmQuery.Show;
 end;
 
+(*
 function TfmMain.GetChosunRelay: Boolean;
 var
   stSql : string;
@@ -2040,6 +2057,7 @@ begin
   result := True;
 end;
 
+
 function TfmMain.ChosunRelay(aTime: string): Boolean;
 var
   stSql : string;
@@ -2143,7 +2161,8 @@ begin
     LogSave(G_stExeFolder + '\..\log\Program' + FormatDateTime('yyyymmdd',now) +'.log','EmConversion ');
   end;
 end;
-
+*)
+(*
 function TfmMain.CHOSUNConversionEmployee(aEmCode, aEmName, aPosiCode,
   aJijumName, aDepartName, aRegname, aCompanyPhone, aReTireDate,
   aCardSeq: string): Boolean;
@@ -2274,6 +2293,7 @@ begin
 
   result := True;
 end;
+*)
 
 procedure TfmMain.CHOSUNEventState(aEmCode, aEmName, aPosiCode, aJijumName,
   aDepartName, aRegname, aCompanyPhone, aReTireDate, aCardSeq,
@@ -4358,28 +4378,44 @@ end;
 procedure TfmMain.mn_GradGroupClick(Sender: TObject);
 begin
   inherited;
-  fmGroupCode := TfmGroupCode.Create(nil);
-  fmGroupCode.ShowModal;
-  fmGroupCode.Free;
+  RelayTimer.Enabled := False;
+  Try
+    fmGroupCode := TfmGroupCode.Create(nil);
+    fmGroupCode.ShowModal;
+    fmGroupCode.Free;
+  Finally
+    RelayTimer.Enabled := True;
+  End;
 
 end;
 
 procedure TfmMain.mn_GroupGradeClick(Sender: TObject);
 begin
   inherited;
-  fmGroupGrade := TfmGroupGrade.Create(nil);
-  fmGroupGrade.ShowModal;
-  fmGroupGrade.Free;
+  RelayTimer.Enabled := False;
+  Try
+    fmGroupGrade := TfmGroupGrade.Create(nil);
+    fmGroupGrade.ShowModal;
+    fmGroupGrade.Free;
+  Finally
+    RelayTimer.Enabled := True;
+  End;
 
 end;
 
 procedure TfmMain.mn_GroupMappingClick(Sender: TObject);
 begin
   inherited;
-  fmMapping := TfmMapping.Create(nil);
-  fmMapping.ShowModal;
-  fmMapping.Free;
-  dmCommon.LoadMappingCode(dmCommon.GetMappingType);
+  RelayTimer.Enabled := False;
+  Try
+    fmMapping := TfmMapping.Create(nil);
+    fmMapping.ShowModal;
+    fmMapping.Free;
+    dmCommon.LoadMappingCode(dmCommon.GetMappingType);
+  Finally
+    RelayTimer.Enabled := True;
+  End;
+  
 end;
 
 procedure TfmMain.RealTimerTimer(Sender: TObject);

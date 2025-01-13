@@ -80,7 +80,7 @@ type CString = string[100];
   function SetlengthStr(st : String; aLength : Integer): String;
   function FillZeroStrNum(aNo:String; aLength:Integer;bFront:Boolean = True): string;
   function FillCharString(aNo:String;aChar:char; aLength:Integer;bFront:Boolean = False): string;
-  function FillZeroNumber(aNo:LongInt; aLength:Integer): string;
+  function FillZeroNumber(aNo:LongInt; aLength:Integer;bFront:Boolean = True): string;
   function FillZeroNumber2(aNo:Int64; aLength:Integer): string;
   function IntToBin(Value: Longint; Digits:Integer): string;
   Function FindCharCopy(SourceStr : String; Index : integer; aChar:Char) : String;
@@ -1030,7 +1030,7 @@ begin
 end;
 
 
-function FillZeroNumber(aNo:LongInt; aLength:Integer): string;
+function FillZeroNumber(aNo:LongInt; aLength:Integer;bFront:Boolean = True): string;
 var
   I       : Integer;
   st      : string;
@@ -1045,7 +1045,9 @@ begin
   begin
     st:='';
     for I:=1 to StrCount do St:=st+'0';
-    St:= St + StrNo;
+    if bFront then  St:= St + StrNo
+    else St:= StrNo + St;
+    //St:= St + StrNo;
     FillZeroNumber:= st;
   end else FillZeroNumber:= copy(Strno,1,aLength);
 end;

@@ -87,7 +87,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 150
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 0
               OnChange = cmb_BuildingCode1Change
             end
@@ -97,7 +97,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 150
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 1
               OnChange = cmb_FloorCode1Change
             end
@@ -107,7 +107,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 150
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 2
               OnChange = cmb_AreaCode1Change
             end
@@ -360,7 +360,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 200
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 4
               OnChange = cmb_sBuildingCode1Change
             end
@@ -370,7 +370,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 200
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 5
               OnChange = cmb_sFloorCode1Change
             end
@@ -380,7 +380,7 @@ inherited fmDeviceCode: TfmDeviceCode
               Width = 200
               Height = 20
               ImeName = 'Microsoft IME 2003'
-              ItemHeight = 12
+              ItemHeight = 0
               TabOrder = 6
               OnChange = cmb_sAreaCode1Change
             end

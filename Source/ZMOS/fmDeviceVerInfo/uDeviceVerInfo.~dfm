@@ -22,6 +22,8 @@ inherited fmDeviceVerInfo: TfmDeviceVerInfo
     Width = 1011
     Height = 89
     Align = alTop
+    Color = clWhite
+    ParentColor = False
     TabOrder = 0
     object btn_Search: TSpeedButton
       Left = 568
@@ -214,7 +216,7 @@ inherited fmDeviceVerInfo: TfmDeviceVerInfo
     Left = 0
     Top = 89
     Width = 1011
-    Height = 579
+    Height = 586
     Cursor = crDefault
     Align = alClient
     ColCount = 7
@@ -229,6 +231,7 @@ inherited fmDeviceVerInfo: TfmDeviceVerInfo
     Font.Style = []
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing, goRowSelect]
     ParentFont = False
+    PopupMenu = PopupMenu_Search
     ScrollBars = ssVertical
     TabOrder = 1
     OnResize = sg_DeviceInfoResize
@@ -300,6 +303,7 @@ inherited fmDeviceVerInfo: TfmDeviceVerInfo
     PrintSettings.FooterFont.Style = []
     PrintSettings.PageNumSep = '/'
     ScrollSynch = True
+    ScrollWidth = 16
     SearchFooter.FindNextCaption = 'Find next'
     SearchFooter.FindPrevCaption = 'Find previous'
     SearchFooter.Font.Charset = DEFAULT_CHARSET
@@ -370,5 +374,18 @@ inherited fmDeviceVerInfo: TfmDeviceVerInfo
     Options = [ofOverwritePrompt, ofHideReadOnly]
     Left = 72
     Top = 448
+  end
+  object PopupMenu_Search: TPopupMenu
+    AutoHotkeys = maManual
+    Left = 619
+    Top = 157
+    object mnDeviceCode: TMenuItem
+      Caption = #44592#44592#53076#46300#51312#54924
+      OnClick = mnDeviceCodeClick
+    end
+    object mnDeviceVersion: TMenuItem
+      Caption = #48260#51260#51221#48372#51312#54924
+      OnClick = mnDeviceVersionClick
+    end
   end
 end

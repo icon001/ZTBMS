@@ -359,7 +359,7 @@ function TfmGroupCode.UpdateTB_DEVICECARDGROUPCODE(acode,
 var
   stSql : string;
 begin
-  stSql := ' Update TB_DOORGUBUN set ';
+  stSql := ' Update TB_DEVICECARDGROUPCODE set ';
   stSql := stSql + ' DG_NAME = ''' + aName + ''' ';
   stSql := stSql + ' where GROUP_CODE =''' + GROUPCODE + '''';
   stSql := stSql + ' AND DG_CODE = ''' + acode + '''';

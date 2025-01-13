@@ -529,6 +529,13 @@ object fmConfig: TfmConfig
         Height = 12
         Caption = #44592#48376#51649#50948#53076#46300
       end
+      object Label24: TLabel
+        Left = 16
+        Top = 132
+        Width = 108
+        Height = 12
+        Caption = #45800#44284#45824#54869#51064#51649#50948#53076#46300
+      end
       object cmb_ProgramType: TComboBox
         Left = 128
         Top = 8
@@ -614,6 +621,15 @@ object fmConfig: TfmConfig
           TabOrder = 0
           Text = '000'
         end
+      end
+      object ed_PosiJijumCode: TEdit
+        Left = 128
+        Top = 128
+        Width = 97
+        Height = 20
+        ImeName = 'Microsoft Office IME 2007'
+        MaxLength = 3
+        TabOrder = 6
       end
     end
     object TabSheet3: TTabSheet

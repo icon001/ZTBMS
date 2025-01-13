@@ -837,6 +837,7 @@ begin
   end;
 end;
 
+//Delay 에서 Application.ProcessMessages; 문제가 발생하여 생성하여 씀
 procedure MyProcessMessage;
 var
   Msg: TMsg;

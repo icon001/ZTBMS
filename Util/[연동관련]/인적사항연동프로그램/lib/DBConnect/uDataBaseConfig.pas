@@ -37,6 +37,7 @@ type
     function Table6VersionMake: Boolean;
     function Table7VersionMake: Boolean;
     function Table8VersionMake: Boolean;
+    function Table9VersionMake: Boolean;
   Published
     { Published declarations }
     Property Cancel:Boolean read FCancel write SetCancel;
@@ -1142,6 +1143,23 @@ begin
 
 end;
 
+function TDataBaseConfig.Table9VersionMake: Boolean;
+var
+  stSql : string;
+begin
+
+  stSql := 'Create Table TB_POSIJIJUMMapping (';
+  stSql := stSql + ' PG_CODE varchar(30) NOT NULL,';
+  stSql := stSql + ' PG_NAME varchar(500) NULL,';
+  stSql := stSql + ' PRIMARY KEY (PG_CODE) ';
+  stSql := stSql + ' ) ';
+
+  dmDBModule.ProcessExecSQL(stSql);
+
+  stSql := UpdateTB_CONFIG('EMPCONV','TABLE_VER','9');
+  dmDBModule.ProcessExecSQL(stSql);
+end;
+
 procedure TDataBaseConfig.TableVersionCheck;
 var
   nTableVersion : integer;
@@ -1156,6 +1174,7 @@ begin
   if nTableVersion < 6 then Table6VersionMake;
   if nTableVersion < 7 then Table7VersionMake;
   if nTableVersion < 8 then Table8VersionMake;
+  if nTableVersion < 9 then Table9VersionMake;
 
 end;
 
